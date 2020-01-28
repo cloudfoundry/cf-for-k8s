@@ -1,0 +1,59 @@
+#@data/values
+---
+system_namespace: cf-system
+workloads_namespace: cf-workloads
+system_registry:
+  hostname: ""
+  username: ""
+  password: ""
+  repository_name_prefix: ""
+
+#! hostname of the DB you've deployed, e.g. capi-database-postgresql.default.svc.cluster.local if you deployed a postgres DB to the default namespace of this cluster
+database_hostname:
+#! your system domain, e.g., "system.cf.example.com"
+system_domain:
+#! list of app domains, e.g., ["apps.cf.example.com"]
+app_domains: []
+#! password for admin user in plain text
+cf_admin_password:
+
+images:
+  capi: "relintprivateregistry/capi"
+  nginx: "nginx"
+  uaa: "relintprivateregistry/uaa"
+  cfroutesync: #! "relintprivateregistry/cfroutesync"
+  eirini: "relintprivateregistry/eirini"
+  nats: "relintprivateregistry/nats"
+  doppler: "relintprivateregistry/doppler"
+
+capi:
+  database:
+    #! or mysql2, as needed
+    adapter: postgres
+    host:
+    port: 5432
+    user: cloud_controller
+    #! DB user password in plain text
+    password:
+    name: cloud_controller
+
+system_certificate:
+  crt: "" #! Base64-encoded certificate for the wildcard subdomain of the system domain (e.g., CN=*.system.cf.example.com)
+  key: "" #! Base64-encoded private key for the cert above
+  ca: "" #! Base64-encoded CA certificate used to sign the system certifcate
+
+uaa:
+  admin_client_secret: "" #! client secret for uaa admin client in plain text
+  certificate:
+    crt: "" #! Base64-encoded certificate for the uaa service inside the kubernetes cluster (i.e., CN=uaa.cf-system.svc.cluster.local)
+    key: "" #! Base64-encoded private key for the cert above
+
+doppler:
+  tls:
+    crt: "" #! Base64-encoded certificate for the doppler service inside the kubernetes cluster (i.e., CN=doppler.cf-system.svc.cluster.local)
+    key: "" #! Base64-encoded private key for the cert above
+
+eirini:
+  tls:
+    crt: "" #! Base64-encoded certificate for the eirini service inside the kubernetes cluster (i.e., CN=eirini.cf-system.svc.cluster.local)
+    key: "" #! Base64-encoded private key for the cert above

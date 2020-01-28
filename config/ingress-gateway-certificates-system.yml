@@ -1,0 +1,24 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: istio-ingressgateway-certs
+  namespace: istio-system
+  annotations:
+    kapp.k14s.io/change-rule: "upsert before upserting istio.io/ingressgateway"
+data:
+  tls.key: #@ data.values.system_certificate.key
+  tls.crt: #@ data.values.system_certificate.crt
+
+#! the following overlay ensures the above Secret is created before the ingressgateway Deployment since we're not using SDS
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"istio-ingressgateway"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: istio.io/ingressgateway
+

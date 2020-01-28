@@ -1,0 +1,23 @@
+---
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+directories:
+- path: config/_ytt_lib
+  contents:
+  - path: github.com/GoogleCloudPlatform/metacontroller
+    git:
+      url: https://github.com/GoogleCloudPlatform/metacontroller
+      ref: v0.4.0
+    includePaths:
+    - manifests/*
+  - path: github.com/cloudfoundry/cf-k8s-networking
+    git:
+      url: https://github.com/cloudfoundry/cf-k8s-networking
+      ref: b4375d0b13cb853ee402a9530b54188772c24ff6
+    includePaths:
+    - cfroutesync/crds/**/*
+    - config/cfroutesync/**/*
+  - path: istio
+    manual: {}
+  - path: eirini
+    manual: {}

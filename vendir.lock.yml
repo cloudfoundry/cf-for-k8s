@@ -1,0 +1,18 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Update install manifest to v0.4.0.
+      sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
+    path: github.com/GoogleCloudPlatform/metacontroller
+  - git:
+      commitTitle: 'ci: enable sidecars on cf-system and metacontroller ns for all
+        envs...'
+      sha: b4375d0b13cb853ee402a9530b54188772c24ff6
+    path: github.com/cloudfoundry/cf-k8s-networking
+  - manual: {}
+    path: istio
+  - manual: {}
+    path: eirini
+  path: config/_ytt_lib
+kind: LockConfig

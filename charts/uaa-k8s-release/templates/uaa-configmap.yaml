@@ -1,0 +1,221 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uaa
+  namespace: {{ .Release.Namespace }}
+data:
+  uaa.yml: |
+    scim:
+      userids_enabled: true
+      users:
+      - admin|{{ .Values.cf_admin_password }}|admin@admin.tld|first|last|clients.read,cloud_controller.admin,doppler.firehose,network.admin,openid,routing.router_groups.read,routing.router_groups.write,scim.read,scim.write|uaa
+      groups:
+        zones.read: Read identity zones
+        zones.write: Create and update identity zones
+        idps.read: Retrieve identity providers
+        idps.write: Create and update identity providers
+        clients.admin: Create, modify and delete OAuth clients
+        clients.write: Create and modify OAuth clients
+        clients.read: Read information about OAuth clients
+        clients.secret: Change the password of an OAuth client
+        scim.write: Create, modify and delete SCIM entities, i.e. users and groups
+        scim.read: Read all SCIM entities, i.e. users and groups
+        scim.create: Create users
+        scim.userids: Read user IDs and retrieve users by ID
+        scim.zones: Control a user's ability to manage a zone
+        scim.invite: Send invitations to users
+        password.write: Change your password
+        oauth.approval: Manage approved scopes
+        oauth.login: Authenticate users outside of the UAA
+        openid: Access profile information, i.e. email, first and last name, and phone number
+        groups.update: Update group information and memberships
+        uaa.user: Act as a user in the UAA
+        uaa.resource: Serve resources protected by the UAA
+        uaa.admin: Act as an administrator throughout the UAA
+        uaa.none: Forbid acting as a user
+        uaa.offline_token: Allow offline access
+
+    oauth:
+      user:
+        authorities:
+          - openid
+          - scim.me
+          - cloud_controller.read
+          - cloud_controller.write
+          - cloud_controller_service_permissions.read
+          - password.write
+          - scim.userids
+          - uaa.user
+          - approvals.me
+          - oauth.approvals
+          - profile
+          - roles
+          - user_attributes
+          - uaa.offline_token
+      clients:
+        cf:
+          id: cf
+          override: true
+          authorized-grant-types: password,refresh_token
+          scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write
+          authorities: uaa.none
+          access-token-validity: 600
+          refresh-token-validity: 2592000
+          secret: ""
+        admin:
+          authorized-grant-types: client_credentials
+          authorities: clients.read,clients.write,clients.secret,uaa.admin,scim.read,scim.write,password.write,openid
+          autoapprove:
+          - openid
+          id: admin
+          secret: {{ .Values.admin_client_secret }}
+        # TODO: use different secrets!!!!!
+        cf-k8s-networking:
+          authorities: uaa.resource,cloud_controller.admin_read_only
+          authorized-grant-types: client_credentials
+          secret: {{ .Values.admin_client_secret }}
+        cloud_controller_username_lookup:
+          authorities: scim.userids
+          authorized-grant-types: client_credentials
+          secret: {{ .Values.admin_client_secret }}
+
+    issuer:
+      uri: https://uaa.{{ .Values.system_domain }}
+
+    zones:
+      internal:
+        hostnames:
+        - uaa.{{ .Release.Namespace }}.svc.cluster.local
+
+    login:
+      url: https://login.{{ .Values.system_domain }}
+      entityBaseURL: https://uaa.{{ .Values.system_domain }}
+      entityID: cloudfoundry-saml-login
+      saml:
+        nameID: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
+        assertionConsumerIndex: 0
+        signMetaData: true
+        signRequest: true
+        socket:
+          connectionManagerTimeout: 10000
+          soTimeout: 10000
+      serviceProviderKey: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIICXQIBAAKBgQDHtC5gUXxBKpEqZTLkNvFwNGnNIkggNOwOQVNbpO0WVHIivig5
+        L39WqS9u0hnA+O7MCA/KlrAR4bXaeVVhwfUPYBKIpaaTWFQR5cTR1UFZJL/OF9vA
+        fpOwznoD66DDCnQVpbCjtDYWX+x6imxn8HCYxhMol6ZnTbSsFW6VZjFMjQIDAQAB
+        AoGAVOj2Yvuigi6wJD99AO2fgF64sYCm/BKkX3dFEw0vxTPIh58kiRP554Xt5ges
+        7ZCqL9QpqrChUikO4kJ+nB8Uq2AvaZHbpCEUmbip06IlgdA440o0r0CPo1mgNxGu
+        lhiWRN43Lruzfh9qKPhleg2dvyFGQxy5Gk6KW/t8IS4x4r0CQQD/dceBA+Ndj3Xp
+        ubHfxqNz4GTOxndc/AXAowPGpge2zpgIc7f50t8OHhG6XhsfJ0wyQEEvodDhZPYX
+        kKBnXNHzAkEAyCA76vAwuxqAd3MObhiebniAU3SnPf2u4fdL1EOm92dyFs1JxyyL
+        gu/DsjPjx6tRtn4YAalxCzmAMXFSb1qHfwJBAM3qx3z0gGKbUEWtPHcP7BNsrnWK
+        vw6By7VC8bk/ffpaP2yYspS66Le9fzbFwoDzMVVUO/dELVZyBnhqSRHoXQcCQQCe
+        A2WL8S5o7Vn19rC0GVgu3ZJlUrwiZEVLQdlrticFPXaFrn3Md82ICww3jmURaKHS
+        N+l4lnMda79eSp3OMmq9AkA0p79BvYsLshUJJnvbk76pCjR28PK4dV1gSDUEqQMB
+        qy45ptdwJLqLJCeNoR0JUcDNIRhOCuOPND7pcMtX6hI/
+        -----END RSA PRIVATE KEY-----
+      serviceProviderKeyPassword: password
+      serviceProviderCertificate: |
+        -----BEGIN CERTIFICATE-----
+        MIIDSTCCArKgAwIBAgIBADANBgkqhkiG9w0BAQQFADB8MQswCQYDVQQGEwJhdzEO
+        MAwGA1UECBMFYXJ1YmExDjAMBgNVBAoTBWFydWJhMQ4wDAYDVQQHEwVhcnViYTEO
+        MAwGA1UECxMFYXJ1YmExDjAMBgNVBAMTBWFydWJhMR0wGwYJKoZIhvcNAQkBFg5h
+        cnViYUBhcnViYS5hcjAeFw0xNTExMjAyMjI2MjdaFw0xNjExMTkyMjI2MjdaMHwx
+        CzAJBgNVBAYTAmF3MQ4wDAYDVQQIEwVhcnViYTEOMAwGA1UEChMFYXJ1YmExDjAM
+        BgNVBAcTBWFydWJhMQ4wDAYDVQQLEwVhcnViYTEOMAwGA1UEAxMFYXJ1YmExHTAb
+        BgkqhkiG9w0BCQEWDmFydWJhQGFydWJhLmFyMIGfMA0GCSqGSIb3DQEBAQUAA4GN
+        ADCBiQKBgQDHtC5gUXxBKpEqZTLkNvFwNGnNIkggNOwOQVNbpO0WVHIivig5L39W
+        qS9u0hnA+O7MCA/KlrAR4bXaeVVhwfUPYBKIpaaTWFQR5cTR1UFZJL/OF9vAfpOw
+        znoD66DDCnQVpbCjtDYWX+x6imxn8HCYxhMol6ZnTbSsFW6VZjFMjQIDAQABo4Ha
+        MIHXMB0GA1UdDgQWBBTx0lDzjH/iOBnOSQaSEWQLx1syGDCBpwYDVR0jBIGfMIGc
+        gBTx0lDzjH/iOBnOSQaSEWQLx1syGKGBgKR+MHwxCzAJBgNVBAYTAmF3MQ4wDAYD
+        VQQIEwVhcnViYTEOMAwGA1UEChMFYXJ1YmExDjAMBgNVBAcTBWFydWJhMQ4wDAYD
+        VQQLEwVhcnViYTEOMAwGA1UEAxMFYXJ1YmExHTAbBgkqhkiG9w0BCQEWDmFydWJh
+        QGFydWJhLmFyggEAMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEEBQADgYEAYvBJ
+        0HOZbbHClXmGUjGs+GS+xC1FO/am2suCSYqNB9dyMXfOWiJ1+TLJk+o/YZt8vuxC
+        KdcZYgl4l/L6PxJ982SRhc83ZW2dkAZI4M0/Ud3oePe84k8jm3A7EvH5wi5hvCkK
+        RpuRBwn3Ei+jCRouxTbzKPsuCVB+1sNyxMTXzf0=
+        -----END CERTIFICATE-----
+
+    uaa:
+      url: https://uaa.{{ .Values.system_domain }}
+      token:
+        url: https://uaa.{{ .Values.system_domain }}/oauth/token
+      approvals:
+        url: https://uaa.{{ .Values.system_domain }}/approvals
+      login:
+        url: https://uaa.{{ .Values.system_domain }}/authenticate
+      limitedFunctionality:
+        enabled: false
+        whitelist:
+          endpoints:
+            - /oauth/authorize/**
+            - /oauth/token/**
+            - /check_token/**
+            - /login/**
+            - /login.do
+            - /logout/**
+            - /logout.do
+            - /saml/**
+            - /autologin/**
+            - /authenticate/**
+            - /idp_discovery/**
+          methods:
+            - GET
+            - HEAD
+            - OPTIONS
+
+    ldap:
+      profile:
+        file: ldap/ldap-search-and-bind.xml
+      base:
+        url: 'ldap://localhost:389/'
+        userDn: 'cn=admin,dc=test,dc=com'
+        password: 'TODO'
+        searchBase: 'dc=test,dc=com'
+        searchFilter: 'cn={0}'
+
+    encryption:
+      active_key_label: TODO
+      encryption_keys:
+      - label: TODO
+        # NOTE: UAA requires encryption keys to be of length > 8
+        passphrase: TODOTODOTODO
+
+    LOGIN_SECRET: TODO
+
+    jwt:
+      token:
+        policy: # TODO: extract settable variables!
+          activeKeyId: key-1
+          keys:
+            key-1:
+              signingKey: |
+                -----BEGIN RSA PRIVATE KEY-----
+                MIIEogIBAAKCAQEAounS1c6MRpENttMisMxLbj0wMuSBQT1pECaFilN87UuFeRBB
+                Xw9M5tXzPtZaemo8AdvWmfC1qzH47kWRHFZjSgRtUHlkS35I1h9DYUcHmXz6rJKW
+                2kEW2fOvQfZj12a1BINdh2JhFz5a2Uebv8qZEqG0sFLj87f5hG5kckSgV15rNIsZ
+                kBVUnQiMQ84eJZ3djhA5uCE8/XZmdpBhx5YvPTlw7BFdQjf8djFS3uG4rrLg5mEO
+                9EBg89blAdYkr/FwvxEdaCc4LWAk68oejnqJ1u6I+bXSFWSw7ighp9cBm1gaOlBF
+                nyPPM+yNWnzpuKgONxj26KTD7i4jDLF19kdztwIDAQABAoIBADjkTAbzYwRPqoji
+                kbZJGbxtLNRQ/Rxx3CtSMIdeYX2ixoFBHnsaZkIkjBYxGBaw27TQd1B6AY8/280l
+                ySequXDDPAOC6PX+K2RvNYIWon5E6Wtzo6+jVF4Xnef8qeAyk1t4nqRlRD+wPFyt
+                h6QCFdOuWeHLiKR3ZnELdhN7iL0JgfRt+dZeXA3OvHF64x98NC8V4iS5RNFCDh0G
+                tDOtYdvpdB5iY7ZVy1IHrWadO4IWrm+X4wJnrSLqe+bES2yHFTCJOfa3972Zo7Uq
+                s0Kwza/Be1H8QVrqo6nm7ZgZdfI1JHXzqaQVJP2w0XPfuh3fl/bOG8qdN9ToRkcI
+                yY1Rg4ECgYEA5Sd/fn17WF3ZhPAMeti/ziAiCuj0VrGgV647ALbHXbhAJl+LilS7
+                UEPLrmUKWmk9eQj7RvBwsByMu+dbobnyzAdHFi/OCzLg/s7yGK0BL5xiwSJIDTxA
+                LgZnf2Ur4dY618HCvfnQGuDT1MGJPwNukS1WC7YraUfm2xcXhR6khDcCgYEAtf+2
+                fFYWe3hn+jtigi5YARBW5nK+b3chr2yS/45kxcso/2IeMB5HVnpMXouymYYMRYzB
+                ud973utOFrj+WsAkMl8X+D4/4T1kyVdYge+t16h7bSeEXw0qxNDwN7HQWt97wnS0
+                H/ajQupROUTtzj/HVdP5duLu0hUtXhTDhyujzIECgYBKFASxHVt8a4pf4UIHjH4k
+                4lpe8IPcaruM3LQSPQQiFegW/5gadd2/ysrTa7J3G8JVmEOy4RNsuy37qIUEuRn2
+                PvwJ/hY7pIz7kmbM91CE1adPDAgCz1FoD4XxtwEClsCa8vZDd7iAl+Giy5XUmwVp
+                RSCl1JQgCrBkbwiZbhh87QKBgGeaYIxZCUVSHoaQ5ZvLu+cnIQDgUs3rGC7fdLKr
+                oWwDIZx3g03K/rsYtX6gsZO5fiTdYq5nrQESHArNVmXcuP4/qcpzzTNwGn6PDWAy
+                S1jXnSNe+niNa0pM0mIyA7SnQbFJc/w6D2gZMRGTzne5UMTn/TuTJXZL/d5vnXrF
+                +eGBAoGAZmqa/hHK5K2q3hP0YFQJ71pHXWSq5NE4qWEC754xeN91YKpWXtQHcaIX
+                eEOjwbJ/EIXVkyd1kk01rBeJVRktHH9ZdNE21vEI+oC1Ic2TcEyBY1CepPQwmthH
+                PIudG092Rz9sDysmjt9Y8B3/WQXdi+bmRvFnJURRGi7aj9tahR8=
+                -----END RSA PRIVATE KEY-----

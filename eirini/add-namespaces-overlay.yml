@@ -1,0 +1,25 @@
+#@ load("@ytt:overlay", "overlay")
+
+#! These overlays are necessary until the following PR is merged: https://github.com/cloudfoundry-incubator/eirini-release/pull/151
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"cf-workloads"}})
+#@overlay/remove
+---
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name": "eirini"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: cf-system
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name": "eirini"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: cf-system
+#@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "eirini-opi"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: cf-system
+  #! TODO: PR CAPI release to allow configuration of eirini location
+  name: eirini

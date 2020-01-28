@@ -1,0 +1,9 @@
+---
+apiVersion: install.istio.io/v1alpha2
+kind: IstioControlPlane
+spec:
+  profile: default
+  values:
+    global:
+      mtls:
+        auto: true

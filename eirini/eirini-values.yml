@@ -1,0 +1,38 @@
+opi:
+  namespace: cf-workloads
+  use_registry_ingress: true
+  ingress_endpoint: not-used
+
+  tls:
+    opiCapiClient:
+      secretName: "eirini-internal-tls-certs"
+      keyPath: "tls.key"
+      certPath: "tls.crt"
+    opiServer:
+      secretName: "eirini-internal-tls-certs"
+      keyPath: "tls.key"
+      certPath: "tls.crt"
+    capi:
+      secretName: "eirini-internal-tls-certs"
+      caPath: "tls.ca"
+    eirini:
+      secretName: "system-domain-cert"
+      caPath: "tls.ca"
+
+  events:
+    enable: false
+
+  logs:
+    enable: false
+
+  metrics:
+    enable: false
+
+  rootfsPatcher:
+    enable: false
+
+  routing:
+    enable: false
+
+  secretSmuggler:
+    enable: false

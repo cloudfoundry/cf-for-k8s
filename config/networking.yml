@@ -1,0 +1,28 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:base64", "base64")
+
+#@ def networking_values():
+systemNamespace: #@ data.values.system_namespace
+workloadsNamespace: #@ data.values.workloads_namespace
+istioNamespace: #@ data.values.system_namespace
+
+cfroutesync:
+  #@ if/end data.values.images.cfroutesync:
+  image: #@ data.values.images.cfroutesync
+
+  ccCA: #@ base64.decode(data.values.system_certificate.ca)
+  ccBaseURL: #@ "https://api.{}".format(data.values.system_domain)
+  uaaCA: #@ base64.decode(data.values.system_certificate.ca)
+  uaaBaseURL: #@ "https://uaa.{}".format(data.values.system_domain)
+  clientName: "cf-k8s-networking"
+  clientSecret: #@ data.values.uaa.admin_client_secret
+#@ end
+
+#@ networking = library.get("github.com/cloudfoundry/cf-k8s-networking")
+#@ metacontroller = library.get("github.com/GoogleCloudPlatform/metacontroller")
+#@ istio = library.get("istio")
+--- #@ template.replace(networking.with_data_values(networking_values()).eval())
+--- #@ template.replace(metacontroller.eval())
+--- #@ template.replace(istio.eval())

@@ -1,0 +1,17 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: capi-external-virtual-service
+  namespace: {{ .Release.Namespace }}
+spec:
+  hosts:
+  - api.{{ .Values.system_domain }}
+  gateways:
+  - {{ .Release.Namespace }}/istio-ingressgateway
+  http:
+  - route:
+    - destination:
+        host: capi.{{ .Release.Namespace }}.svc.cluster.local
+        port:
+          number: 80

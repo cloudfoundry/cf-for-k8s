@@ -1,5 +1,16 @@
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
+#@ load("@ytt:data", "data")
 
 #@ eirini = library.get("eirini")
 --- #@ template.replace(eirini.eval())
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: eirini-internal-tls-certs
+  namespace: #@ data.values.system_namespace
+data:
+  tls.crt: #@ data.values.eirini.tls.crt
+  tls.key: #@ data.values.eirini.tls.key
+  tls.ca: #@ data.values.system_certificate.ca

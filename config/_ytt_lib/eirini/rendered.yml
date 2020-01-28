@@ -163,6 +163,21 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: eirini-role
+  namespace: cf-system
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  - eirini
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: eirini-role
   namespace: cf-workloads
 rules:
 - apiGroups:
@@ -194,21 +209,6 @@ rules:
   verbs:
   - list
   - delete
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: eirini-role
-  namespace: cf-system
-rules:
-- apiGroups:
-  - policy
-  resources:
-  - podsecuritypolicies
-  verbs:
-  - use
-  resourceNames:
-  - eirini
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -326,7 +326,7 @@ spec:
         runAsNonRoot: true
       containers:
       - name: opi
-        image: eirini/opi@sha256:aec40996b2408df32657553d56e97e97097852705ec3a7c9c6cef5c80898b622
+        image: eirini/opi@sha256:a971882cb6815e0b626e0cfad2020d7af3ce95ef29247e8db25a0199331e513e
         imagePullPolicy: Always
         volumeMounts:
         - name: config-map-volume

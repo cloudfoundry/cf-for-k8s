@@ -1,6 +1,8 @@
-_This is a highly experimental project to deploy the new CF Kubernetes-centric
-components on Kubernetes. It is **not** meant for use in production and is subject to
-change in the future._
+## This is a highly experimental project to deploy the new CF Kubernetes-centric components on Kubernetes. It is **not** meant for use in production and is subject to change in the future.
+
+## Please direct all questions to [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) slack channel and ping @interrupt
+
+---------
 
 # Deploying CF for K8s
 

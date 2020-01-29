@@ -1,0 +1,46 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx
+  namespace: cf-system
+data:
+  nginx.conf: |
+    error_log /cloud_controller_ng/nginx-error.log error;
+
+    worker_processes auto;
+
+    events {}
+
+    http {
+      server_tokens off;
+
+      access_log  /cloud_controller_ng/nginx-access.log;
+
+      tcp_nopush           on;
+      tcp_nodelay          on;  #disable nagel's algorithm
+
+      upstream cloud_controller {
+        server unix:/data/cloud_controller_ng/cloud_controller.sock;
+      }
+
+      server {
+          # TODO: get TLS working
+          # include nginx_server_mtls.conf;
+
+          listen 80;
+
+          # TODO: move to a separate file and `include` like capi-release?
+          # proxy and log all CC traffic
+          location / {
+            access_log  /cloud_controller_ng/nginx-access.log;
+            proxy_buffering             off;
+            proxy_set_header            Host $host;
+            proxy_set_header            X-Real_IP $remote_addr;
+            proxy_set_header            X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_redirect              off;
+            proxy_connect_timeout       10;
+            proxy_pass                  http://cloud_controller;
+          }
+      }
+    }

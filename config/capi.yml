@@ -1,0 +1,43 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:overlay", "overlay")
+
+#@ def capi_values():
+#@ if/end data.values.images.capi:
+image: #@ data.values.images.capi
+
+system_domain: #@ data.values.system_domain
+app_domains:
+#@ for/end domain in data.values.app_domains:
+#@overlay/append
+- #@ domain
+
+ccdb:
+  adapter: #@ data.values.capi.database.adapter
+  host: #@ data.values.capi.database.host
+  port: #@ data.values.capi.database.port
+  user: #@ data.values.capi.database.user
+  password: #@ data.values.capi.database.password
+  database: #@ data.values.capi.database.name
+
+eirini:
+  serverCerts:
+    secretName: eirini-internal-tls-certs
+
+apiServer:
+  opi:
+    client_cert: #@ data.values.eirini.tls.crt
+    client_key: #@ data.values.eirini.tls.key
+    ca: #@ data.values.system_certificate.ca
+
+uaa:
+  serverCerts:
+    secretName: uaa-certs
+  clients:
+    cloud_controller_username_lookup:
+      secret: #@ data.values.uaa.admin_client_secret
+#@ end
+
+#@ capi = library.get("github.com/cloudfoundry/capi-k8s-release")
+--- #@ template.replace(capi.with_data_values(capi_values()).eval())

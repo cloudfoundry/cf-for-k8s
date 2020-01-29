@@ -18,7 +18,7 @@ app_domains: []
 cf_admin_password:
 
 images:
-  capi: "relintprivateregistry/capi"
+  capi: #! "relintprivateregistry/capi:f5d27813dcf33743e27a480ef67edfb76bf1fd92"
   nginx: "nginx"
   uaa: "relintprivateregistry/uaa"
   cfroutesync: #! "relintprivateregistry/cfroutesync"

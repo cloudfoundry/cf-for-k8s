@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: capi
+  namespace: cf-system
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: capi-api-server

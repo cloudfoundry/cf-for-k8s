@@ -1,5 +1,3 @@
 dependencies:
-- name: capi
-  version: 0.1.0
 - name: uaa
   version: 0.1.0

@@ -17,6 +17,13 @@ directories:
     includePaths:
     - cfroutesync/crds/**/*
     - config/cfroutesync/**/*
+  - path: github.com/cloudfoundry/capi-k8s-release
+    git:
+      url: https://github.com/cloudfoundry/capi-k8s-release
+      ref: f81af71437191466afe9d46439d3c3a3401898d8
+    includePaths:
+    - templates/**/*
+    - values.yml
   - path: istio
     manual: {}
   - path: eirini

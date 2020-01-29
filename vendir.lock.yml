@@ -10,6 +10,10 @@ directories:
         envs...'
       sha: b4375d0b13cb853ee402a9530b54188772c24ff6
     path: github.com/cloudfoundry/cf-k8s-networking
+  - git:
+      commitTitle: Fix marshalling json issue...
+      sha: f81af71437191466afe9d46439d3c3a3401898d8
+    path: github.com/cloudfoundry/capi-k8s-release
   - manual: {}
     path: istio
   - manual: {}

@@ -1,6 +1,3 @@
-[submodule "charts/capi-k8s-release"]
-	path = charts/capi-k8s-release
-	url = https://github.com/cloudfoundry/capi-k8s-release
 [submodule "charts/uaa-k8s-release/src/uaa"]
 	path = charts/uaa-k8s-release/src/uaa
 	url = https://github.com/cloudfoundry/uaa

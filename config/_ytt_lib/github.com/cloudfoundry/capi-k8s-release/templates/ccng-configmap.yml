@@ -1,0 +1,11 @@
+#@ load("@ytt:data","data")
+#@ load("@ytt:yaml","yaml")
+#@ load("ccng-config.lib.yml","ccng_config")
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloud-controller-ng-yaml
+  namespace: cf-system
+data:
+  cloud_controller_ng.yml: #@ yaml.encode(ccng_config())

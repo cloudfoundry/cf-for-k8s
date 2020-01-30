@@ -27,6 +27,11 @@ images:
   nats: "relintprivateregistry/nats"
   doppler: "relintprivateregistry/doppler"
 
+system_certificate:
+  crt: "" #! Base64-encoded certificate for the wildcard subdomain of the system domain (e.g., CN=*.system.cf.example.com)
+  key: "" #! Base64-encoded private key for the cert above
+  ca: "" #! Base64-encoded CA certificate used to sign the system certifcate
+
 capi:
   database:
     #! or mysql2, as needed
@@ -38,12 +43,17 @@ capi:
     password: ""
     name: cloud_controller
 
-system_certificate:
-  crt: "" #! Base64-encoded certificate for the wildcard subdomain of the system domain (e.g., CN=*.system.cf.example.com)
-  key: "" #! Base64-encoded private key for the cert above
-  ca: "" #! Base64-encoded CA certificate used to sign the system certifcate
-
 uaa:
+  database:
+    #! or mysql2, as needed
+    adapter: postgresql
+    host: ""
+    port: 5432
+    user: uaa
+    #! DB user password in plain text
+    password: ""
+    name: uaa
+
   admin_client_secret: "" #! client secret for uaa admin client in plain text
   certificate:
     crt: "" #! Base64-encoded certificate for the uaa service inside the kubernetes cluster (i.e., CN=uaa.cf-system.svc.cluster.local)

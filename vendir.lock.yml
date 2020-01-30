@@ -14,6 +14,10 @@ directories:
       commitTitle: Fix marshalling json issue...
       sha: f81af71437191466afe9d46439d3c3a3401898d8
     path: github.com/cloudfoundry/capi-k8s-release
+  - git:
+      commitTitle: Add liveness, readiness, and startup probes to pod...
+      sha: 5f3af8a7b158c77320c04b45efae99c936ad0a7d
+    path: github.com/cloudfoundry/uaa
   - manual: {}
     path: istio
   - manual: {}

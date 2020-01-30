@@ -1,3 +1,0 @@
-[submodule "charts/uaa-k8s-release/src/uaa"]
-	path = charts/uaa-k8s-release/src/uaa
-	url = https://github.com/cloudfoundry/uaa

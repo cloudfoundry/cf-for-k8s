@@ -34,15 +34,19 @@ data:
 #@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"cf-db-postgresql-init-scripts"}})
 ---
 #@ ccdb = data.values.capi.database
+#@ uaadb = data.values.uaa.database
 #@yaml/text-templated-strings
 data:
   #@overlay/match missing_ok=True
   setup_db.sql: |
     CREATE DATABASE (@= ccdb.name @);
     CREATE ROLE (@= ccdb.user @) LOGIN PASSWORD '(@= ccdb.password @)';
+    CREATE DATABASE (@= uaadb.name @);
+    CREATE ROLE (@= uaadb.user @) LOGIN PASSWORD '(@= uaadb.password @)';
   init.sh: |
     #!/bin/bash
     psql -U postgres -f /docker-entrypoint-initdb.d/setup_db.sql
     psql -U postgres -d (@= ccdb.name @) -c "CREATE EXTENSION citext"
+    psql -U postgres -d (@= uaadb.name @) -c "CREATE EXTENSION citext"
 
 --- #@ template.replace(overlay.apply(library.get("postgres").eval(), add_cf_db_namespace()))

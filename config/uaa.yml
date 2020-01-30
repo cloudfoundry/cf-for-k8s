@@ -1,0 +1,211 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:assert", "assert")
+
+#@ def uaa_db_host():
+#@   if len(data.values.uaa.database.host) > 0:
+#@     return data.values.uaa.database.host
+#@   elif data.values.cf_db.enabled == True:
+#@     return "cf-db-postgresql.cf-db.svc.cluster.local"
+#@   else:
+#@     assert.fail("When cf_db.enabled is false, expected a uaa.database.host to be provided, but was not.")
+#@   end
+#@ end
+
+#@ def uaa_values():
+database:
+  scheme: #@ data.values.uaa.database.adapter
+  address: #@ uaa_db_host()
+  port: #@ data.values.uaa.database.port
+  name: #@ data.values.uaa.database.name
+  username: #@ data.values.uaa.database.user
+  password: #@ data.values.uaa.database.password
+
+#! TODO: figure out how to generate signing keys for the UAA
+#@ end
+
+#@ def uaa_config():
+#@overlay/match missing_ok=True
+scim:
+  userids_enabled: true
+  users:
+  - #@ "admin|" + data.values.cf_admin_password + "|admin@admin.tld|first|last|clients.read,cloud_controller.admin,doppler.firehose,network.admin,openid,routing.router_groups.read,routing.router_groups.write,scim.read,scim.write|uaa"
+  groups:
+    zones.read: Read identity zones
+    zones.write: Create and update identity zones
+    idps.read: Retrieve identity providers
+    idps.write: Create and update identity providers
+    clients.admin: Create, modify and delete OAuth clients
+    clients.write: Create and modify OAuth clients
+    clients.read: Read information about OAuth clients
+    clients.secret: Change the password of an OAuth client
+    scim.write: Create, modify and delete SCIM entities, i.e. users and groups
+    scim.read: Read all SCIM entities, i.e. users and groups
+    scim.create: Create users
+    scim.userids: Read user IDs and retrieve users by ID
+    scim.zones: Control a user's ability to manage a zone
+    scim.invite: Send invitations to users
+    password.write: Change your password
+    oauth.approval: Manage approved scopes
+    oauth.login: Authenticate users outside of the UAA
+    openid: Access profile information, i.e. email, first and last name, and phone number
+    groups.update: Update group information and memberships
+    uaa.user: Act as a user in the UAA
+    uaa.resource: Serve resources protected by the UAA
+    uaa.admin: Act as an administrator throughout the UAA
+    uaa.none: Forbid acting as a user
+    uaa.offline_token: Allow offline access
+
+#@overlay/match missing_ok=True
+oauth:
+  user:
+    authorities:
+      - openid
+      - scim.me
+      - cloud_controller.read
+      - cloud_controller.write
+      - cloud_controller_service_permissions.read
+      - password.write
+      - scim.userids
+      - uaa.user
+      - approvals.me
+      - oauth.approvals
+      - profile
+      - roles
+      - user_attributes
+      - uaa.offline_token
+  clients:
+    cf:
+      id: cf
+      override: true
+      authorized-grant-types: password,refresh_token
+      scope: cloud_controller.read,cloud_controller.write,openid,password.write,cloud_controller.admin,scim.read,scim.write,doppler.firehose,uaa.user,routing.router_groups.read,routing.router_groups.write
+      authorities: uaa.none
+      access-token-validity: 600
+      refresh-token-validity: 2592000
+      secret: ""
+    admin:
+      authorized-grant-types: client_credentials
+      authorities: clients.read,clients.write,clients.secret,uaa.admin,scim.read,scim.write,password.write,openid
+      autoapprove:
+      - openid
+      id: admin
+      secret: #@ data.values.uaa.admin_client_secret
+    #! TODO: each client should use different secrets!
+    cf-k8s-networking:
+      authorities: uaa.resource,cloud_controller.admin_read_only
+      authorized-grant-types: client_credentials
+      secret: #@ data.values.uaa.admin_client_secret
+    cloud_controller_username_lookup:
+      authorities: scim.userids
+      authorized-grant-types: client_credentials
+      secret: #@ data.values.uaa.admin_client_secret
+
+issuer:
+  uri: #@ "https://uaa." + data.values.system_domain
+
+#@overlay/match missing_ok=True
+zones:
+  internal:
+    hostnames:
+    - #@ "uaa." + data.values.system_namespace + ".svc.cluster.local"
+
+#@overlay/match missing_ok=True
+#@overlay/match-child-defaults missing_ok=True
+login:
+  url: #@ "https://login." + data.values.system_domain
+  entityBaseURL: #@ "https://uaa." + data.values.system_domain
+  entityID: cloudfoundry-saml-login
+
+#@overlay/match missing_ok=True
+uaa:
+  url: #@ "https://uaa." + data.values.system_domain
+  token:
+    url: #@ "https://uaa." + data.values.system_domain + "/oauth/token"
+  approvals:
+    url: #@ "https://uaa." + data.values.system_domain + "/approvals"
+  login:
+    url: #@ "https://uaa." + data.values.system_domain + "/authenticate"
+  limitedFunctionality:
+    enabled: false
+    whitelist:
+      endpoints:
+        - /oauth/authorize/**
+        - /oauth/token/**
+        - /check_token/**
+        - /login/**
+        - /login.do
+        - /logout/**
+        - /logout.do
+        - /saml/**
+        - /autologin/**
+        - /authenticate/**
+        - /idp_discovery/**
+      methods:
+        - GET
+        - HEAD
+        - OPTIONS
+#@ end
+
+#@ def overlay_uaa_config(old, new):
+#@   return yaml.encode(overlay.apply(yaml.decode(old), uaa_config()))
+#@ end
+
+#@ def place_in_system_namespace():
+#@overlay/match by=overlay.all,expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: #@ data.values.system_namespace
+#@ end
+
+#@ uaa = library.get("github.com/cloudfoundry/uaa")
+#@ uaa_resources = uaa.with_data_values(uaa_values()).eval()
+--- #@ template.replace(overlay.apply(uaa_resources, place_in_system_namespace()))
+
+#! overlay CF-specific UAA configuration given there is no equivalent data values.
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"uaa-config"}})
+---
+data:
+  #@overlay/replace via=overlay_uaa_config
+  uaa.yml:
+
+#! other resources will expect "uaa.<system-namespace>.svc.cluster.local" as domain name for UAA Service.
+#@overlay/match by=overlay.subset({"kind": "Service", "metadata": {"name": "uaa-service"}})
+---
+metadata:
+  name: uaa
+
+#! expose UAA under the system domain
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: uaa-external-virtual-service
+  namespace: #@ data.values.system_namespace
+spec:
+  hosts:
+  - #@ "uaa." + data.values.system_domain
+  - #@ "login." + data.values.system_domain
+  gateways:
+  - #@ data.values.system_namespace + "/istio-ingressgateway"
+  http:
+  - route:
+    - destination:
+        host: #@ "uaa." + data.values.system_namespace + ".svc.cluster.local"
+        port:
+          number: 8080
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: uaa-certs
+  namespace: #@ data.values.system_namespace
+type: Opaque
+data:
+  uaa.key: #@ data.values.uaa.certificate.key
+  uaa.crt: #@ data.values.uaa.certificate.crt

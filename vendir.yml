@@ -24,6 +24,13 @@ directories:
     includePaths:
     - templates/**/*
     - values.yml
+  - path: github.com/cloudfoundry/uaa
+    git:
+      url: https://github.com/cloudfoundry/uaa
+      ref: 5f3af8a7b158c77320c04b45efae99c936ad0a7d
+    includePaths:
+    - k8s/templates/**/*
+    - k8s/values/default-values.yml
   - path: istio
     manual: {}
   - path: eirini

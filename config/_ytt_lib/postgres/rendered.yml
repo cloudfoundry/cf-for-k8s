@@ -1,0 +1,189 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cf-db-postgresql-init-scripts
+  labels:
+    app: postgresql
+    chart: postgresql-8.2.0
+    release: cf-db
+    heritage: Helm
+data:
+  init.sh: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cf-db-postgresql-headless
+  labels:
+    app: postgresql
+    chart: postgresql-8.2.0
+    release: cf-db
+    heritage: Helm
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: tcp-postgresql
+    port: 5432
+    targetPort: tcp-postgresql
+  selector:
+    app: postgresql
+    release: cf-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cf-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.2.0
+    release: cf-db
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+  - name: tcp-postgresql
+    port: 5432
+    targetPort: tcp-postgresql
+  selector:
+    app: postgresql
+    release: cf-db
+    role: master
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cf-db-postgresql
+  labels:
+    app: postgresql
+    chart: postgresql-8.2.0
+    release: cf-db
+    heritage: Helm
+spec:
+  serviceName: cf-db-postgresql-headless
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: postgresql
+      release: cf-db
+      role: master
+  template:
+    metadata:
+      name: cf-db-postgresql
+      labels:
+        app: postgresql
+        chart: postgresql-8.2.0
+        release: cf-db
+        heritage: Helm
+        role: master
+    spec:
+      securityContext:
+        fsGroup: 1001
+      initContainers:
+      - name: init-chmod-data
+        image: docker.io/bitnami/minideb:stretch
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        command:
+        - /bin/sh
+        - -c
+        - |
+          mkdir -p /bitnami/postgresql/data
+          chmod 700 /bitnami/postgresql/data
+          find /bitnami/postgresql -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
+            xargs chown -R 1001:1001
+          chmod -R 777 /dev/shm
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/postgresql
+          subPath: null
+        - name: dshm
+          mountPath: /dev/shm
+      containers:
+      - name: cf-db-postgresql
+        image: docker.io/bitnami/postgresql:11.6.0-debian-10-r0
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        securityContext:
+          runAsUser: 1001
+        env:
+        - name: BITNAMI_DEBUG
+          value: "false"
+        - name: POSTGRESQL_PORT_NUMBER
+          value: "5432"
+        - name: POSTGRESQL_VOLUME_DIR
+          value: /bitnami/postgresql
+        - name: PGDATA
+          value: /bitnami/postgresql/data
+        - name: POSTGRES_USER
+          value: postgres
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cf-db-admin-secret
+              key: postgresql-password
+        - name: POSTGRESQL_ENABLE_LDAP
+          value: "no"
+        ports:
+        - name: tcp-postgresql
+          containerPort: 5432
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - -e
+            - |
+              exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+              [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 6
+        volumeMounts:
+        - name: custom-init-scripts
+          mountPath: /docker-entrypoint-initdb.d/
+        - name: dshm
+          mountPath: /dev/shm
+        - name: data
+          mountPath: /bitnami/postgresql
+          subPath: null
+      volumes:
+      - name: custom-init-scripts
+        configMap:
+          name: cf-db-postgresql-init-scripts
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 8Gi

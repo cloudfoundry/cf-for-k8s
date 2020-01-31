@@ -14,7 +14,7 @@ capi:
   database:
     #! If you deploy your database as described in the sample command in README.md, the following values should be correct
     adapter: postgres
-    host: capi-database-postgresql.default.svc.cluster.local
+    host: cf-db-postgresql.cf-db.svc.cluster.local
     port: 5432
     user: cloud_controller
     password: cloud_controller

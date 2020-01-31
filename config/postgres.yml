@@ -1,0 +1,48 @@
+#@ load("@ytt:library", "library")
+#@ load("@ytt:template", "template")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:base64", "base64")
+
+#@ def add_cf_db_namespace():
+#@overlay/match by=overlay.all, expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: cf-db
+#@ end
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cf-db
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cf-db-admin-secret
+  namespace: cf-db
+data:
+  #@ if len(data.values.cf_db.admin_password) == 0:
+  #@  assert.fail("cf_db.admin_password cannot be empty")
+  #@ end
+  postgresql-password: #@ base64.encode(data.values.cf_db.admin_password)
+
+
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"cf-db-postgresql-init-scripts"}})
+---
+#@ ccdb = data.values.capi.database
+#@yaml/text-templated-strings
+data:
+  #@overlay/match missing_ok=True
+  setup_db.sql: |
+    CREATE DATABASE (@= ccdb.name @);
+    CREATE ROLE (@= ccdb.user @) LOGIN PASSWORD '(@= ccdb.password @)';
+  init.sh: |
+    #!/bin/bash
+    psql -U postgres -f /docker-entrypoint-initdb.d/setup_db.sql
+    psql -U postgres -d (@= ccdb.name @) -c "CREATE EXTENSION citext"
+
+--- #@ template.replace(overlay.apply(library.get("postgres").eval(), add_cf_db_namespace()))

@@ -16,6 +16,8 @@ system_domain:
 app_domains: []
 #! password for admin user in plain text
 cf_admin_password:
+cf_db:
+  admin_password: ""
 
 images:
   capi: #! "relintprivateregistry/capi:f5d27813dcf33743e27a480ef67edfb76bf1fd92"
@@ -34,7 +36,7 @@ capi:
     port: 5432
     user: cloud_controller
     #! DB user password in plain text
-    password:
+    password: ""
     name: cloud_controller
 
 system_certificate:

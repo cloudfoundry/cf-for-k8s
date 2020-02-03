@@ -1,8 +1,6 @@
 #@data/values
 ---
 
-#! If you deploy your database as described in the sample command in README.md, the following value should be correct
-database_hostname: capi-database-postgresql.default.svc.cluster.local
 system_domain: system.cf.example.com
 
 app_domains:
@@ -10,15 +8,12 @@ app_domains:
 - apps.cf.example.com
 cf_admin_password: cfadminpassword
 
+cf_db:
+  admin_password: the_cf_dbadmin_password
+
 capi:
   database:
-    #! If you deploy your database as described in the sample command in README.md, the following values should be correct
-    adapter: postgres
-    host: cf-db-postgresql.cf-db.svc.cluster.local
-    port: 5432
-    user: cloud_controller
-    password: cloud_controller
-    name: cloud_controller
+    password: ccdb_password
 
 #! All of the certs below should have KeyUsage that includes server and client authentication.
 system_certificate:

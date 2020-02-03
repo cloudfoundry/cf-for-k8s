@@ -2,6 +2,17 @@
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:assert", "assert")
+
+#@ def capi_host():
+#@   if len(data.values.capi.database.host) > 0:
+#@     return data.values.capi.database.host
+#@   elif data.values.cf_db.enabled == True:
+#@     return "cf-db-postgresql.cf-db.svc.cluster.local"
+#@   else:
+#@     assert.fail("When cf_db.enabled is false, expected a capi.database.host to be provided, but was not.")
+#@   end
+#@ end
 
 #@ def capi_values():
 #@ if/end data.values.images.capi:
@@ -15,7 +26,7 @@ app_domains:
 
 ccdb:
   adapter: #@ data.values.capi.database.adapter
-  host: #@ data.values.capi.database.host
+  host: #@ capi_host()
   port: #@ data.values.capi.database.port
   user: #@ data.values.capi.database.user
   password: #@ data.values.capi.database.password

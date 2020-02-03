@@ -2,7 +2,6 @@
 #@ load("@ytt:base64", "base64")
 ---
 system_domain: #@ data.values.system_domain
-database_hostname: #@ data.values.database_hostname
 system_namespace: cf-system
 
 system_certificate:
@@ -10,28 +9,6 @@ system_certificate:
   key: #@ data.values.system_certificate.key
   ca: #@ data.values.system_certificate.ca
 
-capi:
-  image:
-    repository: #@ data.values.images.capi
-  nginx:
-    image:
-      repository: #@ data.values.images.nginx
-
-  system_domain: #@ data.values.system_domain
-  app_domains: #@ data.values.app_domains
-
-  ccdb:
-    adapter: #@ data.values.capi.database.adapter
-    host: #@ data.values.capi.database.host
-    port: #@ data.values.capi.database.port
-    user: #@ data.values.capi.database.user
-    password: #@ data.values.capi.database.password
-    database: #@ data.values.capi.database.name
-
-  uaa:
-    clients:
-      cloud_controller_username_lookup:
-        secret: #@ data.values.uaa.admin_client_secret
 uaa:
   image:
     repository: #@ data.values.images.uaa
@@ -44,10 +21,6 @@ uaa:
   certificate:
     crt: #@ data.values.uaa.certificate.crt
     key: #@ data.values.uaa.certificate.key
-
-eirini:
-  image:
-    repository: #@ data.values.images.eirini
 
   nats:
     image:

@@ -18,13 +18,14 @@ app_domains: []
 cf_admin_password:
 cf_db:
   admin_password: ""
+  enabled: false
 
 images:
   capi: #! "relintprivateregistry/capi:f5d27813dcf33743e27a480ef67edfb76bf1fd92"
   nginx: "nginx"
   uaa: "relintprivateregistry/uaa"
-  cfroutesync: #! "relintprivateregistry/cfroutesync"
-  eirini: "relintprivateregistry/eirini"
+  cfroutesync: ""
+  eirini: ""
   nats: "relintprivateregistry/nats"
   doppler: "relintprivateregistry/doppler"
 
@@ -32,7 +33,7 @@ capi:
   database:
     #! or mysql2, as needed
     adapter: postgres
-    host:
+    host: ""
     port: 5432
     user: cloud_controller
     #! DB user password in plain text

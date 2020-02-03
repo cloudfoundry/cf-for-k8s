@@ -45,10 +45,6 @@ uaa:
     crt: #@ data.values.uaa.certificate.crt
     key: #@ data.values.uaa.certificate.key
 
-eirini:
-  image:
-    repository: #@ data.values.images.eirini
-
   nats:
     image:
       repository: #@ data.values.images.nats

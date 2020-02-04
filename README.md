@@ -44,19 +44,19 @@ balancer services (e.g., GKE, AKS, etc.).
   - For example:
   ```
   helm repo add stable https://kubernetes-charts.storage.googleapis.com
-helm upgrade --install capi-database stable/postgresql -n default -f <(cat <<EOF
-initdbScripts:
-  setup_db.sql: |
-    CREATE DATABASE cloud_controller;
-    CREATE ROLE cloud_controller LOGIN PASSWORD 'cloud_controller';
-  hello_world.sh: |
-    #!/bin/bash
-    echo "hello, world!"
-    psql -U postgres -f /docker-entrypoint-initdb.d/setup_db.sql
-    psql -U postgres -d cloud_controller -c "CREATE EXTENSION citext"
-    psql -U postgres -d cloud_controller -c "create sequence bobby"
-EOF
-)
+  helm upgrade --install capi-database stable/postgresql -n default -f <(cat <<EOF
+  initdbScripts:
+    setup_db.sql: |
+      CREATE DATABASE cloud_controller;
+      CREATE ROLE cloud_controller LOGIN PASSWORD 'cloud_controller';
+    hello_world.sh: |
+      #!/bin/bash
+      echo "hello, world!"
+      psql -U postgres -f /docker-entrypoint-initdb.d/setup_db.sql
+      psql -U postgres -d cloud_controller -c "CREATE EXTENSION citext"
+      psql -U postgres -d cloud_controller -c "create sequence bobby"
+  EOF
+  )
   ```
 4. Create a file called `cf-install-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
 5. Change the `system_domain` and `app_domain` to your desired domain address 

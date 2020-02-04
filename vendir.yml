@@ -35,3 +35,5 @@ directories:
     manual: {}
   - path: eirini
     manual: {}
+  - path: postgres
+    manual: {}

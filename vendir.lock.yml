@@ -22,5 +22,7 @@ directories:
     path: istio
   - manual: {}
     path: eirini
+  - manual: {}
+    path: postgres
   path: config/_ytt_lib
 kind: LockConfig

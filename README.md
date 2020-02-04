@@ -13,7 +13,7 @@
 * <a href='#future'>What's next</a>
 
 ### <a name='purpose'></a> Purpose
-Cloud Foundry for Kubernetes (CF4K8s) is a  canonical deployment artifact for deploying the Cloud Foundry Application Runtime on Kubernetes. 
+Cloud Foundry for Kubernetes (CF4K8s) is a deployment artifact for deploying the Cloud Foundry Application Runtime on Kubernetes. 
 
 #### Kubernetes native
 CF4K8s is built from ground up to leverage Kubernetes native features 

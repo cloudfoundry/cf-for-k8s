@@ -41,7 +41,6 @@ balancer services (e.g., GKE, AKS, etc.).
    ```bash
    $ git clone https://github.com/cloudfoundry/cf-for-k8s.git
    $ cd cf-for-k8s
-   $ vendir sync
    ```
 
 1. Create a "CF Installation Values" file and configure it:

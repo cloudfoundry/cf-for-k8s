@@ -73,7 +73,7 @@ EOF
 
 ### <a href='#future'></a> What's next
 
-Our plan is to release an alpha version of CF4K8s to the community in Feb 2020, which will include build packs.
+Our plan is to release an alpha version of CF4K8s to the community in Feb 2020, which will include build packs based `cf push` experience.
 
 The alpha version will enable the CF project teams to integrate and ship new capabilities for CF4K8s. In addition, we intend to provide a set of tests to validate features before shipping releases.
  

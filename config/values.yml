@@ -14,6 +14,7 @@ system_domain:
 app_domains: []
 #! password for admin user in plain text
 cf_admin_password:
+#! control optional deployment of a database for CF
 cf_db:
   admin_password: ""
   enabled: true

@@ -38,38 +38,45 @@ balancer services (e.g., GKE, AKS, etc.).
 
 #### Steps to deploy
 
-1. Git clone this repository and `cd` into this directory.
-2. Update the submodules of this repository: `git submodule update --init --recursive`.
-3. Deploy a database that can be used for the Cloud Controller's DB.
-  - For example:
-  ```
-  helm repo add stable https://kubernetes-charts.storage.googleapis.com
-  helm upgrade --install capi-database stable/postgresql -n default -f <(cat <<EOF
-  initdbScripts:
-    setup_db.sql: |
-      CREATE DATABASE cloud_controller;
-      CREATE ROLE cloud_controller LOGIN PASSWORD 'cloud_controller';
-    hello_world.sh: |
-      #!/bin/bash
-      echo "hello, world!"
-      psql -U postgres -f /docker-entrypoint-initdb.d/setup_db.sql
-      psql -U postgres -d cloud_controller -c "CREATE EXTENSION citext"
-      psql -U postgres -d cloud_controller -c "create sequence bobby"
-  EOF
-  )
-  ```
-4. Create a file called `cf-install-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
-5. Change the `system_domain` and `app_domain` to your desired domain address 
-6. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
-7. From this directory, run `bin/install-cf.sh <path to your cf-install-values.yml file>`
-8. Configure DNS on your IaaS provider to point the wildcard subdomain of your
+1. Clone and initialize this git repository:
+   ```bash
+   $ git clone https://github.com/cloudfoundry/cf-for-k8s.git
+   $ cd cf-for-k8s
+   $ git submodule update --init --recursive
+   ```
+
+1. Create a "CF Installation Values" file and configure it:
+   1. Create a file called `cf-install-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
+   1. Change the `system_domain` and `app_domain` to your desired domain address
+   1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
+
+1. Run the install script with your "CF Install Values" file
+   ```bash
+   $ bin/install-cf.sh demo-cf-install-values.yml
+   ```
+
+1. Configure DNS on your IaaS provider to point the wildcard subdomain of your
    system domain and the wildcard subdomain of all apps domains to point to external IP
    of the Istio Ingress Gateway service. You can retrieve the external IP of this service by running
    `kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].ip}'`
-9. Set up cf cli to point to CF using `cf api --skip-ssl-validation https://api.<your domain>` and then 
- auth by running `cf auth admin cfadminpassword`
-10. Create orgs and spaces and enable docker feature by running `cf enable-feature-flag diego_docker`
-11. Finally, run `cf push diego-docker-app -o cloudfoundry/diego-docker-app` and verify by visiting the URL
+
+#### Validate the deployment
+
+1. Set up cf cli to point to CF:
+   ```bash
+   $ cf api --skip-ssl-validation https://api.<system_domain>
+   $ cf auth admin <cf_admin_password>
+   ```
+
+1. Enable docker feature:
+   ```bash
+   $ cf enable-feature-flag diego_docker
+   ```
+
+1. Deploy an app:
+   ```bash
+   $ cf push diego-docker-app -o cloudfoundry/diego-docker-app
+   ```
 
 ### <a href='#future'></a> What's next
 

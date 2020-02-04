@@ -52,3 +52,22 @@ uaa:
 
 #@ capi = library.get("github.com/cloudfoundry/capi-k8s-release")
 --- #@ template.replace(capi.with_data_values(capi_values()).eval())
+
+#! expose CAPI under the system domain
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: capi-external-virtual-service
+  namespace: #@ data.values.system_namespace
+spec:
+  hosts:
+  - #@ "api." + data.values.system_domain
+  gateways:
+  - #@ data.values.system_namespace + "/istio-ingressgateway"
+  http:
+  - route:
+    - destination:
+        host: #@ "capi." + data.values.system_namespace + ".svc.cluster.local"
+        port:
+          number: 80

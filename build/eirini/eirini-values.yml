@@ -16,7 +16,7 @@ opi:
       secretName: "eirini-internal-tls-certs"
       caPath: "tls.ca"
     eirini:
-      secretName: "system-domain-cert"
+      secretName: "eirini-internal-tls-certs"
       caPath: "tls.ca"
 
   events:

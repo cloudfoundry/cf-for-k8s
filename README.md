@@ -27,7 +27,6 @@ CF4K8s builts on top of well known enterprise ready projects like [Istio](https:
 
 You need the following CLIs on your system to be able to run the script:
 * [`kapp`](https://k14s.io/#install)
-* [`helm`](https://github.com/helm/helm#install)
 * [`ytt`](https://k14s.io/#install)
 
 In addition, you will also probably want [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for your own debugging and inspection of the system.

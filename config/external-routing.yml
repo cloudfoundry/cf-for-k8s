@@ -1,5 +1,7 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
+
+#! this secret contains the certificate/key combo used for the external system domain
 ---
 apiVersion: v1
 kind: Secret
@@ -22,3 +24,31 @@ metadata:
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-group: istio.io/ingressgateway
 
+#! this gateway is used to expose CF services in the cluster, externally
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-ingressgateway
+  namespace: #@ data.values.system_namespace
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    #! TODO: restrict this
+    - '*'
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+  - hosts:
+    - '*'
+    port:
+      name: https
+      number: 443
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
+      privateKey: /etc/istio/ingressgateway-certs/tls.key

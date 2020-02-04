@@ -318,7 +318,7 @@ spec:
               - key: tls.key
                 path: eirini-server.key
           - secret:
-              name: system-domain-cert
+              name: eirini-internal-tls-certs
               items:
               - key: tls.ca
                 path: eirini.ca

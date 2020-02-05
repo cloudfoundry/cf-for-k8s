@@ -1,6 +1,7 @@
 #@ load("@ytt:base64", "base64")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
+#@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 
 #@ def networking_values():
@@ -28,3 +29,12 @@ cfroutesync:
 
 #@ istio = library.get("istio")
 --- #@ template.replace(istio.eval())
+
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"metacontroller"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    istio-injection: enabled

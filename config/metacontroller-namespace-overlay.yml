@@ -1,9 +1,0 @@
-#@ load("@ytt:overlay", "overlay")
-
-#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name":"metacontroller"}})
----
-metadata:
-  #@overlay/match missing_ok=True
-  labels:
-    #@overlay/match missing_ok=True
-    istio-injection: enabled

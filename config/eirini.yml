@@ -4,6 +4,7 @@
 
 #@ eirini = library.get("eirini")
 --- #@ template.replace(eirini.eval())
+
 ---
 apiVersion: v1
 kind: Secret

@@ -1,11 +1,10 @@
 #@data/values
 ---
-
 system_domain: system.cf.example.com
-
 app_domains:
 #@overlay/append
 - apps.cf.example.com
+
 cf_admin_password: cfadminpassword
 
 cf_db:

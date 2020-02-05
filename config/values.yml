@@ -2,6 +2,7 @@
 ---
 system_namespace: cf-system
 workloads_namespace: cf-workloads
+
 system_registry:
   hostname: ""
   username: ""
@@ -12,8 +13,10 @@ system_registry:
 system_domain:
 #! list of app domains, e.g., ["apps.cf.example.com"]
 app_domains: []
+
 #! password for admin user in plain text
 cf_admin_password:
+
 #! control optional deployment of a database for CF
 cf_db:
   admin_password: ""

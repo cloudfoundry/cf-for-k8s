@@ -15,7 +15,6 @@ data:
   tls.crt: #@ data.values.system_certificate.crt
 
 #! the following overlay ensures the above Secret is created before the ingressgateway Deployment since we're not using SDS
-
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"istio-ingressgateway"}})
 ---
 metadata:

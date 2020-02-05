@@ -21,8 +21,10 @@ cfroutesync:
 #@ end
 
 #@ networking = library.get("github.com/cloudfoundry/cf-k8s-networking")
-#@ metacontroller = library.get("github.com/GoogleCloudPlatform/metacontroller")
-#@ istio = library.get("istio")
 --- #@ template.replace(networking.with_data_values(networking_values()).eval())
+
+#@ metacontroller = library.get("github.com/GoogleCloudPlatform/metacontroller")
 --- #@ template.replace(metacontroller.eval())
+
+#@ istio = library.get("istio")
 --- #@ template.replace(istio.eval())

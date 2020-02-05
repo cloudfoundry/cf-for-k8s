@@ -44,13 +44,17 @@ balancer services (e.g., GKE, AKS, etc.).
    ```
 
 1. Create a "CF Installation Values" file and configure it:
-   1. Create a file called `cf-install-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
+   1. Use `./hack/generate-values.sh <system_domain>` to automatically generate values with [bosh interpolate](https://bosh.io/docs/cli-v2-install/#install)
+   ```bash
+   $ ./hack/generate-values.sh cf.example.com > /tmp/cf-values.yml
+   ```
+   1. Alternatively, create a file called `/tmp/cf-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
    1. Change the `system_domain` and `app_domain` to your desired domain address
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
 
 1. Run the install script with your "CF Install Values" file
    ```bash
-   $ bin/install-cf.sh demo-cf-install-values.yml
+   $ ./bin/install-cf.sh /tmp/cf-values.yml
    ```
 
 1. Configure DNS on your IaaS provider to point the wildcard subdomain of your

@@ -10,5 +10,6 @@ if [ ${istioctl_version} != "1.4.2" ]; then
 fi
 
 echo "generating Istio resource definitions..."
-istioctl manifest generate -f "${SCRIPT_DIR}/istio-config.yml" | ytt --ignore-unknown-comments -f - > "${SCRIPT_DIR}/../../config/_ytt_lib/istio/all.yml"
-
+istioctl manifest generate -f "${SCRIPT_DIR}/istio-config.yml" | \
+  ytt --ignore-unknown-comments -f - -f "${SCRIPT_DIR}/overlays.yml" \
+  > "${SCRIPT_DIR}/../../config/_ytt_lib/istio/all.yml"

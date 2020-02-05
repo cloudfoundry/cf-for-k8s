@@ -6387,7 +6387,6 @@ webhooks:
       name: istio-sidecar-injector
       namespace: istio-system
       path: /inject
-    caBundle: ""
   rules:
   - operations:
     - CREATE

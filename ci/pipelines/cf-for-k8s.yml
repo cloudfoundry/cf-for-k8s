@@ -43,8 +43,8 @@ jobs:
         - -ec
         - |
           export KUBECONFIG=kube-config.yml
-          gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null
-          gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null
+          gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null 2>&1
+          gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
 
           kapp delete -a cf --yes
 
@@ -110,8 +110,8 @@ jobs:
         - -ec
         - |
           export KUBECONFIG=kube-config.yml
-          gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null
-          gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null
+          gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null 2>&1
+          gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
           cf-for-k8s-master/bin/install-cf.sh cf-install-values/cf-install-values.yml
 
   - task: configure-dns
@@ -126,8 +126,8 @@ jobs:
         - -ec
         - |
           export KUBECONFIG=kube-config.yml
-          gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null
-          gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null
+          gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null 2>&1
+          gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
 
           echo "Discovering Istio Gateway LB IP"
           external_static_ip=$(kubectl get services/istio-ingressgateway -n istio-system --output="jsonpath={.status.loadBalancer.ingress[0].ip}")

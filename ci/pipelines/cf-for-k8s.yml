@@ -137,9 +137,9 @@ jobs:
           record_count="$( echo "${gcp_records_json}" | jq 'length' )"
           if [ "${record_count}" != "0" ]; then
             existing_record_ip="$( echo "${gcp_records_json}" | jq -r '.[0].rrdatas | join(" ")' )"
-            gcloud dns record-sets transaction remove --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=30 "${existing_record_ip}" --verbosity=debug
+            gcloud dns record-sets transaction remove --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=5 "${existing_record_ip}" --verbosity=debug
           fi
-          gcloud dns record-sets transaction add --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=30 "${external_static_ip}" --verbosity=debug
+          gcloud dns record-sets transaction add --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=5 "${external_static_ip}" --verbosity=debug
 
           gcloud dns record-sets transaction execute --zone="${DNS_ZONE_NAME}" --verbosity=debug
 

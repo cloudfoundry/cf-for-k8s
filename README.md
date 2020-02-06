@@ -1,13 +1,11 @@
 
 ## This is a highly experimental project to deploy the new CF Kubernetes-centric components on Kubernetes. It is **not** meant for use in production and is subject to change in the future.
 
-## Please direct all questions to  slack channel and ping @interrupt
-
 ---------
 
 # Cloud Foundry for Kubernetes
 
-- Slack: [#release-integration in Cloud Foundry slack](https://cloudfoundry.slack.com/archives/C0FAEKGUQ)
+- Slack: [#release-integration in Cloud Foundry slack](https://cloudfoundry.slack.com/archives/C0FAEKGUQ), ping `@interrupt`
 - [Docs](docs/README.md) with topics about installing, development, etc.
 - CI: https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s
 

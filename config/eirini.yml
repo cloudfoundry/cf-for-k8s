@@ -1,6 +1,6 @@
+#@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
-#@ load("@ytt:data", "data")
 
 #@ eirini = library.get("eirini")
 --- #@ template.replace(eirini.eval())

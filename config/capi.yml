@@ -1,8 +1,8 @@
+#@ load("@ytt:assert", "assert")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
-#@ load("@ytt:template", "template")
 #@ load("@ytt:overlay", "overlay")
-#@ load("@ytt:assert", "assert")
+#@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
 
 #@ def capi_host():

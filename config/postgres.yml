@@ -1,9 +1,9 @@
-#@ load("@ytt:library", "library")
-#@ load("@ytt:template", "template")
-#@ load("@ytt:data", "data")
 #@ load("@ytt:assert", "assert")
-#@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:base64", "base64")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
 
 #@ def add_cf_db_namespace():
 #@overlay/match by=overlay.all, expects="1+"
@@ -29,7 +29,6 @@ data:
   #@  assert.fail("cf_db.admin_password cannot be empty")
   #@ end
   postgresql-password: #@ base64.encode(data.values.cf_db.admin_password)
-
 
 #@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"cf-db-postgresql-init-scripts"}})
 ---

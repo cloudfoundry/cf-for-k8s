@@ -1,9 +1,9 @@
+#@ load("@ytt:assert", "assert")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
-#@ load("@ytt:template", "template")
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
-#@ load("@ytt:assert", "assert")
 
 #@ def uaa_db_host():
 #@   if len(data.values.uaa.database.host) > 0:

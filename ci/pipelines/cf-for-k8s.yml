@@ -28,8 +28,6 @@ test-runner-config: &common-test-config
 
 jobs:
 - name: deploy-cf
-  serial: true
-  serial_groups: [ cf-k8s ]
   public: true
   plan:
   - get: cf-for-k8s-master
@@ -153,14 +151,6 @@ jobs:
             echo "external static IP = $external_static_ip"
           done
 
-- name: smoke-test
-  serial_groups: [ cf-k8s ]
-  public: true
-  plan:
-  - get: cf-for-k8s-master
-    trigger: true
-    passed:
-    - deploy-cf
   - task: run-smoke-test
     config:
       <<: *common-test-config
@@ -179,14 +169,6 @@ jobs:
           cd cf-for-k8s-master/tests/smoke
           ginkgo .
 
-- name: uninstall-cf
-  serial_groups: [ cf-k8s ]
-  public: true
-  plan:
-  - get: cf-for-k8s-master
-    trigger: true
-    passed:
-    - smoke-test
   - task: delete-cf
     config:
       <<: *common-task-config

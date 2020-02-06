@@ -6,6 +6,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cloud-controller-ng-yaml
-  namespace: cf-system
+  namespace: #@ data.values.namespace
+  annotations:
+    kapp.k14s.io/versioned: ""
 data:
   cloud_controller_ng.yml: #@ yaml.encode(ccng_config())

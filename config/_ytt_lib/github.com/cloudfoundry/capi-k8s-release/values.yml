@@ -2,7 +2,10 @@
 ---
 replicaCount: 1
 
-image: cloudfoundry/cloud-controller-ng
+images:
+  ccng: cloudfoundry/cloud-controller-ng
+  nginx: nginx:latest
+namespace: cf-system
 
 nginx:
   image:

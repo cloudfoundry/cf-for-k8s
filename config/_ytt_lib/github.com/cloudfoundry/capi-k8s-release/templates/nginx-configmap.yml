@@ -1,9 +1,12 @@
+#@ load("@ytt:data", "data")
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx
-  namespace: cf-system
+  namespace: #@ data.values.namespace
+  annotations:
+    kapp.k14s.io/versioned: ""
 data:
   nginx.conf: |
     error_log /cloud_controller_ng/nginx-error.log error;

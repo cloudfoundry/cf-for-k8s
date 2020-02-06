@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capi-clock
-  namespace: cf-system
+  namespace: #@ data.values.namespace
 spec:
   replicas: 1
   strategy:
@@ -26,17 +26,19 @@ spec:
           workingDir: "/cloud_controller_ng"
           command: ["/usr/local/bin/bundle"]
           args: ["exec", "rake", "clock:start"]
-          image: #@ data.values.image
+          image: #@ data.values.images.ccng
           imagePullPolicy: Always
           volumeMounts:
           - name: cloud-controller-ng-yaml
             mountPath: /config
-          - name: opi-secrets
-            mountPath: /config/opi/certs
+          #@ if/end data.values.eirini.serverCerts.secretName:
+          - name: eirini-certs
+            mountPath: /config/eirini/certs
       volumes:
       - name: cloud-controller-ng-yaml
         configMap:
           name: cloud-controller-ng-yaml
-      - name: opi-secrets
+      #@ if/end data.values.eirini.serverCerts.secretName:
+      - name: eirini-certs
         secret:
-          secretName: opi-secrets
+          secretName: #@ data.values.eirini.serverCerts.secretName

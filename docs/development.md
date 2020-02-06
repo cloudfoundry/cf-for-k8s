@@ -1,6 +1,17 @@
 # Developing components on cf-for-k8s
 
-This document is intended for cf-for-k8s maintainers.
+This document is intended for cf-for-k8s maintainers and contributors.
+
+## Dependencies
+### Templating and Deployment
+- [ytt](https://get-ytt.io/)
+- [kapp](https://get-kapp.io/)
+
+### Smoke Tests
+- [ginkgo](https://github.com/onsi/ginkgo#set-me-up)
+
+### Vendoring
+- [vendir](https://github.com/k14s/vendir)
 
 ## Smoke tests
 
@@ -20,7 +31,3 @@ SMOKE_TEST_API_ENDPOINT=https://api.system.cf.example.com SMOKE_TEST_USERNAME=ad
 - `build/` includes building instructions for components that do not provide plain YAML or ytt templates
   - this directory is only used by cf-for-k8s maintainers
   - `build.sh` in each sub-directory has specific build instructions
-
-## Tools
-
-- [vendir](https://github.com/k14s/vendir)

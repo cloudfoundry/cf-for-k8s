@@ -1,0 +1,230 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cf-blobstore-minio
+  labels:
+    app: minio
+    chart: minio-5.0.6
+    release: cf-blobstore
+    heritage: Helm
+type: Opaque
+data:
+  accesskey: QUtJQUlPU0ZPRE5ON0VYQU1QTEU=
+  secretkey: d0phbHJYVXRuRkVNSS9LN01ERU5HL2JQeFJmaUNZRVhBTVBMRUtFWQ==
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cf-blobstore-minio
+  labels:
+    app: minio
+    chart: minio-5.0.6
+    release: cf-blobstore
+    heritage: Helm
+data:
+  initialize: |-
+    #!/bin/sh
+    set -e ; # Have script exit in the event of a failed command.
+
+    # connectToMinio
+    # Use a check-sleep-check loop to wait for Minio service to be available
+    connectToMinio() {
+      SCHEME=$1
+      ATTEMPTS=0 ; LIMIT=29 ; # Allow 30 attempts
+      set -e ; # fail if we can't read the keys.
+      ACCESS=$(cat /config/accesskey) ; SECRET=$(cat /config/secretkey) ;
+      set +e ; # The connections to minio are allowed to fail.
+      echo "Connecting to Minio server: $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT" ;
+      MC_COMMAND="mc config host add myminio $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
+      $MC_COMMAND ;
+      STATUS=$? ;
+      until [ $STATUS = 0 ]
+      do
+        ATTEMPTS=`expr $ATTEMPTS + 1` ;
+        echo \"Failed attempts: $ATTEMPTS\" ;
+        if [ $ATTEMPTS -gt $LIMIT ]; then
+          exit 1 ;
+        fi ;
+        sleep 2 ; # 1 second intervals between attempts
+        $MC_COMMAND ;
+        STATUS=$? ;
+      done ;
+      set -e ; # reset `e` as active
+      return 0
+    }
+
+    # checkBucketExists ($bucket)
+    # Check if the bucket exists, by using the exit code of `mc ls`
+    checkBucketExists() {
+      BUCKET=$1
+      CMD=$(/usr/bin/mc ls myminio/$BUCKET > /dev/null 2>&1)
+      return $?
+    }
+
+    # createBucket ($bucket, $policy, $purge)
+    # Ensure bucket exists, purging if asked to
+    createBucket() {
+      BUCKET=$1
+      POLICY=$2
+      PURGE=$3
+
+      # Purge the bucket, if set & exists
+      # Since PURGE is user input, check explicitly for `true`
+      if [ $PURGE = true ]; then
+        if checkBucketExists $BUCKET ; then
+          echo "Purging bucket '$BUCKET'."
+          set +e ; # don't exit if this fails
+          /usr/bin/mc rm -r --force myminio/$BUCKET
+          set -e ; # reset `e` as active
+        else
+          echo "Bucket '$BUCKET' does not exist, skipping purge."
+        fi
+      fi
+
+      # Create the bucket if it does not exist
+      if ! checkBucketExists $BUCKET ; then
+        echo "Creating bucket '$BUCKET'"
+        /usr/bin/mc mb myminio/$BUCKET
+      else
+        echo "Bucket '$BUCKET' already exists."
+      fi
+
+      # At this point, the bucket should exist, skip checking for existence
+      # Set policy on the bucket
+      echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
+      /usr/bin/mc policy set $POLICY myminio/$BUCKET
+    }
+
+    # Try connecting to Minio instance
+    scheme=http
+    connectToMinio $scheme
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cf-blobstore-minio
+  labels:
+    app: minio
+    chart: minio-5.0.6
+    release: cf-blobstore
+    heritage: Helm
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cf-blobstore-minio
+  namespace: cf-blobstore
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cf-blobstore-minio
+  labels:
+    app: minio
+    chart: minio-5.0.6
+    release: cf-blobstore
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+  - name: service
+    port: 9000
+    protocol: TCP
+    targetPort: 9000
+  selector:
+    app: minio
+    release: cf-blobstore
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cf-blobstore-minio
+  labels:
+    app: minio
+    chart: minio-5.0.6
+    release: cf-blobstore
+    heritage: Helm
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: minio
+      release: cf-blobstore
+  template:
+    metadata:
+      name: cf-blobstore-minio
+      labels:
+        app: minio
+        release: cf-blobstore
+      annotations:
+        checksum/secrets: 08a375eaa16e979d47d4bf4aaa55a33950c63a90345fe01ca6b913b3731db4a9
+        checksum/config: bf453ab73aeaad88586b68e552b5831a1186c4a14d2923c8a9ebdb2698d7eb2e
+    spec:
+      serviceAccountName: cf-blobstore-minio
+      containers:
+      - name: minio
+        image: minio/minio:RELEASE.2020-01-16T22-40-29Z
+        imagePullPolicy: IfNotPresent
+        command:
+        - /bin/sh
+        - -ce
+        - /usr/bin/docker-entrypoint.sh minio -S /etc/minio/certs/ server /export
+        volumeMounts:
+        - name: export
+          mountPath: /export
+        ports:
+        - name: service
+          containerPort: 9000
+        env:
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cf-blobstore-minio
+              key: accesskey
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cf-blobstore-minio
+              key: secretkey
+        - name: MINIO_BROWSER
+          value: "on"
+        livenessProbe:
+          httpGet:
+            path: /minio/health/live
+            port: service
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 30
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /minio/health/ready
+            port: service
+          initialDelaySeconds: 60
+          periodSeconds: 15
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+      volumes:
+      - name: export
+        persistentVolumeClaim:
+          claimName: cf-blobstore-minio
+      - name: minio-user
+        secret:
+          secretName: cf-blobstore-minio

@@ -7,11 +7,16 @@ app_domains:
 
 cf_admin_password: cfadminpassword
 
+cf_blobstore:
+  secret_key: the_blobstore_secret_key
+
 cf_db:
   admin_password: the_cf_dbadmin_password
 
 #! this is all you have to configure if you are opting into the included database deployment
 capi:
+  blobstore:
+    secret_key: the_blobstore_secret_key
   database:
     password: ccdb_password
 

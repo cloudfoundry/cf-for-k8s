@@ -11,6 +11,11 @@ app_domains: []
 #! password for admin user in plain text
 cf_admin_password:
 
+#! control deployment of a blobstore for CF
+cf_blobstore:
+  access_key: "admin"
+  secret_key: ""
+
 #! control optional deployment of a database for CF
 cf_db:
   admin_password: ""
@@ -31,6 +36,11 @@ system_certificate:
   ca: ""
 
 capi:
+  blobstore:
+    endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
+    access_key: "admin"
+    #! blobstore admin secret key in plain text
+    secret_key:
   database:
     #! or mysql2, as needed
     adapter: postgres

@@ -15,6 +15,8 @@ bosh interpolate --vars-store=${VARS_FILE} <(cat <<EOF
 variables:
 - name: cf_admin_password
   type: password
+- name: blobstore_secret_key
+  type: password
 - name: db_admin_password
   type: password
 - name: capi_db_password
@@ -50,6 +52,9 @@ app_domains:
 #@overlay/append
 - "${DOMAIN}"
 cf_admin_password: $( bosh interpolate ${VARS_FILE} --path=/cf_admin_password )
+
+cf_blobstore:
+  secret_key: $( bosh interpolate ${VARS_FILE} --path=/blobstore_secret_key )
 
 cf_db:
   admin_password: $( bosh interpolate ${VARS_FILE} --path=/db_admin_password )

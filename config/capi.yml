@@ -29,6 +29,11 @@ app_domains:
 #@overlay/append
 - #@ domain
 
+blobstore:
+  endpoint: #@ data.values.capi.blobstore.endpoint
+  access_key_id: #@ data.values.capi.blobstore.access_key
+  secret_access_key: #@ data.values.capi.blobstore.secret_key
+
 ccdb:
   adapter: #@ data.values.capi.database.adapter
   host: #@ capi_host()
@@ -59,6 +64,18 @@ uaa:
 #@overlay/match missing_ok=True
 opi:
   url: #@ "https://eirini.{}.svc.cluster.local:8085".format(data.values.system_namespace)
+buildpacks:
+  fog_connection:
+    endpoint: #@ data.values.capi.blobstore.endpoint
+droplets:
+  fog_connection:
+    endpoint: #@ data.values.capi.blobstore.endpoint
+packages:
+  fog_connection:
+    endpoint: #@ data.values.capi.blobstore.endpoint
+resource_pool:
+  fog_connection:
+    endpoint: #@ data.values.capi.blobstore.endpoint
 #@ end
 
 #@ def overlay_ccng_config(old, new):

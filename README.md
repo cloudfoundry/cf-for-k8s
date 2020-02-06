@@ -1,7 +1,5 @@
 
-## This is a highly experimental project to deploy the new CF Kubernetes-centric components on Kubernetes. It is **not** meant for use in production and is subject to change in the future.
-
----------
+:exclamation::exclamation::exclamation: This is a highly experimental project to deploy the new CF Kubernetes-centric components on Kubernetes. It is **not** meant for use in production and is subject to change in the future. :exclamation::exclamation::exclamation:
 
 # Cloud Foundry for Kubernetes
 

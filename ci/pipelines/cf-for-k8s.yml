@@ -9,6 +9,11 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     ignore_paths:
       - ci/**
+- name: every-10-minutes
+  type: time
+  icon: clock-outline
+  source:
+    interval: 10m
 
 # Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
@@ -31,6 +36,8 @@ jobs:
   public: true
   plan:
   - get: cf-for-k8s-master
+    trigger: true
+  - get: every-10-minutes
     trigger: true
   - task: delete-cf
     config:

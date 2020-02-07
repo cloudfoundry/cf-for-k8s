@@ -38,9 +38,6 @@ system_certificate:
 capi:
   blobstore:
     endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
-    access_key: "admin"
-    #! blobstore admin secret key in plain text
-    secret_key:
   database:
     #! or mysql2, as needed
     adapter: postgres

@@ -31,8 +31,8 @@ app_domains:
 
 blobstore:
   endpoint: #@ data.values.capi.blobstore.endpoint
-  access_key_id: #@ data.values.capi.blobstore.access_key
-  secret_access_key: #@ data.values.capi.blobstore.secret_key
+  access_key_id: #@ data.values.cf_blobstore.access_key
+  secret_access_key: #@ data.values.cf_blobstore.secret_key
 
 ccdb:
   adapter: #@ data.values.capi.database.adapter

@@ -15,8 +15,6 @@ cf_db:
 
 #! this is all you have to configure if you are opting into the included database deployment
 capi:
-  blobstore:
-    secret_key: the_blobstore_secret_key
   database:
     password: ccdb_password
 

@@ -22,9 +22,13 @@ images:
   cfroutesync: ""
 
 system_certificate:
-  crt: "" #! Base64-encoded certificate for the wildcard subdomain of the system domain (e.g., CN=*.system.cf.example.com)
-  key: "" #! Base64-encoded private key for the cert above
-  ca: "" #! Base64-encoded CA certificate used to sign the system certifcate
+  #! Base64-encoded certificate for the wildcard
+  #! subdomain of the system domain (e.g., CN=*.system.cf.example.com)
+  crt: ""
+  #! Base64-encoded private key for the cert above
+  key: ""
+  #! Base64-encoded CA certificate used to sign the system certifcate
+  ca: ""
 
 capi:
   database:
@@ -38,6 +42,9 @@ capi:
     name: cloud_controller
 
 uaa:
+  #! client secret for uaa admin client in plain text
+  admin_client_secret: ""
+
   database:
     #! or mysql2, as needed
     adapter: postgresql
@@ -48,17 +55,25 @@ uaa:
     password: ""
     name: uaa
 
-  admin_client_secret: "" #! client secret for uaa admin client in plain text
   certificate:
-    crt: "" #! Base64-encoded certificate for the uaa service inside the kubernetes cluster (i.e., CN=uaa.cf-system.svc.cluster.local)
-    key: "" #! Base64-encoded private key for the cert above
+    #! Base64-encoded certificate for the uaa service inside
+    #! the kubernetes cluster (i.e., CN=uaa.cf-system.svc.cluster.local)
+    crt: ""
+    #! Base64-encoded private key for the cert above
+    key: ""
 
 doppler:
   tls:
-    crt: "" #! Base64-encoded certificate for the doppler service inside the kubernetes cluster (i.e., CN=doppler.cf-system.svc.cluster.local)
-    key: "" #! Base64-encoded private key for the cert above
+    #! Base64-encoded certificate for the doppler service inside
+    #! the kubernetes cluster (i.e., CN=doppler.cf-system.svc.cluster.local)
+    crt: ""
+    #! Base64-encoded private key for the cert above
+    key: ""
 
 eirini:
   tls:
-    crt: "" #! Base64-encoded certificate for the eirini service inside the kubernetes cluster (i.e., CN=eirini.cf-system.svc.cluster.local)
-    key: "" #! Base64-encoded private key for the cert above
+    #! Base64-encoded certificate for the eirini service inside
+    #! the kubernetes cluster (i.e., CN=eirini.cf-system.svc.cluster.local)
+    crt: ""
+    #! Base64-encoded private key for the cert above
+    key: ""

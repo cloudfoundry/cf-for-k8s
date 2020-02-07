@@ -35,5 +35,18 @@ directories:
     manual: {}
   - path: eirini
     manual: {}
+  - path: minio
+    manual: {}
   - path: postgres
     manual: {}
+- path: build/minio/_vendir
+  contents:
+  - path: .
+    git:
+      url: https://github.com/helm/charts
+      # from: https://github.com/helm/charts/blame/master/stable/minio/Chart.yaml
+      # version: 5.0.6
+      ref: 21546e62d205fe6d197a8f920532d9b78b67a71f
+    includePaths:
+    - stable/minio/**/*
+

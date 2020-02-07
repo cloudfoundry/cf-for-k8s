@@ -23,6 +23,14 @@ directories:
   - manual: {}
     path: eirini
   - manual: {}
+    path: minio
+  - manual: {}
     path: postgres
   path: config/_ytt_lib
+- contents:
+  - git:
+      commitTitle: '[stable/minio] fix update to latest release (#20257)...'
+      sha: 21546e62d205fe6d197a8f920532d9b78b67a71f
+    path: .
+  path: build/minio/_vendir
 kind: LockConfig

@@ -3,6 +3,7 @@
 #@ load("@ytt:template", "template")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:assert", "assert")
+#@ load("@ytt:yaml", "yaml")
 
 #@ def capi_host():
 #@   if len(data.values.capi.database.host) > 0:
@@ -16,7 +17,11 @@
 
 #@ def capi_values():
 #@ if/end data.values.images.capi:
-image: #@ data.values.images.capi
+images:
+  ccng: #@ data.values.images.capi
+  nginx: #@ data.values.images.nginx
+
+namespace: #@ data.values.system_namespace
 
 system_domain: #@ data.values.system_domain
 app_domains:
@@ -50,8 +55,25 @@ uaa:
       secret: #@ data.values.uaa.admin_client_secret
 #@ end
 
+#@ def ccng_config():
+#@overlay/match missing_ok=True
+opi:
+  url: #@ "https://eirini.{}.svc.cluster.local:8085".format(data.values.system_namespace)
+#@ end
+
+#@ def overlay_ccng_config(old, new):
+#@   return yaml.encode(overlay.apply(yaml.decode(old), ccng_config()))
+#@ end
+
 #@ capi = library.get("github.com/cloudfoundry/capi-k8s-release")
 --- #@ template.replace(capi.with_data_values(capi_values()).eval())
+
+#! overlay Eirini URL fix
+#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"cloud-controller-ng-yaml"}})
+---
+data:
+  #@overlay/replace via=overlay_ccng_config
+  cloud_controller_ng.yml:
 
 #! expose CAPI under the system domain
 ---

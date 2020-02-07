@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capi-api-server
-  namespace: cf-system
+  namespace: #@ data.values.namespace
 spec:
   replicas: 2
   strategy:
@@ -23,7 +23,7 @@ spec:
       imagePullSecrets: #@ data.values.imagePullSecrets
       initContainers:
         - name: pre-start
-          image: #@ data.values.image
+          image: #@ data.values.images.ccng
           imagePullPolicy: Always
           command: ['bundle', 'exec', 'rake', 'db:setup_database']
           volumeMounts:
@@ -31,7 +31,7 @@ spec:
             mountPath: /config
       containers:
         - name: capi-api-server
-          image: #@ data.values.image
+          image: #@ data.values.images.ccng
           imagePullPolicy: Always
           volumeMounts:
           - name: server-sock
@@ -45,7 +45,7 @@ spec:
           - name: eirini-certs
             mountPath: /config/eirini/certs
         - name: nginx
-          image: nginx:latest
+          image: #@ data.values.images.nginx
           imagePullPolicy: Always
           ports:
           - containerPort: 80

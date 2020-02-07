@@ -123,7 +123,7 @@ login:
 #! TODO: change the UAA's Kube DNS name when the service is named correctly later
 uaa:
   url: #@ "https://uaa.{}".format(data.values.system_domain)
-  internal_url: http://uaa.cf-system.svc.cluster.local:8080
+  internal_url: #@ "http://uaa.{}.svc.cluster.local:8080".format(data.values.namespace)
   resource_id: cloud_controller,cloud_controller_service_permissions
   client_timeout: 60
   ca_file: /config/uaa/certs/uaa.crt
@@ -326,7 +326,7 @@ diego:
   use_privileged_containers_for_staging: false
 
 opi:
-  url: "https://eirini.cf-system.svc.cluster.local:8085"
+  url: #@ "http://eirini.{}.svc.cluster.local:8085".format(data.values.namespace)
   opi_staging: true
   enabled: true
   cc_uploader_url: "https://TODO.TODO"

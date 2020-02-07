@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capi-worker
-  namespace: cf-system
+  namespace: #@ data.values.namespace
 spec:
   replicas: 1
   selector:
@@ -22,7 +22,7 @@ spec:
           workingDir: "/cloud_controller_ng"
           command: ["/usr/local/bin/bundle"]
           args: ["exec", "rake", "jobs:generic"]
-          image: #@ data.values.image
+          image: #@ data.values.images.ccng
           imagePullPolicy: Always
           volumeMounts:
           - name: cloud-controller-ng-yaml

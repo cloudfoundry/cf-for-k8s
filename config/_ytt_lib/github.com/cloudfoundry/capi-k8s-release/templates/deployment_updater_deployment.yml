@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capi-deployment-updater
-  namespace: cf-system
+  namespace: #@ data.values.namespace
 spec:
   replicas: 1
   strategy:
@@ -26,7 +26,7 @@ spec:
           workingDir: "/cloud_controller_ng"
           command: ["/usr/local/bin/bundle"]
           args: ["exec", "rake", "deployment_updater:start"]
-          image: #@ data.values.image
+          image: #@ data.values.images.ccng
           imagePullPolicy: Always
           volumeMounts:
           - name: cloud-controller-ng-yaml

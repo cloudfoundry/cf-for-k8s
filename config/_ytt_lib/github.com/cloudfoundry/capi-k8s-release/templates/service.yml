@@ -1,8 +1,9 @@
+#@ load("@ytt:data", "data")
 apiVersion: v1
 kind: Service
 metadata:
   name: capi
-  namespace: cf-system
+  namespace: #@ data.values.namespace
 spec:
   type: ClusterIP
   ports:

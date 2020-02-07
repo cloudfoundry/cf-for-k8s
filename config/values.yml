@@ -3,12 +3,6 @@
 system_namespace: cf-system
 workloads_namespace: cf-workloads
 
-system_registry:
-  hostname: ""
-  username: ""
-  password: ""
-  repository_name_prefix: ""
-
 #! your system domain, e.g., "system.cf.example.com"
 system_domain:
 #! list of app domains, e.g., ["apps.cf.example.com"]

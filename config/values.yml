@@ -17,13 +17,9 @@ cf_db:
   enabled: true
 
 images:
-  capi: #! "relintprivateregistry/capi:f5d27813dcf33743e27a480ef67edfb76bf1fd92"
-  nginx: "nginx"
-  uaa: "relintprivateregistry/uaa"
+  capi: ""
+  nginx: ""
   cfroutesync: ""
-  eirini: ""
-  nats: "relintprivateregistry/nats"
-  doppler: "relintprivateregistry/doppler"
 
 system_certificate:
   crt: "" #! Base64-encoded certificate for the wildcard subdomain of the system domain (e.g., CN=*.system.cf.example.com)

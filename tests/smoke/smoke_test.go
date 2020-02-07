@@ -20,7 +20,9 @@ const NamePrefix = "cf-for-k8s-smoke"
 
 func GetRequiredEnvVar(envVarName string) string {
 	value, ok := os.LookupEnv(envVarName)
-	Expect(ok).To(BeTrue(), envVarName+" environment variable is required, but was not provided.")
+	if !ok {
+		panic(envVarName + " environment variable is required, but was not provided.")
+	}
 	return value
 }
 

@@ -33,6 +33,7 @@ test-runner-config: &common-test-config
 
 jobs:
 - name: deploy-cf
+  serial: true
   public: true
   plan:
   - get: cf-for-k8s-master

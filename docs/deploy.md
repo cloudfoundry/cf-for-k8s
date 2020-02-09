@@ -22,7 +22,7 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
 1. Create a "CF Installation Values" file and configure it:
    1. Use `./hack/generate-values.sh <system_domain>` to automatically generate values with [bosh interpolate](https://bosh.io/docs/cli-v2-install/#install)
    ```bash
-   $ ./hack/generate-values.sh cf.example.com > /tmp/cf-values.yml
+   $ ./hack/generate-values.sh <system_domain> > /tmp/cf-values.yml
    ```
    1. Alternatively, create a file called `/tmp/cf-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
    1. Change the `system_domain` and `app_domain` to your desired domain address
@@ -38,12 +38,14 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
    of the Istio Ingress Gateway service. You can retrieve the external IP of this service by running
    `kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].ip}'`
    1. If you used the `./hack/generate-values.sh` script then you should only
-      configure a single DNS record for the domain you passed as input to the
-      script and have it resolve to the Ingress Gateway's external IP
+      configure a single DNS record for the wildcard subdomain of the domain
+      you passed as input to the script and have it resolve to the Ingress
+      Gateway's external IP
 
 ## Validate the deployment
 
-1. Set up cf cli to point to CF:
+1. Get the `<cf_admin_password>` with the `bosh interpolate /tmp/cf-values.yml --path /cf_admin_password`
+command and set up cf CLI to point to CF:
    ```bash
    $ cf api --skip-ssl-validation https://api.<system_domain>
    $ cf auth admin <cf_admin_password>
@@ -54,7 +56,40 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
    $ cf enable-feature-flag diego_docker
    ```
 
+1. Create an org and space, and target them:
+   ```bash
+   $ cf create-org test-org
+   $ cf create-space -o test-org test-space
+   $ cf target -o test-org -s test-space
+   ```
+
 1. Deploy an app:
    ```bash
    $ cf push diego-docker-app -o cloudfoundry/diego-docker-app
+   ```
+
+1. Confirm the app is running and reachable:
+   ```bash
+   $ curl -s http://diego-docker-app.<system_domain>/env | ytt -f-
+   BAD_QUOTE: ''''
+   BAD_SHELL: $1
+   CF_INSTANCE_ADDR: 0.0.0.0:8080
+   CF_INSTANCE_INTERNAL_IP: 10.32.2.15
+   CF_INSTANCE_IP: 10.32.2.15
+   CF_INSTANCE_PORT: "8080"
+   CF_INSTANCE_PORTS: '[{"external":8080,"internal":8080}]'
+   HOME: /home/some_docker_user
+   HOSTNAME: diego-docker-app-test-space-2a80ac86bf-0
+   KUBERNETES_PORT: tcp://10.0.16.1:443
+   ...
+   VCAP_APP_HOST: 0.0.0.0
+   VCAP_APP_PORT: "8080"
+   VCAP_SERVICES: '{}'
+   ```
+
+## Delete the deployment
+
+1. Uninstall CF
+   ```
+   $ kapp delete -a cf -y
    ```

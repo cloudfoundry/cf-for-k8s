@@ -1,0 +1,30 @@
+#@data/values
+---
+system_domain: ""
+system_namespace: ""
+
+images:
+  log_cache: ""
+  syslog_server: ""
+  log_cache_gateway: ""
+  fluent: ""
+
+log_cache_ca:
+  crt: "" #! Base64-encoded ca for the log cache
+  key: "" #! Base64-encoded private key for the cert above
+
+log_cache:
+  crt: "" #! Base64-encoded cert for the log cache requires CN of log-cache
+  key: "" #! Base64-encoded private key for the cert above
+
+log_cache_metrics:
+  crt: "" #! Base64-encoded cert for the log cache metrics requires CN of log-cache-metrics
+  key: "" #! Base64-encoded private key for the cert above
+
+log_cache_gateway:
+  crt: "" #! Base64-encoded cert for the log cache gateway requires CN of log-cache-gateway
+  key: "" #! Base64-encoded private key for the cert above
+
+log_cache_syslog:
+  crt: "" #! Base64-encoded cert for the log cache syslog server requires CN of log-cache-syslog
+  key: "" #! Base64-encoded private key for the cert above

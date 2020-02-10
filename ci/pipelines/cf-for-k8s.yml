@@ -15,6 +15,15 @@ resources:
   source:
     interval: 10m
 
+- name: pool
+  type: pool
+  icon: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: master
+    pool: cf-for-k8s
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
 # Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
   platform: linux
@@ -36,6 +45,8 @@ jobs:
   serial: true
   public: true
   plan:
+  - put: pool
+    params: {acquire: true}
   - get: cf-for-k8s-master
     trigger: true
   - get: every-10-minutes
@@ -190,3 +201,15 @@ jobs:
           gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
 
           kapp delete -a cf --yes
+
+  - put: pool
+    params: {release: pool}
+
+- name: release-pool-manual
+  public: true
+  plan:
+  - get: pool
+  ensure:
+    try:
+      put: pool
+      params: {release: pool}

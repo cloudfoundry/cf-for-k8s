@@ -84,6 +84,9 @@ jobs:
           - ((ci_k8s_domain))
           cf_admin_password: ((ci_k8s_cf_admin_password))
 
+          cf_blobstore:
+            secret_key: ((ci_k8s_cf_blobstore_secret_key))
+
           cf_db:
             admin_password: ((ci_k8s_cf_db_admin_password))
 

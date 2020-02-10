@@ -31,6 +31,8 @@ database:
 #@overlay/match missing_ok=True
 scim:
   userids_enabled: true
+  user:
+    override: true
   users:
   - #@ "admin|" + data.values.cf_admin_password + "|admin@admin.tld|first|last|clients.read,cloud_controller.admin,doppler.firehose,network.admin,openid,routing.router_groups.read,routing.router_groups.write,scim.read,scim.write|uaa"
   groups:

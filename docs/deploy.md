@@ -4,6 +4,7 @@
 
 You need the following CLIs on your system to be able to run the script:
 
+* [`bosh`](https://bosh.io/docs/cli-v2-install/#install) - to generate CF Installation Values
 * [`kapp`](https://k14s.io/#install)
 * [`ytt`](https://k14s.io/#install)
 

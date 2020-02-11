@@ -6,6 +6,9 @@ You need the following CLIs on your system to be able to run the script:
 
 * [`kapp`](https://k14s.io/#install)
 * [`ytt`](https://k14s.io/#install)
+* Kubernetes cluster requirements
+  * A minimum of 3 nodes
+  * A minimum of 2 CPU, 7.5BGB memory per node
 
 In addition, you will also probably want [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for your own debugging and inspection of the system.
 
@@ -20,12 +23,18 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
    ```
 
 1. Create a "CF Installation Values" file and configure it:
-   1. Use `./hack/generate-values.sh <system_domain>` to automatically generate values with [bosh interpolate](https://bosh.io/docs/cli-v2-install/#install)
+
+   You have the option of auto-generating the installation values or creating the values by yourself. 
+
+   #### Option 1 - Generate the install values
+   The script relies on bosh [interpolate](https://bosh.io/docs/cli-v2-install/#install) to generate the install values
    ```bash
+   # expects bosh cli
    $ ./hack/generate-values.sh cf.example.com > /tmp/cf-values.yml
    ```
-   1. Alternatively, create a file called `/tmp/cf-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
-   1. Change the `system_domain` and `app_domain` to your desired domain address
+   #### Option 2 Create the install values
+   1. Create a file called `/tmp/cf-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
+   1. Open the file and change the `system_domain` and `app_domain` to your desired domain address
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
 
 1. Run the install script with your "CF Install Values" file
@@ -40,6 +49,13 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
    1. If you used the `./hack/generate-values.sh` script then you should only
       configure a single DNS record for the domain you passed as input to the
       script and have it resolve to the Ingress Gateway's external IP
+
+      e.g. 
+      ```
+      # sample A record in Google cloud DNS. The IP address below is the address of Ingress gateway's external IP
+      Domain                  Record Type       TTL         IP Address
+      *.<system_domain>	      A	            30	      35.111.111.111
+      ```
 
 ## Validate the deployment
 
@@ -57,4 +73,11 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
 1. Deploy an app:
    ```bash
    $ cf push diego-docker-app -o cloudfoundry/diego-docker-app
+   ```
+   Note that the above command will return an error but the app is successfully pushed to CF and is routable via Http. The reason the command fails is due to missing logging component, which we, the Release Integration, are working with the Logging team to integrate into CF4K8s
+
+1. Validate the app is reachable
+   ```bash
+   $ curl http://diego-docker-app.<system-domain>/env
+   # should return JSON value
    ```

@@ -27,7 +27,7 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
    You have the option of auto-generating the installation values or creating the values by yourself. 
 
    #### Option 1 - Generate the install values
-   The script relies on bosh [interpolate](https://bosh.io/docs/cli-v2-install/#install) to generate the install values
+   **NOTE:** The script relies on [bosh interpolate](https://bosh.io/docs/cli-v2-install/#install) to generate the install values
    ```bash
    # expects bosh cli
    $ ./hack/generate-values.sh cf.example.com > /tmp/cf-values.yml

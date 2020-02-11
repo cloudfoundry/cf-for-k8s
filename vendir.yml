@@ -39,14 +39,18 @@ directories:
     manual: {}
   - path: postgres
     manual: {}
+# When adding a helm chart to our set of components:
+# 1. Find the chart you need from https://hub.helm.sh/charts/stable
+# 2. Note the latest (or desired) version from the "Chart Versions" section on the right.
+# 3. Navigate to the corresponding directory of https://github.com/helm/charts/tree/master/stable
+# 4. Look at the history or blame log of the Chart.yaml file to find when the version was bumped to the version you found earlier.
+# 5. The SHA of the commit that bumped the version will be the SHA you use as the 'ref' of the git section below.
 - path: build/minio/_vendir
   contents:
   - path: .
     git:
       url: https://github.com/helm/charts
-      # from: https://github.com/helm/charts/blame/master/stable/minio/Chart.yaml
-      # version: 5.0.6
-      ref: 21546e62d205fe6d197a8f920532d9b78b67a71f
+      ref: 21546e62d205fe6d197a8f920532d9b78b67a71f # version: 5.0.6
     includePaths:
     - stable/minio/**/*
 

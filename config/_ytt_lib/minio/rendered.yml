@@ -9,8 +9,8 @@ metadata:
     heritage: Helm
 type: Opaque
 data:
-  accesskey: QUtJQUlPU0ZPRE5ON0VYQU1QTEU=
-  secretkey: d0phbHJYVXRuRkVNSS9LN01ERU5HL2JQeFJmaUNZRVhBTVBMRUtFWQ==
+  accesskey: null
+  secretkey: null
 ---
 apiVersion: v1
 kind: ConfigMap

@@ -8,9 +8,8 @@ if [ $# -lt 2 ]; then
 fi
 
 # Ensure that required executables exist
-which nslookup > /dev/null 2>&1 || echo "Missing required \"nslookup\" executable." && exit 1
-which gcloud > /dev/null 2>&1 || echo "Missing required \"gcloud\" executable." && exit 1
-which kubectl > /dev/null 2>&1 || echo "Missing required \"kubectl\" executable." && exit 1
+gcloud --version > /dev/null 2>&1 || (echo "Missing required \"gcloud\" executable." && exit 1)
+kubectl version --client=true > /dev/null 2>&1 || (echo "Missing required \"kubectl\" executable." && exit 1)
 
 DNS_DOMAIN="$1"
 DNS_ZONE_NAME="$2"

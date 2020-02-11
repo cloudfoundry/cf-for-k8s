@@ -24,10 +24,10 @@ directories:
     includePaths:
     - templates/**/*
     - values.yml
-  - path: github.com/loggregator/cf-k8s-logging
+  - path: github.com/cloudfoundry/cf-k8s-logging
     git:
-      url: https://github.com/loggregator/cf-k8s-logging
-      ref: ea8a5343566d86575820cca2a13033924f15ee02
+      url: https://github.com/cloudfoundry/cf-k8s-logging
+      ref: c93a12170b5bd58eeffd195d07fcb87af069f684
     includePaths:
     - config/**/*
   - path: github.com/cloudfoundry/uaa

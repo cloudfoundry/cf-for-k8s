@@ -4,10 +4,10 @@ system_domain: ""
 system_namespace: ""
 
 images:
-  log_cache: ""
-  syslog_server: ""
-  log_cache_gateway: ""
-  fluent: ""
+  log_cache: "logcache/log-cache"
+  syslog_server: "logcache/syslog-server"
+  log_cache_gateway: "logcache/log-cache-gateway"
+  fluent: "logcache/cf-k8s-logging"
 
 log_cache_ca:
   crt: "" #! Base64-encoded ca for the log cache

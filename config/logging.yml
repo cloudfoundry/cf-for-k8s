@@ -7,12 +7,6 @@
 system_domain: #@ data.values.system_domain
 system_namespace: #@ data.values.system_namespace
 
-images:
-  log_cache: #@ data.values.images.log_cache
-  syslog_server: #@ data.values.images.syslog_server
-  log_cache_gateway: #@ data.values.images.log_cache_gateway
-  fluent: #@ data.values.images.fluent
-
 log_cache_ca: 
   crt: #@ data.values.log_cache_ca.crt
   key: #@ data.values.log_cache_ca.key
@@ -34,7 +28,7 @@ log_cache_syslog:
   key: #@ data.values.log_cache_syslog.key
 #@ end
 
-#@ logging = library.get("github.com/loggregator/cf-k8s-logging")
+#@ logging = library.get("github.com/cloudfoundry/cf-k8s-logging")
 --- #@ template.replace(logging.with_data_values(logging_values()).eval())
 
 

@@ -1,0 +1,53 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: #@ data.values.system_namespace
+data:
+  fluentd.conf: |
+    # Inputs
+    <source>
+      @type tail
+      @id in_tail_container_logs
+      path /var/log/containers/*.log
+      pos_file /var/log/fluentd-containers.log.pos
+      tag kubernetes.*
+      <parse>
+        @type json
+        time_format %Y-%m-%dT%H:%M:%S.%NZ
+      </parse>
+      read_from_head true
+    </source>
+
+    # Filters
+    <filter kubernetes.**>
+      @type kubernetes_metadata
+    </filter>
+
+    <filter **>
+      @type grep
+      <regexp>
+        key $.kubernetes.labels.cloudfoundry_org/app_guid
+        pattern /.+/
+      </regexp>
+    </filter>
+
+    <match **>
+     @type syslog_rfc5424
+     host log-cache-syslog
+     port 8082
+     transport tls
+     trusted_ca_path /ca/tls.crt
+     <format>
+       @type syslog_rfc5424
+       proc_id_field kubernetes.pod_id
+       app_name_field kubernetes.labels.cloudfoundry_org/app_guid
+     </format>
+
+     <buffer>
+       @type memory
+       flush_interval 10s
+     </buffer>
+    </match>

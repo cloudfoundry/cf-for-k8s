@@ -1,0 +1,12 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: log-cache-tls
+  namespace: #@ data.values.system_namespace
+spec:
+  host: #@ "log-cache.{}.svc.cluster.local".format(data.values.system_namespace)
+  trafficPolicy:
+    tls:
+      mode: SIMPLE

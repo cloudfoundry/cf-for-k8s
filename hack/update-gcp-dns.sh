@@ -28,10 +28,9 @@ fi
 gcloud dns record-sets transaction add --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=5 "${external_static_ip}" --verbosity=debug
 gcloud dns record-sets transaction execute --zone="${DNS_ZONE_NAME}" --verbosity=debug
 
-echo "Waiting for DNS to propagate..."
 resolved_ip=''
 while [ "$resolved_ip" != "$external_static_ip" ]; do
+  echo "Waiting for DNS to propagate..."
   sleep 5
   resolved_ip=$(nslookup "*.$DNS_DOMAIN" | grep Address | grep -v ':53' | cut -d ' ' -f2)
-  echo "Resolved DNS IP \"$resolved_ip\" != expected LB static IP \"$external_static_ip\""
 done

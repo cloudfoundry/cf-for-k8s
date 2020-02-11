@@ -61,10 +61,12 @@ var _ = Describe("Smoke Tests", func() {
 		})
 
 		AfterEach(func() {
-			// Delete the test org
-			Eventually(func() *Session {
-				return cf.Cf("delete-org", orgName, "-f").Wait()
-			}, 5*time.Minute, 1*time.Second).Should(Exit(0))
+			if orgName != "" {
+				// Delete the test org
+				Eventually(func() *Session {
+					return cf.Cf("delete-org", orgName, "-f").Wait()
+				}, 5*time.Minute, 1*time.Second).Should(Exit(0))
+			}
 		})
 
 		It("creates a routable app pod in Kubernetes", func() {

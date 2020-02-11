@@ -14,7 +14,7 @@ The following scripts are designed to be runnable in a CI system, as well as loc
   - Install CF for K8s to your target K8s cluster.
 - `./hack/update-gcp-dns.sh <domain> <dns-zone-name>`
   - Update the wildcard entry for the given domain with the correct load-balancer IP address (if you are using Google Cloud DNS).
-- `./bin/run-smoke-tests.sh`
+- `./hack/run-smoke-tests.sh`
   - Run the smoke test suite against your CF for K8s installation. This requires the following environment variables to be set:
     - `SMOKE_TEST_API_ENDPOINT`
     - `SMOKE_TEST_APPS_DOMAIN`

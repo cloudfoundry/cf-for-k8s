@@ -2,7 +2,7 @@
 
 ## Prerequesites
 
-You will need the same set of prerequesites listed in the [Deploy CF for K8s](docs/deploy.md#prerequesites) documentation. The CLIs will need to be available in the image used by your CI system.
+You will need the same set of prerequesites listed in the [Deploy CF for K8s](deploy.md#prerequesites) documentation. The CLIs will need to be available in the image used by your CI system.
 
 ## Available Scripts
 
@@ -32,4 +32,4 @@ There are two Docker images maintained by us that can be used for a CI pipeline:
 
 ## Concourse Example
 
-You can see an example of how we combined these scripts in our own CI pipeline [here](ci/pipelines/cf-for-k8s.yml).
+You can see an example of how we combined these scripts in our own CI pipeline [here](../ci/pipelines/cf-for-k8s.yml).

@@ -110,8 +110,7 @@ jobs:
         - -ec
         - |
           export SMOKE_TEST_PASSWORD=$(cat user-password-for-smoke-tests/cf-admin-password.txt)
-          cd cf-for-k8s-master/tests/smoke
-          ginkgo .
+          cf-for-k8s-master/bin/run-smoke-tests.sh
 
   - task: delete-cf
     config:

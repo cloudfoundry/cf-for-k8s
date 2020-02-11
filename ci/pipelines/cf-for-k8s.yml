@@ -9,6 +9,7 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     ignore_paths:
       - ci/**
+
 - name: every-10-minutes
   type: time
   icon: clock-outline
@@ -65,81 +66,17 @@ jobs:
 
           kapp delete -a cf --yes
 
-  - task: generate-cf-install-values
-    config:
-      <<: *common-task-config
-      outputs:
-      - name: cf-install-values
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          cat > cf-install-values/cf-install-values.yml <<EOF
-          #@data/values
-          ---
-          system_domain: ((ci_k8s_domain))
-          app_domains:
-          #@overlay/append
-          - ((ci_k8s_domain))
-          cf_admin_password: ((ci_k8s_cf_admin_password))
-
-          cf_blobstore:
-            secret_key: ((ci_k8s_cf_blobstore_secret_key))
-
-          cf_db:
-            admin_password: ((ci_k8s_cf_db_admin_password))
-
-          capi:
-            database:
-              password: ((ci_k8s_capi_db_password))
-
-          system_certificate:
-            crt: &crt ((ci_k8s_system_certificate_cert))
-            key: &key ((ci_k8s_system_certificate_key))
-            ca: ((ci_k8s_system_certificate_ca_cert))
-
-          uaa:
-            database:
-              password: ((ci_k8s_uaa_db_password))
-            admin_client_secret: ((ci_k8s_uaa_admin_client_secret))
-            certificate:
-              crt: *crt
-              key: *key
-
-          doppler:
-            tls:
-              crt: *crt
-              key: *key
-
-          eirini:
-            tls:
-              crt: *crt
-              key: *key
-          EOF
-
   - task: install-cf
     config:
       <<: *common-task-config
       inputs:
       - name: cf-for-k8s-master
-      - name: cf-install-values
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          export KUBECONFIG=kube-config.yml
-          gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null 2>&1
-          gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
-          cf-for-k8s-master/bin/install-cf.sh cf-install-values/cf-install-values.yml
-
-  - task: configure-dns
-    config:
-      <<: *common-task-config
+      outputs:
+      - name: user-password-for-smoke-tests
       params:
         DNS_DOMAIN: ((ci_k8s_domain))
         DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
+        SYSTEM_DOMAIN: ((ci_k8s_domain))
       run:
         path: /bin/bash
         args:
@@ -149,6 +86,12 @@ jobs:
           gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null 2>&1
           gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
 
+          echo "Generating install values..."
+          cf-for-k8s-master/hack/generate-values.sh "${SYSTEM_DOMAIN}" > cf-install-values.yml
+          echo "Installing CF..."
+          cf-for-k8s-master/bin/install-cf.sh cf-install-values.yml
+          bosh interpolate --path /cf_admin_password cf-install-values.yml > user-password-for-smoke-tests/cf-admin-password.txt
+          echo "Configuring DNS..."
           cf-for-k8s-master/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
 
   - task: run-smoke-test
@@ -156,16 +99,17 @@ jobs:
       <<: *common-test-config
       inputs:
       - name: cf-for-k8s-master
+      - name: user-password-for-smoke-tests
       params:
         SMOKE_TEST_API_ENDPOINT: https://api.((ci_k8s_domain))
         SMOKE_TEST_APPS_DOMAIN: ((ci_k8s_domain))
         SMOKE_TEST_USERNAME: admin
-        SMOKE_TEST_PASSWORD: ((ci_k8s_cf_admin_password))
       run:
         path: /bin/sh
         args:
         - -ec
         - |
+          export SMOKE_TEST_PASSWORD=$(cat user-password-for-smoke-tests/cf-admin-password.txt)
           cd cf-for-k8s-master/tests/smoke
           ginkgo .
 

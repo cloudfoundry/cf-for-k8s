@@ -1,0 +1,144 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: docker-registry-secret
+  labels:
+    app: docker-registry
+    chart: docker-registry-1.9.1
+    heritage: Helm
+    release: docker-registry
+type: Opaque
+data:
+  haSharedSecret: d3c5SVU1WlhQQndUV2R6aQ==
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: docker-registry-config
+  labels:
+    app: docker-registry
+    chart: docker-registry-1.9.1
+    heritage: Helm
+    release: docker-registry
+data:
+  config.yml: |-
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
+    http:
+      addr: :5000
+      headers:
+        X-Content-Type-Options:
+        - nosniff
+    log:
+      fields:
+        service: registry
+    storage:
+      cache:
+        blobdescriptor: inmemory
+    version: 0.1
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: docker-registry
+  labels:
+    app: docker-registry
+    chart: docker-registry-1.9.1
+    release: docker-registry
+    heritage: Helm
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-registry
+  labels:
+    app: docker-registry
+    chart: docker-registry-1.9.1
+    release: docker-registry
+    heritage: Helm
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5000
+    protocol: TCP
+    name: registry
+    targetPort: 5000
+  selector:
+    app: docker-registry
+    release: docker-registry
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-registry
+  labels:
+    app: docker-registry
+    chart: docker-registry-1.9.1
+    release: docker-registry
+    heritage: Helm
+spec:
+  selector:
+    matchLabels:
+      app: docker-registry
+      release: docker-registry
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        app: docker-registry
+        release: docker-registry
+      annotations:
+        checksum/config: 0533fc0191bbf2b93b745a12e749292434d6c47661eaf4d35cbc2f08cfa500b5
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+      containers:
+      - name: docker-registry
+        image: registry:2.7.1
+        imagePullPolicy: IfNotPresent
+        command:
+        - /bin/registry
+        - serve
+        - /etc/docker/registry/config.yml
+        ports:
+        - containerPort: 5000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+        resources: {}
+        env:
+        - name: REGISTRY_HTTP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: docker-registry-secret
+              key: haSharedSecret
+        - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+          value: /var/lib/registry
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/registry/
+        - name: docker-registry-config
+          mountPath: /etc/docker/registry
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: docker-registry
+      - name: docker-registry-config
+        configMap:
+          name: docker-registry-config

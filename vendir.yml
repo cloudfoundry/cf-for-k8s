@@ -45,6 +45,8 @@ directories:
     manual: {}
   - path: postgres
     manual: {}
+  - path: docker-registry
+    manual: {}
 # When adding a helm chart to our set of components:
 # 1. Find the chart you need from https://hub.helm.sh/charts/stable
 # 2. Note the latest (or desired) version from the "Chart Versions" section on the right.
@@ -60,3 +62,13 @@ directories:
     includePaths:
     - stable/minio/**/*
 
+- path: build/docker-registry/_vendir
+  contents:
+  - path: .
+    git:
+      url: https://github.com/helm/charts
+      # chart version: 1.9.1
+      # app version: 2.7.1
+      ref: 2b1e12f5f748a69a1429a1bb015bc34f3124c4e2
+    includePaths:
+    - stable/docker-registry/**/*

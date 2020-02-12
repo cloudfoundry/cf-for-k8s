@@ -1,0 +1,40 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:library", "library")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+
+#@ def place_in_system_namespace():
+#@overlay/match by=overlay.all,expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  namespace: docker-registry
+#@ end
+
+#@ registry = library.get("docker-registry")
+--- #@ template.replace(overlay.apply(registry.eval(), place_in_system_namespace()))
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: docker-registry
+
+#! expose docker-registry to allow nodes to pull images
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: docker-registry-external-virtual-service
+  namespace: docker-registry
+spec:
+  hosts:
+  - #@ "registry." + data.values.system_domain
+  gateways:
+  - #@ data.values.system_namespace + "/istio-ingressgateway"
+  http:
+  - route:
+    - destination:
+        host: docker-registry.docker-registry.svc.cluster.local
+        port:
+          number: 5000

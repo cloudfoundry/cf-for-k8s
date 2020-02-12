@@ -31,3 +31,10 @@ SMOKE_TEST_API_ENDPOINT=https://api.system.cf.example.com SMOKE_TEST_USERNAME=ad
 - `build/` includes building instructions for components that do not provide plain YAML or ytt templates
   - this directory is only used by cf-for-k8s maintainers
   - `build.sh` in each sub-directory has specific build instructions
+
+## Tips
+
+- `alias k=kubectl`
+  - useful alias
+- `kubectl get pod -A -o custom-columns='NAME:metadata.name,INITCONS:spec.initContainers[*].image,CONS:spec.containers[*].image'`
+  - show all used images in pods

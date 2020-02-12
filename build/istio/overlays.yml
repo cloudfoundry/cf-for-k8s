@@ -10,3 +10,12 @@ webhooks:
   clientConfig:
     #@overlay/remove
     caBundle:
+
+#! PodDisruptionBudget cannot be updated in place, so allow kapp to replace for upgrade
+#@overlay/match by=overlay.subset({"kind": "PodDisruptionBudget"}), expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/update-strategy: fallback-on-replace

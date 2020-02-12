@@ -212,10 +212,19 @@ data:
     logger.cfIdentity.appenderRef.uaaDefaultAppender.ref = UaaDefaultAppender
 
 #! other resources will expect "uaa.<system-namespace>.svc.cluster.local" as domain name for UAA Service.
+#! removing the hardcoded node port svc as we should handle external traffic through istio
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata": {"name": "uaa-service"}})
 ---
 metadata:
   name: uaa
+spec:
+  #@overlay/remove
+  type:
+  ports:
+    #@overlay/match by=overlay.all
+    -
+      #@overlay/remove
+      nodePort:
 
 #! expose UAA under the system domain
 ---

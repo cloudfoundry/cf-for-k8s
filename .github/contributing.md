@@ -13,6 +13,6 @@
 1. If you are adding/updating data values, please also add those changes to the
    `sample-cf-install-values.yml` file
 1. Before submitting, please ensure you have deployed and [run smoke
-   tests](docs/development.md#smoke-tests-1)
+   tests](../docs/development.md#smoke-tests-1)
 1. Push your changes to your branch/fork
 1. Create a pull request

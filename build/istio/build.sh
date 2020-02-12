@@ -2,10 +2,11 @@
 set -eu
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DESIRED_ISTIO_VERSION="1.4.2"
 
 istioctl_version="$(istioctl version --remote=false)"
-if [ ${istioctl_version} != "1.4.2" ]; then
-  echo "Please install version 1.4.2 of istioctl"
+if [ ${istioctl_version} != "${DESIRED_ISTIO_VERSION}" ]; then
+  echo "Please install version ${DESIRED_ISTIO_VERSION} of istioctl: https://github.com/istio/istio/releases/tag/${DESIRED_ISTIO_VERSION}"
   exit 1
 fi
 

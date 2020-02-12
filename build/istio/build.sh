@@ -4,8 +4,8 @@ set -eu
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 istioctl_version="$(istioctl version --remote=false)"
-if [ ${istioctl_version} != "1.4.2" ]; then
-  echo "Please install version 1.4.2 of istioctl"
+if [ ${istioctl_version} != "1.4.3" ]; then
+  echo "Please install version 1.4.3 of istioctl"
   exit 1
 fi
 

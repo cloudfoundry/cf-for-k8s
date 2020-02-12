@@ -72,25 +72,26 @@ jobs:
       inputs:
       - name: cf-for-k8s-master
       outputs:
-      - name: user-password-for-smoke-tests
+      - name: env-metadata
       params:
         DNS_DOMAIN: ((ci_k8s_domain))
         DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
-        SYSTEM_DOMAIN: ((ci_k8s_domain))
       run:
         path: /bin/bash
         args:
         - -ec
         - |
           export KUBECONFIG=kube-config.yml
+          export DNS_DOMAIN="b$(date +%s).${DNS_DOMAIN}"
           gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null 2>&1
           gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
 
           echo "Generating install values..."
-          cf-for-k8s-master/hack/generate-values.sh "${SYSTEM_DOMAIN}" > cf-install-values.yml
+          cf-for-k8s-master/hack/generate-values.sh "${DNS_DOMAIN}" > cf-install-values.yml
           echo "Installing CF..."
           cf-for-k8s-master/bin/install-cf.sh cf-install-values.yml
-          bosh interpolate --path /cf_admin_password cf-install-values.yml > user-password-for-smoke-tests/cf-admin-password.txt
+          bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
           echo "Configuring DNS..."
           cf-for-k8s-master/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
 
@@ -99,17 +100,17 @@ jobs:
       <<: *common-test-config
       inputs:
       - name: cf-for-k8s-master
-      - name: user-password-for-smoke-tests
-      params:
-        SMOKE_TEST_API_ENDPOINT: https://api.((ci_k8s_domain))
-        SMOKE_TEST_APPS_DOMAIN: ((ci_k8s_domain))
-        SMOKE_TEST_USERNAME: admin
+      - name: env-metadata
       run:
         path: /bin/sh
         args:
         - -ec
         - |
-          export SMOKE_TEST_PASSWORD=$(cat user-password-for-smoke-tests/cf-admin-password.txt)
+          DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
+          export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
+          export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
+          export SMOKE_TEST_USERNAME=admin
+          export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
           cf-for-k8s-master/hack/run-smoke-tests.sh
 
   - task: delete-cf

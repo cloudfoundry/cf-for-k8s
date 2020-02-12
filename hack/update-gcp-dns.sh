@@ -17,15 +17,18 @@ DNS_ZONE_NAME="$2"
 echo "Discovering Istio Gateway LB IP..."
 external_static_ip=$(kubectl get services/istio-ingressgateway -n istio-system --output="jsonpath={.status.loadBalancer.ingress[0].ip}")
 
-echo "Configuring DNS for external IP \"${external_static_ip}\"..."
+echo "Starting transaction..."
 gcloud dns record-sets transaction start --zone="${DNS_ZONE_NAME}"
-gcp_records_json="$( gcloud dns record-sets list --zone="${DNS_ZONE_NAME}" --name "*.${DNS_DOMAIN}" --format=json )"
-record_count="$( echo "${gcp_records_json}" | jq 'length' )"
-if [ "${record_count}" != "0" ]; then
-  existing_record_ip="$( echo "${gcp_records_json}" | jq -r '.[0].rrdatas | join(" ")' )"
-  gcloud dns record-sets transaction remove --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=5 "${existing_record_ip}" --verbosity=debug
-fi
+
+echo "Deleting existing DNS A records..."
+gcloud dns record-sets list --zone="${DNS_ZONE_NAME}" --format=json | \
+  jq -r '.[] | select(.type == "A") | ("\"" + .name + "\" \"" + (.rrdatas | join(" ")) + "\"")' | \
+  xargs -n2 -I{} -t sh -c "gcloud dns record-sets transaction remove --ttl=5 --type=A --zone="${DNS_ZONE_NAME}" --name={} --verbosity=debug"
+
+echo "Configuring DNS for external IP \"${external_static_ip}\"..."
 gcloud dns record-sets transaction add --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=5 "${external_static_ip}" --verbosity=debug
+
+echo "Executing transaction..."
 gcloud dns record-sets transaction execute --zone="${DNS_ZONE_NAME}" --verbosity=debug
 
 resolved_ip=''

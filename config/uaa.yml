@@ -105,6 +105,11 @@ oauth:
       authorities: scim.userids
       authorized-grant-types: client_credentials
       secret: #@ data.values.uaa.admin_client_secret
+    log-cache:
+      id: #@ data.values.log_cache_client.id
+      secret: #@ data.values.log_cache_client.secret
+      authorities: uaa.resource
+      authorized-grant-types: client_credentials
 
 issuer:
   uri: #@ "https://uaa." + data.values.system_domain

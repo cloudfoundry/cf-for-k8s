@@ -26,6 +26,8 @@ variables:
   type: password
 - name: capi_db_password
   type: password
+- name: log_cache_client_password
+  type: password
 - name: uaa_db_password
   type: password
 - name: uaa_admin_client_secret
@@ -87,9 +89,21 @@ variables:
   options:
     ca: log_cache_ca
     common_name: log-cache-gateway
+    alternative_names:
+    - localhost
     extended_key_usage:
     - client_auth
     - server_auth
+
+- name: log_cache_external
+  type: certificate
+  options:
+    ca: log_cache_ca
+    common_name: log-cache-external
+    extended_key_usage:
+    - client_auth
+    - server_auth
+
 EOF
 ) >/dev/null
 
@@ -112,19 +126,28 @@ capi:
   database:
     password: $( bosh interpolate ${VARS_FILE} --path=/capi_db_password )
 
+log_cache_client:
+  id: log-cache
+  secret: $( bosh interpolate ${VARS_FILE} --path=/log_cache_client_password )
+
 system_certificate:
   #! This certificates and keys are base64 encoded and should be valid for *.system.cf.example.com
   crt: &crt $( bosh interpolate ${VARS_FILE} --path=/system_certificate/certificate | base64 | tr -d '\n' )
   key: &key $( bosh interpolate ${VARS_FILE} --path=/system_certificate/private_key | base64 | tr -d '\n' )
   ca: $( bosh interpolate ${VARS_FILE} --path=/system_certificate/ca | base64 | tr -d '\n' )
 
-log_cache_ca:
-  crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache_ca/certificate | base64 | tr -d '\n' )
-  key: $( bosh interpolate ${VARS_FILE} --path=/log_cache_ca/private_key | base64 | tr -d '\n' )
 
 log_cache:
   crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache/certificate | base64 | tr -d '\n' )
   key: $( bosh interpolate ${VARS_FILE} --path=/log_cache/private_key | base64 | tr -d '\n' )
+
+log_cache_ca:
+  crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache_ca/certificate | base64 | tr -d '\n' )
+  key: $( bosh interpolate ${VARS_FILE} --path=/log_cache_ca/private_key | base64 | tr -d '\n' )
+
+log_cache_external:
+  crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache_external/certificate | base64 | tr -d '\n' )
+  key: $( bosh interpolate ${VARS_FILE} --path=/log_cache_external/private_key | base64 | tr -d '\n' )
 
 log_cache_metrics:
   crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache_metrics/certificate | base64 | tr -d '\n' )

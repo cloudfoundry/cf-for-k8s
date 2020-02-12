@@ -102,12 +102,20 @@ log_cache_metrics:
   key: "" #! Base64-encoded private key for the cert above
 
 log_cache_gateway:
-  crt: "" #! Base64-encoded cert for the log cache gateway requires CN of log-cache-gateway
+  crt: "" #! Base64-encoded cert for the log cache gateway requires Name of localhost
   key: "" #! Base64-encoded private key for the cert above
 
 log_cache_syslog:
   crt: "" #! Base64-encoded cert for the log cache syslog server requires CN of log-cache-syslog
   key: "" #! Base64-encoded private key for the cert above
+
+log_cache_external:
+  crt: "" #! Base64-encoded cert for the log cache external cert
+  key: "" #! Base64-encoded private key for the cert above
+
+log_cache_client:
+  id: "" #! comment
+  secret: "" #! comment
 
 docker_registry:
   http_secret: "" #! A random piece of data used to sign state that may be stored with the client to protect against tampering. For production environments you should generate a random piece of data using a cryptographically secure random generator.

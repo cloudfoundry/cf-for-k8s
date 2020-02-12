@@ -8,6 +8,7 @@ images:
   syslog_server: "logcache/syslog-server"
   log_cache_gateway: "logcache/log-cache-gateway"
   fluent: "logcache/cf-k8s-logging"
+  cf_auth_proxy: "logcache/cf-auth-proxy"
 
 log_cache_ca:
   crt: "" #! Base64-encoded ca for the log cache
@@ -22,9 +23,17 @@ log_cache_metrics:
   key: "" #! Base64-encoded private key for the cert above
 
 log_cache_gateway:
-  crt: "" #! Base64-encoded cert for the log cache gateway requires CN of log-cache-gateway
+  crt: "" #! Base64-encoded cert for the log cache gateway
   key: "" #! Base64-encoded private key for the cert above
 
 log_cache_syslog:
   crt: "" #! Base64-encoded cert for the log cache syslog server requires CN of log-cache-syslog
   key: "" #! Base64-encoded private key for the cert above
+
+log_cache_external:
+  crt: "" #! Base64-encoded cert for the external gateway
+  key: "" #! Base64-encoded private key for the cert above
+
+client:
+  id: "" #! client id
+  secret: "" #! client secret

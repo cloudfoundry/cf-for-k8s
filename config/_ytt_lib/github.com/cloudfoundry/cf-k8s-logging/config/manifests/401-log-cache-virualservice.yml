@@ -15,4 +15,4 @@ spec:
     - destination:
         host: #@ "log-cache.{}.svc.cluster.local".format(data.values.system_namespace)
         port:
-          number: 8081
+          number: 8083

@@ -27,10 +27,35 @@ log_cache_gateway:
 log_cache_syslog:
   crt: #@ data.values.log_cache_syslog.crt
   key: #@ data.values.log_cache_syslog.key
+
+log_cache_external:
+  crt: #@ data.values.log_cache_external.crt
+  key: #@ data.values.log_cache_external.key
+
+client:
+  id: #@ data.values.log_cache_client.id
+  secret: #@ data.values.log_cache_client.secret
 #@ end
 
 #@ logging = library.get("github.com/cloudfoundry/cf-k8s-logging")
 --- #@ template.replace(logging.with_data_values(logging_values()).eval())
+
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata":{"name": "log-cache"}})
+---
+spec:
+  ports:
+  #@overlay/match by=overlay.subset({"name": "http"})
+  - name: https
+
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: system-ca
+  namespace: #@ data.values.system_namespace
+data:
+  tls.crt: #@ data.values.system_certificate.crt
 
 #@overlay/match by=overlay.subset({"kind":"Service", "metadata":{"name": "log-cache"}})
 ---

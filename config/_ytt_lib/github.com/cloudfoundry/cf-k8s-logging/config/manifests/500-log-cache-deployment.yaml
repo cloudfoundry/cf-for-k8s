@@ -18,6 +18,40 @@ spec:
         app: log-cache
     spec:
       containers:
+      - name: cf-auth-proxy
+        image: logcache/cf-auth-proxy
+        ports:
+          - containerPort: 8083
+        env:
+        - name: LOG_CACHE_GATEWAY_ADDR
+          value: https://localhost:8081
+        - name: CAPI_CA_PATH
+          value: /system-ca/tls.crt
+        - name: UAA_CA_PATH
+          value: /system-ca/tls.crt
+        - name: CAPI_ADDR
+          value: #@ "https://api.{}".format(data.values.system_domain)
+        - name: CAPI_COMMON_NAME
+          value: capi
+        - name: UAA_ADDR
+          value: #@ "https://uaa.{}".format(data.values.system_domain)
+        - name: UAA_CLIENT_ID
+          value: #@ data.values.client.id
+        - name: UAA_CLIENT_SECRET
+          value: #@ data.values.client.secret
+        volumeMounts:
+        - mountPath: /ca
+          name: ca
+          readOnly: true
+        - mountPath: /external-certs
+          name: external-certs
+          readOnly: true
+        - mountPath: /metrics-certs
+          name: metrics-certs
+          readOnly: true
+        - mountPath: /system-ca
+          name: system-ca
+          readOnly: true
       - name: syslog-server
         image: #@ data.values.images.syslog_server
         ports:
@@ -86,4 +120,10 @@ spec:
       - name: metrics-certs
         secret:
           secretName: log-cache-metrics
+      - name: system-ca
+        secret:
+          secretName: system-ca
+      - name: external-certs
+        secret:
+          secretName: log-cache-external-certs
 

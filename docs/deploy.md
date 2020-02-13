@@ -25,7 +25,7 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
 
 1. Create a "CF Installation Values" file and configure it:
 
-   You have the option of auto-generating the installation values or creating the values by yourself. 
+   You have the option of auto-generating the installation values or creating the values by yourself.
 
    #### Option 1 - Generate the install values
    The script relies on bosh [interpolate](https://bosh.io/docs/cli-v2-install/#install) to generate the install values
@@ -37,6 +37,8 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
    1. Create a file called `/tmp/cf-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
    1. Open the file and change the `system_domain` and `app_domain` to your desired domain address
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
+
+   Make sure that your certificates include a subject alternative name entry for the internal `*.cf-system.svc.cluster.local` domain in addition to your chosen external domain.
 
 1. Run the install script with your "CF Install Values" file
    ```bash
@@ -51,7 +53,7 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
       configure a single DNS record for the domain you passed as input to the
       script and have it resolve to the Ingress Gateway's external IP
 
-      e.g. 
+      e.g.
       ```
       # sample A record in Google cloud DNS. The IP address below is the address of Ingress gateway's external IP
       Domain                  Record Type       TTL         IP Address

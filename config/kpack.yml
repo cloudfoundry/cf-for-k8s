@@ -1,0 +1,5 @@
+#@ load("@ytt:library", "library")
+#@ load("@ytt:template", "template")
+
+#@ kpack = library.get("kpack")
+--- #@ template.replace(kpack.eval())

@@ -37,15 +37,18 @@ directories:
     includePaths:
     - k8s/templates/**/*
     - k8s/values/default-values.yml
-  - path: istio
+  - path: docker-registry
     manual: {}
   - path: eirini
+    manual: {}
+  - path: istio
+    manual: {}
+  - path: kpack
+    # Contents copied from https://github.com/pivotal/kpack/releases/download/v0.0.6/release-0.0.6.yaml
     manual: {}
   - path: minio
     manual: {}
   - path: postgres
-    manual: {}
-  - path: docker-registry
     manual: {}
 # When adding a helm chart to our set of components:
 # 1. Find the chart you need from https://hub.helm.sh/charts/stable

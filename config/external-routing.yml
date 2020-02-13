@@ -9,7 +9,7 @@ metadata:
   name: istio-ingressgateway-certs
   namespace: istio-system
   annotations:
-    kapp.k14s.io/change-rule: "upsert before upserting istio.io/ingressgateway"
+    kapp.k14s.io/change-rule.istio-ingressgateway: "upsert before upserting istio.io/ingressgateway"
 data:
   tls.key: #@ data.values.system_certificate.key
   tls.crt: #@ data.values.system_certificate.crt

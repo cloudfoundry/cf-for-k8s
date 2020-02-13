@@ -16,6 +16,7 @@ resources:
   source:
     interval: 10m
 
+# semaphore for the Kubernetes cluster (ci-test-cluster in GKE); it is shared between this pipeline and the CF for K8s PR test pipeline
 - name: pool
   type: pool
   icon: pool

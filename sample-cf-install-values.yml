@@ -45,3 +45,6 @@ eirini:
     #! This certificate should be valid for eirini.cf-system.svc.cluster.local
     crt: *crt
     key: *key
+
+docker_registry:
+  http_secret: dockerregistryhttpsecret

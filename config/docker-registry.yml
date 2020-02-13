@@ -2,6 +2,7 @@
 #@ load("@ytt:library", "library")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
+#@ load("@ytt:base64", "base64")
 
 #@ def place_in_system_namespace():
 #@overlay/match by=overlay.all,expects="1+"
@@ -13,6 +14,13 @@ metadata:
 
 #@ registry = library.get("docker-registry")
 --- #@ template.replace(overlay.apply(registry.eval(), place_in_system_namespace()))
+
+#! overlay docker registry secret
+#@overlay/match by=overlay.subset({"kind":"Secret", "metadata":{"name":"docker-registry-secret"}})
+---
+data:
+  #@overlay/replace
+  haSharedSecret: #@ base64.encode(data.values.docker_registry.http_secret)
 
 ---
 apiVersion: v1

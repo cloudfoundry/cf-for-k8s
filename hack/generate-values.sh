@@ -25,6 +25,8 @@ variables:
   type: password
 - name: uaa_admin_client_secret
   type: password
+- name: docker_registry_http_secret
+  type: password
 - name: default_ca
   type: certificate
   options:
@@ -148,4 +150,7 @@ eirini:
   tls:
     crt: *crt
     key: *key
+
+docker_registry:
+  http_secret: $( bosh interpolate ${VARS_FILE} --path=/docker_registry_http_secret )
 EOF

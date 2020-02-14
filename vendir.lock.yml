@@ -6,9 +6,8 @@ directories:
       sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
     path: github.com/GoogleCloudPlatform/metacontroller
   - git:
-      commitTitle: 'ci: enable sidecars on cf-system and metacontroller ns for all
-        envs...'
-      sha: b4375d0b13cb853ee402a9530b54188772c24ff6
+      commitTitle: 'workaround: make mesh policy permissive for integration with cf-for-k8s...'
+      sha: f7f2670bcc840c3916e3fa54440906258ce0e447
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: delete namespace template...
@@ -29,8 +28,6 @@ directories:
     path: docker-registry
   - manual: {}
     path: eirini
-  - manual: {}
-    path: istio
   - manual: {}
     path: minio
   - manual: {}

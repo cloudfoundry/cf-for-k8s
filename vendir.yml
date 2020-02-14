@@ -13,10 +13,11 @@ directories:
   - path: github.com/cloudfoundry/cf-k8s-networking
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: b4375d0b13cb853ee402a9530b54188772c24ff6
+      ref: f7f2670bcc840c3916e3fa54440906258ce0e447
     includePaths:
     - cfroutesync/crds/**/*
     - config/cfroutesync/**/*
+    - config/istio-generated/**/*
   - path: github.com/cloudfoundry/capi-k8s-release
     git:
       url: https://github.com/cloudfoundry/capi-k8s-release
@@ -47,8 +48,6 @@ directories:
   - path: docker-registry
     manual: {}
   - path: eirini
-    manual: {}
-  - path: istio
     manual: {}
   - path: minio
     manual: {}

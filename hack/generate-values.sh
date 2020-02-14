@@ -8,8 +8,8 @@ set -eu
 # Make sure bosh binary exists
 bosh --version >/dev/null
 
-VARS_FILE=/tmp/cf-vars.yaml
 DOMAIN=$1
+VARS_FILE="/tmp/${DOMAIN}/cf-vars.yaml"
 
 bosh interpolate --vars-store=${VARS_FILE} <(cat <<EOF
 variables:

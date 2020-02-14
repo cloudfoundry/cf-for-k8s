@@ -2,13 +2,18 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
+      commitTitle: 'fix: change comments to be compatible with ytt...'
+      sha: 920f0de13797a4292bf71c4b3f7c2b9864b9d6ae
+    path: .
+  path: build/istio/installation-values
+- contents:
+  - git:
       commitTitle: Update install manifest to v0.4.0.
       sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
     path: github.com/GoogleCloudPlatform/metacontroller
   - git:
-      commitTitle: 'ci: enable sidecars on cf-system and metacontroller ns for all
-        envs...'
-      sha: b4375d0b13cb853ee402a9530b54188772c24ff6
+      commitTitle: 'fix: change comments to be compatible with ytt...'
+      sha: 920f0de13797a4292bf71c4b3f7c2b9864b9d6ae
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: delete namespace template...
@@ -23,15 +28,17 @@ directories:
       sha: 5f3af8a7b158c77320c04b45efae99c936ad0a7d
     path: github.com/cloudfoundry/uaa
   - manual: {}
-    path: istio
+    path: docker-registry
   - manual: {}
     path: eirini
+  - manual: {}
+    path: istio
+  - manual: {}
+    path: kpack
   - manual: {}
     path: minio
   - manual: {}
     path: postgres
-  - manual: {}
-    path: docker-registry
   path: config/_ytt_lib
 - contents:
   - git:

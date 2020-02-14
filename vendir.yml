@@ -2,6 +2,14 @@
 apiVersion: vendir.k14s.io/v1alpha1
 kind: Config
 directories:
+- path: build/istio/installation-values
+  contents:
+    - path: .
+      git:
+        url: https://github.com/cloudfoundry/cf-k8s-networking
+        ref: 920f0de13797a4292bf71c4b3f7c2b9864b9d6ae
+      includePaths:
+        - config/istio-install-config/**/*
 - path: config/_ytt_lib
   contents:
   - path: github.com/GoogleCloudPlatform/metacontroller
@@ -13,7 +21,7 @@ directories:
   - path: github.com/cloudfoundry/cf-k8s-networking
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: b4375d0b13cb853ee402a9530b54188772c24ff6
+      ref: 920f0de13797a4292bf71c4b3f7c2b9864b9d6ae
     includePaths:
     - cfroutesync/crds/**/*
     - config/cfroutesync/**/*

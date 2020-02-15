@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-set -eu
+set -euo pipefail
 
 if [ $# -lt 2 ]; then
-  echo "Usage: $(basename $0) <dns-domain> <dns-zone-name>"
+  echo "Usage: $(basename "$0") <dns-domain> <dns-zone-name>"
   exit 1
 fi
 
@@ -23,7 +23,7 @@ gcloud dns record-sets transaction start --zone="${DNS_ZONE_NAME}"
 echo "Deleting existing DNS A records..."
 gcloud dns record-sets list --zone="${DNS_ZONE_NAME}" --format=json | \
   jq -r '.[] | select(.type == "A") | ("\"" + .name + "\" \"" + (.rrdatas | join(" ")) + "\"")' | \
-  xargs -n2 -I{} -t sh -c "gcloud dns record-sets transaction remove --ttl=5 --type=A --zone="${DNS_ZONE_NAME}" --name={} --verbosity=debug"
+  xargs -n2 -I{} -t sh -c "gcloud dns record-sets transaction remove --ttl=5 --type=A --zone=\"${DNS_ZONE_NAME}\" --name={} --verbosity=debug"
 
 echo "Configuring DNS for external IP \"${external_static_ip}\"..."
 gcloud dns record-sets transaction add --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=5 "${external_static_ip}" --verbosity=debug

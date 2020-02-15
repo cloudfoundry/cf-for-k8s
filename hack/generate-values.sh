@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 
-set -eu
+set -euo pipefail
+
+if [[ $# -lt 1 ]]; then
+  echo "Usage $(basename "$0") <domain>"
+  exit 1
+fi
 
 ## Usage: ./generate-values.sh <my-domain>
 ## where my-domain will be used as both the system domain and app domain.

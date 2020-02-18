@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -eu
 
 if [ $# -lt 2 ]; then
   echo "Usage: $(basename "$0") <dns-domain> <dns-zone-name>"

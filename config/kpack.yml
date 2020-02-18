@@ -1,5 +1,5 @@
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
 
-#@ kpack = library.get("kpack")
+#@ kpack = library.get("github.com/pivotal/kpack")
 --- #@ template.replace(kpack.eval())

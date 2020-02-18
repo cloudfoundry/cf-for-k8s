@@ -49,4 +49,9 @@ directories:
       sha: 2b1e12f5f748a69a1429a1bb015bc34f3124c4e2
     path: .
   path: build/docker-registry/_vendir
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/cloudfoundry-incubator/eirini-release/releases/23064766
+    path: .
+  path: build/eirini/_vendir
 kind: LockConfig

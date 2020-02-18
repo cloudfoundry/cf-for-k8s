@@ -79,3 +79,12 @@ directories:
       ref: 2b1e12f5f748a69a1429a1bb015bc34f3124c4e2
     includePaths:
     - stable/docker-registry/**/*
+- path: build/eirini/_vendir
+  contents:
+  - path: .
+    githubRelease:
+      slug: cloudfoundry-incubator/eirini-release
+      tag: v1.2.0
+      disableAutoChecksumValidation: true
+      unpackArchive:
+        path: eirini.tgz

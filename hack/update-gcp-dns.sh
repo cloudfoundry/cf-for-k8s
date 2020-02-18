@@ -37,3 +37,5 @@ while [ "$resolved_ip" != "$external_static_ip" ]; do
   sleep 5
   resolved_ip=$(nslookup "*.$DNS_DOMAIN" | grep Address | grep -v ':53' | cut -d ' ' -f2)
 done
+
+gcloud dns record-sets list --zone="${DNS_ZONE_NAME}" --filter="Type=A"

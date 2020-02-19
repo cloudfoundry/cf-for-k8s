@@ -1,5 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
+#@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:base64", "base64")
 
@@ -31,4 +32,9 @@ log_cache_syslog:
 #@ logging = library.get("github.com/cloudfoundry/cf-k8s-logging")
 --- #@ template.replace(logging.with_data_values(logging_values()).eval())
 
-
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata":{"name": "log-cache"}})
+---
+spec:
+  ports:
+  #@overlay/match by=overlay.subset({"name": "http"})
+  - name: https

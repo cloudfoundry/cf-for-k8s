@@ -10,8 +10,8 @@ directories:
       sha: f7f2670bcc840c3916e3fa54440906258ce0e447
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: delete namespace template...
-      sha: 26aa96fed336505b048030c120266aa4a4871092
+      commitTitle: enable capi syncing with eirini...
+      sha: 1bc5ea5eac9359af22fb2088c21a27f5a4b356aa
     path: github.com/cloudfoundry/capi-k8s-release
   - git:
       commitTitle: clean up interface for PR...

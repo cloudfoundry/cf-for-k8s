@@ -25,7 +25,7 @@ ccdb:
   database: cloud_controller
 
 blobstore:
-  endpoint: http://capi-blobstore-minio:9000
+  endpoint: http://capi-blobstore-minio.default:9000
   access_key_id: AKIAIOSFODNN7EXAMPLE
   secret_access_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 

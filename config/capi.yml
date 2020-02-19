@@ -60,37 +60,8 @@ uaa:
       secret: #@ data.values.uaa.admin_client_secret
 #@ end
 
-#@ def ccng_config():
-#@overlay/match missing_ok=True
-opi:
-  url: #@ "https://eirini.{}.svc.cluster.local:8085".format(data.values.system_namespace)
-buildpacks:
-  fog_connection:
-    endpoint: #@ data.values.capi.blobstore.endpoint
-droplets:
-  fog_connection:
-    endpoint: #@ data.values.capi.blobstore.endpoint
-packages:
-  fog_connection:
-    endpoint: #@ data.values.capi.blobstore.endpoint
-resource_pool:
-  fog_connection:
-    endpoint: #@ data.values.capi.blobstore.endpoint
-#@ end
-
-#@ def overlay_ccng_config(old, new):
-#@   return yaml.encode(overlay.apply(yaml.decode(old), ccng_config()))
-#@ end
-
 #@ capi = library.get("github.com/cloudfoundry/capi-k8s-release")
 --- #@ template.replace(capi.with_data_values(capi_values()).eval())
-
-#! overlay Eirini URL fix
-#@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"cloud-controller-ng-yaml"}})
----
-data:
-  #@overlay/replace via=overlay_ccng_config
-  cloud_controller_ng.yml:
 
 #! expose CAPI under the system domain
 ---

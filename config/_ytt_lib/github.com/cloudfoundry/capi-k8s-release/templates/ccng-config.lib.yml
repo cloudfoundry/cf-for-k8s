@@ -162,7 +162,7 @@ resource_pool:
   blobstore_type: fog
   fog_connection:
     provider: AWS
-    endpoint: http://capi-blobstore-minio.default:9000 #! TODO: minio shouldnt require default namespace
+    endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
     aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
@@ -183,7 +183,7 @@ packages:
   blobstore_type: fog
   fog_connection:
     provider: AWS
-    endpoint: http://capi-blobstore-minio.default:9000 #! TODO: minio shouldnt require default namespace
+    endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
     aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
@@ -204,7 +204,7 @@ droplets:
   blobstore_type: fog
   fog_connection:
     provider: AWS
-    endpoint: http://capi-blobstore-minio.default:9000 #! TODO: minio shouldnt require default namespace
+    endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
     aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
@@ -224,7 +224,7 @@ buildpacks:
   blobstore_type: fog
   fog_connection:
     provider: AWS
-    endpoint: http://capi-blobstore-minio.default:9000 #! TODO: minio shouldnt require default namespace
+    endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
     aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
@@ -326,7 +326,7 @@ diego:
   use_privileged_containers_for_staging: false
 
 opi:
-  url: #@ "http://eirini.{}.svc.cluster.local:8085".format(data.values.namespace)
+  url: #@ "https://eirini.{}.svc.cluster.local:8085".format(data.values.namespace)
   opi_staging: true
   enabled: true
   cc_uploader_url: "https://TODO.TODO"
@@ -358,7 +358,7 @@ max_retained_deployments_per_app: 100
 max_retained_builds_per_app: 100
 max_retained_revisions_per_app: 100
 diego_sync:
-  frequency_in_seconds: 0
+  frequency_in_seconds: 30
 pending_builds:
   frequency_in_seconds: 300
   expiration_in_seconds: 42

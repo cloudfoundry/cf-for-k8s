@@ -27,8 +27,15 @@ spec:
           volumeMounts:
           - name: cloud-controller-ng-yaml
             mountPath: /config
+          #@ if/end data.values.eirini.serverCerts.secretName:
+          - name: eirini-certs
+            mountPath: /config/eirini/certs
       volumes:
       - name: cloud-controller-ng-yaml
         configMap:
           name: cloud-controller-ng-yaml
+      #@ if/end data.values.eirini.serverCerts.secretName:
+      - name: eirini-certs
+        secret:
+          secretName: #@ data.values.eirini.serverCerts.secretName
 

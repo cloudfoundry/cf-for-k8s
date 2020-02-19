@@ -1,12 +1,14 @@
-# https://hub.docker.com/_/golang/?tab=tags&page=1&name=alpine
-FROM golang:alpine3.11
+FROM ubuntu:bionic
 
-RUN apk update
-# https://pkgs.alpinelinux.org/packages?name=git
-RUN apk add git=2.24.1-r0
-# https://pkgs.alpinelinux.org/packages?name=gcc
-RUN apk add gcc=9.2.0-r3
+RUN apt-get update && \
+    apt-get install -y git gcc wget
 
+
+RUN export GO_TAR=go1.13.8.linux-amd64.tar.gz && \
+    wget https://dl.google.com/go/${GO_TAR} && \
+    tar -C /usr/local -xzf ${GO_TAR}
+
+ENV PATH=$PATH:/usr/local/go/bin
 # https://github.com/golang/go/issues/28065
 ENV CGO_ENABLED=0
 # https://golang.org/doc/go1.13#modules
@@ -19,6 +21,12 @@ WORKDIR /tmp
 RUN \
   wget -O "cf-tar" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=6.49.0" && \
   tar xzvf cf-tar -C /usr/local/bin && \
-  chmod +x /usr/local/bin/cf
+  chmod +x /usr/local/bin/cf && \
+  wget https://github.com/cloudfoundry/log-cache-cli/releases/download/v2.1.0/log-cache-cf-plugin-linux && \
+  cf install-plugin -f log-cache-cf-plugin-linux
 
 RUN rm -rf /tmp/*
+
+RUN go version && \
+    cf --version && \
+    cf tail --help

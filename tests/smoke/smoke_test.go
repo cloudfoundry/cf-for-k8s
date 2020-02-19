@@ -65,7 +65,7 @@ var _ = Describe("Smoke Tests", func() {
 				// Delete the test org
 				Eventually(func() *Session {
 					return cf.Cf("delete-org", orgName, "-f").Wait()
-				}, 5*time.Minute, 1*time.Second).Should(Exit(0))
+				}, 2*time.Minute, 1*time.Second).Should(Exit(0))
 			}
 		})
 
@@ -85,7 +85,7 @@ var _ = Describe("Smoke Tests", func() {
 				resp, err = http.Get(fmt.Sprintf("http://%s.%s/env", appName, appsDomain))
 				Expect(err).NotTo(HaveOccurred())
 				return resp.StatusCode
-			}, 5*time.Minute, 30*time.Second).Should(Equal(200))
+			}, 2*time.Minute, 30*time.Second).Should(Equal(200))
 
 			body, err := ioutil.ReadAll(resp.Body)
 			Expect(err).NotTo(HaveOccurred())

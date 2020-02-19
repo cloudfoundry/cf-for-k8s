@@ -94,9 +94,15 @@ var _ = Describe("Smoke Tests", func() {
 				VcapServices string `json:"VCAP_SERVICES"`
 			}
 
-			json.Unmarshal(body, &appResponse)
-
+			err = json.Unmarshal(body, &appResponse)
+			Expect(err).NotTo(HaveOccurred())
 			Expect(appResponse.VcapServices).NotTo(BeEmpty())
+
+			By("That the application's logs are available.")
+			Eventually(func() string {
+				cfTail := cf.Cf("tail", appName, "--lines", "1000")
+				return string(cfTail.Wait().Out.Contents())
+			}).Should(ContainSubstring("Hello World from index"))
 		})
 	})
 })

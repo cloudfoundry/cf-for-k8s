@@ -27,8 +27,15 @@ cfroutesync:
 #@ metacontroller = library.get("github.com/GoogleCloudPlatform/metacontroller")
 --- #@ template.replace(metacontroller.eval())
 
-
 #! Istio Configurations
+
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name": "istio-system"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
 
 #@ cf_namespaces = [data.values.system_namespace, data.values.workloads_namespace , "cf-db", "cf-blobstore", "metacontroller"]
 
@@ -63,4 +70,3 @@ metadata:
     #@overlay/match missing_ok=True
     istio-injection: enabled
 #@ end
-

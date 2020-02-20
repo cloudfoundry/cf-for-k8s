@@ -49,10 +49,3 @@ metadata:
   namespace: #@ data.values.system_namespace
 data:
   tls.crt: #@ data.values.system_certificate.crt
-
-#@overlay/match by=overlay.subset({"kind":"Service", "metadata":{"name": "log-cache"}})
----
-spec:
-  ports:
-  #@overlay/match by=overlay.subset({"name": "http"})
-  - name: https

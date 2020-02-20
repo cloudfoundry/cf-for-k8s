@@ -30,11 +30,11 @@ spec:
         - name: UAA_CA_PATH
           value: /system-ca/tls.crt
         - name: CAPI_ADDR
-          value: #@ "https://api.{}".format(data.values.system_domain)
+          value: #@ "https://capi.{}.svc.cluster.local:80".format(data.values.system_namespace)
         - name: CAPI_COMMON_NAME
           value: capi
         - name: UAA_ADDR
-          value: #@ "https://uaa.{}".format(data.values.system_domain)
+          value: #@ "http://uaa.{}.svc.cluster.local:8080".format(data.values.system_namespace)
         - name: UAA_CLIENT_ID
           value: #@ data.values.client.id
         - name: UAA_CLIENT_SECRET

@@ -15,8 +15,8 @@ directories:
       sha: 26aa96fed336505b048030c120266aa4a4871092
     path: github.com/cloudfoundry/capi-k8s-release
   - git:
-      commitTitle: add cf-auth-proxy...
-      sha: 1171cd3402dd84eb480bf83a274d6e53ab625bfe
+      commitTitle: change the correct service...
+      sha: 8fa3fa7bc6500217ea29a710688275308e6bbf7f
     path: github.com/cloudfoundry/cf-k8s-logging
   - git:
       commitTitle: Add liveness, readiness, and startup probes to pod...

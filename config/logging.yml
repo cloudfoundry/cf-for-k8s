@@ -40,13 +40,6 @@ client:
 #@ logging = library.get("github.com/cloudfoundry/cf-k8s-logging")
 --- #@ template.replace(logging.with_data_values(logging_values()).eval())
 
-#@overlay/match by=overlay.subset({"kind":"Service", "metadata":{"name": "log-cache"}})
----
-spec:
-  ports:
-  #@overlay/match by=overlay.subset({"name": "http"})
-  - name: https
-
 ---
 apiVersion: v1
 kind: Secret

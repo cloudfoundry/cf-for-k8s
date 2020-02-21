@@ -112,7 +112,7 @@ jobs:
               grep cf_admin_password cf-install-values.yml | cut -d " " -f 2 > env-metadata/cf-admin-password.txt
               echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
               echo "Configuring DNS..."
-              cf-for-k8s-pr/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
+              ./cf-for-k8s-pr/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
 
       - task: run-smoke-test
         config:

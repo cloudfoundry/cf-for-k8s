@@ -92,13 +92,13 @@ jobs:
           cf-for-k8s-master/hack/generate-values.sh "${DNS_DOMAIN}" > cf-install-values.yml
           cf-for-k8s-master/hack/generate-certs.sh "${DNS_DOMAIN}" > cf-install-certs.yml
           echo "Installing CF..."
-                        kapp deploy -a cf -y -f <(ytt -f ./config \
-                -f cf-install-values.yml \
-                -f cf-install-certs.yml)
+          kapp deploy -a cf -y -f <(ytt -f ./config \
+            -f cf-install-values.yml \
+            -f cf-install-certs.yml)
           grep cf_admin_password cf-install-values.yml | cut -d " " -f 2 > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
           echo "Configuring DNS..."
-          cf-for-k8s-master/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
+          ./cf-for-k8s-master/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
 
   - task: run-smoke-test
     config:

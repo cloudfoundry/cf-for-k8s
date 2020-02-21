@@ -2,5 +2,5 @@
 
 set -eu
 
-cd "`dirname $0`/../tests/smoke"
+cd "$(dirname "$0")/../tests/smoke"
 ginkgo -v -r ./

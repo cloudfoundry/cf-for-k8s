@@ -8,7 +8,7 @@ if [[ $# -lt 1 ]]; then
 fi
 
 password() {
-  < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32
+  tr -dc '[:alnum:]' < /dev/urandom | head -c 32
 }
 
 ## Usage: ./generate-values.sh <my-domain>
@@ -23,23 +23,23 @@ system_domain: "${DOMAIN}"
 app_domains:
 #@overlay/append
 - "${DOMAIN}"
-cf_admin_password: $(password)
+cf_admin_password: "$(password)"
 
 cf_blobstore:
-  secret_key: $(password)
+  secret_key: "$(password)"
 
 cf_db:
-  admin_password: $(password)
+  admin_password: "$(password)"
 
 capi:
   database:
-    password: $(password)
+    password: "$(password)"
 
 uaa:
   database:
-    password: $(password)
-  admin_client_secret: $(password)
+    password: "$(password)"
+  admin_client_secret: "$(password)"
 
 docker_registry:
-  http_secret: $(password)
+  http_secret: "$(password)"
 EOF

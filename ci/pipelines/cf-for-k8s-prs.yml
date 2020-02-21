@@ -49,24 +49,22 @@ test-runner-config: &common-test-config
 jobs:
 - name: run-tests-on-cf-for-k8s-pr
   public: true
-  serial: true
   plan:
-  - timeout: 4h
-    do:
+  - in_parallel:
+    - get: runtime-ci
+    - get: cf-for-k8s-pr
+      params:
+        integration_tool: rebase
+      trigger: true
+      version: every
+  - put: cf-for-k8s-pr
+    params:
+      path: cf-for-k8s-pr
+      status: pending
+      context: tests
+  - do:
     - put: pool
       params: {acquire: true}
-    - in_parallel:
-      - get: runtime-ci
-      - get: cf-for-k8s-pr
-        params:
-          integration_tool: rebase
-        trigger: true
-        version: every
-    - put: cf-for-k8s-pr
-      params:
-        path: cf-for-k8s-pr
-        status: pending
-        context: tests
     - do:
       - task: delete-cf
         config:

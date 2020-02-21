@@ -6,8 +6,8 @@ directories:
       sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
     path: github.com/GoogleCloudPlatform/metacontroller
   - git:
-      commitTitle: update requirements for hack script...
-      sha: eb3bad0ae52316cf992a5da1fcdec15715f5ab07
+      commitTitle: 'feat: introduce mesh-wide strict mtls mode...'
+      sha: fdb136c345fe00e4d526aa959a306e19f8760e84
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: enable capi syncing with eirini...

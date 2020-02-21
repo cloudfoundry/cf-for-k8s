@@ -49,3 +49,17 @@ data:
     psql -U postgres -d (@= uaadb.name @) -c "CREATE EXTENSION citext"
 
 --- #@ template.replace(overlay.apply(library.get("postgres").eval(), add_cf_db_namespace()))
+---
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "cf-db-allow-plaintext"
+  namespace: "cf-db"
+spec:
+  targets:
+  - name: cf-db-postgresql
+  - name: cf-db-postgresql-headless
+  peers:
+  - mtls:
+      mode: PERMISSIVE
+

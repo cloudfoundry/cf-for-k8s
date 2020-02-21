@@ -38,3 +38,16 @@ spec:
   ports:
   #@overlay/match by=overlay.subset({"name": "http"})
   - name: https
+---
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "log-cache-allow-plaintext"
+  namespace: #@ data.values.system_namespace
+spec:
+  targets:
+  - name: log-cache
+  peers:
+  - mtls:
+      mode: PERMISSIVE
+

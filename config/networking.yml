@@ -14,9 +14,9 @@ cfroutesync:
   image: #@ data.values.images.cfroutesync
 
   ccCA: #@ base64.decode(data.values.system_certificate.ca)
-  ccBaseURL: http://capi.cf-system.svc.cluster.local
+  ccBaseURL: #@ "http://capi." + data.values.system_namespace + ".svc.cluster.local"
   uaaCA: #@ base64.decode(data.values.system_certificate.ca)
-  uaaBaseURL: http://uaa.cf-system.svc.cluster.local:8080
+  uaaBaseURL: #@ "http://uaa." + data.values.system_namespace + ".svc.cluster.local:8080"
   clientName: "cf-k8s-networking"
   clientSecret: #@ data.values.uaa.admin_client_secret
 #@ end

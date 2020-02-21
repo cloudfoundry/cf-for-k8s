@@ -6,8 +6,8 @@ directories:
       sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
     path: github.com/GoogleCloudPlatform/metacontroller
   - git:
-      commitTitle: 'workaround: make mesh policy permissive for integration with cf-for-k8s...'
-      sha: f7f2670bcc840c3916e3fa54440906258ce0e447
+      commitTitle: update requirements for hack script...
+      sha: eb3bad0ae52316cf992a5da1fcdec15715f5ab07
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: enable capi syncing with eirini...

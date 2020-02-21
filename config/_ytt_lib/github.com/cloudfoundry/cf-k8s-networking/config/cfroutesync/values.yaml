@@ -5,7 +5,6 @@
 
 systemNamespace: cf-system
 workloadsNamespace: cf-workloads
-istioNamespace: istio-system
 
 cfroutesync:
   image: gcr.io/cf-networking-images/cf-k8s-networking/cfroutesync:latest

@@ -10,8 +10,8 @@ directories:
       sha: eb3bad0ae52316cf992a5da1fcdec15715f5ab07
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: enable capi syncing with eirini...
-      sha: 1bc5ea5eac9359af22fb2088c21a27f5a4b356aa
+      commitTitle: 'Merge pull request #13 from MasslessParticle/patch-1...'
+      sha: ec3ca8912105598c895f43a2d07a229f83fcab00
     path: github.com/cloudfoundry/capi-k8s-release
   - git:
       commitTitle: clean up interface for PR...

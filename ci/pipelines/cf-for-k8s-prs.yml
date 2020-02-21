@@ -18,6 +18,7 @@ resources:
   source:
     access_token: ((github_status_bot_repo_access_token))
     repository: cloudfoundry/cf-for-k8s
+    disable_forks: true
 
 # semaphore for the Kubernetes cluster (ci-test-cluster in GKE); it is shared between this pipeline and the main CF for K8s test pipeline
 - name: pool

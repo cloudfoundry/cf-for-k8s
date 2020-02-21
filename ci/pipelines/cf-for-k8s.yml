@@ -88,13 +88,7 @@ jobs:
           gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
 
           cf-for-k8s-master/hack/confirm-network-policy.sh '((ci_k8s_gke_cluster_name))' '((ci_k8s_gcp_project_zone))'
-          echo "Generating install values..."
-          cf-for-k8s-master/hack/generate-values.sh "${DNS_DOMAIN}" > cf-install-values.yml
-          cf-for-k8s-master/hack/generate-certs.sh "${DNS_DOMAIN}" > cf-install-certs.yml
-          echo "Installing CF..."
-          kapp deploy -a cf -y -f <(ytt -f ./config \
-            -f cf-install-values.yml \
-            -f cf-install-certs.yml)
+          ./cf-for-k8s-master/bin/install-cf.sh .
           grep cf_admin_password cf-install-values.yml | cut -d " " -f 2 > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
           echo "Configuring DNS..."

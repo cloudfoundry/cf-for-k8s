@@ -13,8 +13,6 @@ You need the following CLIs on your system to be able to run the script:
 * [`kapp`](https://k14s.io/#install)
 * [`ytt`](https://k14s.io/#install)
 
-> Note: the `bosh` CLI is only used to reduce toil by heing to generate some random passwords and valid self-signed certificates. You can skip it if you're allergic to `bosh`.
-
 In addition, you will also probably want [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for your own debugging and inspection of the system.
 
 Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the cluster you intend to deploy CF for K8s to. This cluster should be on an IaaS that supports load balancer services (e.g., GKE, AKS, etc.).

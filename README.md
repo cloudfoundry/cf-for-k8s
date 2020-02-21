@@ -6,6 +6,7 @@
 - Slack: [#release-integration in Cloud Foundry slack](https://cloudfoundry.slack.com/archives/C0FAEKGUQ), ping `@interrupt`
 - [Docs](docs/README.md) with topics about installing, development, etc.
 - CI: https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s
+- Tracker: https://www.pivotaltracker.com/n/projects/1382120
 
 ## Table of Contents
 

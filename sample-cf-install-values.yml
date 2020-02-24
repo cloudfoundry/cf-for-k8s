@@ -33,6 +33,16 @@ uaa:
     #! This certificate should be valid for uaa.cf-system.svc.cluster.local
     crt: *crt
     key: *key
+  jwt_policy:
+    #! This private key should NOT be base64 encoded
+    signing_key: jwt_policy_signing_key
+  encryption_key:
+    passphrase: encryption_key_passphrase
+  login:
+    service_provider:
+      #! This certificate/key should NOT be base64 encoded
+      key: login_service_provider_key
+      certificate: login_service_provider_certificate
 
 doppler:
   tls:

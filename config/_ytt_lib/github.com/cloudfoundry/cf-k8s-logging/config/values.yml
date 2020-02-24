@@ -8,7 +8,7 @@ images:
   syslog_server: "logcache/syslog-server"
   log_cache_gateway: "logcache/log-cache-gateway"
   fluent: "logcache/cf-k8s-logging"
-  cf_auth_proxy: "logcache/cf-auth-proxy"
+  cf_auth_proxy: "logcache/log-cache-cf-auth-proxy"
 
 log_cache_ca:
   crt: "" #! Base64-encoded ca for the log cache

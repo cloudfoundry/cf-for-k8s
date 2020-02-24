@@ -25,10 +25,6 @@ images:
   capi: ""
   nginx: ""
   cfroutesync: ""
-  log_cache: "logcache/log-cache"
-  syslog_server: "logcache/syslog-server"
-  log_cache_gateway: "logcache/log-cache-gateway"
-  fluent: "logcache/cf-k8s-logging"
 
 system_certificate:
   #! Base64-encoded certificate for the wildcard

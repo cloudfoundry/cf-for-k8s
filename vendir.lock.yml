@@ -15,8 +15,8 @@ directories:
       sha: 26aa96fed336505b048030c120266aa4a4871092
     path: github.com/cloudfoundry/capi-k8s-release
   - git:
-      commitTitle: change the correct service...
-      sha: 8fa3fa7bc6500217ea29a710688275308e6bbf7f
+      commitTitle: Log Cache Gateway only communicated in plain text...
+      sha: 46c308787b89ac5e503b83afe0c68bac5dd092f1
     path: github.com/cloudfoundry/cf-k8s-logging
   - git:
       commitTitle: Add liveness, readiness, and startup probes to pod...

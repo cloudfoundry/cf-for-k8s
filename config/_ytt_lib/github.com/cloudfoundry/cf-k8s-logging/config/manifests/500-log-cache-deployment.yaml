@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: cf-auth-proxy
-        image: logcache/cf-auth-proxy
+        image: #@ data.values.images.cf_auth_proxy
         ports:
           - containerPort: 8083
         env:

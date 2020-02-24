@@ -7542,7 +7542,7 @@ metadata:
 spec:
   peers:
   - mtls:
-      mode: PERMISSIVE
+      mode: STRICT
 ---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget

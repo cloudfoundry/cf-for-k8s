@@ -28,6 +28,8 @@ variables:
   type: password
 - name: uaa_db_password
   type: password
+- name: log_cache_client_password
+  type: password
 - name: uaa_admin_client_secret
   type: password
 - name: uaa_encryption_key_passphrase
@@ -101,6 +103,8 @@ variables:
   options:
     ca: log_cache_ca
     common_name: log-cache-gateway
+    alternative_names:
+    - localhost
     extended_key_usage:
     - client_auth
     - server_auth
@@ -125,6 +129,10 @@ cf_db:
 capi:
   database:
     password: $( bosh interpolate ${VARS_FILE} --path=/capi_db_password )
+
+log_cache_client:
+  id: log-cache
+  secret: $( bosh interpolate ${VARS_FILE} --path=/log_cache_client_password )
 
 system_certificate:
   #! This certificates and keys are base64 encoded and should be valid for *.system.cf.example.com

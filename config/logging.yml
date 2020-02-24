@@ -33,28 +33,21 @@ log_cache_gateway:
 log_cache_syslog:
   crt: #@ data.values.log_cache_syslog.crt
   key: #@ data.values.log_cache_syslog.key
+
+client:
+  id: #@ data.values.log_cache_client.id
+  secret: #@ data.values.log_cache_client.secret
 #@ end
 
 #@ logging = library.get("github.com/cloudfoundry/cf-k8s-logging")
 --- #@ template.replace(logging.with_data_values(logging_values()).eval())
 
-#@overlay/match by=overlay.subset({"kind":"Service", "metadata":{"name": "log-cache"}})
 ---
-spec:
-  ports:
-  #@overlay/match by=overlay.subset({"name": "http"})
-  - name: https
---- #! explanation: the log-cache http proxy terminates its own TLS and the istio-ingressgateway is configured
-    #! with a DestinationRule to establish SIMPLE TLS with it. This is incompatible with Istio STRICT mTLS.
-apiVersion: "authentication.istio.io/v1alpha1"
-kind: "Policy"
+apiVersion: v1
+kind: Secret
+type: Opaque
 metadata:
-  name: "log-cache-allow-plaintext"
+  name: system-ca
   namespace: #@ data.values.system_namespace
-spec:
-  targets:
-  - name: log-cache
-  peers:
-  - mtls:
-      mode: PERMISSIVE
-
+data:
+  tls.crt: #@ data.values.system_certificate.crt

@@ -24,10 +24,24 @@ database:
   username: #@ data.values.uaa.database.user
   password: #@ data.values.uaa.database.password
 
-#! TODO: figure out how to generate signing keys for the UAA
+jwt:
+  policy:
+    activeKeyId: #@ data.values.uaa.jwt_policy.key_id
+    #@overlay/replace
+    keys:
+    - keyId: #@ data.values.uaa.jwt_policy.key_id
+      signingKey: #@ data.values.uaa.jwt_policy.signing_key
 #@ end
 
 #@ def uaa_config():
+#@overlay/match missing_ok=True
+encryption:
+  active_key_label: #@ data.values.uaa.encryption_key.label
+  #@overlay/replace
+  encryption_keys:
+  - label: #@ data.values.uaa.encryption_key.label
+    passphrase: #@ data.values.uaa.encryption_key.passphrase
+
 #@overlay/match missing_ok=True
 scim:
   userids_enabled: true
@@ -121,6 +135,9 @@ login:
   url: #@ "https://login." + data.values.system_domain
   entityBaseURL: #@ "https://uaa." + data.values.system_domain
   entityID: cloudfoundry-saml-login
+  serviceProviderKey: #@ data.values.uaa.login.service_provider.key
+  serviceProviderKeyPassword: #@ data.values.uaa.login.service_provider.key_password
+  serviceProviderCertificate: #@ data.values.uaa.login.service_provider.certificate
 
 #@overlay/match missing_ok=True
 uaa:

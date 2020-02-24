@@ -30,6 +30,8 @@ variables:
   type: password
 - name: uaa_admin_client_secret
   type: password
+- name: uaa_encryption_key_passphrase
+  type: password
 - name: docker_registry_http_secret
   type: password
 - name: default_ca
@@ -48,6 +50,18 @@ variables:
     extended_key_usage:
     - client_auth
     - server_auth
+
+- name: uaa_jwt_policy_signing_key
+  type: certificate
+  options:
+    ca: default_ca
+    common_name: uaa_jwt_policy_signing_key
+
+- name: uaa_login_service_provider
+  type: certificate
+  options:
+    ca: default_ca
+    common_name: uaa_login_service_provider
 
 - name: log_cache_ca
   type: certificate
@@ -145,6 +159,17 @@ uaa:
   certificate:
     crt: *crt
     key: *key
+  jwt_policy:
+    signing_key: |
+$( bosh interpolate "${VARS_FILE}" --path=/uaa_jwt_policy_signing_key/private_key | sed -e 's#^#      #' )
+  encryption_key:
+    passphrase: $( bosh interpolate "${VARS_FILE}" --path=/uaa_encryption_key_passphrase )
+  login:
+    service_provider:
+      key: |
+$( bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/private_key | sed -e 's#^#        #' )
+      certificate: |
+$( bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/certificate | sed -e 's#^#        #' )
 
 doppler:
   tls:

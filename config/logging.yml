@@ -38,7 +38,8 @@ spec:
   ports:
   #@overlay/match by=overlay.subset({"name": "http"})
   - name: https
----
+--- #! explanation: the log-cache http proxy terminates its own TLS and the istio-ingressgateway is configured
+    #! with a DestinationRule to establish SIMPLE TLS with it. This is incompatible with Istio STRICT mTLS.
 apiVersion: "authentication.istio.io/v1alpha1"
 kind: "Policy"
 metadata:

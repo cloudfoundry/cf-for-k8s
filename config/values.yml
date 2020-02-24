@@ -92,6 +92,8 @@ uaa:
       #! Plain text certificate
       certificate: ""
 
+  login_secret_name: "uaa-login-secret"
+
 doppler:
   tls:
     #! Base64-encoded certificate for the doppler service inside

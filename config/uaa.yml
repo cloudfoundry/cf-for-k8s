@@ -42,6 +42,8 @@ encryption:
   - label: #@ data.values.uaa.encryption_key.label
     passphrase: #@ data.values.uaa.encryption_key.passphrase
 
+LOGIN_SECRET: #@ data.values.uaa.login_secret_name
+
 #@overlay/match missing_ok=True
 scim:
   userids_enabled: true

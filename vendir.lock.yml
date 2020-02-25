@@ -10,8 +10,8 @@ directories:
       sha: fdb136c345fe00e4d526aa959a306e19f8760e84
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: 'Merge pull request #13 from MasslessParticle/patch-1...'
-      sha: ec3ca8912105598c895f43a2d07a229f83fcab00
+      commitTitle: Add auto detect cluster builder...
+      sha: 332c231e9a8eb039b748a57d445e785e2d0c6b59
     path: github.com/cloudfoundry/capi-k8s-release
   - git:
       commitTitle: clean up interface for PR...

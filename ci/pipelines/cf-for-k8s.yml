@@ -26,6 +26,13 @@ resources:
     pool: cf-for-k8s
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
 
+- name: deliver-tracker-stories
+  type: tracker
+  source:
+    token: ((cf_relint_tracker_api_token))
+    project_id: "1382120"
+    tracker_url: https://www.pivotaltracker.com
+
 # Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
   platform: linux
@@ -131,6 +138,11 @@ jobs:
 
   - put: pool
     params: {release: pool}
+
+  - put: deliver-tracker-stories
+    params:
+      repos:
+        - cf-for-k8s-master
 
 - name: release-pool-manual
   public: true

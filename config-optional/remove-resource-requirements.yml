@@ -1,6 +1,8 @@
 #@ load("@ytt:overlay", "overlay")
+
+#! remove resource requirements to allow installation on smaller environments
 #@ for/end kind in ["Deployment", "DaemonSet"]:
-#@overlay/match by=overlay.subset({"kind":kind}),expects="1+"
+#@overlay/match by=overlay.subset({"kind": kind}),expects="1+"
 ---
 spec:
   template:
@@ -19,6 +21,7 @@ spec:
         #@overlay/match missing_ok=True
         resources: {}
 
+#! on smaller/slow environments uaa may not start successfully due to probes being too agressive
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"uaa"}})
 ---
 spec:

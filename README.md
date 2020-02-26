@@ -12,6 +12,7 @@
 
 * <a href='#purpose'>Purpose</a>
 * <a href='#deploy'>Deploying CF for K8s</a>
+* <a href='#knownissues'>Known Issues</a>
 * <a href='#future'>What's next</a>
 
 ### <a name='purpose'></a> Purpose
@@ -26,6 +27,9 @@ Cloud Foundry for Kubernetes (CF4K8s) is a deployment artifact for deploying the
 ### <a name='deploy'>Deploying CF for K8s</a>
 
 See [Deploying CF for K8s](docs/deploy.md).
+
+### <a name='knownissues'></a> Known Issues
+This is a highly experimental project, and there are many features missing. For a list of the known issues, take a look at the [GitHub issues tagged 'known-issue'](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aissue+is%3Aopen+label%3Aknown-issue).
 
 ### <a name='future'></a> What's next
 

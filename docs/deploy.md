@@ -77,7 +77,7 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
    ```bash
    $ cf push diego-docker-app -o cloudfoundry/diego-docker-app
    ```
-   Note that the above command will return an error but the app is successfully pushed to CF and is routable via Http. The reason the command fails is due to missing logging component, which we, the Release Integration, are working with the Logging team to integrate into CF4K8s
+   Note that the above command will return an error but the app is successfully pushed to CF and is routable via Http. The reason the command fails is due to a missing logging component, which we, the Release Integration, are working with the Logging team to integrate into CF4K8s
 
 1. Validate the app is reachable
    ```bash

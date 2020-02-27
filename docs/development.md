@@ -1,4 +1,4 @@
-# Developing components on cf-for-k8s
+# Developing cf-for-k8s
 
 This document is intended for cf-for-k8s maintainers and contributors.
 
@@ -11,7 +11,7 @@ This document is intended for cf-for-k8s maintainers and contributors.
 - [ginkgo](https://github.com/onsi/ginkgo#set-me-up)
 
 ### Vendoring
-- [vendir](https://github.com/k14s/vendir)
+- [vendir](https://github.com/k14s/vendir) v0.7.0+ (includes the `directory` flag, used in the development workflow)
 
 ## Smoke tests
 

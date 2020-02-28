@@ -3,7 +3,7 @@
 replicaCount: 1
 
 images:
-  ccng: cloudfoundry/cloud-controller-ng@sha256:402932286e330049ea8e6562db615080b26388d849c8bb4aa2eed544b33e2c2a
+  ccng: cloudfoundry/cloud-controller-ng
   nginx: nginx:latest
 namespace: cf-system
 

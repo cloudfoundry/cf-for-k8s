@@ -10,11 +10,11 @@ resources:
     ignore_paths:
       - ci/**
 
-- name: every-10-minutes
+- name: every-20-minutes
   type: time
   icon: clock-outline
   source:
-    interval: 10m
+    interval: 20m
 
 # semaphore for the Kubernetes cluster (ci-test-cluster in GKE); it is shared between this pipeline and the CF for K8s PR test pipeline
 - name: pool
@@ -58,7 +58,7 @@ jobs:
     params: {acquire: true}
   - get: cf-for-k8s-master
     trigger: true
-  - get: every-10-minutes
+  - get: every-20-minutes
     trigger: true
   - task: delete-cf
     config:

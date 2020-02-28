@@ -16,9 +16,10 @@
 #@ end
 
 #@ def capi_values():
-#@ if/end data.values.images.capi:
 images:
+#@ if/end data.values.images.capi:
   ccng: #@ data.values.images.capi
+#@ if/end data.values.images.nginx:
   nginx: #@ data.values.images.nginx
 
 namespace: #@ data.values.system_namespace

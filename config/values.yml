@@ -22,7 +22,9 @@ cf_db:
   enabled: true
 
 images:
-  capi: ""
+#! NOTE: the CAPI image reference below is needed temporarily to address a build break.
+#! See https://www.pivotaltracker.com/story/show/171522062 and https://www.pivotaltracker.com/story/show/171549565 for details
+  capi: "cloudfoundry/cloud-controller-ng@sha256:402932286e330049ea8e6562db615080b26388d849c8bb4aa2eed544b33e2c2a"
   nginx: ""
   cfroutesync: ""
   log_cache: "logcache/log-cache"

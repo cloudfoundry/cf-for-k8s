@@ -25,14 +25,8 @@ spec:
         env:
         - name: LOG_CACHE_GATEWAY_ADDR
           value: https://localhost:8081
-        - name: CAPI_CA_PATH
-          value: /system-ca/tls.crt
-        - name: UAA_CA_PATH
-          value: /system-ca/tls.crt
         - name: CAPI_ADDR
-          value: #@ "https://capi.{}.svc.cluster.local:80".format(data.values.system_namespace)
-        - name: CAPI_COMMON_NAME
-          value: capi
+          value: #@ "http://capi.{}.svc.cluster.local:80".format(data.values.system_namespace)
         - name: UAA_ADDR
           value: #@ "http://uaa.{}.svc.cluster.local:8080".format(data.values.system_namespace)
         - name: UAA_CLIENT_ID
@@ -45,9 +39,6 @@ spec:
           readOnly: true
         - mountPath: /metrics-certs
           name: metrics-certs
-          readOnly: true
-        - mountPath: /system-ca
-          name: system-ca
           readOnly: true
       - name: syslog-server
         image: #@ data.values.images.syslog_server
@@ -117,6 +108,3 @@ spec:
       - name: metrics-certs
         secret:
           secretName: log-cache-metrics
-      - name: system-ca
-        secret:
-          secretName: system-ca

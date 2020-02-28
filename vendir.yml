@@ -28,7 +28,7 @@ directories:
   - path: github.com/cloudfoundry/cf-k8s-logging
     git:
       url: https://github.com/cloudfoundry/cf-k8s-logging
-      ref: 35e7d594edf41b773ef5944acc95335f52d8bc46
+      ref: 8ec400d0d457862b78a19a59322c439ef51835e9
     includePaths:
     - config/**/*
   - path: github.com/cloudfoundry/uaa

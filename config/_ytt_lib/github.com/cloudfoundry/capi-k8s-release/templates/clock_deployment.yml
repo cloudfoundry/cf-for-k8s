@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capi-clock
-  namespace: #@ data.values.namespace
+  namespace: #@ data.values.system_namespace
 spec:
   replicas: 1
   strategy:
@@ -28,6 +28,10 @@ spec:
           args: ["exec", "rake", "clock:start"]
           image: #@ data.values.images.ccng
           imagePullPolicy: Always
+          readinessProbe:
+            tcpSocket:
+              port: 4446
+            periodSeconds: 3
           volumeMounts:
           - name: cloud-controller-ng-yaml
             mountPath: /config

@@ -4,7 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: capi-api-server
-  namespace: #@ data.values.namespace
+  namespace: #@ data.values.system_namespace
 spec:
   replicas: 2
   strategy:
@@ -44,6 +44,16 @@ spec:
           #@ if/end data.values.eirini.serverCerts.secretName:
           - name: eirini-certs
             mountPath: /config/eirini/certs
+        - name: capi-local-worker
+          image: #@ data.values.images.ccng
+          imagePullPolicy: Always
+          command: ["/usr/local/bin/bundle"]
+          args: ["exec", "rake", "jobs:local"]
+          volumeMounts:
+          - name: cloud-controller-ng-yaml
+            mountPath: /config/
+          - name: nginx-uploads
+            mountPath: /tmp/uploads
         - name: nginx
           image: #@ data.values.images.nginx
           imagePullPolicy: Always
@@ -57,6 +67,9 @@ spec:
             mountPath: /data/cloud_controller_ng
           - name: nginx-logs
             mountPath: /cloud_controller_ng
+          - name: nginx-uploads
+            mountPath: /tmp/uploads
+      serviceAccountName: cc-api-service-account
       volumes:
       - name: server-sock
         emptyDir: {}
@@ -76,4 +89,6 @@ spec:
       - name: eirini-certs
         secret:
           secretName: #@ data.values.eirini.serverCerts.secretName
+      - name: nginx-uploads
+        emptyDir: {}
 

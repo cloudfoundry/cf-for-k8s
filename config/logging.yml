@@ -8,7 +8,13 @@
 system_domain: #@ data.values.system_domain
 system_namespace: #@ data.values.system_namespace
 
-log_cache_ca: 
+images:
+  log_cache: #@ data.values.images.log_cache
+  syslog_server: #@ data.values.images.syslog_server
+  log_cache_gateway: #@ data.values.images.log_cache_gateway
+  fluent: #@ data.values.images.fluent
+
+log_cache_ca:
   crt: #@ data.values.log_cache_ca.crt
   key: #@ data.values.log_cache_ca.key
 

@@ -32,6 +32,10 @@ SMOKE_TEST_API_ENDPOINT=https://api.system.cf.example.com SMOKE_TEST_USERNAME=ad
   - this directory is only used by cf-for-k8s maintainers
   - `build.sh` in each sub-directory has specific build instructions
 
+## Image References
+
+Image references are expected to use an image SHA digest. If using [kbld](https://get-kbld.io/) to build images as suggested in the component development flow, the image reference should include the digest by default.
+
 ## Tips
 
 - `alias k=kubectl`

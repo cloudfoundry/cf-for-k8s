@@ -27,13 +27,22 @@ resources:
     interval: 20m
 
 # semaphore for the Kubernetes cluster (ci-test-cluster in GKE); it is shared between this pipeline and the CF for K8s PR test pipeline
-- name: pool
+- name: validation-pool
   type: pool
   icon: pool
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
     branch: master
     pool: cf-for-k8s
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
+- name: stability-pool
+  type: pool
+  icon: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: master
+    pool: cf-for-k8s-stability
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
 
 - name: deliver-tracker-stories
@@ -64,7 +73,7 @@ jobs:
   serial: true
   public: true
   plan:
-  - put: pool
+  - put: validation-pool
     params: {acquire: true}
   - get: cf-for-k8s-master
     trigger: true
@@ -143,8 +152,8 @@ jobs:
 
           kapp delete -a cf --yes
 
-  - put: pool
-    params: {release: pool}
+  - put: validation-pool
+    params: {release: validation-pool}
 
   - put: deliver-tracker-stories
     params:
@@ -155,46 +164,54 @@ jobs:
   serial: true
   public: true
   plan:
-  - put: pool
+  - put: stability-pool
     params: {acquire: true}
   - get: cf-for-k8s-master
   - get: every-20-minutes
     trigger: true
 
   - task: delete-cf
+    input_mapping: {pool-lock: stability-pool}
     config:
       <<: *common-task-config
+      inputs:
+      - name: pool-lock
       run:
         path: /bin/bash
         args:
         - -ec
         - |
+          cluster_name=$(cat pool-lock/name)
           export KUBECONFIG=kube-config.yml
           gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null 2>&1
-          gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
+          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
 
           kapp delete -a cf --yes
 
   - task: install-cf
+    input_mapping: {pool-lock: stability-pool}
     config:
       <<: *common-task-config
       inputs:
       - name: cf-for-k8s-master
+      - name: pool-lock
       outputs:
       - name: env-metadata
       params:
-        DNS_DOMAIN: ((ci_k8s_domain))
         DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
+        DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
       run:
         path: /bin/bash
         args:
         - -ec
         - |
           export KUBECONFIG=kube-config.yml
+          cluster_name=$(cat pool-lock/name)
           gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null 2>&1
-          gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
+          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
 
-          cf-for-k8s-master/hack/confirm-network-policy.sh '((ci_k8s_gke_cluster_name))' '((ci_k8s_gcp_project_zone))'
+          export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
+          cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
           echo "Generating install values..."
           cf-for-k8s-master/hack/generate-values.sh "${DNS_DOMAIN}" > cf-install-values.yml
           echo "Installing CF..."
@@ -223,36 +240,40 @@ jobs:
           cf-for-k8s-master/hack/run-smoke-tests.sh
 
   - task: delete-cf
+    input_mapping: {pool-lock: stability-pool}
     config:
       <<: *common-task-config
+      inputs:
+      - name: pool-lock
       run:
         path: /bin/bash
         args:
         - -ec
         - |
+          cluster_name=$(cat pool-lock/name)
           export KUBECONFIG=kube-config.yml
           gcloud auth activate-service-account --key-file=<(echo '((ci_k8s_gcp_service_account_json))') --project='((ci_k8s_gcp_project_name))' 1>/dev/null 2>&1
-          gcloud container clusters get-credentials '((ci_k8s_gke_cluster_name))' --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
+          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
 
           kapp delete -a cf --yes
 
-  - put: pool
-    params: {release: pool}
+  - put: stability-pool
+    params: {release: stability-pool}
 
 - name: release-validation-pool-manual
   public: true
   plan:
-  - get: pool
+  - get: validation-pool
   ensure:
     try:
-      put: pool
-      params: {release: pool}
+      put: validation-pool
+      params: {release: validation-pool}
 
 - name: release-stability-pool-manual
   public: true
   plan:
-  - get: pool # TODO should be different pool
+  - get: stability-pool
   ensure:
     try:
-      put: pool
-      params: {release: pool}
+      put: stability-pool
+      params: {release: stability-pool}

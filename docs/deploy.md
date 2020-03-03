@@ -13,7 +13,9 @@ You need the following CLIs on your system to be able to run the script:
 
 In addition, you will also probably want [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for your own debugging and inspection of the system.
 
-Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the cluster you intend to deploy CF for K8s to. This cluster should be on an IaaS that supports load balancer services (e.g., GKE, AKS, etc.).
+Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the cluster you intend to deploy CF for K8s to. This cluster should be on an IaaS that supports load balancer services (e.g., GKE, AKS, etc.),
+and persistent volumes (make sure you have a `StorageClass` defined in your cluster in order to create
+`PersistentVolumeClaim` objects).
 
 ## Steps to deploy
 

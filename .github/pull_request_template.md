@@ -1,6 +1,6 @@
 ## Please take a moment to review the questions before submitting the PR
 
-🚫 We only accept PRs to `master` branch. If this is an exception, please specify why 🚫
+🚫 We only accept PRs to `develop` branch. If this is an exception, please specify why 🚫
 
 ### WHAT is this change about?
 

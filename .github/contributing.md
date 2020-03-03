@@ -1,6 +1,6 @@
 # Contributing
 
-1. Ensure you are up to date with the `master` branch
+1. Ensure you are up to date with the `develop` branch
 1. Create a branch in this repo
    - If you do not have access to creating branches and believe you should,
      please inquire in the [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) slack channel
@@ -12,7 +12,6 @@
      or tags as references
 1. If you are adding/updating data values, please also add those changes to the
    `sample-cf-install-values.yml` file
-1. Before submitting, please ensure you have deployed and [run smoke
-   tests](../docs/development.md#smoke-tests-1)
+1. Before submitting, please ensure you have deployed and [run smoke tests](../docs/development.md#smoke-tests-1)
 1. Push your changes to your branch/fork
-1. Create a pull request
+1. Create a pull request against the develop branch

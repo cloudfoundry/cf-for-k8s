@@ -33,7 +33,7 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
    # expects bosh cli
    $ ./hack/generate-values.sh cf.example.com > /tmp/cf-values.yml
    ```
-   #### Option 2 Create the install values
+   #### Option 2 - Create the install values
    1. Create a file called `/tmp/cf-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
    1. Open the file and change the `system_domain` and `app_domain` to your desired domain address
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values

@@ -41,16 +41,4 @@ client:
 
 #@ logging = library.get("github.com/cloudfoundry/cf-k8s-logging")
 --- #@ template.replace(logging.with_data_values(logging_values()).eval())
-<<<<<<< HEAD
 
----
-apiVersion: v1
-kind: Secret
-type: Opaque
-metadata:
-  name: system-ca
-  namespace: #@ data.values.system_namespace
-data:
-  tls.crt: #@ data.values.system_certificate.crt
-=======
->>>>>>> update cf-k8s logging to remove certs/ssl

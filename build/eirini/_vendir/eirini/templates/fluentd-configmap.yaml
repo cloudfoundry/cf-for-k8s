@@ -4,6 +4,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluentd-conf
+  namespace: {{ .Release.Namespace }}
 data:
   fluentd-conf: |
     <match fluent.**>

@@ -84,3 +84,11 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
    $ curl http://diego-docker-app.<system-domain>/env
    # should return JSON value
    ```
+
+## Delete CF4K8s install
+You can delete CF4K8s deployment by running the following command.
+
+```
+# Assuming that you ran `bin/install.sh...`
+$ kapp delete -a cf
+```

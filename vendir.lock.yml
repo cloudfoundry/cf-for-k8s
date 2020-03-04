@@ -6,8 +6,8 @@ directories:
       sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
     path: github.com/GoogleCloudPlatform/metacontroller
   - git:
-      commitTitle: 'feat: introduce mesh-wide strict mtls mode...'
-      sha: fdb136c345fe00e4d526aa959a306e19f8760e84
+      commitTitle: 'feat: enable SDS for ingressgateway certs...'
+      sha: 592babdf2842d4e46797fd6782b1215bd8b7fb6b
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: Add auto detect cluster builder...

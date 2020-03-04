@@ -1,21 +1,10 @@
 #@ load("@ytt:data", "data")
-#@yaml/text-templated-strings
-#@ load("deployment_functions.star", "spring_profiles")
-
+#@ load("deployment.star", "spring_profiles")
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: uaa
-  labels:
-    app.kubernetes.io/name: "uaa"
-    app.kubernetes.io/instance: "uaa-(@= data.values.labels.instance @)"
-    app.kubernetes.io/version: "(@= data.values.version @)"
-    app.kubernetes.io/component: "authorization-server"
-    app.kubernetes.io/part-of: "(@= data.values.labels.partOf @)"
-    app.kubernetes.io/managed-by: "(@= data.values.labels.managedBy @)"
-
-
 spec:
   selector:
     matchLabels:
@@ -26,17 +15,26 @@ spec:
       labels:
         app: uaa-deployment
     spec: #! pod spec
+      serviceAccountName: uaa
       containers:
         - name: uaa
-          image: "cfidentity/uaa@sha256:93b70b26fbb3de88d93728b0daf1ea7b001fde89a24e283c3db36bf4c6af087c"
+          image: #@ data.values.image
+          resources:
+            requests:
+              memory: #@ data.values.resources.requests.memory
+              cpu: #@ data.values.resources.requests.cpu
           ports:
             - name: http-uaa
               containerPort: 8080
               protocol: TCP
           env:
+            - name: BPL_TOMCAT_ACCESS_LOGGING
+              value: #@ data.values.tomcat.accessLoggingEnabled
+            - name: JAVA_OPTS
+              value: "-Djava.security.egd=file:/dev/./urandom -Dlogging.config=/etc/config/log4j2.properties -Dlog4j.configurationFile=/etc/config/log4j2.properties"
             - name: spring_profiles
               value: #@ spring_profiles(data.values.database.scheme)
-            - name: UAA_CONFIG_PATH
+            - name: CLOUDFOUNDRY_CONFIG_PATH
               value: /etc/config
           volumeMounts:
           - name: uaa-config
@@ -45,17 +43,13 @@ spec:
             httpGet:
               path: /healthz
               port: http-uaa
-            failureThreshold: 5
+            failureThreshold: 25
+            initialDelaySeconds: 60
+            periodSeconds: 15
           readinessProbe:
             httpGet:
               path: /healthz
               port: http-uaa
-          startupProbe:
-            httpGet:
-              path: /healthz
-              port: http-uaa
-            failureThreshold: 20
-            periodSeconds: 15
       volumes:
       - name: uaa-config
         configMap:

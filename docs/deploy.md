@@ -9,11 +9,19 @@ You need the following CLIs on your system to be able to run the script:
 * Kubernetes cluster requirements
   * Version 1.14 or higher
   * A minimum of 5 nodes
-  * A minimum of 2 CPU, 7.5BGB memory per node
+  * A minimum of 2 CPU, 7.5GB memory per node
 
 In addition, you will also probably want [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for your own debugging and inspection of the system.
 
-Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the cluster you intend to deploy CF for K8s to. This cluster should be on an IaaS that supports load balancer services (e.g., GKE, AKS, etc.).
+Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the cluster you intend to deploy CF for K8s to.
+
+## IaaS Requirements
+
+To deploy cf-for-k8s as is, the cluster should:
+* support LoadBalancer services
+  * requires a workaround on Minikube and Kind, for example
+* define a default StorageClass
+  * requires [additional config on vSphere](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/storageclass.html), for example
 
 ## Steps to deploy
 
@@ -33,7 +41,7 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
    # expects bosh cli
    $ ./hack/generate-values.sh cf.example.com > /tmp/cf-values.yml
    ```
-   #### Option 2 Create the install values
+   #### Option 2 - Create the install values
    1. Create a file called `/tmp/cf-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
    1. Open the file and change the `system_domain` and `app_domain` to your desired domain address
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values

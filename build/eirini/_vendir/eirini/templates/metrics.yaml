@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "eirini-metrics"
-  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:

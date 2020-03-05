@@ -97,12 +97,6 @@ spec:
   readOnlyRootFilesystem: false
 ---
 apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: opi
-  namespace: cf-system
----
-apiVersion: v1
 kind: ConfigMap
 metadata:
   name: eirini
@@ -115,9 +109,9 @@ data:
       registry_address: "registry.not-used:443"
       registry_secret_name: registry-credentials
       eirini_address: "https://eirini-opi.cf-system.svc.cluster.local:8085"
-      downloader_image: eirini/recipe-downloader@sha256:fce820d1b052753113d724d8a5e251ae3de31c1cc3ac07642b07cf0c11f82a1f
-      executor_image: eirini/recipe-executor@sha256:4420864774be2b8d28055ac6038c901aba1c5e6d7e070a2314737cf88c83a258
-      uploader_image: eirini/recipe-uploader@sha256:b0131d7f8f06687d0f4ac57e768e25927ddec0cd109ffa61774e034153f7b7df
+      downloader_image: eirini/recipe-downloader@sha256:4c42d4f3dd749144b3468ecd48a14d3849ab5ec08b344b729e73e473ea6b0051
+      executor_image: eirini/recipe-executor@sha256:730c7dbf9625ed57da358791370d1ea6f526f0ccbcd82bdfb0bf184c02ca1f06
+      uploader_image: eirini/recipe-uploader@sha256:2a28bc10fc0d7811818a3a922baa4e4739d2b33f0bba21bfc81d4826f69aed6f
       cc_cert_path: "/workspace/jobs/opi/secrets/cc.crt"
       cc_key_path: "/workspace/jobs/opi/secrets/cc.key"
       cc_ca_path: "/workspace/jobs/opi/secrets/cc.ca"
@@ -144,6 +138,12 @@ data:
     cc_key_path: "/etc/eirini/secrets/cc.key"
     cc_ca_path: "/etc/eirini/secrets/cc.ca"
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: opi
+  namespace: cf-system
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -158,6 +158,21 @@ rules:
   - use
   resourceNames:
   - cf-workloads-app-psp
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: eirini-role
+  namespace: cf-system
+rules:
+- apiGroups:
+  - policy
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+  resourceNames:
+  - eirini
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -194,35 +209,6 @@ rules:
   verbs:
   - list
   - delete
-- apiGroups:
-  - policy
-  resources:
-  - poddisruptionbudgets
-  verbs:
-  - create
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - create
-  - delete
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: eirini-role
-  namespace: cf-system
-rules:
-- apiGroups:
-  - policy
-  resources:
-  - podsecuritypolicies
-  verbs:
-  - use
-  resourceNames:
-  - eirini
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -242,20 +228,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: eirini-rolebinding
-  namespace: cf-workloads
-roleRef:
-  kind: Role
-  name: eirini-role
-  apiGroup: rbac.authorization.k8s.io
-subjects:
-- kind: ServiceAccount
-  name: opi
-  namespace: cf-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: eirini-rolebinding
   namespace: cf-system
 roleRef:
   kind: Role
@@ -270,6 +242,20 @@ subjects:
   namespace: cf-system
 - kind: ServiceAccount
   name: eirini-secret-smuggler
+  namespace: cf-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: eirini-rolebinding
+  namespace: cf-workloads
+roleRef:
+  kind: Role
+  name: eirini-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: opi
   namespace: cf-system
 ---
 apiVersion: v1
@@ -340,7 +326,7 @@ spec:
         runAsNonRoot: true
       containers:
       - name: opi
-        image: eirini/opi@sha256:c951bebec7d3f39d58968757aab775fd5efe8a24f15593aa2f96122ed6ce4b19
+        image: eirini/opi@sha256:a971882cb6815e0b626e0cfad2020d7af3ce95ef29247e8db25a0199331e513e
         imagePullPolicy: Always
         volumeMounts:
         - name: config-map-volume

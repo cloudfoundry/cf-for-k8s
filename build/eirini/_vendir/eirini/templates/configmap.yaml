@@ -3,7 +3,6 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: "eirini"
-  namespace: {{ .Release.Namespace }}
 data:
   opi.yml: |
     opi:
@@ -18,19 +17,13 @@ data:
       {{- end }}
       registry_secret_name: {{ .Values.opi.registry_secret_name }}
       eirini_address: "https://eirini-opi.{{ .Release.Namespace }}.svc.cluster.local:8085"
-      {{- if .Values.opi.staging.downloader_image_tag }}
-      downloader_image: "eirini/recipe-downloader:{{ .Values.opi.staging.downloader_image_tag }}"
+      {{- if .Values.opi.stager }}
+      downloader_image: "{{ .Values.opi.stager.downloader_image }}:{{ .Values.opi.image_tag }}"
+      executor_image: "{{ .Values.opi.stager.executor_image }}:{{ .Values.opi.image_tag }}"
+      uploader_image: "{{ .Values.opi.stager.uploader_image }}:{{ .Values.opi.image_tag }}"
       {{- else }}
       downloader_image: eirini/recipe-downloader@{{ .Files.Get "versions/staging-downloader" }}
-      {{- end }}
-      {{- if .Values.opi.staging.executor_image_tag }}
-      executor_image: "eirini/recipe-executor:{{ .Values.opi.staging.executor_image_tag }}"
-      {{- else }}
       executor_image: eirini/recipe-executor@{{ .Files.Get "versions/staging-executor" }}
-      {{- end }}
-      {{- if .Values.opi.staging.uploader_image_tag }}
-      uploader_image: "eirini/recipe-uploader:{{ .Values.opi.staging.uploader_image_tag }}"
-      {{- else }}
       uploader_image: eirini/recipe-uploader@{{ .Files.Get "versions/staging-uploader" }}
       {{- end }}
       cc_cert_path: "/workspace/jobs/opi/secrets/cc.crt"

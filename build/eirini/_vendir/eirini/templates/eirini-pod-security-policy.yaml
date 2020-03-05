@@ -34,20 +34,6 @@ rules:
   verbs:
   - list
   - delete
-- apiGroups:
-  - policy
-  resources:
-  - poddisruptionbudgets
-  verbs:
-  - create
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - create
-  - delete
 ---
 # Bind to the default service account
 apiVersion: rbac.authorization.k8s.io/v1

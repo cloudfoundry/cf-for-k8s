@@ -24,8 +24,8 @@ cf_db:
 images:
 #! NOTE: the CAPI image reference below is needed temporarily to address a build break.
 #! See https://www.pivotaltracker.com/story/show/171522062 and https://www.pivotaltracker.com/story/show/171549565 for details
-  capi: "cloudfoundry/cloud-controller-ng@sha256:402932286e330049ea8e6562db615080b26388d849c8bb4aa2eed544b33e2c2a"
-  nginx: "nginx@sha256:4a50ed86d8c86e35f530d4a168173677a192177eed14146fbb5728b1b3a2d4de"
+  capi: "cloudfoundry/cloud-controller-ng@sha256:f6c25891fcd272543773dbcfd1c5387703b01e53146b8ef173be012e8055089e"
+  nginx: "cloudfoundry/capi@sha256:51e4e48c457d5cb922cf0f569e145054e557e214afa78fb2b312a39bb2f938b6"
   cfroutesync: "gcr.io/cf-networking-images/cf-k8s-networking/cfroutesync@sha256:758abd1b6144596cef74ad4805bc7e1a6055142cab5719f0d42d0321a14a190d"
   log_cache: "logcache/log-cache@sha256:0bc1ee1934ecd2145a3372dc838747c7977d50ca58bd5c28db7f70b28b1021b4"
   syslog_server: "logcache/syslog-server@sha256:f1f6def4af1261e4cafe4745d5bab8258a2e1ff9fd835c5021e00957ea42d7d4"

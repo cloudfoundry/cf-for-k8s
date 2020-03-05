@@ -4,13 +4,9 @@ replicaCount: 1
 
 images:
   ccng: cloudfoundry/cloud-controller-ng
-  nginx: nginx:latest
+  nginx: cloudfoundry/capi:nginx
 namespace: cf-system
 
-nginx:
-  image:
-    repository: "nginx"
-    tag: latest
 imagePullSecrets:
 
 app_domains: []

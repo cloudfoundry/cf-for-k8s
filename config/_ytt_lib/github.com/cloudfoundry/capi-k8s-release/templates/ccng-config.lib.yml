@@ -78,6 +78,7 @@ logging:
 logcache:
   host: #@ "log-cache.{}".format(data.values.system_domain)
   port: 8080
+  temporary_ignore_server_unavailable_errors: true
 
 logcache_tls:
   key_file: "/dev/null"
@@ -339,6 +340,8 @@ perm:
 
 max_labels_per_resource: 50
 max_annotations_per_resource: 200
+
+default_app_lifecycle: kpack
 
 #! worker property
 perform_blob_cleanup: true

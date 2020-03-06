@@ -5,7 +5,7 @@
 You need the following CLIs on your system to be able to run the script:
 
 * [`kapp`](https://k14s.io/#install)
-* [`ytt`](https://k14s.io/#install)
+* [`ytt`](https://k14s.io/#install) (v0.26.0+)
 * Kubernetes cluster requirements
   * Version 1.14 or higher
   * A minimum of 5 nodes

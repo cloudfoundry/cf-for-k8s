@@ -163,7 +163,7 @@ jobs:
       outputs:
       - name: env-metadata
       params:
-        DNS_DOMAIN: ((ci_k8s_domain))
+        DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
         DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
       run:
         path: /bin/bash
@@ -434,7 +434,7 @@ jobs:
           outputs:
           - name: env-metadata
           params:
-            DNS_DOMAIN: ((ci_k8s_domain))
+            DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
             DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
           run:
             path: /bin/bash

@@ -447,15 +447,15 @@ jobs:
               gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' 1>/dev/null 2>&1
 
               export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
-              cf-for-k8s-develop/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
+              cf-for-k8s-pr-all-branches/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
               echo "Generating install values..."
-              cf-for-k8s-develop/hack/generate-values.sh "${DNS_DOMAIN}" > cf-install-values.yml
+              cf-for-k8s-pr-all-branches/hack/generate-values.sh "${DNS_DOMAIN}" > cf-install-values.yml
               echo "Installing CF..."
-              cf-for-k8s-develop/bin/install-cf.sh cf-install-values.yml
+              cf-for-k8s-pr-all-branches/bin/install-cf.sh cf-install-values.yml
               bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
               echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
               echo "Configuring DNS..."
-              cf-for-k8s-develop/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
+              cf-for-k8s-pr-all-branches/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
 
       - task: run-smoke-test
         config:

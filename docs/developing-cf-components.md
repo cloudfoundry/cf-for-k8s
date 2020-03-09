@@ -27,7 +27,7 @@ Notes:
 - place anything required to configure building/generating K8s resource templates or data files in a separate directory. e.g. `build` _(so that all that's in the `config` directory are only the K8s resources being contributed to CF-for-K8s)_
 
 ## Potential Workflow
-1. Checkout `cf-for-k8s` master and install it to your cluster
+1. Checkout `cf-for-k8s` develop and install it to your cluster
 1. Start a minikube with sufficient memory (we used 8GB in our workflow prototype) and expose its local docker daemon
     ```
     minikube start

@@ -92,3 +92,11 @@ To deploy cf-for-k8s as is, the cluster should:
    $ curl http://diego-docker-app.<system-domain>/env
    # should return JSON value
    ```
+
+## Delete CF4K8s install
+You can delete CF4K8s deployment by running the following command.
+
+```
+# Assuming that you ran `bin/install.sh...`
+$ kapp delete -a cf
+```

@@ -1,0 +1,19 @@
+images:
+  example: example-component-image
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Sources
+sources:
+- image: example-component-image
+  path: .
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: ImageDestinations
+destinations:
+- image: example-component-image
+  newImage: docker.io/pivotaljohn/example-image
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: ImageKeys
+keys:
+- example

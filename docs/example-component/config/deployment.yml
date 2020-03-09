@@ -1,0 +1,18 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-component
+spec:
+  selector:
+    matchLabels:
+      app: example-component
+  template:
+    metadata:
+      labels:
+        app: example-component
+    spec:
+      containers:
+      - name: webserver
+        image: #@ data.values.images.example

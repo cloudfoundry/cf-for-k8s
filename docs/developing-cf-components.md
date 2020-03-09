@@ -13,13 +13,14 @@ To simplify the component development workflow, we recommend repositories organi
 ├── example-component
 │   ├── config               - K8s resources
 │   │   ├── deployment.yml
-│   │   ├── service.yml
 │   │   └── values
 │   │       ├── _default.yml - contains schema/defaults for all values used within config
 │   │       └── images.yml   - contains resolved image references (ideally in digest form)
 │   └── build                - configuration for the build of CF-for-K8s
 │       └── kbld.yml
 ```
+
+_Note: a working example structure this way can be found at [`./example-component`](example-component)._
 
 Notes:
 - place all K8s configuration under one directory. e.g. `config/` _(so that while invoking `ytt` you always specify just that one directory.)_

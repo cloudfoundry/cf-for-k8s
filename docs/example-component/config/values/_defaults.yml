@@ -1,0 +1,10 @@
+#@data/values
+---
+components:
+  webserver:
+    port: 8080
+  database:
+    port: 5120
+
+images:
+  example: ""

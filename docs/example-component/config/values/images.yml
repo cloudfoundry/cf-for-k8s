@@ -1,0 +1,4 @@
+#@data/values
+---
+images:
+  example: index.docker.io/pivotaljohn/example-image@sha256:ba291808253277fadd7972e7f8b5e77a3458cdfd4dec6afe8584b9a39345bd1d

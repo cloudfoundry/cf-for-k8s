@@ -34,5 +34,3 @@ spec:
         livenessProbe: {}
         #@overlay/remove
         readinessProbe: {}
-        #@overlay/remove
-        startupProbe: {}

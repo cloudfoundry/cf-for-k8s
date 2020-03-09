@@ -10,7 +10,7 @@
 
 > _Include any links to other PRs, stories, slack discussions, etc... that will help establish context._
 
-### Have you read the [contributing guidelines](https://github.com/cloudfoundry/cf-for-k8s/blob/master/.github/contributing.md)?
+### Have you read the [contributing guidelines](https://github.com/cloudfoundry/cf-for-k8s/blob/develop/docs/contributing.md)?
 
 - [ ] YES
 - [ ] NO

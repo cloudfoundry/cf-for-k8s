@@ -31,6 +31,7 @@ See [Deploying CF for K8s](docs/deploy.md).
 
 ### <a name='for-contributors'>For Contributors</a>
 See [Developing for CF Components](docs/developing-cf-components.md)
+See [Contributing](docs/contributing.md)
 
 ### <a name='knownissues'></a> Known Issues
 This is a highly experimental project, and there are many features missing. For a list of the known issues, take a look at the [GitHub issues tagged 'known-issue'](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aissue+is%3Aopen+label%3Aknown-issue).

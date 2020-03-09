@@ -13,6 +13,10 @@ groups:
   - fail-prs-to-cf-for-k8s-master
   - pass-prs-to-cf-for-k8s-develop
   - run-tests-on-cf-for-k8s-pr
+- name: docker-images
+  jobs:
+  - build-cf-for-k8s-ci-image
+  - build-cf-test-runner-image
 
 resource_types:
 - name: pull-request
@@ -31,6 +35,16 @@ resources:
     ignore_paths:
       - ci/**
 
+- name: cf-for-k8s-dockerfiles
+  type: git
+  icon: github-box
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+      - ci/dockerfiles/**
+
 - name: cf-for-k8s-master
   type: git
   icon: github-box
@@ -46,6 +60,14 @@ resources:
     branch: master
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
+
+- name: weekly
+  type: time
+  icon: clock-outline
+  source:
+    start: 7:00 -0700
+    stop: 7:30 -0700
+    interval: 168h
 
 - name: every-20-minutes
   type: time
@@ -82,6 +104,24 @@ resources:
     repository: cloudfoundry/cf-for-k8s
     disable_forks: true
     base_branch: develop
+
+- name: cf-for-k8s-ci-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
+
+- name: cf-test-runner-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: relintdockerhubpushbot/cf-test-runner
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 
 # semaphore for the Kubernetes cluster (ci-test-cluster in GKE); it is shared between this pipeline and the CF for K8s PR test pipeline
 - name: validation-pool
@@ -517,3 +557,33 @@ jobs:
     ensure:
       put: validation-pool
       params: {release: validation-pool}
+
+- name: build-cf-for-k8s-ci-image
+  public: true
+  plan:
+  - timeout: 4h
+    do:
+    - in_parallel:
+      - get: weekly
+        trigger: true
+      - get: cf-for-k8s-dockerfiles
+        trigger: true
+    - put: cf-for-k8s-ci-image
+      params:
+        build: cf-for-k8s-dockerfiles/ci/dockerfiles/cf-for-k8s-ci/
+        push: true
+
+- name: build-cf-test-runner-image
+  public: true
+  plan:
+  - timeout: 4h
+    do:
+    - in_parallel:
+      - get: weekly
+        trigger: true
+      - get: cf-for-k8s-dockerfiles
+        trigger: true
+    - put: cf-test-runner-image
+      params:
+        build: cf-for-k8s-dockerfiles/ci/dockerfiles/cf-test-runner/
+        push: true

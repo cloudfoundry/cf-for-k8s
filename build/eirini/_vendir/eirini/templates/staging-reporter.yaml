@@ -1,0 +1,62 @@
+{{- if .Values.opi.staging.enable }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "eirini-staging-reporter"
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: "eirini-staging-reporter"
+  template:
+    metadata:
+      labels:
+        name: "eirini-staging-reporter"
+    spec:
+      dnsPolicy: "ClusterFirst"
+      serviceAccountName: "eirini-staging-reporter"
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: staging-reporter
+        {{- if .Values.opi.staging_reporter_image }}
+        image: {{ .Values.opi.staging_reporter_image }}:{{ .Values.opi.staging_reporter_image_tag }}
+        {{- else }}
+        image: eirini/staging-reporter@{{ .Files.Get "versions/staging-reporter" }}
+        {{- end }}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 15m
+            memory: 15Mi
+        volumeMounts:
+        - name: config-map-volume
+          mountPath: /etc/eirini/config
+        - name: cf-secrets
+          mountPath: /etc/eirini/secrets
+      volumes:
+        - name: config-map-volume
+          configMap:
+            name: "eirini"
+            items:
+            - key: staging-reporter.yml
+              path: staging-reporter.yml
+        - name: cf-secrets
+          projected:
+            sources:
+            - secret:
+                name: "{{ .Values.opi.staging.tls.stagingReporter.secretName }}"
+                items:
+                - key: "{{ .Values.opi.staging.tls.stagingReporter.certPath }}"
+                  path: eirini-client.crt
+                - key: "{{ .Values.opi.staging.tls.stagingReporter.keyPath }}"
+                  path: eirini-client.key
+                - key: "{{ .Values.opi.staging.tls.stagingReporter.caPath }}"
+                  path: eirini-client.ca
+            - secret:
+                name: "{{ .Values.opi.events.tls.capi.secretName }}"
+                items:
+                - key: "{{ .Values.opi.events.tls.capi.caPath }}"
+                  path: cc.ca
+{{- end }}

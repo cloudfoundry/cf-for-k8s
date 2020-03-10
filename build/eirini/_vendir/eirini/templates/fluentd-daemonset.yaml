@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: loggregator-fluentd
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
@@ -64,9 +65,9 @@ spec:
         - name: AGENT_METRIC_SOURCE_ID
           value: scf/daemonset/loggregator-fluentd
         - name: ROUTER_ADDR
-          value: doppler-doppler.{{ .Release.Namespace }}.svc.cluster.local:8082
+          value: {{ .Values.opi.logs.serviceName }}.{{ .Release.Namespace }}.svc.cluster.local:8082
         - name: ROUTER_ADDR_WITH_AZ
-          value: doppler-doppler.{{ .Release.Namespace }}.svc.cluster.local:8082
+          value: {{ .Values.opi.logs.serviceName }}.{{ .Release.Namespace }}.svc.cluster.local:8082
         - name: AGENT_PPROF_PORT
           value: "6062"
         - name: AGENT_HEALTH_ENDPOINT_PORT

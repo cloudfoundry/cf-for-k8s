@@ -4,11 +4,15 @@ opi:
   # set ingress_endoint when 'use_registry_ingress' is set to true
   ingress_endpoint: ~
 
+  deny_app_ingress: true
   # secret name in app namespace. Created by secret smuggler
   registry_secret_name: registry-credentials
   disk_limit_mb: 2048
   namespace: eirini
   version: 0.0.0
+
+  cc_api:
+    serviceName: "api"
 
   tls:
     opiCapiClient:
@@ -40,6 +44,7 @@ opi:
 
   logs:
     enable: true
+    serviceName: "doppler-doppler"
     tls:
       client:
         secretName: "secrets-2.16.4-2"
@@ -69,14 +74,34 @@ opi:
     nats:
       secretName: "secrets-2.16.4-2"
       passwordPath: "nats-password"
+      serviceName: "nats-nats"
 
   secretSmuggler:
     enable: true
     scfSecretName: "secrets-2.16.4-2"
 
   staging:
-    # secret that is used to connect to CAPI and Blobstore. Copied by secret smuggler
-    secretNameInAppNamespace: "secrets-2.16.4-2"
+    enable: true
+    tls:
+      client:
+        secretName: "secrets-2.16.4-2"
+        certPath: "eirini-client-crt"
+        keyPath: "eirini-client-crt-key"
+      cc_uploader:
+        secretName: "secrets-2.16.4-2"
+        certPath: "cc-server-crt"
+        keyPath: "cc-server-crt-key"
+      ca:
+        secretName: "secrets-2.16.4-2"
+        path: "internal-ca-cert"
+      stagingReporter:
+        secretName: "secrets-2.16.4-2"
+        certPath: "eirini-client-crt"
+        keyPath: "eirini-client-crt-key"
+        caPath: "internal-ca-cert"
+
+  kubecf:
+    enable: false
 
 services:
   loadbalanced: false

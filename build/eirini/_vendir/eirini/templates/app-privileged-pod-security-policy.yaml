@@ -2,42 +2,42 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: eirini
+  name: eirini-privileged
   namespace: {{ .Values.opi.namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Values.opi.namespace }}-app-role
+  name: {{ .Values.opi.namespace }}-privileged-app-role
   namespace: {{ .Values.opi.namespace }}
 rules:
 - apiGroups: ['policy']
   resources: ['podsecuritypolicies']
   verbs:     ['use']
   resourceNames:
-  - {{ .Values.opi.namespace }}-app-psp
+  - {{ .Values.opi.namespace }}-privileged-app-psp
 
 ---
 # Bind to the default service account
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ .Values.opi.namespace }}-app-rolebinding
+  name: {{ .Values.opi.namespace }}-privileged-app-rolebinding
   namespace: {{ .Values.opi.namespace }}
 roleRef:
   kind: Role
-  name: {{ .Values.opi.namespace }}-app-role
+  name: {{ .Values.opi.namespace }}-privileged-app-role
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: eirini
+  name: eirini-privileged
   namespace: {{ .Values.opi.namespace }}
 
 ---
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: {{ .Values.opi.namespace }}-app-psp
+  name: {{ .Values.opi.namespace }}-privileged-app-psp
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default,runtime/default'
     seccomp.security.alpha.kubernetes.io/defaultProfileName:  'runtime/default'
@@ -62,15 +62,6 @@ spec:
     # This policy assumes the nodes are using AppArmor rather than SELinux.
     rule: 'RunAsAny'
   supplementalGroups:
-    rule: 'MustRunAs'
-    ranges:
-      # Forbid adding the root group.
-      - min: 1
-        max: 65535
+    rule: 'RunAsAny'
   fsGroup:
-    rule: 'MustRunAs'
-    ranges:
-      # Forbid adding the root group.
-      - min: 1
-        max: 65535
-  readOnlyRootFilesystem: false
+    rule: 'RunAsAny'

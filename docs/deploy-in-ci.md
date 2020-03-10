@@ -33,6 +33,7 @@ The following scripts are designed to be executable in a CI system, as well as l
    $ export SMOKE_TEST_APPS_DOMAIN=<domain>
    $ export SMOKE_TEST_USERNAME=<cf-admin-user>
    $ export SMOKE_TEST_PASSWORD=<cf-admin-password>
+   $ export SMOKE_TEST_SKIP_SSL=true
    $ ./hack/run-smoke-tests.sh
    ```
     

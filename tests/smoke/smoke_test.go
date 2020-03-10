@@ -39,8 +39,14 @@ var _ = Describe("Smoke Tests", func() {
 			password := GetRequiredEnvVar("SMOKE_TEST_PASSWORD")
 			appsDomain = GetRequiredEnvVar("SMOKE_TEST_APPS_DOMAIN")
 
+			apiArguments := []string{"api", apiEndpoint}
+			_, ok := os.LookupEnv("SMOKE_TEST_SKIP_SSL")
+			if ok {
+				apiArguments = append(apiArguments, "--skip-ssl-validation")
+			}
+
 			// Target CF and auth
-			cfAPI := cf.Cf("api", "--skip-ssl-validation", apiEndpoint)
+			cfAPI := cf.Cf(apiArguments...)
 			Eventually(cfAPI).Should(Exit(0))
 
 			// Authenticate

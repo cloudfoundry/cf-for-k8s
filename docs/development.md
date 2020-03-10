@@ -19,7 +19,7 @@ To run:
 
 ```
 cd tests/smoke
-SMOKE_TEST_API_ENDPOINT=https://api.system.cf.example.com SMOKE_TEST_USERNAME=admin SMOKE_TEST_PASSWORD=cfadminpassword SMOKE_TEST_APPS_DOMAIN=apps.cf.example.com ginkgo ./...
+SMOKE_TEST_API_ENDPOINT=https://api.system.cf.example.com SMOKE_TEST_USERNAME=admin SMOKE_TEST_PASSWORD=cfadminpassword SMOKE_TEST_APPS_DOMAIN=apps.cf.example.com SMOKE_TEST_SKIP_SSL=true ginkgo ./...
 ```
 
 ## Directory structure

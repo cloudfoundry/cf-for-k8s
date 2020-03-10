@@ -242,6 +242,7 @@ jobs:
           export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
           export SMOKE_TEST_USERNAME=admin
           export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
+          export SMOKE_TEST_SKIP_SSL=true
           cf-for-k8s-develop/hack/run-smoke-tests.sh
 
   - task: delete-cf
@@ -361,6 +362,7 @@ jobs:
           export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
           export SMOKE_TEST_USERNAME=admin
           export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
+          export SMOKE_TEST_SKIP_SSL=true
           cf-for-k8s-master/hack/run-smoke-tests.sh
 
   - task: delete-cf
@@ -513,6 +515,7 @@ jobs:
               export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
               export SMOKE_TEST_USERNAME=admin
               export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
+              export SMOKE_TEST_SKIP_SSL=true
               cf-for-k8s-pr-all-branches/hack/run-smoke-tests.sh
 
       - task: delete-cf

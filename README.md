@@ -45,3 +45,4 @@ The alpha version will enable the CF project teams to integrate and ship new cap
 Next up, we plan to build continuous integration (CI) support - a set of CI tasks - which will enable teams to deploy their own pipeline to integrate other components, validate features and cut new releases (just like they do today in the CF4Bosh world). In addition, the release integration team plans to use the same CI tooling to build CF4K8s integration workflows to ship versioned CF4K8s artifacts.
 
 Once we achieve the first two milestones, we intend to explore the CF user needs (platform engineers) to build an enterprise-ready CF4K8s artifact to deploy Cloud Foundry on K8s, with features that CF users are accustomed to today with cf-deployment.
+easter egg

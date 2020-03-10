@@ -94,7 +94,7 @@ resources:
   source:
     access_token: ((github_status_bot_repo_access_token))
     repository: cloudfoundry/cf-for-k8s
-    disable_forks: true
+    disable_forks: false
     base_branch: master
 
 - name: cf-for-k8s-pr-develop
@@ -102,7 +102,7 @@ resources:
   source:
     access_token: ((github_status_bot_repo_access_token))
     repository: cloudfoundry/cf-for-k8s
-    disable_forks: true
+    disable_forks: false
     base_branch: develop
 
 - name: cf-for-k8s-ci-image

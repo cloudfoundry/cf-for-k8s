@@ -1,0 +1,17 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Service","metadata":{"name":"istio-ingressgateway"}})
+---
+spec:
+  #@overlay/match
+  type: NodePort
+
+  ports:
+  #@overlay/match by="name"
+  - name: http2
+    #@overlay/match missing_ok=True
+    nodePort: 31080
+  #@overlay/match by="name"
+  - name: https
+    #@overlay/match missing_ok=True
+    nodePort: 31443

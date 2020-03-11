@@ -6,10 +6,6 @@ You need the following CLIs on your system to be able to run the script:
 
 * [`kapp`](https://k14s.io/#install)
 * [`ytt`](https://k14s.io/#install) (v0.26.0+)
-* Kubernetes cluster requirements
-  * Version 1.14 or higher
-  * A minimum of 5 nodes
-  * A minimum of 2 CPU, 7.5GB memory per node
 
 In addition, you will also probably want [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/) for your own debugging and inspection of the system.
 
@@ -18,6 +14,9 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
 ## IaaS Requirements
 
 To deploy cf-for-k8s as is, the cluster should:
+* be running version 1.14 or higher
+* have a minimum of 5 nodes
+* have a minimum of 2 CPU, 7.5GB memory per node
 * support LoadBalancer services
   * requires a workaround on Minikube and Kind, for example
 * define a default StorageClass

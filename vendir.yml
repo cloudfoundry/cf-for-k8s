@@ -56,7 +56,7 @@ directories:
 # When adding a helm chart to our set of components:
 # 1. Find the chart you need from https://hub.helm.sh/charts/stable
 # 2. Note the latest (or desired) version from the "Chart Versions" section on the right.
-# 3. Navigate to the corresponding directory of https://github.com/helm/charts/tree/master/stable
+# 3. Navigate to the corresponding directory of https://github.com/helm/charts/tree/master/stable or related repo
 # 4. Look at the history or blame log of the Chart.yaml file to find when the version was bumped to the version you found earlier.
 # 5. The SHA of the commit that bumped the version will be the SHA you use as the 'ref' of the git section below.
 - path: build/minio/_vendir
@@ -87,3 +87,11 @@ directories:
       disableAutoChecksumValidation: true
       unpackArchive:
         path: eirini.tgz
+- path: build/postgres/_vendir
+  contents:
+  - path: .
+    git:
+      url: https://github.com/helm/charts
+      ref: 7bbee0c7965d40619371b4f7c4ddc6c0b4d7f4e7 # version: 8.2.0
+    includePaths:
+    - stable/postgresql/**/*

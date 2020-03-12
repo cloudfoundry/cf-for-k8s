@@ -48,7 +48,7 @@ directories:
   path: build/docker-registry/_vendir
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry-incubator/eirini-release/releases/23064766
+      url: https://api.github.com/repos/cloudfoundry-incubator/eirini-release/releases/24350599
     path: .
   path: build/eirini/_vendir
 - contents:

@@ -36,3 +36,6 @@ opi:
 
   secretSmuggler:
     enable: false
+
+  staging:
+    enable: false

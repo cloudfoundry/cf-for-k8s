@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: "eirini-routing"
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:

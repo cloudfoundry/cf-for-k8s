@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: "rootfs-patcher-{{ .Values.global.rootfs_version }}-{{ .Release.Revision }}"
+  namespace: {{ .Release.Namespace }}
 spec:
   template:
     spec:

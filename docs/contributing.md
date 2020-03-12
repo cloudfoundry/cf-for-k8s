@@ -2,20 +2,30 @@
 
 ## High-Level Flow
 
-In the component repo...
-1. make changes, commit, and push to the component repo (e.g. `capi-k8s-release`)
+### Step 1: Do local development
 
-In `cf-for-k8s` repo...
+In the component repo (e.g. `capi-k8s-release`, `uaa`, `cf-k8s-networking`, etc. ):
+1. make changes and create a new Docker image
+1. tell your local copy of `cf-for-k8s` to use that new image by updating the image reference
+1. test that these changes integrate well (i.e. deploy and run smoke tests)
+1. commit and push your changes
+
+_(See a suggested local development workflow, [below](#suggested-component-directory-structure-and-workflow))_
+
+### Step 2: PR those changes into CF for K8s
+
+In `cf-for-k8s` repo:
 1. checkout `develop` and create a new branch
-1. tell `vendir` about the change by updating the `ref:` in `vendir.yml` to the
-   new commit SHA
+  - If you do not have access to creating branches and believe you should, please inquire in the [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) slack channel
+  - Otherwise please submit changes from a fork
+1. If you are adding/updating data values (i.e. `config/values.yml`), please also add those changes to the `sample-cf-install-values.yml` file
+1. tell `vendir` about the change by updating the `ref:` in `vendir.yml` to the new commit SHA
 1. synchronize relevant files from the component repo by running `vendir sync`
 1. commit these changes and push to the branch
 1. [submit a PR to `cf-for-k8s`](https://github.com/cloudfoundry/cf-for-k8s/compare/develop...your-branch-name-here)
    - it should contain changes to `vendir.yml`, `vendir.lock.yml`, and the template config changes from `vendir sync`
 
-
-## Suggested Component Directory Structure and Workflow
+## Suggested Component Directory Structure and Local Development Workflow
 
 ### Additional Dependencies
 
@@ -45,11 +55,11 @@ Notes:
 - within the `config/` directory, gather data value file(s) into a sub-directory: e.g. `config/values/` _(so that while invoking `vendir sync` you always specify just that one directory.)_
 - place anything required to configure building/generating K8s resource templates or data files in a separate directory. e.g. `build` _(so that all that's in the `config` directory are only the K8s resources being contributed to CF-for-K8s)_
 
-### Workflow
+### Local Development Workflow
 
 These instructions assume that you are using the directory structure, above.
 
-1. Create or claim a Kubernetes cluster.  We expect these instructions to work for any distro of cluster, your mileage may vary (local or remote).
+1. Create or claim a Kubernetes cluster.  We expect these instructions to work for any distribution of Kubernetes, your mileage may vary (local or remote).
 1. Checkout `cf-for-k8s` develop and install it to your cluster.
 1. Start a local Docker Daemon so that you can build (and push) local Docker images.
 

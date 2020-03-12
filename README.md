@@ -30,7 +30,6 @@ Cloud Foundry for Kubernetes (CF4K8s) is a deployment artifact for deploying the
 See [Deploying CF for K8s](docs/deploy.md).
 
 ### <a name='for-contributors'>For Contributors</a>
-See [Developing for CF Components](docs/developing-cf-components.md)
 See [Contributing](docs/contributing.md)
 
 ### <a name='knownissues'></a> Known Issues

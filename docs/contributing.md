@@ -7,17 +7,17 @@
 In the component repo (e.g. `capi-k8s-release`, `uaa`, `cf-k8s-networking`, etc. ):
 1. make changes and create a new Docker image
 1. tell your local copy of `cf-for-k8s` to use that new image by updating the image reference
-1. test that these changes integrate well (i.e. deploy and run smoke tests)
+1. test that these changes integrate well (i.e. [deploy](/docs/deploy.md) and [run smoke tests](#running-smoke-tests))
 1. commit and push your changes
 
-_(See a suggested local development workflow, [below](#suggested-component-directory-structure-and-workflow))_
+_(See a suggested local development workflow, [below](#suggested-component-directory-structure-and-local-development-workflow))_
 
 ### Step 2: PR those changes into CF for K8s
 
 In `cf-for-k8s` repo:
 1. checkout `develop` and create a new branch
-  - If you do not have access to creating branches and believe you should, please inquire in the [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) slack channel
-  - Otherwise please submit changes from a fork
+    - If you do not have access to creating branches and believe you should, please inquire in the [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) slack channel
+    - Otherwise please submit changes from a fork
 1. If you are adding/updating data values (i.e. `config/values.yml`), please also add those changes to the `sample-cf-install-values.yml` file
 1. tell `vendir` about the change by updating the `ref:` in `vendir.yml` to the new commit SHA
 1. synchronize relevant files from the component repo by running `vendir sync`
@@ -39,7 +39,7 @@ In `cf-for-k8s` repo:
 
 ## Running Smoke tests
 
-1. [Deploy](docs/deploy.md) your instance of cf-for-k8s.
+1. [Deploy](/docs/deploy.md) your instance of cf-for-k8s.
 1. Configure the smoke test environment variables as suggested, below
 
    ```

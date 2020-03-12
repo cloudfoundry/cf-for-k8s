@@ -1,12 +1,30 @@
 # Developing CF Components
 
-## Additional Dependencies
-In addition to the core build dependencies: [/docs/development.md#dependencies](/docs/development.md#dependencies), the workflow herein uses these tools:
+## High-Level Flow
+
+In the component repo...
+1. make changes, commit, and push to the component repo (e.g. `capi-k8s-release`)
+
+In `cf-for-k8s` repo...
+1. checkout `develop` and create a new branch
+1. tell `vendir` about the change by updating the `ref:` in `vendir.yml` to the
+   new commit SHA
+1. synchronize relevant files from the component repo by running `vendir sync`
+1. commit these changes and push to the branch
+1. [submit a PR to `cf-for-k8s`](https://github.com/cloudfoundry/cf-for-k8s/compare/develop...your-branch-name-here)
+   - it should contain changes to `vendir.yml`, `vendir.lock.yml`, and the template config changes from `vendir sync`
+
+
+## Suggested Component Directory Structure and Workflow
+
+### Additional Dependencies
+
+In addition to the core build dependencies: [docs/development.md#dependencies](/docs/development.md#dependencies), the workflow herein uses these tools:
 
 - [kbld](https://get-kbld.io/)
 - [minikube](https://github.com/kubernetes/minikube)
 
-## Component Repository Organization
+### Component Directory Structure
 To simplify the component development workflow, we recommend repositories organize configuration thusly:
 
 ```
@@ -27,7 +45,9 @@ Notes:
 - within the `config/` directory, gather data value file(s) into a sub-directory: e.g. `config/values/` _(so that while invoking `vendir sync` you always specify just that one directory.)_
 - place anything required to configure building/generating K8s resource templates or data files in a separate directory. e.g. `build` _(so that all that's in the `config` directory are only the K8s resources being contributed to CF-for-K8s)_
 
-## Potential Workflow
+### Workflow
+
+These instructions assume that you are using the directory structure, above.
 
 1. Create or claim a Kubernetes cluster.  We expect these instructions to work for any distro of cluster, your mileage may vary (local or remote).
 1. Checkout `cf-for-k8s` develop and install it to your cluster.

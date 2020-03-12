@@ -10,8 +10,8 @@ directories:
       sha: 592babdf2842d4e46797fd6782b1215bd8b7fb6b
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: make rubocop happy
-      sha: e4d57b3f39246fb4c9a733da041d73f7264f9efc
+      commitTitle: README updates and images that work with cf push...
+      sha: 2443b69dcf60ea39b075bc5fd4ef258d6a4ef292
     path: github.com/cloudfoundry/capi-k8s-release
   - git:
       commitTitle: update log-cache-deployment for plain text communication...

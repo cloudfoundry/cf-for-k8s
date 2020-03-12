@@ -25,11 +25,43 @@ In `cf-for-k8s` repo:
 1. [submit a PR to `cf-for-k8s`](https://github.com/cloudfoundry/cf-for-k8s/compare/develop...your-branch-name-here)
    - it should contain changes to `vendir.yml`, `vendir.lock.yml`, and the template config changes from `vendir sync`
 
+## Dependencies
+
+### Templating and Deployment
+- [ytt](https://get-ytt.io/)
+- [kapp](https://get-kapp.io/)
+
+### Smoke Tests
+- [ginkgo](https://github.com/onsi/ginkgo#set-me-up)
+
+### Vendoring
+- [vendir](https://github.com/k14s/vendir) v0.8.0+ (includes the `directory` flag, used in the development workflow)
+
+## Running Smoke tests
+
+1. [Deploy](docs/deploy.md) your instance of cf-for-k8s.
+1. Configure the smoke test environment variables as suggested, below
+
+   ```
+   export SYSTEM_DOMAIN=<your system domain>
+   export SMOKE_TEST_PASSWORD=<CF Admin password from `cf-values.yml`>
+   ```
+1. Run the smoke test suite
+
+    ```
+    cd tests/smoke
+    export SMOKE_TEST_API_ENDPOINT=https://api.${SYSTEM_DOMAIN}
+    export SMOKE_TEST_USERNAME=admin
+    export SMOKE_TEST_APPS_DOMAIN=apps.${SYSTEM_DOMAIN}
+    export SMOKE_TEST_SKIP_SSL=true
+    ginkgo ./...
+    ```
+
 ## Suggested Component Directory Structure and Local Development Workflow
 
 ### Additional Dependencies
 
-In addition to the core build dependencies: [docs/development.md#dependencies](/docs/development.md#dependencies), the workflow herein uses these tools:
+In addition to the dependencies above, the workflow below requires these:
 
 - [kbld](https://get-kbld.io/)
 - [minikube](https://github.com/kubernetes/minikube)

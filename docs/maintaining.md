@@ -1,26 +1,14 @@
-# Developing cf-for-k8s
+# Maintaining cf-for-k8s
 
-This document is intended for cf-for-k8s maintainers and contributors.
+This document is intended for cf-for-k8s maintainers.
 
 ## Dependencies
-### Templating and Deployment
-- [ytt](https://get-ytt.io/)
-- [kapp](https://get-kapp.io/)
 
-### Smoke Tests
-- [ginkgo](https://github.com/onsi/ginkgo#set-me-up)
-
-### Vendoring
-- [vendir](https://github.com/k14s/vendir) v0.7.0+ (includes the `directory` flag, used in the development workflow)
+see "Dependencies" in [docs/contributing.md](/docs/contributing.md#dependencies).
 
 ## Smoke tests
 
-To run:
-
-```
-cd tests/smoke
-SMOKE_TEST_API_ENDPOINT=https://api.system.cf.example.com SMOKE_TEST_USERNAME=admin SMOKE_TEST_PASSWORD=cfadminpassword SMOKE_TEST_APPS_DOMAIN=apps.cf.example.com SMOKE_TEST_SKIP_SSL=true ginkgo ./...
-```
+see "Running Smoke Tests" in [docs/contributing.md](/docs/contributing.md#running-smoke-tests).
 
 ## Directory structure
 

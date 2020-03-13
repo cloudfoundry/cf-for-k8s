@@ -6,8 +6,8 @@ directories:
       sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
     path: github.com/GoogleCloudPlatform/metacontroller
   - git:
-      commitTitle: 'feat: enable SDS for ingressgateway certs...'
-      sha: 592babdf2842d4e46797fd6782b1215bd8b7fb6b
+      commitTitle: 'Merge pull request #28 from cloudfoundry/DocumentManagingCertificatesForApplicationIngress...'
+      sha: 73b9fed1cbc2793f31e44509b78bb9ba6cd70835
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: make rubocop happy

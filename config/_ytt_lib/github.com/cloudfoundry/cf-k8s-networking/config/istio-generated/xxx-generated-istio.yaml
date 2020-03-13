@@ -10244,3 +10244,123 @@ metadata:
   labels:
     app: istio-telemetry
     release: istio
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pilot-network-policy
+  namespace: istio-system
+spec:
+  podSelector:
+    matchLabels:
+      app: pilot
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    ports:
+    - port: 15004
+  - ports:
+    - port: 15010
+    - port: 15011
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: citadel-network-policy
+  namespace: istio-system
+spec:
+  podSelector:
+    matchLabels:
+      app: citadel
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    ports:
+    - port: 8060
+    - port: 8080
+    - port: 15014
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mixer-network-policy
+  namespace: istio-system
+spec:
+  podSelector:
+    matchLabels:
+      app: mixer
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    ports:
+    - port: 9091
+    - port: 15004
+    - port: 15090
+    - port: 42422
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sidecar-injector-network-policy
+  namespace: istio-system
+spec:
+  podSelector:
+    matchLabels:
+      app: sidecarInjectorWebhook
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    ports:
+    - port: 9091
+    - port: 15004
+    - port: 15090
+    - port: 42422
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingressgateway-network-policy-pilot
+  namespace: istio-system
+spec:
+  podSelector:
+    matchLabels:
+      app: istio-ingressgateway
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    ports:
+    - port: 15443
+    - port: 15020
+  - ports:
+    - port: 80
+    - port: 443
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: Sidecar
+metadata:
+  name: default
+  namespace: cf-workloads
+spec:
+  egress:
+  - hosts:
+    - cf-system/*

@@ -34,13 +34,13 @@ To deploy cf-for-k8s as is, the cluster should:
 
    You have the option of auto-generating the installation values or creating the values by yourself.
 
-   #### Option 1 - Generate the install values
-   **NOTE:** The script relies on [bosh interpolate](https://bosh.io/docs/cli-v2-install/#install) to generate the install values
+   #### Option 1 - Run generate-values.sh to generate the install values
+   **NOTE:** The script requires the [BOSH CLI](https://bosh.io/docs/cli-v2-install/#install) to generate the install values from `bosh intepolate`
    ```bash
    # expects bosh cli
    $ ./hack/generate-values.sh cf.example.com > /tmp/cf-values.yml
    ```
-   #### Option 2 - Create the install values
+   #### Option 2 - Create the install values by hand
    1. Create a file called `/tmp/cf-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point.
    1. Open the file and change the `system_domain` and `app_domain` to your desired domain address
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values

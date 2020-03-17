@@ -14,7 +14,7 @@ directories:
   - path: github.com/cloudfoundry/cf-k8s-networking
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: 73b9fed1cbc2793f31e44509b78bb9ba6cd70835
+      ref: 585f5a5271b87e8b485cf6cb6a409917b8864b9e
     includePaths:
     - cfroutesync/crds/**/*
     - config/cfroutesync/**/*

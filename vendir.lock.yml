@@ -6,8 +6,8 @@ directories:
       sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
     path: github.com/GoogleCloudPlatform/metacontroller
   - git:
-      commitTitle: 'chore: bump istio to 1.4.5...'
-      sha: 5efa247a8f46953e9cb88f71b3ef47c2cdd39385
+      commitTitle: 'feat: support no loadbalancer deployments...'
+      sha: 70e82b3c168b2f5446db7452a9d0b0322f2cad19
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: make rubocop happy

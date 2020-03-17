@@ -10,7 +10,7 @@ kind: CompositeController
 metadata:
   name: cfroutesync
 spec:
-  resyncPeriodSeconds: 5
+  resyncPeriodSeconds: 1
   parentResource:
     apiVersion: apps.cloudfoundry.org/v1alpha1
     resource: routebulksyncs

@@ -75,14 +75,14 @@ var _ = Describe("Smoke Tests", func() {
 			}
 		})
 
-		It("creates a routable app pod in Kubernetes", func() {
+		It("creates a routable app pod in Kubernetes from a docker image-based app", func() {
 			appName := generator.PrefixedRandomName(NamePrefix, "app")
 
-			By("Pushing an app and checking that the CF CLI command succeeds")
+			By("pushing an app and checking that the CF CLI command succeeds")
 			cfPush := cf.Cf("push", appName, "-o", "cloudfoundry/diego-docker-app")
 			Eventually(cfPush).Should(Exit(0))
 
-			By("Querying the app")
+			By("querying the app")
 			var resp *http.Response
 
 			Eventually(func() int {
@@ -103,11 +103,39 @@ var _ = Describe("Smoke Tests", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(appResponse.VcapServices).NotTo(BeEmpty())
 
-			By("That the application's logs are available.")
+			By("verifying that the application's logs are available.")
 			Eventually(func() string {
 				cfTail := cf.Cf("tail", appName, "--lines", "1000")
 				return string(cfTail.Wait().Out.Contents())
 			}).Should(ContainSubstring("Hello World from index"))
+		})
+
+		It("creates a routable app pod in Kubernetes from a source-based app", func() {
+			appName := generator.PrefixedRandomName(NamePrefix, "app")
+
+			By("pushing an app and checking that the CF CLI command succeeds")
+			cfPush := cf.Cf("push", appName, "-p", "assets/test-node-app")
+			Eventually(cfPush).Should(Exit(0))
+
+			By("querying the app")
+			var resp *http.Response
+
+			Eventually(func() int {
+				var err error
+				resp, err = http.Get(fmt.Sprintf("http://%s.%s", appName, appsDomain))
+				Expect(err).NotTo(HaveOccurred())
+				return resp.StatusCode
+			}, 2*time.Minute, 30*time.Second).Should(Equal(200))
+
+			body, err := ioutil.ReadAll(resp.Body)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(string(body)).To(Equal("Hello World\n"))
+
+			By("verifying that the application's logs are available.")
+			Eventually(func() string {
+				cfTail := cf.Cf("tail", appName, "--lines", "1000")
+				return string(cfTail.Wait().Out.Contents())
+			}).Should(ContainSubstring("Console output from test-node-app"))
 		})
 	})
 })

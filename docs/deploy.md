@@ -178,12 +178,12 @@ If you have enabled support for Cloud Native Buildpacks:
 
 1. Deploy a source-based app:
    ```console
-   $ cf push test-node-app -p docs/example-app
+   $ cf push test-node-app -p tests/smoke/assets/test-node-app
    Pushing app test-node-app to org test-org / space test-space as admin...
    Getting app info...
    Creating app with these attributes...
    + name:       test-node-app
-     path:       /Users/pivotal/workspace/cf-for-k8s/docs/example-app
+     path: /Users/pivotal/workspace/cf-for-k8s/tests/smoke/assets/test-node-app
      routes:
    +   test-node-app.cf.example.com
 

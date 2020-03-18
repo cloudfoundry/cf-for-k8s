@@ -8,14 +8,6 @@
 - CI: https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s
 - Tracker: https://www.pivotaltracker.com/n/projects/1382120
 
-## Table of Contents
-
-* <a href='#purpose'>Purpose</a>
-* <a href='#deploy'>Deploying CF for K8s</a>
-* <a href='#for-contributors'>For Contributors</a>
-* <a href='#knownissues'>Known Issues</a>
-* <a href='#future'>What's next</a>
-
 ### <a name='purpose'></a> Purpose
 
 Cloud Foundry for Kubernetes (CF4K8s) is a deployment artifact for deploying the Cloud Foundry Application Runtime on Kubernetes. 

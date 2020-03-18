@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# This is a hack! see https://github.com/cloudfoundry/cf-for-k8s/blob/develop/hack/README.md
+
 set -eu
 
 if [ $# -lt 2 ]; then

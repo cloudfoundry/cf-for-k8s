@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# This is a hack! see https://github.com/cloudfoundry/cf-for-k8s/blob/develop/hack/README.md
+
 set -euo pipefail
 
 if [[ $# -lt 1 ]]; then

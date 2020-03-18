@@ -5,6 +5,11 @@ local_route: 0.0.0.0
 
 external_port: 9022
 tls_port: 9023
+readiness_ports:
+  cloud_controller_worker: 4444
+  cc_deployment_updater: 4445
+  cloud_controller_clock: 4446
+
 internal_service_hostname: cloud_controller_ng
 
 pid_filename: /cloud_controller_ng/cloud_controller_ng.pid
@@ -48,7 +53,7 @@ nginx:
   instance_socket: "/data/cloud_controller_ng/cloud_controller.sock"
 
 index: 0
-name: TODO
+name: ""
 route_services_enabled: true
 volume_services_enabled: false
 
@@ -76,7 +81,7 @@ logging:
   max_retries: 1
 
 logcache:
-  host: #@ "log-cache.{}".format(data.values.system_domain)
+  host: #@ "https://log-cache.{}".format(data.values.system_domain)
   port: 8080
   temporary_ignore_server_unavailable_errors: true
 
@@ -124,7 +129,7 @@ login:
 #! TODO: change the UAA's Kube DNS name when the service is named correctly later
 uaa:
   url: #@ "https://uaa.{}".format(data.values.system_domain)
-  internal_url: #@ "http://uaa.{}.svc.cluster.local:8080".format(data.values.namespace)
+  internal_url: #@ "http://uaa.{}.svc.cluster.local:8080".format(data.values.system_namespace)
   resource_id: cloud_controller,cloud_controller_service_permissions
   client_timeout: 60
   ca_file: /config/uaa/certs/uaa.crt
@@ -159,7 +164,7 @@ quota_definitions: {"default":{"memory_limit":102400,"non_basic_services_allowed
 default_quota_definition: default
 
 resource_pool:
-  resource_directory_key: cc-resources
+  resource_directory_key: #@ data.values.blobstore.resource_directory_key
   blobstore_type: fog
   fog_connection:
     provider: AWS
@@ -167,7 +172,7 @@ resource_pool:
     aws_access_key_id: #@ data.values.blobstore.access_key_id
     aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
-    region: "''"
+    region: #@ data.values.blobstore.region
     path_style: true
   minimum_size: 65536
   maximum_size: 536870912
@@ -180,7 +185,7 @@ resource_pool:
   fog_aws_storage_options: {}
 
 packages:
-  app_package_directory_key: cc-packages
+  app_package_directory_key: #@ data.values.blobstore.package_directory_key
   blobstore_type: fog
   fog_connection:
     provider: AWS
@@ -188,7 +193,7 @@ packages:
     aws_access_key_id: #@ data.values.blobstore.access_key_id
     aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
-    region: "''"
+    region: #@ data.values.blobstore.region
     path_style: true
   max_valid_packages_stored: 5
   max_package_size: 1073741824
@@ -201,7 +206,7 @@ packages:
   fog_aws_storage_options: {}
 
 droplets:
-  droplet_directory_key: cc-droplets
+  droplet_directory_key: #@ data.values.blobstore.droplet_directory_key
   blobstore_type: fog
   fog_connection:
     provider: AWS
@@ -209,7 +214,7 @@ droplets:
     aws_access_key_id: #@ data.values.blobstore.access_key_id
     aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
-    region: "''"
+    region: #@ data.values.blobstore.region
     path_style: true
 
   cdn:
@@ -221,7 +226,7 @@ droplets:
   max_staged_droplets_stored: 5
 
 buildpacks:
-  buildpack_directory_key: cc-buildpacks
+  buildpack_directory_key: #@ data.values.blobstore.buildpack_directory_key
   blobstore_type: fog
   fog_connection:
     provider: AWS
@@ -229,7 +234,7 @@ buildpacks:
     aws_access_key_id: #@ data.values.blobstore.access_key_id
     aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
-    region: "''"
+    region: #@ data.values.blobstore.region
     path_style: true
 
   cdn:
@@ -327,7 +332,7 @@ diego:
   use_privileged_containers_for_staging: false
 
 opi:
-  url: #@ "https://eirini.{}.svc.cluster.local:8085".format(data.values.namespace)
+  url: #@ "https://eirini.{}.svc.cluster.local:8085".format(data.values.system_namespace)
   opi_staging: true
   enabled: true
   cc_uploader_url: "https://TODO.TODO"
@@ -342,6 +347,17 @@ max_labels_per_resource: 50
 max_annotations_per_resource: 200
 
 default_app_lifecycle: kpack
+
+#! kpack stager properties
+kubernetes:
+  host_url: #@ data.values.kubernetes.api.url
+  service_account:
+    token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  kpack:
+    builder_namespace: #@ data.values.system_namespace
+    registry_service_account_name: cc-kpack-registry-service-account
+    registry_tag_base: #@ "{}/{}".format(data.values.kpack.registry.hostname, data.values.kpack.registry.repository)
 
 #! worker property
 perform_blob_cleanup: true

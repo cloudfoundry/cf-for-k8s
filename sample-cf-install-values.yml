@@ -58,3 +58,16 @@ eirini:
 
 docker_registry:
   http_secret: dockerregistryhttpsecret
+
+
+kubernetes:
+  api:
+    url: kubernetes_api_url
+
+kpack:
+  registry:
+    hostname: gcr.io
+    repository: gcp_project_id/cf-workloads
+    username: _json_key
+    password: |
+      contents_of_service_account_json

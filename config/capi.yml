@@ -22,8 +22,8 @@ images:
 #@ if/end data.values.images.nginx:
   nginx: #@ data.values.images.nginx
 
-namespace: #@ data.values.system_namespace
-
+system_namespace: #@ data.values.system_namespace
+workloads_namespace: #@ data.values.workloads_namespace
 system_domain: #@ data.values.system_domain
 app_domains:
 #@ for/end domain in data.values.app_domains:
@@ -32,8 +32,13 @@ app_domains:
 
 blobstore:
   endpoint: #@ data.values.capi.blobstore.endpoint
+  region: #@ data.values.capi.blobstore.region
   access_key_id: #@ data.values.cf_blobstore.access_key
   secret_access_key: #@ data.values.cf_blobstore.secret_key
+  package_directory_key: #@ data.values.capi.blobstore.package_directory_key
+  droplet_directory_key: #@ data.values.capi.blobstore.droplet_directory_key
+  resource_directory_key: #@ data.values.capi.blobstore.resource_directory_key
+  buildpack_directory_key: #@ data.values.capi.blobstore.buildpack_directory_key
 
 ccdb:
   adapter: #@ data.values.capi.database.adapter
@@ -59,6 +64,18 @@ uaa:
   clients:
     cloud_controller_username_lookup:
       secret: #@ data.values.uaa.admin_client_secret
+    capi_kpack_watcher:
+      secret: #@ data.values.uaa.admin_client_secret
+
+kubernetes:
+  api:
+    url: #@ data.values.kubernetes.api.url
+kpack:
+  registry:
+    hostname: #@ data.values.kpack.registry.hostname
+    repository: #@ data.values.kpack.registry.repository
+    username: #@ data.values.kpack.registry.username
+    password: #@ data.values.kpack.registry.password
 #@ end
 
 #@ capi = library.get("github.com/cloudfoundry/capi-k8s-release")
@@ -82,3 +99,9 @@ spec:
         host: #@ "capi." + data.values.system_namespace + ".svc.cluster.local"
         port:
           number: 80
+
+#! pin cnb image to last known good: 0.0.55-bionic
+#@overlay/match by=overlay.subset({"kind": "ClusterBuilder", "metadata": {"name": "cf-autodetect-builder"}})
+---
+spec:
+  image: cloudfoundry/cnb:0.0.55-bionic

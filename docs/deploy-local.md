@@ -2,12 +2,13 @@
 
 ## Prerequisites
 
-See the requirements in [Deploying CF for K8s](deploy.md).
+### Required Tools
 
-## IaaS Requirements
+See the requirements in [Deploying CF for K8s](deploy.md#required-tools).
 
-In addition to the requirements in [Deploying CF for K8s](deploy.md), the
-cluster should:
+### Machine Requirements
+
+In addition to the Kubernetes version requirement in [Deploying CF for K8s](deploy.md#kubernetes-cluster-requirements), the cluster should:
 
 * have a minimum of 1 node
 * have a minimum of 4 CPU, 8GB memory per node

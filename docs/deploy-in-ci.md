@@ -1,8 +1,8 @@
 # Deploy CF for K8s in CI
 
-## Prerequesites
+## Prerequisites
 
-You will need the same set of prerequesites listed in the [Deploy CF for K8s](deploy.md#prerequesites) documentation. The CLIs will need to be available in the image used by your CI system.
+You will need the same set of prerequisites listed in the [Deploy CF for K8s](deploy.md#prerequisites) documentation. The CLIs will need to be available in the image used by your CI system.
 
 ## Available Scripts
 
@@ -11,7 +11,7 @@ The following scripts are designed to be executable in a CI system, as well as l
 - Generate all required configuration settings for a given domain:
 
   ```bash
-  $ ./hack/generate-values.sh <domain> > <path-to-cf-install-values-yaml>
+  $ ./hack/generate-values.sh <cf-domain> <path-to-kpack-gcr-service-account-json> > <path-to-cf-install-values-yaml>
   ```
 
 - Install CF for K8s to your target K8s cluster.
@@ -23,7 +23,7 @@ The following scripts are designed to be executable in a CI system, as well as l
 - Update the wildcard entry for the given domain with the correct load-balancer IP address (if you are using Google Cloud DNS).
 
    ```bash
-  $ ./hack/update-gcp-dns.sh <domain> <dns-zone-name>
+  $ ./hack/update-gcp-dns.sh <cf-domain> <dns-zone-name>
    ```
 
 - Run the smoke test suite against your CF for K8s installation.
@@ -36,7 +36,7 @@ The following scripts are designed to be executable in a CI system, as well as l
    $ export SMOKE_TEST_SKIP_SSL=true
    $ ./hack/run-smoke-tests.sh
    ```
-    
+
 ## Available Docker Images
 
 There are two Docker images maintained by us that can be used for a CI pipeline:

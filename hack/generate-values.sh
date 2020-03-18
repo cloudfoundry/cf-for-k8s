@@ -1,20 +1,36 @@
 #!/usr/bin/env bash
 
+# This is a hack! see https://github.com/cloudfoundry/cf-for-k8s/blob/develop/hack/README.md
+
 set -euo pipefail
 
 if [[ $# -lt 1 ]]; then
-  echo "Usage $(basename "$0") <domain>"
+  cat <<EOF
+Usage:
+  $(basename "$0") <cf-domain> [<path-to-kpack-gcr-service-account-json>]
+
+where:
+  cf-domain -- root DNS domain name for the CF install (e.g. if CF API at api.inglewood.k8s-dev.relint.rocks, cf-domain = inglewood.k8s-dev.relint.rocks)
+  path-to-kpack-gcr-service-account-json -- filepath to the GCP Service Account JSON describing a service account that has permissions to write to the project's container repository.
+
+EOF
   exit 1
 fi
 
-## Usage: ./generate-values.sh <my-domain>
-## where my-domain will be used as both the system domain and app domain.
+DOMAIN=$1
+VARS_FILE="/tmp/${DOMAIN}/cf-vars.yaml"
+
+if [[ $# -ge 2 ]]; then
+  GCP_SERVICE_ACCOUNT_JSON="$2"
+
+  if [[ ! -r ${GCP_SERVICE_ACCOUNT_JSON} ]]; then
+    echo "Error: Unable to read GCP service account JSON from file: ${GCP_SERVICE_ACCOUNT_JSON}" >&2
+    exit 1
+  fi
+fi
 
 # Make sure bosh binary exists
 bosh --version >/dev/null
-
-DOMAIN=$1
-VARS_FILE="/tmp/${DOMAIN}/cf-vars.yaml"
 
 bosh interpolate --vars-store=${VARS_FILE} <(cat <<EOF
 variables:
@@ -192,3 +208,26 @@ eirini:
 docker_registry:
   http_secret: $( bosh interpolate ${VARS_FILE} --path=/docker_registry_http_secret )
 EOF
+
+if [[ -n "${GCP_SERVICE_ACCOUNT_JSON:=}" ]]; then
+  KUBECONF_FILE=$( mktemp )
+  kubectl config view >${KUBECONF_FILE}
+  CURRENT_KUBE_CONTEXT_NAME=$(kubectl config current-context)
+  CURRENT_KUBE_CLUSTER_NAME=$( bosh interpolate ${KUBECONF_FILE} --path=/contexts/name=${CURRENT_KUBE_CONTEXT_NAME}/context/cluster )
+  KUBE_API_SERVER_URL=$( bosh interpolate ${KUBECONF_FILE} --path=/clusters/name=${CURRENT_KUBE_CLUSTER_NAME}/cluster/server )
+
+  cat <<EOF
+
+kubernetes:
+  api:
+    url: ${KUBE_API_SERVER_URL}
+
+kpack:
+  registry:
+    hostname: gcr.io
+    repository: $( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON} --path=/project_id )/cf-workloads
+    username: _json_key
+    password: |
+$( cat ${GCP_SERVICE_ACCOUNT_JSON} | sed -e 's/^/      /' )
+EOF
+fi

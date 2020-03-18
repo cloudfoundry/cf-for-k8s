@@ -121,6 +121,10 @@ oauth:
       authorities: scim.userids
       authorized-grant-types: client_credentials
       secret: #@ data.values.uaa.admin_client_secret
+    capi_kpack_watcher:
+      authorities: cloud_controller.write,cloud_controller.update_build_state
+      authorized-grant-types: client_credentials
+      secret: #@ data.values.uaa.admin_client_secret
 
 issuer:
   uri: #@ "https://uaa." + data.values.system_domain

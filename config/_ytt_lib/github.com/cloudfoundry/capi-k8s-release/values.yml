@@ -3,10 +3,11 @@
 replicaCount: 1
 
 images:
-  ccng: cloudfoundry/cloud-controller-ng
+  ccng: cloudfoundry/cloud-controller-ng:0e40bf23675df21be5b9f29492c46bea7fe156ac@sha256:e466dbda51fbb1ad7613194204c47d2dcfc860f93a578eb9db1b5967009dd9c7
   nginx: cloudfoundry/capi:nginx
-namespace: cf-system
-
+  capi_kpack_watcher: cloudfoundry/capi-kpack-watcher:latest
+system_namespace: cf-system
+workloads_namespace: cf-workloads
 imagePullSecrets:
 
 app_domains: []
@@ -21,6 +22,11 @@ ccdb:
   database: cloud_controller
 
 blobstore:
+  region: "''"
+  package_directory_key: cc-packages
+  droplet_directory_key: cc-droplets
+  resource_directory_key: cc-resources
+  buildpack_directory_key: cc-buildpacks
   endpoint: http://capi-blobstore-minio.default:9000
   access_key_id: AKIAIOSFODNN7EXAMPLE
   secret_access_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -30,6 +36,8 @@ uaa:
     secretName:
   clients:
     cloud_controller_username_lookup:
+      secret: supers3cret
+    capi_kpack_watcher:
       secret: supers3cret
 
 eirini:
@@ -103,3 +111,13 @@ apiServer:
 
 kbld:
   destination:
+
+kubernetes:
+  api:
+    url: ""
+kpack:
+  registry:
+    hostname: ""
+    repository: ""
+    username: ""
+    password: ""

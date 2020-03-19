@@ -21,13 +21,10 @@ WORKDIR /tmp
 RUN \
   wget -O "cf-tar" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=6.50.0" && \
   tar xzvf cf-tar -C /usr/local/bin && \
-  chmod +x /usr/local/bin/cf && \
-  wget https://github.com/cloudfoundry/log-cache-cli/releases/download/v2.1.0/log-cache-cf-plugin-linux && \
-  cf install-plugin -f log-cache-cf-plugin-linux
+  chmod +x /usr/local/bin/cf
 
 RUN rm -rf /tmp/*
 
 RUN go version && \
     ginkgo version && \
-    cf --version && \
-    cf tail --help
+    cf --version

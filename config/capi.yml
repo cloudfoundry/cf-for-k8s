@@ -67,9 +67,6 @@ uaa:
     capi_kpack_watcher:
       secret: #@ data.values.uaa.admin_client_secret
 
-kubernetes:
-  api:
-    url: #@ data.values.kubernetes.api.url
 kpack:
   registry:
     hostname: #@ data.values.kpack.registry.hostname

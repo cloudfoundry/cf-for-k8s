@@ -10,8 +10,8 @@ directories:
       sha: 5efa247a8f46953e9cb88f71b3ef47c2cdd39385
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: README updates and images that work with cf push...
-      sha: 2443b69dcf60ea39b075bc5fd4ef258d6a4ef292
+      commitTitle: Use in-cluster DNS for kubernetes api...
+      sha: f96d1d1ded000f8dc102a6343e55dee67551aab3
     path: github.com/cloudfoundry/capi-k8s-release
   - git:
       commitTitle: update log-cache-deployment for plain text communication...

@@ -210,17 +210,7 @@ docker_registry:
 EOF
 
 if [[ -n "${GCP_SERVICE_ACCOUNT_JSON:=}" ]]; then
-  KUBECONF_FILE=$( mktemp )
-  kubectl config view >${KUBECONF_FILE}
-  CURRENT_KUBE_CONTEXT_NAME=$(kubectl config current-context)
-  CURRENT_KUBE_CLUSTER_NAME=$( bosh interpolate ${KUBECONF_FILE} --path=/contexts/name=${CURRENT_KUBE_CONTEXT_NAME}/context/cluster )
-  KUBE_API_SERVER_URL=$( bosh interpolate ${KUBECONF_FILE} --path=/clusters/name=${CURRENT_KUBE_CLUSTER_NAME}/cluster/server )
-
   cat <<EOF
-
-kubernetes:
-  api:
-    url: ${KUBE_API_SERVER_URL}
 
 kpack:
   registry:

@@ -30,6 +30,14 @@ data:
   #@ end
   postgresql-password: #@ base64.encode(data.values.cf_db.admin_password)
 
+#@overlay/match by=overlay.subset({"kind": "StatefulSet", "metadata":{"name":"cf-db-postgresql"}})
+---
+spec:
+  template:
+    spec:
+      #@overlay/replace
+      initContainers: []
+
 #@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"cf-db-postgresql-init-scripts"}})
 ---
 #@ ccdb = data.values.capi.database

@@ -92,7 +92,7 @@ directories:
   contents:
   - path: .
     git:
-      url: https://github.com/helm/charts
-      ref: 7bbee0c7965d40619371b4f7c4ddc6c0b4d7f4e7 # version: 8.2.0
+      url: https://github.com/bitnami/charts
+      ref: a4df45b81a9d0a7862f043765bc13bc875bdad96 # version: 8.6.4
     includePaths:
-    - stable/postgresql/**/*
+    - bitnami/postgresql/**/*

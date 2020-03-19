@@ -53,8 +53,8 @@ directories:
   path: build/eirini/_vendir
 - contents:
   - git:
-      commitTitle: Support loading environment variables from ConfigMap (#20385)...
-      sha: 7bbee0c7965d40619371b4f7c4ddc6c0b4d7f4e7
+      commitTitle: '[bitnami/postgresql] Release 8.6.4 updating components versions...'
+      sha: a4df45b81a9d0a7862f043765bc13bc875bdad96
     path: .
   path: build/postgres/_vendir
 kind: LockConfig

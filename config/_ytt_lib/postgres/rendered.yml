@@ -4,7 +4,7 @@ metadata:
   name: cf-db-postgresql-init-scripts
   labels:
     app: postgresql
-    chart: postgresql-8.2.0
+    chart: postgresql-8.6.4
     release: cf-db
     heritage: Helm
 data:
@@ -16,7 +16,7 @@ metadata:
   name: cf-db-postgresql-headless
   labels:
     app: postgresql
-    chart: postgresql-8.2.0
+    chart: postgresql-8.6.4
     release: cf-db
     heritage: Helm
 spec:
@@ -36,7 +36,7 @@ metadata:
   name: cf-db-postgresql
   labels:
     app: postgresql
-    chart: postgresql-8.2.0
+    chart: postgresql-8.6.4
     release: cf-db
     heritage: Helm
 spec:
@@ -56,7 +56,7 @@ metadata:
   name: cf-db-postgresql
   labels:
     app: postgresql
-    chart: postgresql-8.2.0
+    chart: postgresql-8.6.4
     release: cf-db
     heritage: Helm
 spec:
@@ -74,41 +74,17 @@ spec:
       name: cf-db-postgresql
       labels:
         app: postgresql
-        chart: postgresql-8.2.0
+        chart: postgresql-8.6.4
         release: cf-db
         heritage: Helm
         role: master
     spec:
       securityContext:
         fsGroup: 1001
-      initContainers:
-      - name: init-chmod-data
-        image: docker.io/bitnami/minideb:stretch
-        imagePullPolicy: Always
-        resources:
-          requests:
-            cpu: 250m
-            memory: 256Mi
-        command:
-        - /bin/sh
-        - -c
-        - |
-          mkdir -p /bitnami/postgresql/data
-          chmod 700 /bitnami/postgresql/data
-          find /bitnami/postgresql -mindepth 0 -maxdepth 1 -not -name ".snapshot" -not -name "lost+found" | \
-            xargs chown -R 1001:1001
-          chmod -R 777 /dev/shm
-        securityContext:
-          runAsUser: 0
-        volumeMounts:
-        - name: data
-          mountPath: /bitnami/postgresql
-          subPath: null
-        - name: dshm
-          mountPath: /dev/shm
+      initContainers: null
       containers:
       - name: cf-db-postgresql
-        image: docker.io/bitnami/postgresql:11.6.0-debian-10-r0
+        image: docker.io/bitnami/postgresql:11.7.0-debian-10-r26
         imagePullPolicy: IfNotPresent
         resources:
           requests:

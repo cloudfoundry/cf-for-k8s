@@ -19,7 +19,7 @@ RUN go get -u github.com/onsi/ginkgo/ginkgo@v1.11.0
 # https://github.com/cloudfoundry/cli/releases
 WORKDIR /tmp
 RUN \
-  wget -O "cf-tar" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=6.49.0" && \
+  wget -O "cf-tar" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=6.50.0" && \
   tar xzvf cf-tar -C /usr/local/bin && \
   chmod +x /usr/local/bin/cf && \
   wget https://github.com/cloudfoundry/log-cache-cli/releases/download/v2.1.0/log-cache-cf-plugin-linux && \

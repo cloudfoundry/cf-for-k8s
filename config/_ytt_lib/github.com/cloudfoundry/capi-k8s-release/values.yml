@@ -44,6 +44,12 @@ eirini:
   serverCerts:
     secretName:
 
+metric_proxy:
+  ca:
+    secret_name:
+  cert:
+    secret_name:
+
 apiServer:
   opi:  #! these certs were manually generated for dev purposes, they are not real eirini certs and don't have SANs.
     client_key: |
@@ -112,9 +118,6 @@ apiServer:
 kbld:
   destination:
 
-kubernetes:
-  api:
-    url: ""
 kpack:
   registry:
     hostname: ""

@@ -81,15 +81,21 @@ logging:
   max_retries: 1
 
 logcache:
-  host: #@ "https://log-cache.{}".format(data.values.system_domain)
+  host: metric-proxy
   port: 8080
   temporary_ignore_server_unavailable_errors: true
 
 logcache_tls:
-  key_file: "/dev/null"
-  cert_file: "/dev/null"
+  #@ if data.values.metric_proxy.cert.secret_name:
+  ca_file: "/config/metric_proxy/ca/tls.crt"
+  cert_file: "/config/metric_proxy/certs/tls.crt"
+  key_file: "/config/metric_proxy/certs/tls.key"
+  #@ else:
   ca_file: "/dev/null"
-  subject_name: log_cache
+  cert_file: "/dev/null"
+  key_file: "/dev/null"
+  #@ end
+  subject_name: metric-proxy
 
 loggregator:
   router: 127.0.0.1:3457
@@ -120,7 +126,7 @@ db: &db
 
 telemetry_log_path: "/dev/null"
 log_cache:
-  url: #@ "log-cache.{}".format(data.values.system_domain)
+  url: #@ "https://log-cache.{}".format(data.values.system_domain)
 threadpool_size: 20
 internal_route_vip_range: ""
 
@@ -350,7 +356,7 @@ default_app_lifecycle: kpack
 
 #! kpack stager properties
 kubernetes:
-  host_url: #@ data.values.kubernetes.api.url
+  host_url: https://kubernetes.default
   service_account:
     token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt

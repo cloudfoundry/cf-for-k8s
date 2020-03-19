@@ -142,9 +142,6 @@ log_cache_client:
 docker_registry:
   http_secret: "" #! A random piece of data used to sign state that may be stored with the client to protect against tampering. For production environments you should generate a random piece of data using a cryptographically secure random generator.
 
-kubernetes:
-  api:
-    url: ""
 kpack:
   registry:
     hostname: ""

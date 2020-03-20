@@ -5,7 +5,7 @@
 set -euo pipefail
 
 if [[ $# -lt 1 ]]; then
-  cat <<EOF
+  >&2 cat <<EOF
 Usage:
   $(basename "$0") <cf-domain> [<path-to-kpack-gcr-service-account-json>]
 
@@ -24,7 +24,7 @@ if [[ $# -ge 2 ]]; then
   GCP_SERVICE_ACCOUNT_JSON="$2"
 
   if [[ ! -r ${GCP_SERVICE_ACCOUNT_JSON} ]]; then
-    echo "Error: Unable to read GCP service account JSON from file: ${GCP_SERVICE_ACCOUNT_JSON}" >&2
+    >&2 echo "Error: Unable to read GCP service account JSON from file: ${GCP_SERVICE_ACCOUNT_JSON}" >&2
     exit 1
   fi
 fi

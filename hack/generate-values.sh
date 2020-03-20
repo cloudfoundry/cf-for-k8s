@@ -1,33 +1,73 @@
 #!/usr/bin/env bash
 
 # This is a hack! see https://github.com/cloudfoundry/cf-for-k8s/blob/develop/hack/README.md
-
 set -euo pipefail
 
-if [[ $# -lt 1 ]]; then
+function usage_text() {
   cat <<EOF
 Usage:
-  $(basename "$0") <cf-domain> [<path-to-kpack-gcr-service-account-json>]
+  $(basename "$0")
 
-where:
-  cf-domain -- root DNS domain name for the CF install (e.g. if CF API at api.inglewood.k8s-dev.relint.rocks, cf-domain = inglewood.k8s-dev.relint.rocks)
-  path-to-kpack-gcr-service-account-json -- filepath to the GCP Service Account JSON describing a service account that has permissions to write to the project's container repository.
+flags:
+  -d, --cf-domain
+      (required) Root DNS domain name for the CF install
+      (e.g. if CF API at api.inglewood.k8s-dev.relint.rocks, cf-domain = inglewood.k8s-dev.relint.rocks)
+
+  -g, --gcr-service-account-json
+      (optional) Filepath to the GCP Service Account JSON describing a service account
+      that has permissions to write to the project's container repository.
 
 EOF
   exit 1
+}
+
+if [[ $# -lt 1 ]]; then
+  usage_text
 fi
 
-DOMAIN=$1
-VARS_FILE="/tmp/${DOMAIN}/cf-vars.yaml"
+while [[ $# -gt 0 ]]
+do
+i=$1
+case $i in
+  -d=*|--cf-domain=*)
+  DOMAIN="${i#*=}"
+  shift
+  ;;
+  -d|--cf-domain)
+  DOMAIN="${2}"
+  shift
+  shift
+  ;;
+  -g=*|--gcr-service-account-json=*)
+  GCP_SERVICE_ACCOUNT_JSON="${i#*=}"
+  shift
+  ;;
+  -g|--gcr-service-account-json)
+  GCP_SERVICE_ACCOUNT_JSON="${2}"
+  shift
+  shift
+  ;;
+  *)
+  echo -e "Error: Unknown flag: ${i/=*/}\n"
+  usage_text
+  exit 1
+  ;;
+esac
+done
 
-if [[ $# -ge 2 ]]; then
-  GCP_SERVICE_ACCOUNT_JSON="$2"
+if [[ -z ${DOMAIN:=} ]]; then
+  echo "Missing required flag: -d / --cf-domain"
+  exit 1
+fi
 
+if [[ -n ${GCP_SERVICE_ACCOUNT_JSON:=} ]]; then
   if [[ ! -r ${GCP_SERVICE_ACCOUNT_JSON} ]]; then
     echo "Error: Unable to read GCP service account JSON from file: ${GCP_SERVICE_ACCOUNT_JSON}" >&2
     exit 1
   fi
 fi
+
+VARS_FILE="/tmp/${DOMAIN}/cf-vars.yaml"
 
 # Make sure bosh binary exists
 bosh --version >/dev/null

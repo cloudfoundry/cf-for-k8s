@@ -131,6 +131,13 @@ resources:
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
 
+- name: k14s-io
+  type: git
+  icon: github-box
+  source:
+    branch: master
+    uri: https://github.com/k14s/k14s.io.git
+
 # semaphore for the Kubernetes cluster (ci-test-cluster in GKE); it is shared between this pipeline and the CF for K8s PR test pipeline
 - name: validation-pool
   type: pool
@@ -661,6 +668,8 @@ jobs:
       - get: weekly
         trigger: true
       - get: cf-for-k8s-dockerfiles
+        trigger: true
+      - get: k14s-io
         trigger: true
     - put: cf-for-k8s-ci-image
       params:

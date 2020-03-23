@@ -227,14 +227,18 @@ jobs:
 
           export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
           cf-for-k8s-develop/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
+
           echo "Generating install values..."
-          cf-for-k8s-develop/hack/generate-values.sh "${DNS_DOMAIN}" gcp-service-account.json > cf-install-values.yml
+          cf-for-k8s-develop/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+
           echo "Installing CF..."
           cf-for-k8s-develop/bin/install-cf.sh cf-install-values.yml
-          bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
-          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
+
           echo "Configuring DNS..."
           cf-for-k8s-develop/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
+
+          bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
   - task: run-smoke-test
     config:
@@ -350,14 +354,18 @@ jobs:
 
           export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
           cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
+
           echo "Generating install values..."
-          cf-for-k8s-master/hack/generate-values.sh "${DNS_DOMAIN}" gcp-service-account.json > cf-install-values.yml
+          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+
           echo "Installing CF..."
           cf-for-k8s-master/bin/install-cf.sh cf-install-values.yml
-          bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
-          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
+
           echo "Configuring DNS..."
           cf-for-k8s-master/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
+
+          bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
   - task: run-smoke-test
     config:
@@ -506,14 +514,18 @@ jobs:
 
               export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
               cf-for-k8s-pr-all-branches/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
+
               echo "Generating install values..."
-              cf-for-k8s-pr-all-branches/hack/generate-values.sh "${DNS_DOMAIN}" gcp-service-account.json > cf-install-values.yml
+              cf-for-k8s-pr-all-branches/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+
               echo "Installing CF..."
               cf-for-k8s-pr-all-branches/bin/install-cf.sh cf-install-values.yml
-              bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
-              echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
+
               echo "Configuring DNS..."
               cf-for-k8s-pr-all-branches/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
+
+              bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+              echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
       - task: run-smoke-test
         config:

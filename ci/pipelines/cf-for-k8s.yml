@@ -137,6 +137,8 @@ resources:
   source:
     branch: master
     uri: https://github.com/k14s/k14s.io.git
+    paths:
+    - pkg/website/templates/install.sh
 
 # semaphore for the Kubernetes cluster (ci-test-cluster in GKE); it is shared between this pipeline and the CF for K8s PR test pipeline
 - name: validation-pool

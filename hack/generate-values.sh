@@ -22,7 +22,7 @@ EOF
 }
 
 if [[ $# -lt 1 ]]; then
-  usage_text
+  usage_text >&2
 fi
 
 while [[ $# -gt 0 ]]
@@ -48,15 +48,15 @@ case $i in
   shift
   ;;
   *)
-  echo -e "Error: Unknown flag: ${i/=*/}\n"
-  usage_text
+  echo -e "Error: Unknown flag: ${i/=*/}\n" >&2
+  usage_text >&2
   exit 1
   ;;
 esac
 done
 
 if [[ -z ${DOMAIN:=} ]]; then
-  echo "Missing required flag: -d / --cf-domain"
+  echo "Missing required flag: -d / --cf-domain" >&2
   exit 1
 fi
 

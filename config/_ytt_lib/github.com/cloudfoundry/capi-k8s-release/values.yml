@@ -3,11 +3,12 @@
 replicaCount: 1
 
 images:
-  ccng: cloudfoundry/cloud-controller-ng:0e40bf23675df21be5b9f29492c46bea7fe156ac@sha256:e466dbda51fbb1ad7613194204c47d2dcfc860f93a578eb9db1b5967009dd9c7
+  ccng: cloudfoundry/cloud-controller-ng:93db92c130d287debf6c5eb376fdf81f4e2cf1a4@sha256:612a92a7a761ce15260121ea5336839d3d05e79385f5f6c8dd27a74a9ad5bb0d
   nginx: cloudfoundry/capi:nginx
   capi_kpack_watcher: cloudfoundry/capi-kpack-watcher:latest
 system_namespace: cf-system
 workloads_namespace: cf-workloads
+staging_namespace: cf-workloads-staging
 imagePullSecrets:
 
 app_domains: []

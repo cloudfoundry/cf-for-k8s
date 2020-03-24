@@ -1,7 +1,0 @@
----
-apiVersion: build.pivotal.io/v1alpha1
-kind: ClusterBuilder
-metadata:
-  name: cf-autodetect-builder
-spec:
-  image: cloudfoundry/cnb:bionic

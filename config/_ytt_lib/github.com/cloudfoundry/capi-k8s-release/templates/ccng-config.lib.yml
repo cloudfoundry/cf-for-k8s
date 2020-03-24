@@ -5,10 +5,10 @@ local_route: 0.0.0.0
 
 external_port: 9022
 tls_port: 9023
-readiness_ports:
+readiness_port:
   cloud_controller_worker: 4444
-  cc_deployment_updater: 4445
-  cloud_controller_clock: 4446
+  deployment_updater: 4445
+  clock: 4446
 
 internal_service_hostname: cloud_controller_ng
 
@@ -55,7 +55,7 @@ nginx:
 index: 0
 name: ""
 route_services_enabled: true
-volume_services_enabled: false
+volume_services_enabled: true
 
 info:
   name: ""
@@ -361,7 +361,7 @@ kubernetes:
     token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
   kpack:
-    builder_namespace: #@ data.values.system_namespace
+    builder_namespace: #@ data.values.staging_namespace
     registry_service_account_name: cc-kpack-registry-service-account
     registry_tag_base: #@ "{}/{}".format(data.values.kpack.registry.hostname, data.values.kpack.registry.repository)
 

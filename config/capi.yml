@@ -96,9 +96,3 @@ spec:
         host: #@ "capi." + data.values.system_namespace + ".svc.cluster.local"
         port:
           number: 80
-
-#! pin cnb image to last known good: 0.0.55-bionic
-#@overlay/match by=overlay.subset({"kind": "ClusterBuilder", "metadata": {"name": "cf-autodetect-builder"}})
----
-spec:
-  image: cloudfoundry/cnb:0.0.55-bionic

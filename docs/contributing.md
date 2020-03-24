@@ -1,5 +1,21 @@
 # Developing CF Components
 
+- [High-Level Flow](#high-level-flow)
+  * [Step 1: Do local development](#step-1--do-local-development)
+  * [Step 2: PR those changes into CF for K8s](#step-2--pr-those-changes-into-cf-for-k8s)
+- [Dependencies](#dependencies)
+  * [Templating and Deployment](#templating-and-deployment)
+  * [Smoke Tests](#smoke-tests)
+  * [Vendoring](#vendoring)
+- [Running Smoke tests](#running-smoke-tests)
+- [Suggested Component Directory Structure and Local Development Workflow](#suggested-component-directory-structure-and-local-development-workflow)
+  * [Additional Dependencies](#additional-dependencies)
+  * [Component Directory Structure](#component-directory-structure)
+  * [Local Development Workflow](#local-development-workflow)
+  * [Sample kbld config](#sample-kbld-config)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 ## High-Level Flow
 
 ### Step 1: Do local development
@@ -165,4 +181,3 @@ keys:
 Where:
 - the first YAML document is a "template" into which `kbld` will rewrite the image reference.
 - the remaining YAML documents are configuration for `kbld`, itself.
-

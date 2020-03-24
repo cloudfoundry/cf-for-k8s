@@ -1,5 +1,19 @@
 # Deploying CF for K8s
 
+- [Prerequisites](#prerequisites)
+  * [Required Tools](#required-tools)
+  * [Kubernetes Cluster Requirements](#kubernetes-cluster-requirements)
+  * [IaaS Requirements](#iaas-requirements)
+  * [(optional) Requirements for Cloud Native Buildpacks Support](#-optional--requirements-for-cloud-native-buildpacks-support)
+- [Steps to deploy](#steps-to-deploy)
+    + [Option A - Use the included hack-script to generate the install values](#option-a---use-the-included-hack-script-to-generate-the-install-values)
+    + [Option B - Create the install values by hand](#option-b---create-the-install-values-by-hand)
+- [Validate the deployment using a image-based app](#validate-the-deployment-using-a-image-based-app)
+- [(optional) Validate the deployment using a source-based app](#optional-validate-the-deployment-using-a-source-based-app)
+- [Delete CF4K8s install](#delete-cf4k8s-install)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 ## Prerequisites
 
 ### Required Tools
@@ -144,6 +158,7 @@ To deploy cf-for-k8s with the Cloud Native Buildpacks feature, you additionally 
    Failed to retrieve logs from Log Cache: Get /api/v1/info: unsupported protocol scheme ""
 
    Failed to retrieve logs from Log Cache: Get /api/v1/info: unsupported protocol scheme ""
+   ```
 
 
    Waiting for app to start...
@@ -161,6 +176,7 @@ To deploy cf-for-k8s with the Cloud Native Buildpacks feature, you additionally 
    memory usage:   1024M
         state     since                  cpu    memory    disk      details
    #0   running   2020-03-17T22:48:29Z   0.0%   0 of 1G   0 of 1G
+
    ```
    Note that the "`Failed to retrieve logs...`" messages are expected, at this time given that we're still working on integrating CF logging components.
 
@@ -177,7 +193,7 @@ If you have enabled support for Cloud Native Buildpacks:
 1. Ensure that you have targeted your CF instance, created and targeted an org/space and enabled the `diego_docker` feature flag, as described above.
 
 1. Deploy a source-based app:
-   ```console
+```console
    $ cf push test-node-app -p tests/smoke/assets/test-node-app
    Pushing app test-node-app to org test-org / space test-space as admin...
    Getting app info...
@@ -206,7 +222,7 @@ If you have enabled support for Cloud Native Buildpacks:
    Failed to retrieve logs from Log Cache: Get /api/v1/info: unsupported protocol scheme ""
 
    Failed to retrieve logs from Log Cache: Get /api/v1/info: unsupported protocol scheme ""
-
+   
 
    Waiting for app to start...
 
@@ -223,7 +239,7 @@ If you have enabled support for Cloud Native Buildpacks:
    memory usage:   1024M
         state     since                  cpu    memory    disk      details
    #0   running   2020-03-18T02:24:51Z   0.0%   0 of 1G   0 of 1G
-   ```
+```
 
 1. Validate that the app is reachable
    ```console

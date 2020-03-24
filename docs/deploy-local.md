@@ -1,5 +1,12 @@
 # Deploying CF for K8s Locally
 
+- [Prerequisites](#prerequisites)
+- [Considerations](#considerations)
+- [Steps to Deploy on Minikube](#steps-to-deploy-on-minikube)
+- [Steps to Deploy on Kind](#steps-to-deploy-on-kind)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 ## Prerequisites
 
 ### Required Tools
@@ -34,12 +41,13 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
    * Include the [remove-resource-requirements.yml](../config-optional/remove-resource-requirements.yml)
      overlay file in the set of templates to be deployed. This can be achieved by
      using the following command instead of running the install-cf.sh script:
+     
      ```bash
      $ kapp deploy -a cf -f <(ytt -f config -f <cf_install_values_path> -f config-optional/remove-resource-requirements.yml)
      ```
    * Use `vcap.me` as the domain for the installation. This means that you do not have to
-     configure DNS for the domain.
-
+    configure DNS for the domain.
+   
 1. Use minikube tunnel to expose the LoadBalancer service for the ingress
    gateway:
    ```bash

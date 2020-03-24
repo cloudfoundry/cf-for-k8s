@@ -69,14 +69,14 @@ To deploy cf-for-k8s with the Cloud Native Buildpacks feature, you additionally 
    #### Option A - Use the included hack-script to generate the install values
    **NOTE:** The script requires the [BOSH CLI](https://bosh.io/docs/cli-v2-install/#install) to generate the install values from `bosh interpolate`
    ```console
-   $ ./hack/generate-values.sh <cf-domain> > /tmp/cf-values.yml
+   $ ./hack/generate-values.sh -d <cf-domain> > /tmp/cf-values.yml
    ```
    (replacing `<cf-domain>` with _your_ registered DNS domain name for your CF installation)
 
 
    If you wish to enable Cloud Native Buildpacks support, pass in the path to the GCP Service Account JSON:
    ```console
-   $ ./hack/generate-values.sh <cf-domain> <path-to-kpack-gcr-service-account> > /tmp/cf-values.yml
+   $ ./hack/generate-values.sh -d <cf-domain> -g <path-to-kpack-gcr-service-account> > /tmp/cf-values.yml
    ```
    (replacing `<cf-domain>` with _your_ registered DNS domain name for your CF installation and `<path-to-kpack-gcr-service-account>` with the path to your GCP Service Account JSON file)
 

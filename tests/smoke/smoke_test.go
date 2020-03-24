@@ -11,7 +11,6 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gexec"
-	. "github.com/onsi/gomega/gbytes"
 
 	"github.com/cloudfoundry-incubator/cf-test-helpers/cf"
 	"github.com/cloudfoundry-incubator/cf-test-helpers/generator"
@@ -105,8 +104,10 @@ var _ = Describe("Smoke Tests", func() {
 			Expect(appResponse.VcapServices).NotTo(BeEmpty())
 
 			By("verifying that the application's logs are available.")
-			cfLogs := cf.Cf("logs", appName)
-			Eventually(cfLogs.Out).Should(Say("Hello World from index"))
+			Eventually(func() string {
+				cfLogs := cf.Cf("logs", appName, "--recent")
+				return string(cfLogs.Wait().Out.Contents())
+			}, 2*time.Minute, 2*time.Second).Should(ContainSubstring("Hello World from index"))
 		})
 
 		It("creates a routable app pod in Kubernetes from a source-based app", func() {
@@ -131,8 +132,10 @@ var _ = Describe("Smoke Tests", func() {
 			Expect(string(body)).To(Equal("Hello World\n"))
 
 			By("verifying that the application's logs are available.")
-			cfLogs := cf.Cf("logs", appName)
-			Eventually(cfLogs.Out).Should(Say("Console output from test-node-app"))
+			Eventually(func() string {
+				cfLogs := cf.Cf("logs", appName, "--recent")
+				return string(cfLogs.Wait().Out.Contents())
+			}, 2*time.Minute, 2*time.Second).Should(ContainSubstring("Console output from test-node-app"))
 		})
 	})
 })

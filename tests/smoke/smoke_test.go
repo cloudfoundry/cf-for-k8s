@@ -10,8 +10,8 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	. "github.com/onsi/gomega/gexec"
 	. "github.com/onsi/gomega/gbytes"
+	. "github.com/onsi/gomega/gexec"
 
 	"github.com/cloudfoundry-incubator/cf-test-helpers/cf"
 	"github.com/cloudfoundry-incubator/cf-test-helpers/generator"
@@ -105,7 +105,7 @@ var _ = Describe("Smoke Tests", func() {
 			Expect(appResponse.VcapServices).NotTo(BeEmpty())
 
 			By("verifying that the application's logs are available.")
-			cfLogs := cf.Cf("logs", appName)
+			cfLogs := cf.Cf("logs", "--recent", appName)
 			Eventually(cfLogs.Out).Should(Say("Hello World from index"))
 		})
 
@@ -131,7 +131,7 @@ var _ = Describe("Smoke Tests", func() {
 			Expect(string(body)).To(Equal("Hello World\n"))
 
 			By("verifying that the application's logs are available.")
-			cfLogs := cf.Cf("logs", appName)
+			cfLogs := cf.Cf("logs", "--recent", appName)
 			Eventually(cfLogs.Out).Should(Say("Console output from test-node-app"))
 		})
 	})

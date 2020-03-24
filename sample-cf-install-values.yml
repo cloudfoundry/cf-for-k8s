@@ -86,3 +86,15 @@ app_registry:
   username: _json_key
   password: |
     contents_of_service_account_json
+
+metric_proxy:
+  ca:
+    secret_name: "metric-proxy-ca"
+    crt: *crt
+    key: *key
+  cert:
+    secret_name: "metric-proxy-cert"
+    #! This certificate should be valid for metric-proxy.cf-system.svc.cluster.local
+    crt: *crt
+    key: *key
+

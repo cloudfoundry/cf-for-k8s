@@ -56,10 +56,6 @@ eirini:
     crt: *crt
     key: *key
 
-docker_registry:
-  http_secret: dockerregistryhttpsecret
-
-
 kubernetes:
   api:
     url: kubernetes_api_url

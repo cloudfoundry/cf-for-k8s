@@ -25,8 +25,6 @@ directories:
       url: https://api.github.com/repos/pivotal/kpack/releases/22747441
     path: github.com/pivotal/kpack
   - manual: {}
-    path: docker-registry
-  - manual: {}
     path: eirini
   - manual: {}
     path: minio
@@ -39,13 +37,6 @@ directories:
       sha: 21546e62d205fe6d197a8f920532d9b78b67a71f
     path: .
   path: build/minio/_vendir
-- contents:
-  - git:
-      commitTitle: '[stable/docker-registry] Fix incorrect default annotations type
-        (#19739) (#19780)...'
-      sha: 2b1e12f5f748a69a1429a1bb015bc34f3124c4e2
-    path: .
-  path: build/docker-registry/_vendir
 - contents:
   - githubRelease:
       url: https://api.github.com/repos/cloudfoundry-incubator/eirini-release/releases/24350599

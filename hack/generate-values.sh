@@ -90,8 +90,6 @@ variables:
   type: password
 - name: uaa_encryption_key_passphrase
   type: password
-- name: docker_registry_http_secret
-  type: password
 - name: default_ca
   type: certificate
   options:
@@ -244,9 +242,6 @@ eirini:
   tls:
     crt: *crt
     key: *key
-
-docker_registry:
-  http_secret: $( bosh interpolate ${VARS_FILE} --path=/docker_registry_http_secret )
 EOF
 
 if [[ -n "${GCP_SERVICE_ACCOUNT_JSON:=}" ]]; then

@@ -46,8 +46,6 @@ directories:
       disableAutoChecksumValidation: true
     includePaths:
     - release-0.0.6.yaml
-  - path: docker-registry
-    manual: {}
   - path: eirini
     manual: {}
   - path: minio
@@ -69,16 +67,6 @@ directories:
     includePaths:
     - stable/minio/**/*
 
-- path: build/docker-registry/_vendir
-  contents:
-  - path: .
-    git:
-      url: https://github.com/helm/charts
-      # chart version: 1.9.1
-      # app version: 2.7.1
-      ref: 2b1e12f5f748a69a1429a1bb015bc34f3124c4e2
-    includePaths:
-    - stable/docker-registry/**/*
 - path: build/eirini/_vendir
   contents:
   - path: .

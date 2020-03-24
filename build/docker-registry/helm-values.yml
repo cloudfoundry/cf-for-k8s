@@ -1,4 +1,0 @@
----
-persistence:
-  enabled: true
-  size: 10Gi

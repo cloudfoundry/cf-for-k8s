@@ -25,3 +25,45 @@ rebaseRules:
   type: copy
   sources: [new, existing]
   resourceMatchers: *pvcs
+
+- path: [webhooks, {allIndexes: true}, rules]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: &kpack_webhook
+  - apiVersionKindMatcher:
+      apiVersion: admissionregistration.k8s.io/v1beta1
+      kind: MutatingWebhookConfiguration
+      name: resource.webhook.kpack.pivotal.io
+
+- path: [metadata, annotations]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher:
+      apiVersion: v1
+      kind: ServiceAccount
+
+- path: [metadata, annotations]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *kpack_webhook
+
+- path: [webhooks, {allIndexes: true}, namespaceSelector]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *kpack_webhook
+
+- path: [webhooks, {allIndexes: true}, clientConfig, service, path]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *kpack_webhook
+
+- path: [webhooks, {allIndexes: true}, sideEffects]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *kpack_webhook
+
+- path: [webhooks, {allIndexes: true}, timeoutSeconds]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers: *kpack_webhook

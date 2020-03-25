@@ -11,7 +11,7 @@ The following scripts are designed to be executable in a CI system, as well as l
 - Generate all required configuration settings for a given domain:
 
   ```bash
-  $ ./hack/generate-values.sh <cf-domain> <path-to-kpack-gcr-service-account-json> > <path-to-cf-install-values-yaml>
+  $ ./hack/generate-values.sh --cf-domain <cf-domain> --gcr-service-account-json <path-to-kpack-gcr-service-account-json> > cf-install-values.yml
   ```
 
 - Install CF for K8s to your target K8s cluster.

@@ -45,12 +45,15 @@ directories:
       disableAutoChecksumValidation: true
     includePaths:
     - release-0.0.6.yaml
+# the components in this section below are handled by their corresponding build scripts
+# the manual param tells vendir to not override/touch the contents of these config/_ytt_lib/<eirini|minio|postgres> directories
   - path: eirini
     manual: {}
   - path: minio
     manual: {}
   - path: postgres
     manual: {}
+
 # When adding a helm chart to our set of components:
 # 1. Find the chart you need from https://hub.helm.sh/charts/stable
 # 2. Note the latest (or desired) version from the "Chart Versions" section on the right.

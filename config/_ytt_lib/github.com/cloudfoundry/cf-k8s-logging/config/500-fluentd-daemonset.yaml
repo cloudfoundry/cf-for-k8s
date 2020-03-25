@@ -1,19 +1,20 @@
 #@ load("@ytt:data", "data")
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: fluentd
   namespace: #@ data.values.system_namespace
   labels:
     app: fluentd
-    version: v1
 spec:
+  selector:
+    matchLabels:
+      app: fluentd
   template:
     metadata:
       labels:
         app: fluentd
-        version: v1
     spec:
       serviceAccountName: fluentd-service-account
       tolerations:

@@ -13,10 +13,9 @@ directories:
       commitTitle: Use namespaced kpack `Builder`...
       sha: 685f10eadf7d767ccd977ec773b672e68154ccf5
     path: github.com/cloudfoundry/capi-k8s-release
-  - git:
-      commitTitle: update log-cache-deployment for plain text communication...
-      sha: 8ec400d0d457862b78a19a59322c439ef51835e9
-    path: github.com/cloudfoundry/cf-k8s-logging
+  - githubRelease:
+      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/24864777
+    path: github.com/cloudfoundry/cf-k8s-logging/config
   - git:
       commitTitle: Reduce the number of env vars used by UAA...
       sha: 1c19ffc2697441824d2e98e31210a82e1fbc0ac1

@@ -26,12 +26,11 @@ directories:
     includePaths:
     - templates/**/*
     - values.yml
-  - path: github.com/cloudfoundry/cf-k8s-logging
-    git:
-      url: https://github.com/cloudfoundry/cf-k8s-logging
-      ref: 8ec400d0d457862b78a19a59322c439ef51835e9
-    includePaths:
-    - config/**/*
+  - path: github.com/cloudfoundry/cf-k8s-logging/config
+    githubRelease:
+      slug: cloudfoundry/cf-k8s-logging
+      tag: 0.1.0
+      disableAutoChecksumValidation: true
   - path: github.com/cloudfoundry/uaa
     git:
       url: https://github.com/cloudfoundry/uaa

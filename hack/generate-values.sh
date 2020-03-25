@@ -250,7 +250,7 @@ if [[ -n "${GCP_SERVICE_ACCOUNT_JSON:=}" ]]; then
 kpack:
   registry:
     hostname: gcr.io
-    repository: $( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON} --path=/project_id )/cf-workloads
+    repository: gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON} --path=/project_id )/cf-workloads
     username: _json_key
     password: |
 $( cat ${GCP_SERVICE_ACCOUNT_JSON} | sed -e 's/^/      /' )

@@ -30,7 +30,7 @@ Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the
 ### Kubernetes Cluster Requirements
 
 To deploy cf-for-k8s as is, the cluster should:
-* be running version 1.14.x or 1.15.x
+* be running version 1.14.x, 1.15.x, or 1.16.x
 * have a minimum of 5 nodes
 * have a minimum of 2 CPU, 7.5GB memory per node
 

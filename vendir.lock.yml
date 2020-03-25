@@ -10,8 +10,8 @@ directories:
       sha: 5efa247a8f46953e9cb88f71b3ef47c2cdd39385
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: Use namespaced kpack `Builder`...
-      sha: 685f10eadf7d767ccd977ec773b672e68154ccf5
+      commitTitle: Do not try to interpolate image location from hostname...
+      sha: 9e7bb239bc6c9ac8e633d29ad181832e90251a83
     path: github.com/cloudfoundry/capi-k8s-release
   - git:
       commitTitle: update log-cache-deployment for plain text communication...

@@ -121,7 +121,7 @@ kbld:
 
 kpack:
   registry:
-    hostname: ""
-    repository: ""
+    hostname: "" #! Used to fill in the hostname of the kpack registry auth secret
+    repository: "" #! Passed as spec.tag to the kpack Image resource
     username: ""
     password: ""

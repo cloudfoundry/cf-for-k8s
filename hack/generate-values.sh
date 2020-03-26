@@ -245,22 +245,14 @@ eirini:
 EOF
 
 if [[ -n "${GCP_SERVICE_ACCOUNT_JSON:=}" ]]; then
-  hostname="gcr.io"
-  username="_json_key"
-  encoded_password=$(kubectl create secret docker-registry registry-credentials \
-    --docker-server=${hostname} --docker-username=${username} \
-    --docker-password="$(cat ${GCP_SERVICE_ACCOUNT_JSON})" \
-    --dry-run -o json | jq .data.\".dockerconfigjson\" -r)
   cat <<EOF
 
 kpack:
   registry:
-    hostname: ${hostname}
+    hostname: gcr.io
     repository: gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON} --path=/project_id )/cf-workloads
-    username: ${username}
+    username: _json_key
     password: |
 $( cat ${GCP_SERVICE_ACCOUNT_JSON} | sed -e 's/^/      /' )
-    encoded_secret_password: ${encoded_password}
 EOF
-
 fi

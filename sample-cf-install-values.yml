@@ -67,4 +67,3 @@ kpack:
     username: _json_key
     password: |
       contents_of_service_account_json
-    encoded_secret_password: base64-encoded-registry-credentials-secret-data

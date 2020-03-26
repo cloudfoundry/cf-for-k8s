@@ -89,8 +89,6 @@ To deploy cf-for-k8s with the Cloud Native Buildpacks feature, you additionally 
    If you wish to enable Cloud Native Buildpacks support, configure access to your Google Container Registry:
    1. Update the "gcp_project_id" portion of `kpack.registry.repository` to your GCP Project Id
    1. Change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON
-   1. Create a secret of type docker-registry and change `base64-encoded-registry-credentials-secret-data` to the encoded data from the data/.dockerconfigjosn field in that secret definition
-      - see [this doc](https://v1-16.docs.kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-by-providing-credentials-on-the-command-line) for more details
 
    If you do NOT wish to enable Cloud Native Buildpacks support:
    1. Remove the `kubernetes` and `kpack` keys from your `cf-values.yml`

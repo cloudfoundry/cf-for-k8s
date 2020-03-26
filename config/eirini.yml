@@ -1,4 +1,6 @@
+#@ load("@ytt:base64", "base64")
 #@ load("@ytt:data", "data")
+#@ load("@ytt:json", "json")
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
 
@@ -40,11 +42,13 @@ spec:
 #! https://github.com/cloudfoundry/cf-for-k8s/issues/74
 #! may want to keep this in sync with https://github.com/cloudfoundry-incubator/eirini-release/blob/master/helm/cf/templates/registry-secret.yaml
 ---
-apiVersion: "v1"
-kind: "Secret"
+apiVersion: v1
+kind: Secret
 metadata:
-  name: "registry-credentials"
+  name: registry-credentials
   namespace: #@ data.values.workloads_namespace
-data:
-  .dockerconfigjson: #@ data.values.kpack.registry.encoded_secret_password
 type: kubernetes.io/dockerconfigjson
+data:
+  #@ docker_auth = base64.encode("{}:{}".format(data.values.kpack.registry.username, data.values.kpack.registry.password))
+  #@ docker_creds = {"username": data.values.kpack.registry.username, "password": data.values.kpack.registry.password, "auth": docker_auth}
+  .dockerconfigjson: #@ base64.encode(json.encode({"auths": {data.values.kpack.registry.hostname: docker_creds}}))

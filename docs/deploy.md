@@ -45,12 +45,13 @@ To deploy cf-for-k8s as is, the cluster should:
 
 To be able to push source-based apps to your CF for K8s installation, you will need to enable support for Cloud Native Buildpacks.
 
-_Note: Currently, when enabling support for buildpack-based applications, CF for K8s has only been validated to work with Google Container Registry (GCR).  Soon, we intend to support any OCI registry that kpack supports._
-
 To deploy cf-for-k8s with the Cloud Native Buildpacks feature, you additionally need to:
+ #### GCR requirements
   1. create a GCP Service Account with `Storage/Storage Admin` role
       * (optionally) if you want to limit the permissions this service account has, see https://cloud.google.com/container-registry/docs/access-control for the minimum permission set
   1. create a Service Key JSON and download it to the machine from which you will install cf-for-k8s (referred to, below, as `path-to-kpack-gcr-service-account`)
+#### Dockerhub requirements
+  1. basic auth credentials for an account with write access to a repository
 
 ## Steps to deploy
 
@@ -74,11 +75,21 @@ To deploy cf-for-k8s with the Cloud Native Buildpacks feature, you additionally 
    (replacing `<cf-domain>` with _your_ registered DNS domain name for your CF installation)
 
 
-   If you wish to enable Cloud Native Buildpacks support, pass in the path to the GCP Service Account JSON:
+   If you wish to enable Cloud Native Buildpacks support:  
+   
+   **GCR**  
+   pass in the path to the GCP Service Account JSON:
    ```console
    $ ./hack/generate-values.sh -d <cf-domain> -g <path-to-kpack-gcr-service-account> > /tmp/cf-values.yml
    ```
    (replacing `<cf-domain>` with _your_ registered DNS domain name for your CF installation and `<path-to-kpack-gcr-service-account>` with the path to your GCP Service Account JSON file)
+
+   **Dockerhub**  
+   pass in the basic auth credentials for your account:
+   ```console
+   $ ./hack/generate-values.sh -d <cf-domain> -du <username> -dp <password> > /tmp/cf-values.yml
+   ```
+   (replacing `<cf-domain>` with _your_ registered DNS domain name for your CF installation and `<username>` and `<password>` with your Dockerhub account credentials)
 
    #### Option B - Create the install values by hand
    1. Create a file called `/tmp/cf-values.yml`. You can use `sample-cf-install-values.yml` in this directory as a starting point

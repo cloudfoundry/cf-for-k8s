@@ -17,6 +17,12 @@ flags:
       (optional) Filepath to the GCP Service Account JSON describing a service account
       that has permissions to write to the project's container repository.
 
+  -du, --dockerhub-username
+      (optional) dockerhub basic auth username.
+
+  -dp, --dockerhub-password
+      (optional) dockerhub basic auth password.
+
 EOF
   exit 1
 }
@@ -47,6 +53,24 @@ case $i in
   shift
   shift
   ;;
+  -du=*|--dockerhub-username=*)
+  DOCKERHUB_USERNAME="${i#*=}"
+  shift
+  ;;
+  -du|--dockerhub-username)
+  DOCKERHUB_USERNAME="${2}"
+  shift
+  shift
+  ;;
+  -dp=*|--dockerhub-password=*)
+  DOCKERHUB_PASSWORD="${i#*=}"
+  shift
+  ;;
+  -dp|--dockerhub-password)
+  DOCKERHUB_PASSWORD="${2}"
+  shift
+  shift
+  ;;
   *)
   echo -e "Error: Unknown flag: ${i/=*/}\n" >&2
   usage_text >&2
@@ -64,6 +88,11 @@ if [[ -n ${GCP_SERVICE_ACCOUNT_JSON:=} ]]; then
   if [[ ! -r ${GCP_SERVICE_ACCOUNT_JSON} ]]; then
     echo "Error: Unable to read GCP service account JSON from file: ${GCP_SERVICE_ACCOUNT_JSON}" >&2
     exit 1
+  fi
+elif [[ -n ${DOCKERHUB_USERNAME:=} || -n ${DOCKERHUB_PASSWORD:=} ]]; then
+  if [[ -z ${DOCKERHUB_USERNAME:=} || -z ${DOCKERHUB_PASSWORD:=} ]]; then
+  echo "Error: dockerhub username and password are both required" >&2
+  exit 1
   fi
 fi
 
@@ -254,5 +283,17 @@ kpack:
     username: _json_key
     password: |
 $( cat ${GCP_SERVICE_ACCOUNT_JSON} | sed -e 's/^/      /' )
+EOF
+fi
+
+if [[ -n "${DOCKERHUB_USERNAME:=}" ]]; then
+  cat <<EOF
+
+kpack:
+  registry:
+    hostname: https://index.docker.io/v1/
+    repository: ${DOCKERHUB_USERNAME}
+    username: ${DOCKERHUB_USERNAME}
+    password: ${DOCKERHUB_PASSWORD}
 EOF
 fi

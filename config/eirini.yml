@@ -49,6 +49,6 @@ metadata:
   namespace: #@ data.values.workloads_namespace
 type: kubernetes.io/dockerconfigjson
 data:
-  #@ docker_auth = base64.encode("{}:{}".format(data.values.kpack.registry.username, data.values.kpack.registry.password))
-  #@ docker_creds = {"username": data.values.kpack.registry.username, "password": data.values.kpack.registry.password, "auth": docker_auth}
-  .dockerconfigjson: #@ base64.encode(json.encode({"auths": {data.values.kpack.registry.hostname: docker_creds}}))
+  #@ docker_auth = base64.encode("{}:{}".format(data.values.app_registry.username, data.values.app_registry.password))
+  #@ docker_creds = {"username": data.values.app_registry.username, "password": data.values.app_registry.password, "auth": docker_auth}
+  .dockerconfigjson: #@ base64.encode(json.encode({"auths": {data.values.app_registry.hostname: docker_creds}}))

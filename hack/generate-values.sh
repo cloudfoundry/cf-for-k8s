@@ -247,12 +247,11 @@ EOF
 if [[ -n "${GCP_SERVICE_ACCOUNT_JSON:=}" ]]; then
   cat <<EOF
 
-kpack:
-  registry:
-    hostname: gcr.io
-    repository: gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON} --path=/project_id )/cf-workloads
-    username: _json_key
-    password: |
-$( cat ${GCP_SERVICE_ACCOUNT_JSON} | sed -e 's/^/      /' )
+app_registry:
+  hostname: gcr.io
+  repository: gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON} --path=/project_id )/cf-workloads
+  username: _json_key
+  password: |
+$( cat ${GCP_SERVICE_ACCOUNT_JSON} | sed -e 's/^/    /' )
 EOF
 fi

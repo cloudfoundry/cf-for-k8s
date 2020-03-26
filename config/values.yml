@@ -135,9 +135,8 @@ log_cache_client:
   id: "" #! comment
   secret: "" #! comment
 
-kpack:
-  registry:
-    hostname: ""
-    repository: ""
-    username: ""
-    password: ""
+app_registry:
+  hostname: ""
+  repository: ""
+  username: ""
+  password: ""

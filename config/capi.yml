@@ -69,10 +69,10 @@ uaa:
 
 kpack:
   registry:
-    hostname: #@ data.values.kpack.registry.hostname
-    repository: #@ data.values.kpack.registry.repository
-    username: #@ data.values.kpack.registry.username
-    password: #@ data.values.kpack.registry.password
+    hostname: #@ data.values.app_registry.hostname
+    repository: #@ data.values.app_registry.repository
+    username: #@ data.values.app_registry.username
+    password: #@ data.values.app_registry.password
 #@ end
 
 #@ capi = library.get("github.com/cloudfoundry/capi-k8s-release")

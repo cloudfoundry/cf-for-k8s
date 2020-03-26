@@ -6,7 +6,7 @@ opi:
 
   deny_app_ingress: true
   # secret name in app namespace. Created by secret smuggler
-  registry_secret_name: registry-credentials
+  registry_secret_name: app-registry-credentials
   disk_limit_mb: 2048
   namespace: eirini
   version: 0.0.0

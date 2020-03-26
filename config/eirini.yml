@@ -45,7 +45,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: registry-credentials
+  name: app-registry-credentials
   namespace: #@ data.values.workloads_namespace
 type: kubernetes.io/dockerconfigjson
 data:

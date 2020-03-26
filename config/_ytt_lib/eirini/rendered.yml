@@ -32,7 +32,7 @@ data:
     opi:
       app_namespace: cf-workloads
       registry_address: "registry.not-used:443"
-      registry_secret_name: registry-credentials
+      registry_secret_name: app-registry-credentials
       eirini_address: "https://eirini-opi.cf-system.svc.cluster.local:8085"
       downloader_image: eirini/recipe-downloader@sha256:284bbc3ac74e28d216a10ae2ca871bc6f8a22ea532adac85fd87090e1d754f35
       executor_image: eirini/recipe-executor@sha256:29b62722c389418c1509f58bcbe72274fac15de9f9b1848fd1b8ae19c37f70ed

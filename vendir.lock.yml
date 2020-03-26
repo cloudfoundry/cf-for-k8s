@@ -10,8 +10,8 @@ directories:
       sha: 5efa247a8f46953e9cb88f71b3ef47c2cdd39385
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: Do not try to interpolate image location from hostname...
-      sha: 9e7bb239bc6c9ac8e633d29ad181832e90251a83
+      commitTitle: Bump ccng image to label kpack build pods with STG...
+      sha: d188d77a878241d685b93ec159eba1318a53ae03
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/24864777

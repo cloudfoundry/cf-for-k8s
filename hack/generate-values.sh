@@ -25,34 +25,33 @@ if [[ $# -lt 1 ]]; then
   usage_text >&2
 fi
 
-while [[ $# -gt 0 ]]
-do
-i=$1
-case $i in
-  -d=*|--cf-domain=*)
-  DOMAIN="${i#*=}"
-  shift
-  ;;
-  -d|--cf-domain)
-  DOMAIN="${2}"
-  shift
-  shift
-  ;;
-  -g=*|--gcr-service-account-json=*)
-  GCP_SERVICE_ACCOUNT_JSON="${i#*=}"
-  shift
-  ;;
-  -g|--gcr-service-account-json)
-  GCP_SERVICE_ACCOUNT_JSON="${2}"
-  shift
-  shift
-  ;;
+while [[ $# -gt 0 ]]; do
+  i=$1
+  case $i in
+  -d=* | --cf-domain=*)
+    DOMAIN="${i#*=}"
+    shift
+    ;;
+  -d | --cf-domain)
+    DOMAIN="${2}"
+    shift
+    shift
+    ;;
+  -g=* | --gcr-service-account-json=*)
+    GCP_SERVICE_ACCOUNT_JSON="${i#*=}"
+    shift
+    ;;
+  -g | --gcr-service-account-json)
+    GCP_SERVICE_ACCOUNT_JSON="${2}"
+    shift
+    shift
+    ;;
   *)
-  echo -e "Error: Unknown flag: ${i/=*/}\n" >&2
-  usage_text >&2
-  exit 1
-  ;;
-esac
+    echo -e "Error: Unknown flag: ${i/=*/}\n" >&2
+    usage_text >&2
+    exit 1
+    ;;
+  esac
 done
 
 if [[ -z ${DOMAIN:=} ]]; then
@@ -72,7 +71,8 @@ VARS_FILE="/tmp/${DOMAIN}/cf-vars.yaml"
 # Make sure bosh binary exists
 bosh --version >/dev/null
 
-bosh interpolate --vars-store=${VARS_FILE} <(cat <<EOF
+bosh interpolate --vars-store=${VARS_FILE} <(
+  cat <<EOF
 variables:
 - name: cf_admin_password
   type: password
@@ -185,43 +185,43 @@ system_domain: "${DOMAIN}"
 app_domains:
 #@overlay/append
 - "${DOMAIN}"
-cf_admin_password: $( bosh interpolate ${VARS_FILE} --path=/cf_admin_password )
+cf_admin_password: $(bosh interpolate ${VARS_FILE} --path=/cf_admin_password)
 
 cf_blobstore:
-  secret_key: $( bosh interpolate ${VARS_FILE} --path=/blobstore_secret_key )
+  secret_key: $(bosh interpolate ${VARS_FILE} --path=/blobstore_secret_key)
 
 cf_db:
-  admin_password: $( bosh interpolate ${VARS_FILE} --path=/db_admin_password )
+  admin_password: $(bosh interpolate ${VARS_FILE} --path=/db_admin_password)
 
 capi:
   database:
-    password: $( bosh interpolate ${VARS_FILE} --path=/capi_db_password )
+    password: $(bosh interpolate ${VARS_FILE} --path=/capi_db_password)
 
 system_certificate:
   #! This certificates and keys are base64 encoded and should be valid for *.system.cf.example.com
-  crt: &crt $( bosh interpolate ${VARS_FILE} --path=/system_certificate/certificate | base64 | tr -d '\n' )
-  key: &key $( bosh interpolate ${VARS_FILE} --path=/system_certificate/private_key | base64 | tr -d '\n' )
-  ca: $( bosh interpolate ${VARS_FILE} --path=/system_certificate/ca | base64 | tr -d '\n' )
+  crt: &crt $(bosh interpolate ${VARS_FILE} --path=/system_certificate/certificate | base64 | tr -d '\n')
+  key: &key $(bosh interpolate ${VARS_FILE} --path=/system_certificate/private_key | base64 | tr -d '\n')
+  ca: $(bosh interpolate ${VARS_FILE} --path=/system_certificate/ca | base64 | tr -d '\n')
 
 log_cache_ca:
-  crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache_ca/certificate | base64 | tr -d '\n' )
-  key: $( bosh interpolate ${VARS_FILE} --path=/log_cache_ca/private_key | base64 | tr -d '\n' )
+  crt: $(bosh interpolate ${VARS_FILE} --path=/log_cache_ca/certificate | base64 | tr -d '\n')
+  key: $(bosh interpolate ${VARS_FILE} --path=/log_cache_ca/private_key | base64 | tr -d '\n')
 
 log_cache:
-  crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache/certificate | base64 | tr -d '\n' )
-  key: $( bosh interpolate ${VARS_FILE} --path=/log_cache/private_key | base64 | tr -d '\n' )
+  crt: $(bosh interpolate ${VARS_FILE} --path=/log_cache/certificate | base64 | tr -d '\n')
+  key: $(bosh interpolate ${VARS_FILE} --path=/log_cache/private_key | base64 | tr -d '\n')
 
 log_cache_metrics:
-  crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache_metrics/certificate | base64 | tr -d '\n' )
-  key: $( bosh interpolate ${VARS_FILE} --path=/log_cache_metrics/private_key | base64 | tr -d '\n' )
+  crt: $(bosh interpolate ${VARS_FILE} --path=/log_cache_metrics/certificate | base64 | tr -d '\n')
+  key: $(bosh interpolate ${VARS_FILE} --path=/log_cache_metrics/private_key | base64 | tr -d '\n')
 
 log_cache_gateway:
-  crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache_gateway/certificate | base64 | tr -d '\n' )
-  key: $( bosh interpolate ${VARS_FILE} --path=/log_cache_gateway/private_key | base64 | tr -d '\n' )
+  crt: $(bosh interpolate ${VARS_FILE} --path=/log_cache_gateway/certificate | base64 | tr -d '\n')
+  key: $(bosh interpolate ${VARS_FILE} --path=/log_cache_gateway/private_key | base64 | tr -d '\n')
 
 log_cache_syslog:
-  crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache_syslog/certificate | base64 | tr -d '\n' )
-  key: $( bosh interpolate ${VARS_FILE} --path=/log_cache_syslog/private_key | base64 | tr -d '\n' )
+  crt: $(bosh interpolate ${VARS_FILE} --path=/log_cache_syslog/certificate | base64 | tr -d '\n')
+  key: $(bosh interpolate ${VARS_FILE} --path=/log_cache_syslog/private_key | base64 | tr -d '\n')
 
 metric_proxy:
   ca:
@@ -233,22 +233,22 @@ metric_proxy:
 
 uaa:
   database:
-    password: $( bosh interpolate ${VARS_FILE} --path=/uaa_db_password )
-  admin_client_secret: $( bosh interpolate ${VARS_FILE} --path=/uaa_admin_client_secret )
+    password: $(bosh interpolate ${VARS_FILE} --path=/uaa_db_password)
+  admin_client_secret: $(bosh interpolate ${VARS_FILE} --path=/uaa_admin_client_secret)
   certificate:
     crt: *crt
     key: *key
   jwt_policy:
     signing_key: |
-$( bosh interpolate "${VARS_FILE}" --path=/uaa_jwt_policy_signing_key/private_key | sed -e 's#^#      #' )
+$(bosh interpolate "${VARS_FILE}" --path=/uaa_jwt_policy_signing_key/private_key | sed -e 's#^#      #')
   encryption_key:
-    passphrase: $( bosh interpolate "${VARS_FILE}" --path=/uaa_encryption_key_passphrase )
+    passphrase: $(bosh interpolate "${VARS_FILE}" --path=/uaa_encryption_key_passphrase)
   login:
     service_provider:
       key: |
-$( bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/private_key | sed -e 's#^#        #' )
+$(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/private_key | sed -e 's#^#        #')
       certificate: |
-$( bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/certificate | sed -e 's#^#        #' )
+$(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/certificate | sed -e 's#^#        #')
 
 doppler:
   tls:

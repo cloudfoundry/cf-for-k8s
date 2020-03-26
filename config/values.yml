@@ -141,3 +141,4 @@ kpack:
     repository: ""
     username: ""
     password: ""
+    encoded_secret_password: ""

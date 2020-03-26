@@ -149,4 +149,3 @@ metric_proxy:
     secret_name: "metric-proxy-cert"
     crt: ""
     key: ""
-

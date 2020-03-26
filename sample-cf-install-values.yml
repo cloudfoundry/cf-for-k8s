@@ -5,6 +5,9 @@ app_domains:
 #@overlay/append
 - apps.cf.example.com
 
+#! set this if you want to use a reserved static IP for istio's load balancer.
+istio_static_ip:
+
 cf_admin_password: cfadminpassword
 
 cf_blobstore:

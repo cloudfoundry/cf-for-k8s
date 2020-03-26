@@ -1,5 +1,6 @@
 #@data/values
 ---
+
 system_namespace: cf-system
 workloads_namespace: cf-workloads
 
@@ -20,6 +21,9 @@ cf_blobstore:
 cf_db:
   admin_password: ""
   enabled: true
+
+#! reserved static ip for istio LoadBalancer
+istio_static_ip: ""
 
 images:
   capi: ""

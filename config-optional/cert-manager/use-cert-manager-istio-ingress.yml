@@ -1,0 +1,25 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#! This certificate will cause cert-manager to create the secret istio-ingressgateway-certs
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: istio-ingressgateway
+  namespace: istio-system
+spec:
+  secretName: istio-ingressgateway-certs
+  dnsNames:
+  - #@ "*." + data.values.system_domain
+#@ for/end domain in data.values.app_domains:
+#@overlay/append
+  - #@ "*." + domain
+  issuerRef:
+    name: #@ data.values.istio_cert_issuer_name
+    kind: #@ data.values.istio_cert_issuer_kind
+
+#! make sure the ingress cert secret isn't being created
+#@overlay/match by=overlay.subset({"kind":"Secret","metadata":{"name":"istio-ingressgateway-certs","namespace":"istio-system"}})
+#@overlay/remove
+---

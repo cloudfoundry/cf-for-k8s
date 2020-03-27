@@ -243,4 +243,3 @@ You can delete the cf-for-k8s deployment by running the following command.
    # Assuming that you ran `bin/install.sh...`
    $ kapp delete -a cf
    ```
-

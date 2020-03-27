@@ -10,7 +10,7 @@ resource_types:
 - name: terraform
   type: docker-image
   source:
-    repository: ljfranklin/terraform
+    repository: ljfranklin/terraform-resource
 
 # - name: slack-notification
 #   type: docker-image
@@ -26,8 +26,7 @@ resources:
     backend_config:
       bucket: dev-cluster-pool-state
       prefix: mydir
-      region: us-central1
-      credentials: {{dev_cluster_pool_gcs_admin_service_account_json}}
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
 - name: every-5-minutes
   type: time
@@ -48,14 +47,14 @@ resources:
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     location: America/Los_Angeles
 
-- name: friday-afternoon
-  type: time
-  icon: clock-outline
-  source:
-    start: 3:00 PM
-    stop: 4:00 PM
-    days: [Friday]
-    location: America/Los_Angeles
+# - name: friday-afternoon
+#   type: time
+#   icon: clock-outline
+#   source:
+#     start: 3:00 PM
+#     stop: 4:00 PM
+#     days: [Friday]
+#     location: America/Los_Angeles
 
 - name: cf-for-k8s
   type: git
@@ -256,7 +255,7 @@ jobs:
         args:
         - -ec
         - |
-          printf "env_name = %q" "$(cat new-cluster/name)" > tf-vars/input.tfvars
+          printf "env_name = \"%q\"" "$(cat new-cluster/name)" > tf-vars/input.tfvars
   - put: terraform
     params:
       terraform_source: cf-for-k8s/terraform
@@ -332,7 +331,7 @@ jobs:
         args:
         - -ec
         - |
-          printf "env_name = %q" "$(cat destroy-pool/name)" > tf-vars/input.tfvars
+          printf "env_name = \"%q\"" "$(cat destroy-pool/name)" > tf-vars/input.tfvars
   - put: terraform
     params:
       terraform_source: cf-for-k8s/terraform

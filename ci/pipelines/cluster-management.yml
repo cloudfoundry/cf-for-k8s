@@ -255,7 +255,12 @@ jobs:
         args:
         - -ec
         - |
-          printf "env_name = \"%q\"" "$(cat new-cluster/name)" > tf-vars/input.tfvars
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          service_account_key = "((dev_cluster_pool_admin_service_account_json))"
+          env_name = "$(cat new-cluster/name)"
+          EOT
   - put: terraform
     params:
       terraform_source: cf-for-k8s/terraform
@@ -331,7 +336,12 @@ jobs:
         args:
         - -ec
         - |
-          printf "env_name = \"%q\"" "$(cat destroy-pool/name)" > tf-vars/input.tfvars
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          service_account_key = "((dev_cluster_pool_admin_service_account_json))"
+          env_name = "$(cat new-cluster/name)"
+          EOT
   - put: terraform
     params:
       terraform_source: cf-for-k8s/terraform

@@ -1,5 +1,5 @@
 provider "google-beta" {
-  credentials = file("/tmp/dw-js-service-account.json")
-  project     = "cf-relint-greengrass"
-  region      = "us-central1"
+  project     = "${var.project}"
+  region      = "${var.region}"
+  credentials = "${var.service_account_key}"
 }

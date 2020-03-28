@@ -323,6 +323,7 @@ jobs:
       version: every
       passed: [acquire-lock-for-destroy-cluster]
       trigger: true
+    - get: cf-for-k8s
   - task: create-tf-vars-file
     config:
       platform: linux

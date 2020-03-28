@@ -2,7 +2,7 @@ resource "google_container_cluster" "primary" {
   provider           = google-beta
   name               = var.env_name
   location           = "us-central1-a"
-  initial_node_count = 2
+  initial_node_count = 5
 
   release_channel {
     channel = "RAPID"
@@ -26,6 +26,8 @@ resource "google_container_cluster" "primary" {
   }
 
   node_config {
+    machine_type = "n1-standard-4"
+
     oauth_scopes = [
       "https://www.googleapis.com/auth/devstorage.read_only",
       "https://www.googleapis.com/auth/logging.write",

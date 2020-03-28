@@ -1,15 +1,15 @@
 variable "project" {
-  type = "string"
+  type = string
 }
 
 variable "region" {
-  type = "string"
+  type = string
 }
 
 variable "service_account_key" {
-  type = "string"
+  type = string
 }
 
 variable "env_name" {
-  type = "string"
+  type = string
 }

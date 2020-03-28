@@ -250,6 +250,8 @@ jobs:
       - name: new-cluster
       outputs:
       - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
       run:
         path: /bin/bash
         args:
@@ -258,7 +260,7 @@ jobs:
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
           region = "((ci_k8s_gcp_project_region))"
-          service_account_key = "$(echo ((dev_cluster_pool_admin_service_account_json)) | jq -c '.' | sed 's/"/\\"/g')"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat new-cluster/name)"
           EOT
   - put: terraform
@@ -331,6 +333,8 @@ jobs:
       - name: destroy-pool
       outputs:
       - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
       run:
         path: /bin/bash
         args:
@@ -339,7 +343,7 @@ jobs:
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
           region = "((ci_k8s_gcp_project_region))"
-          service_account_key = "$(echo ((dev_cluster_pool_admin_service_account_json)) | jq -c '.' | sed 's/"/\\"/g')"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat new-cluster/name)"
           EOT
   - put: terraform

@@ -42,7 +42,7 @@ resources:
   type: time
   icon: clock-outline
   source:
-    start: 3:00 PM
+    start: 7:00 PM
     stop: 7:30 PM
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     location: America/Los_Angeles

@@ -145,7 +145,7 @@ jobs:
 
             ready_count="$(find "${pool_dir}/${ready_pool_name}/unclaimed" -not -path '*/\.*' -type f | wc -l)"
             echo "Unclaimed ready envs: ${ready_count}"
-            building_count="$(find "${pool_dir}/${building_pool_name}/claimed" -not -path '*/\.*' -type f | wc -l)"
+            building_count="$(find "${pool_dir}/${building_pool_name}" -not -path '*/\.*' -type f | wc -l)"
             echo "Building envs: ${building_count}"
 
             env_count=$((ready_count + building_count))

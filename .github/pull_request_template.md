@@ -1,24 +1,22 @@
-> _Please describe the change._ 
+
+
+> Thanks for contributing to cf-for-k8s!
+>
+> We've designed this PR template to speed up the PR review and merge process - please use it.
+
+> _Please describe the change here._ 
 
 ---
 
+
 - Make sure this PR is based off the `develop` branch
-- Let us know if getting this merged is urgent.
 - Checkout the [contributing guidelines](https://github.com/cloudfoundry/cf-for-k8s/blob/develop/docs/contributing.md)
+- Include any links to related PRs, issues, stories, slack discussions, etc... that will help establish context.
+- Is there anything else of note that the reviewers should know about this change?
 
-_Special notes for your reviewer /  **Acceptance Criteria** (if applicable)_
+**Acceptance Steps**
 
-> _Please specify either kubectl or cf cli commands for our team (and cf operators) to verify the changes._
-
-> **_Example Acceptance Criteria:_**
-> For a PR that contains a new Deployment resource definition
-**Given** I've deployed cf-for-k8s with this branch
-**When** I run `kubectl get deployment <NAME_OF_DEPLOYMENT_RESOURCE>`
-**Then** I see that the new deployment exists
-
-_Resources_
-
-> _Include any links to other PRs, stories, slack discussions, etc... that will help establish context._
+_please provide a series of instructions (eg kubectl or cf cli commands) for how our Product Manager can verify that your changes were properly integrated_
 
 
 _Tag your pair, your PM, and/or team_

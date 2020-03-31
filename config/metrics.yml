@@ -1,8 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
-#@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
-#@ load("@ytt:base64", "base64")
 
 #@ def metrics_values():
 system_domain: #@ data.values.system_domain

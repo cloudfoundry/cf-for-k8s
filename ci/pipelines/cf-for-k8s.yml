@@ -1,15 +1,15 @@
 ---
 groups:
-- name: cf-for-k8s
+- name: validation-checks
   jobs:
   - test-vendir-sync-on-cf-for-k8s
   - validate-cf-for-k8s
   - release-validation-pool-manual
-- name: Stability Validation
+- name: stability-check
   jobs:
   - stability-test-cf-for-k8s
   - release-stability-pool-manual
-- name: PRs
+- name: pr-checks
   jobs:
   - fail-prs-to-cf-for-k8s-master
   - pass-prs-to-cf-for-k8s-develop

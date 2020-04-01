@@ -103,6 +103,9 @@ To deploy cf-for-k8s with the Cloud Native Buildpacks feature, you additionally 
    system domain and the wildcard subdomain of all apps domains to point to external IP
    of the Istio Ingress Gateway service. You can retrieve the external IP of this service by running
    `kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].ip}'`
+   For AWS EKS use this command:
+   `kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].hostname}'`
+   
    1. If you used the `./hack/generate-values.sh` script then you should only
       configure a single DNS record for the domain you passed as input to the
       script and have it resolve to the Ingress Gateway's external IP
@@ -113,6 +116,8 @@ To deploy cf-for-k8s with the Cloud Native Buildpacks feature, you additionally 
       Domain         Record Type  TTL  IP Address
       *.<cf-domain>  A            30   35.111.111.111
       ```
+   2. If using AWS Route53 DNS service create the wildcard DNS entry using an alias pointing to the hostname you received when
+      querying the `'{.status.loadBalancer.ingress[*].hostname}'`
 
 ## Validate the deployment using a image-based app
 

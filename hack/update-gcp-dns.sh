@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-
-# This is a hack! see https://github.com/cloudfoundry/cf-for-k8s/blob/develop/hack/README.md
+# 
+# Update the app domain in Google Cloud DNS with the correct LB IP 
+# This is a hack! 
+# Please see https://github.com/cloudfoundry/cf-for-k8s/blob/develop/hack/README.md
 
 set -eu
 
@@ -9,38 +11,70 @@ if [ $# -lt 2 ]; then
   exit 1
 fi
 
-# Ensure that required executables exist
-gcloud --version > /dev/null 2>&1 || (echo "Missing required \"gcloud\" executable." && exit 1)
-kubectl version --client=true > /dev/null 2>&1 || (echo "Missing required \"kubectl\" executable." && exit 1)
-
+# Globals
 DNS_DOMAIN="$1"
 DNS_ZONE_NAME="$2"
 
-echo "Discovering Istio Gateway LB IP..."
-external_static_ip=$(kubectl get services/istio-ingressgateway -n istio-system --output="jsonpath={.status.loadBalancer.ingress[0].ip}")
+function dep_check() {
 
-echo "Starting transaction..."
-gcloud dns record-sets transaction start --zone="${DNS_ZONE_NAME}"
+  REQS=(gcloud kubectl)
+  MISSING=()
 
-gcp_records_json="$( gcloud dns record-sets list --zone="${DNS_ZONE_NAME}" --name "*.${DNS_DOMAIN}" --format=json )"
-record_count="$( echo "${gcp_records_json}" | jq 'length' )"
-if [ "${record_count}" != "0" ]; then
-	echo "Deleting existing DNS A record..."
-  existing_record_ip="$( echo "${gcp_records_json}" | jq -r '.[0].rrdatas | join(" ")' )"
-  gcloud dns record-sets transaction remove --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=5 "${existing_record_ip}" --verbosity=debug
+  for DEP in ${REQS[@]}; do
+    command -v $DEP >/dev/null 2>&1 || { MISSING+=($DEP); }
+  done
+
+  if [ ${#MISSING[@]} -ne 0 ]; then
+    printf 'Missing %s: Please install.\n' "${MISSING[@]}"
+    exit 1;
+  fi
+}
+
+function get_gw_address() {
+
+  local LB_IP=$(kubectl get services/istio-ingressgateway -n istio-system --output="jsonpath={.status.loadBalancer.ingress[0].ip}")
+  if [ -z ${LB_IP} ]; then
+    echo "Gateway LB IP not found. Exiting."
+    exit 127
+  fi
+  echo ${LB_IP}
+}
+
+function get_existing_record() {
+
+  HOST_RECORD_JSON="$( gcloud dns record-sets list --zone="${DNS_ZONE_NAME}" --name "*.${DNS_DOMAIN}" --format=json | jq .[] )"
+
+  if [ ! -z "${HOST_RECORD_JSON}" ]; then
+    HOST_RECORD=$(echo ${HOST_RECORD_JSON} | jq -r '.rrdatas[]')
+    TTL=$(echo ${HOST_RECORD_JSON} | jq -r '.ttl')
+    echo ${HOST_RECORD} ${TTL}
+  else
+    echo ""
+  fi
+}
+
+dep_check
+LB_IP=$(get_gw_address) # from kubectl
+read HOST_RECORD TTL < <(get_existing_record) # from DNS
+
+if [[ "${LB_IP}" == "${HOST_RECORD}" ]]; then
+  echo "*.${DNS_DOMAIN} -> ${LB_IP}. No update needed."
+  exit 0
+else
+  gcloud dns record-sets transaction start --zone="${DNS_ZONE_NAME}"
+  if [ ! -z "${HOST_RECORD}" ]; then 
+    gcloud dns record-sets transaction remove --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=${TTL} "${HOST_RECORD}" --verbosity=debug
+  fi
+  gcloud dns record-sets transaction add --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=5 "${LB_IP}" --verbosity=debug 
+  gcloud dns record-sets transaction execute --zone="${DNS_ZONE_NAME}" --verbosity=debug 
+
+  while true; do
+    DNS_QUERY=$(nslookup *.${DNS_DOMAIN} | awk '/^Address: / { print $2 }')
+    if [[ "${LB_IP}" == "${DNS_QUERY}" ]]; then
+      echo "*.${DNS_DOMAIN} successfully updated. Exiting."
+      exit 0
+    fi
+    sleep 5
+  done
+
 fi
-
-echo "Configuring DNS for external IP \"${external_static_ip}\"..."
-gcloud dns record-sets transaction add --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=5 "${external_static_ip}" --verbosity=debug
-
-echo "Executing transaction..."
-gcloud dns record-sets transaction execute --zone="${DNS_ZONE_NAME}" --verbosity=debug
-
-resolved_ip=''
-while [ "$resolved_ip" != "$external_static_ip" ]; do
-  echo "Waiting for DNS to propagate..."
-  sleep 5
-  resolved_ip=$(nslookup "*.$DNS_DOMAIN" | grep Address | grep -v ':53' | grep -v '#53' | cut -d ' ' -f2)
-done
-
-gcloud dns record-sets list --zone="${DNS_ZONE_NAME}" --filter="Type=A"

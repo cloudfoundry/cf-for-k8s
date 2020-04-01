@@ -13,6 +13,10 @@ spec:
     matchLabels:
       app: metric-proxy
   template:
+    annotations:
+      prometheus.io/scrape: true
+      prometheus.io/port: 9090
+      prometheus.io/path: /metrics
     metadata:
       labels:
         app: metric-proxy
@@ -24,6 +28,7 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        - containerPort: 9090
         env:
         - name: ADDR
           value: :8080

@@ -108,6 +108,12 @@ var _ = Describe("Smoke Tests", func() {
 				cfLogs := cf.Cf("logs", appName, "--recent")
 				return string(cfLogs.Wait().Out.Contents())
 			}, 2*time.Minute, 2*time.Second).Should(ContainSubstring("Hello World from index"))
+
+			By("verifying that the application's metrics are available.")
+			Eventually(func() string {
+				cfApp := cf.Cf("app", appName)
+				return string(cfApp.Wait().Out.Contents())
+			}).Should(ContainSubstring("cpu"))
 		})
 
 		It("creates a routable app pod in Kubernetes from a source-based app", func() {
@@ -136,6 +142,12 @@ var _ = Describe("Smoke Tests", func() {
 				cfLogs := cf.Cf("logs", appName, "--recent")
 				return string(cfLogs.Wait().Out.Contents())
 			}, 2*time.Minute, 2*time.Second).Should(ContainSubstring("Console output from test-node-app"))
+
+			By("verifying that the application's metrics are available.")
+			Eventually(func() string {
+				cfApp := cf.Cf("app", appName)
+				return string(cfApp.Wait().Out.Contents())
+			}).Should(ContainSubstring("cpu"))
 		})
 	})
 })

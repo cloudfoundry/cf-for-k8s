@@ -18,6 +18,10 @@ directories:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/24864777
     path: github.com/cloudfoundry/cf-k8s-logging/config
   - git:
+      commitTitle: Fix image sha...
+      sha: 614dbcd1a80512fb707f936067d8c498e3471682
+    path: github.com/cloudfoundry/metric-proxy
+  - git:
       commitTitle: Reduce the number of env vars used by UAA...
       sha: 1c19ffc2697441824d2e98e31210a82e1fbc0ac1
     path: github.com/cloudfoundry/uaa

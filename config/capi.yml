@@ -58,6 +58,12 @@ apiServer:
     client_key: #@ data.values.eirini.tls.key
     ca: #@ data.values.system_certificate.ca
 
+metric_proxy:
+  ca:
+    secret_name: #@ data.values.metric_proxy.ca.secret_name
+  cert:
+    secret_name: #@ data.values.metric_proxy.cert.secret_name
+
 uaa:
   serverCerts:
     secretName: uaa-certs

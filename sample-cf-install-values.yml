@@ -86,3 +86,10 @@ app_registry:
   username: _json_key
   password: |
     contents_of_service_account_json
+
+#! Uncomment the following block for docker and comment out the previous block
+#! app_registry:
+#! hostname: hub.docker.com
+#!   repository: docker_hub_repository
+#!   username: docker_user
+#!   password: docker_password

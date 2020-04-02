@@ -36,11 +36,16 @@ gcloud dns record-sets transaction add --name "*.${DNS_DOMAIN}" --type=A --zone=
 echo "Executing transaction..."
 gcloud dns record-sets transaction execute --zone="${DNS_ZONE_NAME}" --verbosity=debug
 
-resolved_ip=''
-while [ "$resolved_ip" != "$external_static_ip" ]; do
+num_successes=0
+while [[ ${num_successes} < 3 ]]; do
   echo "Waiting for DNS to propagate..."
   sleep 5
   resolved_ip=$(nslookup "*.$DNS_DOMAIN" | grep Address | grep -v ':53' | grep -v '#53' | cut -d ' ' -f2)
+  if [[ "${resolved_ip}" == "${external_static_ip}" ]] ; then
+    num_successes=$((num_successes + 1))
+  else
+    num_successes=0
+  fi
 done
 
 gcloud dns record-sets list --zone="${DNS_ZONE_NAME}" --filter="Type=A"

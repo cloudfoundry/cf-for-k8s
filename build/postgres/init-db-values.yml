@@ -1,3 +1,4 @@
 initdbScripts:
   init.sh: ""
+initdbScriptsSecret: cf-db-credentials
 existingSecret: cf-db-admin-secret

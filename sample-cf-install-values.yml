@@ -89,7 +89,7 @@ app_registry:
 
 #! Uncomment the following block for docker and comment out the previous block
 #! app_registry:
-#! hostname: hub.docker.com
+#! hostname: https://index.docker.io/v1/
 #!   repository: docker_hub_repository
 #!   username: docker_user
 #!   password: docker_password

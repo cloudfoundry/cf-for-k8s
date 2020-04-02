@@ -2,6 +2,7 @@ opi:
   namespace: cf-workloads
   use_registry_ingress: true
   ingress_endpoint: not-used
+  registry_secret_name: app-registry-credentials
 
   tls:
     opiCapiClient:

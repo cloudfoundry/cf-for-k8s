@@ -45,30 +45,36 @@ system_certificate:
   ca: ingress_gateway_certificate_ca
 
 #! Log Cache CA certificate and private key
+#! - the common name needs to be log-cache-ca
 log_cache_ca:
   crt: log_cache_ca_certificate
   key: log_cache_ca_private_key
 
 #! Certificate and private key for the Log Cache server
 #! - these are used for both server and client mTLS interactions within Log Cache
+#! - the common name needs to be log-cache
 log_cache:
   crt: log_cache_certificate
   key: log_cache_private_key
 
 #! Certificate and private key for the metrics component of Log Cache
 #! - these are used for both server and client mTLS interactions within Log Cache
+#! - the common name needs to be log-cache-metrics
 log_cache_metrics:
   crt: log_cache_metrics_certificate
   key: log_cache_metrics_private_key
 
 #! Certificate and private key for the gateway component of Log Cache
 #! - these are used for both server and client mTLS interactions within Log Cache
+#! - the common name needs to be log-cache-gateway
+#! - the alternative_names list should include localhost
 log_cache_gateway:
   crt: log_cache_gateway_certificate
   key: log_cache_gateway_private_key
 
 #! Certificate and private key for the syslog component of Log Cache
 #! - these are used for both server and client mTLS interactions within Log Cache
+#! - the common name needs to be log-cache-syslog
 log_cache_syslog:
   crt: log_cache_syslog_certificate
   key: log_cache_syslog_private_key

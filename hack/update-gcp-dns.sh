@@ -43,7 +43,6 @@ function get_gw_address() {
 function get_existing_record() {
 
   HOST_RECORD_JSON="$( gcloud dns record-sets list --zone="${DNS_ZONE_NAME}" --name "*.${DNS_DOMAIN}" --format=json | jq .[] )"
-
   if [ ! -z "${HOST_RECORD_JSON}" ]; then
     HOST_RECORD=$(echo ${HOST_RECORD_JSON} | jq -r '.rrdatas[]')
     TTL=$(echo ${HOST_RECORD_JSON} | jq -r '.ttl')

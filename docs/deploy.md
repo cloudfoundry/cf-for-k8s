@@ -48,10 +48,17 @@ To be able to push source-based apps to your CF for K8s installation, you will n
 
 _Note: Currently, when enabling support for buildpack-based applications, CF for K8s has only been validated to work with Google Container Registry (GCR).  Soon, we intend to support any OCI registry that kpack supports._
 
-To deploy cf-for-k8s with the Cloud Native Buildpacks feature, you additionally need to:
+1. To deploy cf-for-k8s with the Cloud Native Buildpacks feature, you additionally need to specify some settings and credentials for a container image registry.  Currently, we have tested the following two registries:
+
+* Google Container Registry:
   1. create a GCP Service Account with `Storage/Storage Admin` role
       * (optionally) if you want to limit the permissions this service account has, see https://cloud.google.com/container-registry/docs/access-control for the minimum permission set
   1. create a Service Key JSON and download it to the machine from which you will install cf-for-k8s (referred to, below, as `path-to-kpack-gcr-service-account`)
+
+* Docker Hub and other OCI registries:
+  1. Uncomment the docker hub block in sample-cf-install-values and fill in with appropriate values.
+    - 'repository' here refers to the prefix before the image name. In Dockerhub, this would be a username or organization name. In Harbor, this would be a library name. In Azure Container Registry, this would be `""` (empty string).
+  1. Comment the gcr block.
 
 ## Steps to deploy
 

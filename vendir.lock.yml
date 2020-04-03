@@ -10,12 +10,17 @@ directories:
       sha: bcaeb5c9219b0674a200e561e2a6bb9cf49fda0d
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: Bump ccng image to label kpack build pods with STG...
-      sha: d188d77a878241d685b93ec159eba1318a53ae03
+      commitTitle: Pin versions of capi_kpack_watcher and nginx to a Docker digest
+        sha...
+      sha: 29980921bca735de3000b32a0defb319ce6522d5
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/24864777
     path: github.com/cloudfoundry/cf-k8s-logging/config
+  - git:
+      commitTitle: Fix image sha...
+      sha: 614dbcd1a80512fb707f936067d8c498e3471682
+    path: github.com/cloudfoundry/metric-proxy
   - git:
       commitTitle: Reduce the number of env vars used by UAA...
       sha: 1c19ffc2697441824d2e98e31210a82e1fbc0ac1

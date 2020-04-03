@@ -140,3 +140,14 @@ app_registry:
   repository: ""
   username: ""
   password: ""
+
+metric_proxy:
+  ca:
+    secret_name: "metric-proxy-ca"
+    crt: ""
+    key: ""
+  cert:
+    secret_name: "metric-proxy-cert"
+    crt: ""
+    key: ""
+

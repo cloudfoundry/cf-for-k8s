@@ -68,13 +68,14 @@ else
   gcloud dns record-sets transaction add --name "*.${DNS_DOMAIN}" --type=A --zone="${DNS_ZONE_NAME}" --ttl=5 "${LB_IP}" --verbosity=debug 
   gcloud dns record-sets transaction execute --zone="${DNS_ZONE_NAME}" --verbosity=debug 
 
-  while true; do
+  SUCCESS_COUNT=0
+  while [[ ${SUCCESS_COUNT} < 3 ]]; do
     DNS_QUERY=$(nslookup *.${DNS_DOMAIN} | awk '/^Address: / { print $2 }')
     if [[ "${LB_IP}" == "${DNS_QUERY}" ]]; then
-      echo "*.${DNS_DOMAIN} successfully updated. Exiting."
-      exit 0
+      SUCCESS_COUNT=$((SUCCESS_COUNT+1))
     fi
     sleep 5
   done
-
+  echo "*.${DNS_DOMAIN} -> ${LB_IP} successfully updated. Exiting."
+  exit 0
 fi

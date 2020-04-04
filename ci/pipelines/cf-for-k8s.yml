@@ -5,10 +5,12 @@ groups:
   - test-vendir-sync-on-cf-for-k8s
   - validate-cf-for-k8s
   - release-validation-pool-manual
+  - validate-azure
 - name: stability-check
   jobs:
   - stability-test-cf-for-k8s
   - release-stability-pool-manual
+  - validate-azure
 - name: pr-checks
   jobs:
   - fail-prs-to-cf-for-k8s-master
@@ -17,8 +19,9 @@ groups:
   - test-vendir-sync-on-cf-for-k8s-pr
 - name: docker-images
   jobs:
-  - build-cf-for-k8s-ci-image
+  - build-cf-for-k8s-ci-gcp-image
   - build-cf-test-runner-image
+  - build-cf-for-k8s-azure-image
 
 resource_types:
 - name: pull-request
@@ -71,6 +74,14 @@ resources:
     stop: 7:30 -0700
     interval: 168h
 
+- name: thursday-am
+  type: time
+  icon: clock-outline
+  source:
+    start: 9:00 AM
+    stop: 10:00 AM
+    location: America/Los_Angeles
+
 - name: every-20-minutes
   type: time
   icon: clock-outline
@@ -114,7 +125,7 @@ resources:
     disable_forks: false
     base_branch: develop
 
-- name: cf-for-k8s-ci-image
+- name: cf-for-k8s-ci-gcp-image
   type: docker-image
   icon: docker
   source:
@@ -128,6 +139,15 @@ resources:
   icon: docker
   source:
     repository: relintdockerhubpushbot/cf-test-runner
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
+
+- name: cf-for-k8s-azure-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-azure
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
@@ -694,7 +714,7 @@ jobs:
         context: check-vendir-sync
 
 
-- name: build-cf-for-k8s-ci-image
+- name: build-cf-for-k8s-ci-gcp-image
   public: true
   plan:
   - timeout: 4h
@@ -706,7 +726,7 @@ jobs:
         trigger: true
       - get: k14s-io
         trigger: true
-    - put: cf-for-k8s-ci-image
+    - put: cf-for-k8s-ci-gcp-image
       params:
         build: cf-for-k8s-dockerfiles/ci/dockerfiles/cf-for-k8s-ci/
         push: true
@@ -725,3 +745,127 @@ jobs:
       params:
         build: cf-for-k8s-dockerfiles/ci/dockerfiles/cf-test-runner/
         push: true
+
+- name: build-cf-for-k8s-azure-image
+  public: true
+  plan:
+  - timeout: 4h
+    do:
+    - in_parallel:
+      - get: weekly
+        trigger: true
+      - get: cf-for-k8s-dockerfiles
+        trigger: true
+      - get: k14s-io
+        trigger: true
+    - put: cf-for-k8s-azure-image
+      params:
+        build: cf-for-k8s-dockerfiles/ci/dockerfiles/cf-for-k8s-azure/
+        push: true
+
+- name: validate-azure
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-master
+    - get: thursday-am
+      trigger: true
+  - task: create-cluster-install-cf
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: relintdockerhubpushbot/cf-for-k8s-azure
+      inputs:
+        - name: cf-for-k8s-master
+      outputs:
+      - name: env-metadata
+      params:
+        DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
+        DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          export KUBECONFIG=kube-config.yml
+          cluster_name='azure-ci-test-cluster'
+          cluster_resource_group='azure-ci-test-resource-group'
+          echo "Logging into azure..."
+          az login --service-principal --username '((aks_cluster_creation_service_principal_username))' --password '((aks_cluster_creation_service_principal_password))' --tenant '((aks_cluster_creation_tenant))' >/dev/null 2>&1
+          echo "Setting azure account subscription..."
+          az account set --subscription '((relint_azure_subscription))' >/dev/null 2>&1
+          echo "Creating resource group..."
+          az group create --name $cluster_resource_group --location westus  >/dev/null 2>&1
+          echo "Creating AKS cluster..."
+          az aks create --resource-group $cluster_resource_group --name $cluster_name --node-count 5 --node-vm-size Standard_DS3_v2 --network-plugin azure --network-policy azure --enable-addons monitoring --generate-ssh-keys --service-principal '((aks_cluster_creation_service_principal_username))' --client-secret '((aks_cluster_creation_service_principal_password))' >/dev/null 2>&1
+          echo "Getting credentials..."
+          az aks get-credentials --resource-group $cluster_resource_group --name $cluster_name --file $KUBECONFIG --overwrite-existing >/dev/null 2>&1
+
+          export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
+          #TODO, make this check work for AKS
+          # cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
+
+          echo "Generating install values..."
+          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+
+          echo "Installing CF..."
+          cf-for-k8s-master/bin/install-cf.sh cf-install-values.yml
+
+          echo "Configuring DNS..."
+          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+          cf-for-k8s-master/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
+
+          bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
+
+  - task: run-smoke-test
+    config:
+      <<: *common-test-config
+      inputs:
+      - name: cf-for-k8s-master
+      - name: env-metadata
+      run:
+        path: /bin/sh
+        args:
+        - -ec
+        - |
+          DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
+          export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
+          export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
+          export SMOKE_TEST_USERNAME=admin
+          export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
+          export SMOKE_TEST_SKIP_SSL=true
+          cf-for-k8s-master/hack/run-smoke-tests.sh
+
+  - task: delete-cluster
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: relintdockerhubpushbot/cf-for-k8s-azure
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cluster_name='azure-ci-test-cluster'
+          cluster_resource_group='azure-ci-test-resource-group'
+          export KUBECONFIG=kube-config.yml
+
+          echo "Logging into azure..."
+          az login --service-principal --username '((aks_cluster_creation_service_principal_username))' --password '((aks_cluster_creation_service_principal_password))' --tenant '((aks_cluster_creation_tenant))' >/dev/null 2>&1
+          echo "Setting azure account subscription..."
+          az account set --subscription '((relint_azure_subscription))' >/dev/null 2>&1
+          echo "Getting credentials..."
+          az aks get-credentials --resource-group $cluster_resource_group --name $cluster_name --file $KUBECONFIG --overwrite-existing >/dev/null 2>&1
+
+          echo "Deleting AKS cluster..."
+          az aks delete --resource-group ${cluster_resource_group} --name ${cluster_name} -y >/dev/null 2>&1
+          echo "Deleting resource group..."
+          az group delete --name ${cluster_resource_group} -y >/dev/null 2>&1
+          echo "Cluster cleanup complete."

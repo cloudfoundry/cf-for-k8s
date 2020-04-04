@@ -1,7 +1,7 @@
 FROM google/cloud-sdk:slim
 
 RUN apt-get update && \
-    apt-get install -y git gcc wget curl jq google-cloud-sdk
+    apt-get install -y git gcc wget curl dnsutils jq google-cloud-sdk
 RUN apt-get install -y openssl && \
     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 RUN wget -O- https://k14s.io/install.sh | bash

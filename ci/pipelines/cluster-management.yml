@@ -12,11 +12,11 @@ resource_types:
   source:
     repository: ljfranklin/terraform-resource
 
-# - name: slack-notification
-#   type: docker-image
-#   source:
-#     repository: cfcommunity/slack-notification-resource
-#     tag: latest
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
 
 resources:
 - name: terraform
@@ -47,14 +47,14 @@ resources:
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     location: America/Los_Angeles
 
-# - name: friday-afternoon
-#   type: time
-#   icon: clock-outline
-#   source:
-#     start: 3:00 PM
-#     stop: 4:00 PM
-#     days: [Friday]
-#     location: America/Los_Angeles
+- name: friday-afternoon
+  type: time
+  icon: clock-outline
+  source:
+    start: 3:00 PM
+    stop: 7:00 PM
+    days: [Friday]
+    location: America/Los_Angeles
 
 - name: cf-for-k8s
   type: git
@@ -110,11 +110,11 @@ resources:
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
     pool: k8s-dev/destroy
 
-# - name: relint-private-slack
-#   type: slack-notification
-#   icon: slack
-#   source:
-#     url: ((relint_slack_incoming_webhook))
+- name: relint-private-slack
+  type: slack-notification
+  icon: slack
+  source:
+    url: ((relint_slack_incoming_webhook))
 
 jobs:
 - name: check-pool-size
@@ -358,103 +358,112 @@ jobs:
   - put: destroy-pool
     params: {remove: destroy-pool}
 
-# - name: post-to-slack
-#   plan:
-#   - get: friday-afternoon
-#     trigger: true
-#   - get: pool-repo
-#   - task: generate-list-of-claimed-envs
-#     config:
-#       platform: linux
-#       image_resource:
-#         type: docker-image
-#         source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
-#       inputs:
-#         - name: pool-repo
-#       outputs:
-#         - name: message
-#       run:
-#         path: /bin/bash
-#         args:
-#         - -ec
-#         - |
-#           set -eu
-#
-#           # INPUTS
-#           pool_dir="pool-repo/k8s-dev/ready"
-#
-#           # OUTPUTS
-#           output_file="message/message.txt"
-#
-#           function print_env_info {
-#             # Colors
-#             local red blue
-#             red='\033[0;31m'
-#             blue='\033[0;34m'
-#             nc='\033[0m'
-#
-#             echo -e "${blue}Rounding up claimed environments...${nc}"
-#
-#             pushd "${pool_dir}/claimed" > /dev/null
-#               stale_claimed_files="$(git log --reverse --name-only --pretty=format: --until="7 days ago" -- * | sort | uniq | xargs)"
-#               fresh_claimed_files="$(git log --reverse --name-only --pretty=format: --after="7 days ago" -- * | sort | uniq | xargs)"
-#
-#               output="${blue}\n* ENV *\t* CLAIMED BY *\t* CLAIMED ON *\t* CLAIMED SINCE *\t* STORY *\n"
-#
-#               output="${output}${red}\n"
-#               for file in ${stale_claimed_files}; do
-#                 if [[ !$(echo $file | grep -q "${fresh_claimed_files}") ]]; then
-#                   file="$( basename "${file}" )"
-#                   author="$(git log --max-count=1 --pretty='format:%an' "${file}")"
-#                   committer="$(git log --max-count=1 --pretty='format:%cn' "${file}")"
-#                   claimed_since="$(git log --max-count=1 --pretty='format:%ar' "${file}")"
-#                   workstation="$(git log --max-count=1 --pretty='format:%s' "${file}" | sed -E "s/^manually claim [^[:space:]]+ on ([^[:space:]]+).*$/\1/")"
-#                   story="$(git log --max-count=1 --pretty='format:%s' "${file}" | awk -F '[][]' '{print $2}')"
-#
-#                   if [ "${author}" != "${committer}" ]; then
-#                     claimed_by="${author}+${committer}"
-#                   else
-#                     claimed_by="${author}"
-#                   fi
-#
-#                   output="${output}${file}\t${claimed_by}\t${workstation}\t${claimed_since}\t${story}\n"
-#                 fi
-#               done
-#
-#               output="${output}${nc}\n"
-#
-#               for file in ${fresh_claimed_files}; do
-#                 file="$( basename "${file}" )"
-#                 author="$(git log --max-count=1 --pretty='format:%an' "${file}")"
-#                 committer="$(git log --max-count=1 --pretty='format:%cn' "${file}")"
-#                 claimed_since="$(git log --max-count=1 --pretty='format:%ar' "${file}")"
-#                 workstation="$(git log --max-count=1 --pretty='format:%s' "${file}" | sed -E "s/^manually claim [^[:space:]]+ on ([^[:space:]]+).*$/\1/")"
-#                 story="$(git log --max-count=1 --pretty='format:%s' "${file}" | awk -F '[][]' '{print $2}')"
-#
-#                 if [ "${author}" != "${committer}" ]; then
-#                   claimed_by="${author}+${committer}"
-#                 else
-#                   claimed_by="${author}"
-#                 fi
-#
-#                 output="${output}${file}\t${claimed_by}\t${workstation}\t${claimed_since}\t${story}\n"
-#               done
-#
-#             popd > /dev/null
-#             echo -e "$output" | column -t -s $'\t'
-#           }
-#
-#           message="Time for another CLUSTER MGMT OVERLORD round-up! If you have a cluster claimed that you no longer need, run \`unclaim_bosh_lite ENV_NAME\` to set it free!"
-#           printf "${message}" >> "${output_file}"
-#           echo "" >> "${output_file}"
-#           echo '```' >> "${output_file}"
-#           printf "$(print_env_info)" >> "${output_file}"
-#           echo '```' >> "${output_file}"
-#
-#           echo "Message:"
-#           cat "${output_file}"
-#   - put: relint-private-slack
-#     params:
-#       text_file: message/message.txt
-#       username: "Cluster Management Overload"
-#       icon_emoji: ':flyingmoneyparrot:'
+- name: post-to-slack
+  plan:
+  - get: friday-afternoon
+    trigger: true
+  - get: pool-repo
+  - task: generate-list-of-claimed-envs
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      inputs:
+        - name: pool-repo
+      outputs:
+        - name: message
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          set -eu
+
+          apt-get install -y bsdmainutils
+
+          # INPUTS
+          pool_dir="pool-repo/k8s-dev/ready"
+
+          # OUTPUTS
+          output_file="message/message.txt"
+
+          function print_env_info {
+            # Colors
+            local red blue
+            # red='\033[0;31m'
+            # blue='\033[0;34m'
+            # nc='\033[0m'
+            red=''
+            blue=''
+            nc=''
+
+            echo -e "${blue}Rounding up claimed environments...${nc}"
+
+            pushd "${pool_dir}/claimed" > /dev/null
+              stale_claimed_files="$(git log --reverse --name-only --pretty=format: --until="7 days ago" -- * | sort | uniq | xargs)"
+              fresh_claimed_files="$(git log --reverse --name-only --pretty=format: --after="7 days ago" -- * | sort | uniq | xargs)"
+
+              output="${blue}\n* ENV *\t* CLAIMED BY *\t* CLAIMED ON *\t* CLAIMED SINCE *\t* STORY *\n"
+              output="${output}${red}\n"
+
+              for file in ${stale_claimed_files}; do
+                if [[ $(echo ${file} | grep -q "${fresh_claimed_files}") ]]; then
+                  continue
+                fi
+
+                echo "Processing ${file}..." >&2
+                file="$(basename "${file}")"
+                author="$(git log --max-count=1 --pretty='format:%an' "${file}")"
+                committer="$(git log --max-count=1 --pretty='format:%cn' "${file}")"
+                claimed_since="$(git log --max-count=1 --pretty='format:%ar' "${file}")"
+                workstation="$(git log --max-count=1 --pretty='format:%s' "${file}" | sed -E "s/^manually claim [^[:space:]]+ on ([^[:space:]]+).*$/\1/")"
+                story="$(git log --max-count=1 --pretty='format:%s' "${file}" | awk -F '[][]' '{print $2}')"
+
+                if [ "${author}" != "${committer}" ]; then
+                  claimed_by="${author}+${committer}"
+                else
+                  claimed_by="${author}"
+                fi
+
+                output="${output}${file}\t${claimed_by}\t${workstation}\t${claimed_since}\t${story}\n"
+              done
+
+              output="${output}${nc}\n"
+
+              for file in ${fresh_claimed_files}; do
+                echo "Processing ${file}..." >&2
+                file="$(basename "${file}")"
+                author="$(git log --max-count=1 --pretty='format:%an' "${file}")"
+                committer="$(git log --max-count=1 --pretty='format:%cn' "${file}")"
+                claimed_since="$(git log --max-count=1 --pretty='format:%ar' "${file}")"
+                workstation="$(git log --max-count=1 --pretty='format:%s' "${file}" | sed -E "s/^manually claim [^[:space:]]+ on ([^[:space:]]+).*$/\1/")"
+                story="$(git log --max-count=1 --pretty='format:%s' "${file}" | awk -F '[][]' '{print $2}')"
+
+                if [ "${author}" != "${committer}" ]; then
+                  claimed_by="${author}+${committer}"
+                else
+                  claimed_by="${author}"
+                fi
+
+                output="${output}${file}\t${claimed_by}\t${workstation}\t${claimed_since}\t${story}\n"
+              done
+
+            popd > /dev/null
+            echo -e "${output}" | column -t -s $'\t'
+          }
+
+          message="Time for another CLUSTER MGMT OVERLORD round-up! If you have a cluster claimed that you no longer need, run \`unclaim_k8s_env ENV_NAME\` to set it free!"
+          printf "${message}" >> "${output_file}"
+          echo "" >> "${output_file}"
+          echo '```' >> "${output_file}"
+          printf "$(print_env_info)" >> "${output_file}"
+          echo '```' >> "${output_file}"
+
+          echo "Message:"
+          cat "${output_file}"
+  - put: relint-private-slack
+    params:
+      text_file: message/message.txt
+      username: "Cluster Management Overload"
+      icon_emoji: ':flyingmoneyparrot:'

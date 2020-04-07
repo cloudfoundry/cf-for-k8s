@@ -67,3 +67,11 @@ rebaseRules:
   type: copy
   sources: [new, existing]
   resourceMatchers: *kpack_webhook
+
+- path: [spec, healthCheckNodePort]
+  type: copy
+  sources: [new, existing]
+  resourceMatchers:
+  - apiVersionKindMatcher:
+      apiVersion: v1
+      kind: Service

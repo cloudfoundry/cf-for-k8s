@@ -1,0 +1,471 @@
+# ToDo:
+# 3. Slack notification on Fridays
+---
+resource_types:
+- name: pool-trigger
+  type: docker-image
+  source:
+    repository: cfmobile/pool-trigger
+
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource
+
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
+resources:
+- name: terraform
+  type: terraform
+  source:
+    backend_type: gcs
+    backend_config:
+      bucket: dev-cluster-pool-state
+      prefix: mydir
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
+
+- name: every-5-minutes
+  type: time
+  icon: clock-outline
+  source:
+    interval: 5m
+    start: 7:00 AM
+    stop: 6:30 PM
+    days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+    location: America/Los_Angeles
+
+- name: after-7pm
+  type: time
+  icon: clock-outline
+  source:
+    start: 7:00 PM
+    stop: 7:30 PM
+    days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+    location: America/Los_Angeles
+
+- name: friday-afternoon
+  type: time
+  icon: clock-outline
+  source:
+    start: 3:00 PM
+    stop: 7:00 PM
+    days: [Friday]
+    location: America/Los_Angeles
+
+- name: cf-for-k8s-terraform-templates
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - terraform/**
+
+- name: pool-repo
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: master
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
+- name: building-pool
+  type: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: master
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+    pool: k8s-dev/building
+
+- name: building-pool-trigger
+  type: pool-trigger
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: master
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+    pool: k8s-dev/building
+
+- name: ready-pool
+  type: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: master
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+    pool: k8s-dev/ready
+
+- name: destroy-pool
+  type: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: master
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+    pool: k8s-dev/destroy
+
+- name: destroy-pool-trigger
+  type: pool-trigger
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: master
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+    pool: k8s-dev/destroy
+
+- name: relint-private-slack
+  type: slack-notification
+  icon: slack
+  source:
+    url: ((relint_slack_incoming_webhook))
+
+jobs:
+- name: check-pool-size
+  plan:
+  - get: every-5-minutes
+    trigger: true
+  - get: pool-repo
+  - try:
+      task: check-pool-size
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        inputs:
+        - name: pool-repo
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            set -eu
+
+            min_pool_size=2
+            building_pool_name="k8s-dev/building"
+            ready_pool_name="k8s-dev/ready"
+            pool_dir="pool-repo"
+
+            ready_count="$(find "${pool_dir}/${ready_pool_name}/unclaimed" -not -path '*/\.*' -type f | wc -l)"
+            echo "Unclaimed ready envs: ${ready_count}"
+            building_count="$(find "${pool_dir}/${building_pool_name}" -not -path '*/\.*' -type f | wc -l)"
+            echo "Building envs: ${building_count}"
+
+            env_count=$((ready_count + building_count))
+            echo "Total ready + building count: ${env_count}"
+
+            if [[ "${env_count}" -lt "${min_pool_size}" ]]; then
+              echo "Fewer than ${min_pool_size} envs, going to trigger creation..."
+              exit 1
+            else
+              echo "Minimum pool size of ${min_pool_size} satisfied."
+              exit 0
+            fi
+      on_failure: # Create more envs
+        do:
+        # Add unclaimed entry and give it a cool name
+        - task: generate-random-name
+          config:
+            inputs:
+            - name: pool-repo
+            outputs:
+            - name: new-lock
+            platform: linux
+            image_resource:
+              type: docker-image
+              source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+            run:
+              path: /bin/bash
+              args:
+              - -ec
+              - |
+                adjective_list="mirage
+                well
+                spring
+                meadow
+                field
+                prairie
+                grass
+                tundra
+                island
+                shore
+                sand"
+
+                noun_list="swisher
+                carver
+                kicker
+                roarer
+                crusher
+                spike
+                shaker
+                charger
+                hunter
+                weaver
+                crafter"
+
+                adjectives=(${adjective_list})
+                num_adj=${#adjectives[*]}
+                nouns=(${noun_list})
+                num_nouns=${#nouns[*]}
+
+                chosen_adj=${adjectives[$((RANDOM % num_adj))]}
+                chosen_noun=${nouns[$((RANDOM % num_nouns))]}
+
+                new_env_name="${chosen_adj}-${chosen_noun}"
+                echo "Checking if ${new_env_name} exists..."
+                matching_envs=$(find pool-repo -type f -name ${new_env_name})
+
+                if [[ -n "${matching_envs}" ]]; then
+                  echo "${new_env_name} already exists. Aborting..."
+                  exit 1
+                fi
+
+                echo "${new_env_name}" > new-lock/name
+                touch new-lock/metadata
+        - put: building-pool
+          params: {add: new-lock}
+
+- name: acquire-lock-for-create-cluster
+  plan:
+  - get: building-pool-trigger
+    version: every
+    trigger: true
+  - put: building-pool
+    params: {acquire: true}
+
+- name: create-cluster
+  plan:
+  - in_parallel:
+    - get: new-cluster
+      resource: building-pool
+      version: every
+      passed: [acquire-lock-for-create-cluster]
+      trigger: true
+    - get: pool-repo
+    - get: cf-for-k8s-terraform-templates
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      inputs:
+      - name: new-cluster
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat new-cluster/name)"
+          EOT
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-terraform-templates/terraform
+      env_name_file: new-cluster/name
+      delete_on_failure: true
+      var_files: [ tf-vars/input.tfvars ]
+  - put: ready-pool
+    params:
+      add: new-cluster
+  - put: building-pool
+    params:
+      remove: new-cluster
+
+- name: spin-down-after-hours
+  plan:
+  - get: after-7pm
+    trigger: true
+  - get: pool-repo
+  - task: delete-unclaimed
+    # this moves everything from ready/unclaimed to destroy/unclaimed
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      inputs:
+      - name: pool-repo
+      outputs:
+      - name: updated-pool-repo
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          git config --global user.name "Environment Management Overlord"
+          git config --global user.email "cf-release-integration+ci@pivotal.io"
+          git clone pool-repo updated-pool-repo
+          cd updated-pool-repo
+          git mv k8s-dev/ready/unclaimed/* k8s-dev/destroy/unclaimed
+          git commit -m'Destroying unclaimed K8s dev pool environments'
+  - put: pool-repo
+    params:
+      repository: updated-pool-repo
+      rebase: true
+
+- name: acquire-lock-for-destroy-cluster
+  plan:
+  - get: destroy-pool-trigger
+    version: every
+    trigger: true
+  - put: destroy-pool
+    params: {acquire: true}
+
+- name: destroy-cluster
+  plan:
+  - in_parallel:
+    - get: destroy-pool
+      version: every
+      passed: [acquire-lock-for-destroy-cluster]
+      trigger: true
+    - get: cf-for-k8s-terraform-templates
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      inputs:
+      - name: destroy-pool
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat new-cluster/name)"
+          EOT
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-terraform-templates/terraform
+      env_name_file: destroy-pool/name
+      action: destroy
+      var_files: [ tf-vars/input.tfvars ]
+    get_params:
+      action: destroy
+  - put: destroy-pool
+    params: {remove: destroy-pool}
+
+- name: post-to-slack
+  plan:
+  - get: friday-afternoon
+    trigger: true
+  - get: pool-repo
+  - task: generate-list-of-claimed-envs
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      inputs:
+        - name: pool-repo
+      outputs:
+        - name: message
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          set -eu
+
+          apt-get install -y bsdmainutils
+
+          # INPUTS
+          pool_dir="pool-repo/k8s-dev/ready"
+
+          # OUTPUTS
+          output_file="message/message.txt"
+
+          function print_env_info {
+            # Colors
+            local red blue
+            # red='\033[0;31m'
+            # blue='\033[0;34m'
+            # nc='\033[0m'
+            red=''
+            blue=''
+            nc=''
+
+            echo -e "${blue}Rounding up claimed environments...${nc}"
+
+            pushd "${pool_dir}/claimed" > /dev/null
+              stale_claimed_files="$(git log --reverse --name-only --pretty=format: --until="7 days ago" -- * | sort | uniq | xargs)"
+              fresh_claimed_files="$(git log --reverse --name-only --pretty=format: --after="7 days ago" -- * | sort | uniq | xargs)"
+
+              output="${blue}\n* ENV *\t* CLAIMED BY *\t* CLAIMED ON *\t* CLAIMED SINCE *\t* STORY *\n"
+              output="${output}${red}\n"
+
+              for file in ${stale_claimed_files}; do
+                if [[ $(echo ${file} | grep -q "${fresh_claimed_files}") ]]; then
+                  continue
+                fi
+
+                echo "Processing ${file}..." >&2
+                file="$(basename "${file}")"
+                author="$(git log --max-count=1 --pretty='format:%an' "${file}")"
+                committer="$(git log --max-count=1 --pretty='format:%cn' "${file}")"
+                claimed_since="$(git log --max-count=1 --pretty='format:%ar' "${file}")"
+                workstation="$(git log --max-count=1 --pretty='format:%s' "${file}" | sed -E "s/^manually claim [^[:space:]]+ on ([^[:space:]]+).*$/\1/")"
+                story="$(git log --max-count=1 --pretty='format:%s' "${file}" | awk -F '[][]' '{print $2}')"
+
+                if [ "${author}" != "${committer}" ]; then
+                  claimed_by="${author}+${committer}"
+                else
+                  claimed_by="${author}"
+                fi
+
+                output="${output}${file}\t${claimed_by}\t${workstation}\t${claimed_since}\t${story}\n"
+              done
+
+              output="${output}${nc}\n"
+
+              for file in ${fresh_claimed_files}; do
+                echo "Processing ${file}..." >&2
+                file="$(basename "${file}")"
+                author="$(git log --max-count=1 --pretty='format:%an' "${file}")"
+                committer="$(git log --max-count=1 --pretty='format:%cn' "${file}")"
+                claimed_since="$(git log --max-count=1 --pretty='format:%ar' "${file}")"
+                workstation="$(git log --max-count=1 --pretty='format:%s' "${file}" | sed -E "s/^manually claim [^[:space:]]+ on ([^[:space:]]+).*$/\1/")"
+                story="$(git log --max-count=1 --pretty='format:%s' "${file}" | awk -F '[][]' '{print $2}')"
+
+                if [ "${author}" != "${committer}" ]; then
+                  claimed_by="${author}+${committer}"
+                else
+                  claimed_by="${author}"
+                fi
+
+                output="${output}${file}\t${claimed_by}\t${workstation}\t${claimed_since}\t${story}\n"
+              done
+
+            popd > /dev/null
+            echo -e "${output}" | column -t -s $'\t'
+          }
+
+          message="Time for another CLUSTER MGMT OVERLORD round-up! If you have a cluster claimed that you no longer need, run \`unclaim_k8s_env ENV_NAME\` to set it free!"
+          printf "${message}" >> "${output_file}"
+          echo "" >> "${output_file}"
+          echo '```' >> "${output_file}"
+          printf "$(print_env_info)" >> "${output_file}"
+          echo '```' >> "${output_file}"
+
+          echo "Message:"
+          cat "${output_file}"
+  - put: relint-private-slack
+    params:
+      text_file: message/message.txt
+      username: "Cluster Management Overload"
+      icon_emoji: ':flyingmoneyparrot:'

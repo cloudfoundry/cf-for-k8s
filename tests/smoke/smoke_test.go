@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -30,6 +31,7 @@ var _ = Describe("Smoke Tests", func() {
 	When("running cf push", func() {
 		var (
 			orgName    string
+			appName    string
 			appsDomain string
 		)
 
@@ -67,6 +69,10 @@ var _ = Describe("Smoke Tests", func() {
 		})
 
 		AfterEach(func() {
+			if CurrentGinkgoTestDescription().Failed {
+				printAppReport(appName)
+			}
+
 			if orgName != "" {
 				// Delete the test org
 				Eventually(func() *Session {
@@ -76,7 +82,7 @@ var _ = Describe("Smoke Tests", func() {
 		})
 
 		It("creates a routable app pod in Kubernetes from a docker image-based app", func() {
-			appName := generator.PrefixedRandomName(NamePrefix, "app")
+			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
 			cfPush := cf.Cf("push", appName, "-o", "cloudfoundry/diego-docker-app")
@@ -111,7 +117,7 @@ var _ = Describe("Smoke Tests", func() {
 		})
 
 		It("creates a routable app pod in Kubernetes from a source-based app", func() {
-			appName := generator.PrefixedRandomName(NamePrefix, "app")
+			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
 			cfPush := cf.Cf("push", appName, "-p", "assets/test-node-app")
@@ -139,3 +145,19 @@ var _ = Describe("Smoke Tests", func() {
 		})
 	})
 })
+
+func printAppReport(appName string) {
+	if appName == "" {
+		return
+	}
+
+	printAppReportBanner(fmt.Sprintf("***** APP REPORT: %s *****", appName))
+	Eventually(cf.Cf("app", appName, "--guid")).Should(Exit())
+	Eventually(cf.Cf("logs", "--recent", appName)).Should(Exit())
+	printAppReportBanner(fmt.Sprintf("*** END APP REPORT: %s ***", appName))
+}
+
+func printAppReportBanner(announcement string) {
+	sequence := strings.Repeat("*", len(announcement))
+	fmt.Fprintf(GinkgoWriter, "\n\n%s\n%s\n%s\n", sequence, announcement, sequence)
+}

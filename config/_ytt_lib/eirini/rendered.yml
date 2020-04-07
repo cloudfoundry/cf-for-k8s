@@ -22,6 +22,128 @@ spec:
         matchLabels:
           app.kubernetes.io/component: adapter
 ---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: cf-workloads-app-psp
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default,runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+  - ALL
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+    - min: 1
+      max: 65535
+  fsGroup:
+    rule: MustRunAs
+    ranges:
+    - min: 1
+      max: 65535
+  readOnlyRootFilesystem: false
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: cf-workloads-privileged-app-psp
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default,runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+  - ALL
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: RunAsAny
+  fsGroup:
+    rule: RunAsAny
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: eirini
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+  - ALL
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: MustRunAs
+    ranges:
+    - min: 1
+      max: 65535
+  fsGroup:
+    rule: MustRunAs
+    ranges:
+    - min: 1
+      max: 65535
+  readOnlyRootFilesystem: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eirini
+  namespace: cf-workloads
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eirini-privileged
+  namespace: cf-workloads
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: opi
+  namespace: cf-system
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -34,9 +156,9 @@ data:
       registry_address: "registry.not-used:443"
       registry_secret_name: app-registry-credentials
       eirini_address: "https://eirini-opi.cf-system.svc.cluster.local:8085"
-      downloader_image: eirini/recipe-downloader@sha256:284bbc3ac74e28d216a10ae2ca871bc6f8a22ea532adac85fd87090e1d754f35
-      executor_image: eirini/recipe-executor@sha256:29b62722c389418c1509f58bcbe72274fac15de9f9b1848fd1b8ae19c37f70ed
-      uploader_image: eirini/recipe-uploader@sha256:173d2d36665ec6ac773e159bd9e1272fb91bb002217981b359229cd10495ca41
+      downloader_image: eirini/recipe-downloader@sha256:2a6b44717c2292ea4091c18dece4a970d2647eb6f5660b5071d56795ac2d83fb
+      executor_image: eirini/recipe-executor@sha256:bfd2f4af51ee077ba5ff1a11d3956f69c9aa44f34c3b84a5a5087effc562457b
+      uploader_image: eirini/recipe-uploader@sha256:1a0722527455a17d8e5d93013f1ff0510906b6c805c8adb6a3af8e3306220f97
 
       cc_uploader_secret_name: secrets-2.16.4-2
       cc_uploader_cert_path: cc-server-crt
@@ -82,12 +204,6 @@ data:
     eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
     ca_path: "/etc/eirini/secrets/eirini-client.ca"
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: eirini
-  namespace: cf-workloads
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -104,63 +220,6 @@ rules:
   - cf-workloads-app-psp
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: cf-workloads-app-rolebinding
-  namespace: cf-workloads
-roleRef:
-  kind: Role
-  name: cf-workloads-app-role
-  apiGroup: rbac.authorization.k8s.io
-subjects:
-- kind: ServiceAccount
-  name: eirini
-  namespace: cf-workloads
----
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: cf-workloads-app-psp
-  annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default,runtime/default
-    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
-spec:
-  privileged: false
-  allowPrivilegeEscalation: false
-  requiredDropCapabilities:
-  - ALL
-  volumes:
-  - configMap
-  - emptyDir
-  - projected
-  - secret
-  - downwardAPI
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: RunAsAny
-  seLinux:
-    rule: RunAsAny
-  supplementalGroups:
-    rule: MustRunAs
-    ranges:
-    - min: 1
-      max: 65535
-  fsGroup:
-    rule: MustRunAs
-    ranges:
-    - min: 1
-      max: 65535
-  readOnlyRootFilesystem: false
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: eirini-privileged
-  namespace: cf-workloads
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: cf-workloads-privileged-app-role
@@ -174,56 +233,6 @@ rules:
   - use
   resourceNames:
   - cf-workloads-privileged-app-psp
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: cf-workloads-privileged-app-rolebinding
-  namespace: cf-workloads
-roleRef:
-  kind: Role
-  name: cf-workloads-privileged-app-role
-  apiGroup: rbac.authorization.k8s.io
-subjects:
-- kind: ServiceAccount
-  name: eirini-privileged
-  namespace: cf-workloads
----
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: cf-workloads-privileged-app-psp
-  annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default,runtime/default
-    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
-spec:
-  privileged: false
-  allowPrivilegeEscalation: false
-  requiredDropCapabilities:
-  - ALL
-  volumes:
-  - configMap
-  - emptyDir
-  - projected
-  - secret
-  - downwardAPI
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: RunAsAny
-  seLinux:
-    rule: RunAsAny
-  supplementalGroups:
-    rule: RunAsAny
-  fsGroup:
-    rule: RunAsAny
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: opi
-  namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -276,20 +285,6 @@ rules:
   - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: eirini-rolebinding
-  namespace: cf-workloads
-roleRef:
-  kind: Role
-  name: eirini-role
-  apiGroup: rbac.authorization.k8s.io
-subjects:
-- kind: ServiceAccount
-  name: opi
-  namespace: cf-system
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: eirini-role
@@ -303,6 +298,48 @@ rules:
   - use
   resourceNames:
   - eirini
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cf-workloads-app-rolebinding
+  namespace: cf-workloads
+roleRef:
+  kind: Role
+  name: cf-workloads-app-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: eirini
+  namespace: cf-workloads
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cf-workloads-privileged-app-rolebinding
+  namespace: cf-workloads
+roleRef:
+  kind: Role
+  name: cf-workloads-privileged-app-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: eirini-privileged
+  namespace: cf-workloads
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: eirini-rolebinding
+  namespace: cf-workloads
+roleRef:
+  kind: Role
+  name: eirini-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: opi
+  namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -323,43 +360,6 @@ subjects:
 - kind: ServiceAccount
   name: eirini-secret-smuggler
   namespace: cf-system
----
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: eirini
-  annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
-    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
-spec:
-  privileged: false
-  allowPrivilegeEscalation: false
-  requiredDropCapabilities:
-  - ALL
-  volumes:
-  - configMap
-  - emptyDir
-  - projected
-  - secret
-  - downwardAPI
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: MustRunAsNonRoot
-  seLinux:
-    rule: RunAsAny
-  supplementalGroups:
-    rule: MustRunAs
-    ranges:
-    - min: 1
-      max: 65535
-  fsGroup:
-    rule: MustRunAs
-    ranges:
-    - min: 1
-      max: 65535
-  readOnlyRootFilesystem: false
 ---
 apiVersion: v1
 kind: Service
@@ -429,7 +429,7 @@ spec:
         runAsNonRoot: true
       containers:
       - name: opi
-        image: eirini/opi@sha256:2e039d0bee9cc97a4d7e162a34a01f58429596043ea1508a267f6923193de2c1
+        image: eirini/opi@sha256:2e0b84c5fcb1e6e5cdb07a70210f2e462aa52119f7a330660a7444a938deefbb
         imagePullPolicy: Always
         volumeMounts:
         - name: config-map-volume

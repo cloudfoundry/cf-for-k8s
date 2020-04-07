@@ -18,6 +18,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: cf-db
+
 ---
 apiVersion: v1
 kind: Secret
@@ -29,6 +30,30 @@ data:
   #@  assert.fail("cf_db.admin_password cannot be empty")
   #@ end
   postgresql-password: #@ base64.encode(data.values.cf_db.admin_password)
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cf-db-credentials
+  namespace: cf-db
+data:
+  #@ if len(data.values.capi.database.user) == 0:
+  #@  assert.fail("capi.database.user cannot be empty")
+  #@ end
+  ccdb-username: #@ base64.encode(data.values.capi.database.user)
+  #@ if len(data.values.capi.database.password) == 0:
+  #@  assert.fail("capi.database.password cannot be empty")
+  #@ end
+  ccdb-password: #@ base64.encode(data.values.capi.database.password)
+  #@ if len(data.values.uaa.database.user) == 0:
+  #@  assert.fail("uaa.database.user cannot be empty")
+  #@ end
+  uaadb-username: #@ base64.encode(data.values.uaa.database.user)
+  #@ if len(data.values.uaa.database.password) == 0:
+  #@  assert.fail("uaa.database.password cannot be empty")
+  #@ end
+  uaadb-password: #@ base64.encode(data.values.uaa.database.password)
 
 #@overlay/match by=overlay.subset({"kind": "StatefulSet", "metadata":{"name":"cf-db-postgresql"}})
 ---
@@ -45,14 +70,19 @@ spec:
 #@yaml/text-templated-strings
 data:
   #@overlay/match missing_ok=True
-  setup_db.sql: |
-    CREATE DATABASE (@= ccdb.name @);
-    CREATE ROLE (@= ccdb.user @) LOGIN PASSWORD '(@= ccdb.password @)';
-    CREATE DATABASE (@= uaadb.name @);
-    CREATE ROLE (@= uaadb.user @) LOGIN PASSWORD '(@= uaadb.password @)';
   init.sh: |
     #!/bin/bash
-    psql -U postgres -f /docker-entrypoint-initdb.d/setup_db.sql
+    CCDB_USERNAME=$(cat /docker-entrypoint-initdb.d/secret/ccdb-username)
+    CCDB_PASSWORD=$(cat /docker-entrypoint-initdb.d/secret/ccdb-password)
+    UAADB_USERNAME=$(cat /docker-entrypoint-initdb.d/secret/uaadb-username)
+    UAADB_PASSWORD=$(cat /docker-entrypoint-initdb.d/secret/uaadb-password)
+    cat > /tmp/setup_db.sql <<EOT
+    CREATE DATABASE (@= ccdb.name @);
+    CREATE ROLE ${CCDB_USERNAME} LOGIN PASSWORD '${CCDB_PASSWORD}';
+    CREATE DATABASE (@= uaadb.name @);
+    CREATE ROLE ${UAADB_USERNAME} LOGIN PASSWORD '${UAADB_PASSWORD}';
+    EOT
+    psql -U postgres -f /tmp/setup_db.sql
     psql -U postgres -d (@= ccdb.name @) -c "CREATE EXTENSION citext"
     psql -U postgres -d (@= uaadb.name @) -c "CREATE EXTENSION citext"
 
@@ -71,4 +101,3 @@ spec:
   peers:
   - mtls:
       mode: PERMISSIVE
-

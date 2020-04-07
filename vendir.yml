@@ -47,10 +47,10 @@ directories:
   - path: github.com/pivotal/kpack
     githubRelease:
       slug: pivotal/kpack
-      tag: v0.0.6
+      tag: v0.0.8
       disableAutoChecksumValidation: true
     includePaths:
-    - release-0.0.6.yaml
+    - release-0.0.8.yaml
 # the components in this section below are handled by their corresponding build scripts
 # the manual param tells vendir to not override/touch the contents of these config/_ytt_lib/<eirini|minio|postgres> directories
   - path: eirini

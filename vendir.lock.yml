@@ -25,7 +25,7 @@ directories:
       sha: 1c19ffc2697441824d2e98e31210a82e1fbc0ac1
     path: github.com/cloudfoundry/uaa
   - githubRelease:
-      url: https://api.github.com/repos/pivotal/kpack/releases/22747441
+      url: https://api.github.com/repos/pivotal/kpack/releases/25016868
     path: github.com/pivotal/kpack
   - manual: {}
     path: eirini

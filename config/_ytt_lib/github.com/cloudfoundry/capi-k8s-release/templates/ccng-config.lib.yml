@@ -293,7 +293,7 @@ default_staging_security_groups: ["public_networks","dns"]
 allowed_cors_domains: []
 
 statsd_host: 127.0.0.1
-statsd_port: 8125
+statsd_port: 9125
 
 security_event_logging:
   enabled: false

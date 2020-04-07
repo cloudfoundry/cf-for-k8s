@@ -10,9 +10,8 @@ directories:
       sha: bcaeb5c9219b0674a200e561e2a6bb9cf49fda0d
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: Pin versions of capi_kpack_watcher and nginx to a Docker digest
-        sha...
-      sha: 29980921bca735de3000b32a0defb319ce6522d5
+      commitTitle: Add statsd-exporter container to capi-api-server...
+      sha: 423f8719927f0b6155de26f500f1ffdbd0ef9b86
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/24864777

@@ -383,7 +383,7 @@ max_retained_deployments_per_app: 100
 max_retained_builds_per_app: 100
 max_retained_revisions_per_app: 100
 diego_sync:
-  frequency_in_seconds: 30
+  frequency_in_seconds: 15
 pending_builds:
   frequency_in_seconds: 300
   expiration_in_seconds: 42

@@ -5850,10 +5850,6 @@ spec:
     matchLabels:
       app: istio-ingressgateway
       istio: ingressgateway
-  strategy:
-    rollingUpdate:
-      maxSurge: 100%
-      maxUnavailable: 25%
   template:
     metadata:
       annotations:
@@ -6070,6 +6066,9 @@ spec:
         secret:
           optional: true
           secretName: istio-ingressgateway-ca-certs
+  updateStrategy:
+    rollingUpdate:
+      maxUnavailable: 1
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway

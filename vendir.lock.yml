@@ -6,8 +6,8 @@ directories:
       sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
     path: github.com/GoogleCloudPlatform/metacontroller
   - git:
-      commitTitle: 'chore: add date label to created clusters'
-      sha: bcaeb5c9219b0674a200e561e2a6bb9cf49fda0d
+      commitTitle: 'feat: Change DaemonSet''s maxUnavailable to one...'
+      sha: 9f70c276584718fbc4a72a0ca3460774806a0b15
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: Pin versions of capi_kpack_watcher and nginx to a Docker digest

@@ -16,6 +16,10 @@ spec:
       app.kubernetes.io/name: capi-api-server
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9102'
+        prometheus.io/path: 'metrics'
       labels:
         app.kubernetes.io/name: capi-api-server
     spec:
@@ -75,6 +79,9 @@ spec:
             mountPath: /cloud_controller_ng
           - name: nginx-uploads
             mountPath: /tmp/uploads
+        - name: statsd-exporter
+          image: #@ data.values.images.statsd_exporter
+          imagePullPolicy: Always
       serviceAccountName: cc-api-service-account
       volumes:
       - name: server-sock

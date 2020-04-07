@@ -6,6 +6,7 @@ images:
   ccng: cloudfoundry/cloud-controller-ng:33f461df533c7174241b00759bb7622ea37c58c7@sha256:0bc1b2b3e0c2fcfbd76d7c4a311b728a240b928fcd8d2b2b1e057de88a0adacf
   nginx: cloudfoundry/capi:nginx@sha256:51e4e48c457d5cb922cf0f569e145054e557e214afa78fb2b312a39bb2f938b6
   capi_kpack_watcher: cloudfoundry/capi-kpack-watcher:956150dae0a95dcdf3c1f29c23c3bf11db90f7a0@sha256:67125e0d3a4026a23342d80e09aad9284c08ab4f7b3d9a993ae66e403d5d0796
+  statsd_exporter: prom/statsd-exporter:v0.15.0@sha256:e3174186628b401e4a441b78513ba06e957644267332436be0c77dd7af9bdddc
 system_namespace: cf-system
 workloads_namespace: cf-workloads
 staging_namespace: cf-workloads-staging

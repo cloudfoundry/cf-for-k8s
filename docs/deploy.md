@@ -133,11 +133,21 @@ Currently, we have tested the following two container registries:
 
    > cf-for-k8s uses [kapp](https://github.com/k14s/kapp) to manage it's lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit untill all resources are installed and their status is running.
 
+1. If you want to use a reserved static IP address for your ingress loadbalancer you can set `istio_static_ip` in your `cf-values.yml` file.
+
+   1. If you used the `./hack/generate-values.sh` script then you should only
+      configure a single DNS record for the domain you passed as input to the
+      script and have it resolve to the Ingress Gateway's external IP
+
 1. Configure DNS on your IaaS provider to point the wildcard subdomain of your system domain and the wildcard subdomain of all apps domains to point to external IP of the Istio Ingress Gateway service. You can retrieve the external IP of this service by running
 
    ```
    kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].ip}'
    ```
+
+   1. If you have the [external-dns](https://github.com/kubernetes-sigs/external-dns) controller installed on your cluster you can add `-f ./config-optional/use-external-dns-controller` to your ytt command and skip the rest of this step.
+
+
    1. If you used the `./hack/generate-values.sh` script then you should only configure a single DNS record for the domain you passed as input to the script and have it resolve to the Ingress Gateway's external IP
 
       e.g.
@@ -146,6 +156,7 @@ Currently, we have tested the following two container registries:
       Domain         Record Type  TTL  IP Address
       *.<cf-domain>  A            30   35.111.111.111
       ```
+   
 
 ## Validate the deployment
 

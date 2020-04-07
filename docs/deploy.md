@@ -125,8 +125,12 @@ Currently, we have tested the following two container registries:
    </br>
 
    > If you do NOT wish to enable Cloud Native Buildpacks feature, then remove the `app_registry` block from your `cf-values.yml`
-1. Run the install script with your "CF Install Values" file.
 
+1. If you want to use a reserved static IP address for your ingress loadbalancer you can set `istio_static_ip` in your `cf-values.yml` file.
+
+1. If you want to use [cert-manager](https://cert-manager.io/docs/) to provide the SSL certs for your istio gateway you can add `-f ./config-optional/cert-manager`. See `./config-optional/values.yml` for values you can override in your `cf-values.yml` file.
+
+1. Run the install script with your "CF Install Values" file
    ```console
    $ ./bin/install-cf.sh /tmp/cf-values.yml
    ```

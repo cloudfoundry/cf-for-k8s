@@ -1,6 +1,5 @@
 #@data/values
 ---
-
 #@overlay/match missing_ok=True
 istio_cert_issuer_name: "letsencrypt-prod"
 #@overlay/match missing_ok=True

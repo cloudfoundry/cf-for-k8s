@@ -12,8 +12,7 @@ spec:
   secretName: istio-ingressgateway-certs
   dnsNames:
   - #@ "*." + data.values.system_domain
-#@ for/end domain in data.values.app_domains:
-#@overlay/append
+  #@ for/end domain in data.values.app_domains:
   - #@ "*." + domain
   issuerRef:
     name: #@ data.values.istio_cert_issuer_name

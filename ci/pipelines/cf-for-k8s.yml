@@ -78,6 +78,7 @@ resources:
   type: time
   icon: clock-outline
   source:
+    days: [Thursday]
     start: 9:00 AM
     stop: 10:00 AM
     location: America/Los_Angeles

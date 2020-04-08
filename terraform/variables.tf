@@ -16,5 +16,5 @@ variable "env_name" {
 
 variable "release_channel" {
   type = string
-  value = "RAPID"
+  default = "RAPID"
 }

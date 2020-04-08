@@ -14,7 +14,6 @@ groups:
 - name: pr-checks
   jobs:
   - fail-prs-to-cf-for-k8s-master
-  - pass-prs-to-cf-for-k8s-develop
   - run-tests-on-cf-for-k8s-pr
   - test-vendir-sync-on-cf-for-k8s-pr
 - name: docker-images
@@ -117,14 +116,6 @@ resources:
     repository: cloudfoundry/cf-for-k8s
     disable_forks: false
     base_branch: master
-
-- name: cf-for-k8s-pr-develop
-  type: pull-request
-  source:
-    access_token: ((github_status_bot_repo_access_token))
-    repository: cloudfoundry/cf-for-k8s
-    disable_forks: false
-    base_branch: develop
 
 - name: cf-for-k8s-ci-gcp-image
   type: docker-image
@@ -498,18 +489,6 @@ jobs:
       status: failure
       context: ((pr_context))
       comment_file: pull-request-comment/comment
-
-- name: pass-prs-to-cf-for-k8s-develop
-  public: true
-  plan:
-  - get: cf-for-k8s-pr-develop
-    trigger: true
-    version: every
-  - put: cf-for-k8s-pr-develop
-    params:
-      path: cf-for-k8s-pr-develop
-      status: success
-      context: ((pr_context))
 
 - name: run-tests-on-cf-for-k8s-pr
   public: true

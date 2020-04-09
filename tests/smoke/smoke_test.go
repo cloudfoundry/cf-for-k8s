@@ -63,9 +63,6 @@ var _ = Describe("Smoke Tests", func() {
 			Eventually(cf.Cf("create-org", orgName)).Should(Exit(0))
 			Eventually(cf.Cf("create-space", "-o", orgName, spaceName)).Should(Exit(0))
 			Eventually(cf.Cf("target", "-o", orgName, "-s", spaceName)).Should(Exit(0))
-
-			// Enable Docker Feature Flag
-			Eventually(cf.Cf("enable-feature-flag", "diego_docker")).Should(Exit(0))
 		})
 
 		AfterEach(func() {

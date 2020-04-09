@@ -10,8 +10,8 @@ directories:
       sha: 9f70c276584718fbc4a72a0ca3460774806a0b15
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: Add statsd-exporter container to capi-api-server...
-      sha: 423f8719927f0b6155de26f500f1ffdbd0ef9b86
+      commitTitle: Bump default CCNG docker image reference...
+      sha: e6dc30dce7bb69421075650e2524d4c4e8433217
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/24864777

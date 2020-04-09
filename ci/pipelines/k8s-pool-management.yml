@@ -269,9 +269,27 @@ jobs:
       env_name_file: building-cluster/name
       delete_on_failure: true
       var_files: [ tf-vars/input.tfvars ]
+  - task: write-metadata-to-lock-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      inputs:
+      - name: building-cluster
+      - name: terraform
+      outputs:
+      - name: ready-cluster
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cp -v building-cluster/name ready-cluster/name
+          cp -v terraform/metadata ready-cluster/metadata
   - put: ready-pool
     params:
-      add: building-cluster
+      add: ready-cluster
   - put: building-pool
     params:
       remove: building-cluster

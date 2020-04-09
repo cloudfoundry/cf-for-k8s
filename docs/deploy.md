@@ -175,13 +175,6 @@ Currently, we have tested the following two container registries:
    $ cf target -o test-org -s test-space
    ```
 
-1. Enable docker feature:
-   ```console
-   $ cf enable-feature-flag diego_docker
-   ```
-   
-   > This is a temporary requirement to enable cf-push. The team has plans to remove this requirement soon.
-
 1. Deploy a source code based app:
 
    ```console

@@ -79,11 +79,11 @@ Currently, we have tested the following two container registries:
    Replace `<cf-domain>` with _your_ registered DNS domain name for your CF installation.
 
    #### Option B - Create the install values by hand
-   1. Clone file `sample-cf-install-values.yml` in this directory as a starting point.
+   1. Clone file `sample-cf-install-values.yml` from this directory as a starting point.
    
       ```console
 
-      $ copy sample-cf-install-values.yml /tmp/cf-values.yml
+      $ cp sample-cf-install-values.yml /tmp/cf-values.yml
 
       ```
 

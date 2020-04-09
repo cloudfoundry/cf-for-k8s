@@ -21,10 +21,13 @@ cf_db:
   admin_password: ""
   enabled: true
 
+#! reserved static ip for istio LoadBalancer
+istio_static_ip: ""
+
 images:
   capi: ""
   nginx: ""
-  cfroutesync: "gcr.io/cf-networking-images/cf-k8s-networking/cfroutesync@sha256:758abd1b6144596cef74ad4805bc7e1a6055142cab5719f0d42d0321a14a190d"
+  cfroutesync: "gcr.io/cf-networking-images/cf-k8s-networking/cfroutesync@sha256:3b2b25614d6da572175a848003e379894b154dd719f2e77a2325b98ad857d416"
 
 system_certificate:
   #! Base64-encoded certificate for the wildcard

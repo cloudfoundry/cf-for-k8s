@@ -5,7 +5,7 @@ resource "google_container_cluster" "primary" {
   initial_node_count = 5
 
   release_channel {
-    channel = "RAPID"
+    channel = var.release_channel
   }
 
   maintenance_policy {

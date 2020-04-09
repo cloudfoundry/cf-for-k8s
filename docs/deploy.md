@@ -91,40 +91,44 @@ Currently, we have tested the following two container registries:
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
       - **IMPORTANT** Your certificates must include a subject alternative name entry for the internal `*.cf-system.svc.cluster.local` domain in addition to your chosen external domain.
 
-   1. To enable Cloud Native buildpacks feature, configure access to an external registry in `cf-values.yml`:
+1. To enable Cloud Native buildpacks feature, configure access to an external registry in `cf-values.yml`:
 
-      1. To configure Dockerhub.com
+   You can choose any of the cloud provider container registries, such as [dockerhub.com](dockerhub.com), [Google container registry](https://cloud.google.com/container-registry), [Azure container registry](https://azure.microsoft.com/en-us/services/container-registry/) and so on. Below are examples for dockerhub or google container registry.
 
-         Uncomment dockerhub configuration in `cf-values.yml` and comment out Google container registry registry configuration.
+   1. To configure Dockerhub.com
 
-         ```yml
+      Add the following registry config block to the end of `cf-values.yml` file.
 
-         app_registry:
-            hostname: https://index.docker.io/v1/
-            repository: "<my_username>"
-            username: "<my_username>"
-            password: "<my_password>"
+      ```yml
 
-         ```
-         1. Update `<my_username>` with your docker username.
-         1. Update `<my_password>` with your docker password.
+      app_registry:
+         hostname: https://index.docker.io/v1/
+         repository: "<my_username>"
+         username: "<my_username>"
+         password: "<my_password>"
 
-      1. Configure Google Container Registry
+      ```
+      1. Update `<my_username>` with your docker username.
+      1. Update `<my_password>` with your docker password.
 
-         ```yml
-         app_registry:
-            hostname: gcr.io
-            repository: gcr.io/<gcp_project_id>/cf-workloads
-            username: _json_key
-            password: |
-            <contents_of_service_account_json>
-         ```
+   1. To configure a Google Container Registry, add the following registry config block to the end of `cf-values.yml` file.
 
-         1. Update the `gcp_project_id` portion to your GCP Project Id.
-         1. Change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON.
-   </br>
+      ```yml
+      app_registry:
+         hostname: gcr.io
+         repository: gcr.io/<gcp_project_id>/cf-workloads
+         username: _json_key
+         password: |
+         <contents_of_service_account_json>
+      ```
 
-   > If you do NOT wish to enable Cloud Native Buildpacks feature, then remove the `app_registry` block from your `cf-values.yml`
+      1. Update the `gcp_project_id` portion to your GCP Project Id.
+      1. Change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON.
+</br>
+
+> If you do NOT wish to enable Cloud Native Buildpacks feature, then remove the `app_registry` block from your `cf-values.yml`
+
+1. Run the install script with your "CF Install Values" file.
 
 1. If you want to use a reserved static IP address for your ingress loadbalancer you can set `istio_static_ip` in your `cf-values.yml` file.
 
@@ -142,7 +146,8 @@ Currently, we have tested the following two container registries:
    ```
    kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].ip}'
    ```
-   1. If you used the `./hack/generate-values.sh` script then you should only configure a single DNS record for the domain you passed as input to the script and have it resolve to the Ingress Gateway's external IP
+
+   1. If you used a single DNS record for both `system_domain` and `app_domains`, then have it resolve to the Ingress Gateway's external IP
 
       e.g.
       ```
@@ -150,6 +155,7 @@ Currently, we have tested the following two container registries:
       Domain         Record Type  TTL  IP Address
       *.<cf-domain>  A            30   35.111.111.111
       ```
+   
 
 ## Validate the deployment
 

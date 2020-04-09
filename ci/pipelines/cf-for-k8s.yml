@@ -73,11 +73,11 @@ resources:
     stop: 7:30 -0700
     interval: 168h
 
-- name: thursday-am
+- name: tues-thurs-am
   type: time
   icon: clock-outline
   source:
-    days: [Thursday]
+    days: [Tuesday, Thursday]
     start: 9:00 AM
     stop: 10:00 AM
     location: America/Los_Angeles
@@ -748,7 +748,7 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-master
-    - get: thursday-am
+    - get: tues-thurs-am
       trigger: true
   - task: create-cluster-install-cf
     config:

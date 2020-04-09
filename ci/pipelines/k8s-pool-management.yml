@@ -56,14 +56,14 @@ resources:
     days: [Friday]
     location: America/Los_Angeles
 
-- name: cf-for-k8s-terraform-templates
+- name: cf-for-k8s-gke-terraform-templates
   type: git
   source:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     branch: develop
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
-    - terraform/**
+    - deploy/terraform/gke/**
 
 - name: pool-repo
   type: git
@@ -241,7 +241,7 @@ jobs:
       passed: [acquire-lock-for-create-cluster]
       trigger: true
     - get: pool-repo
-    - get: cf-for-k8s-terraform-templates
+    - get: cf-for-k8s-gke-terraform-templates
   - task: create-tf-vars-file
     config:
       platform: linux
@@ -267,7 +267,7 @@ jobs:
           EOT
   - put: terraform
     params:
-      terraform_source: cf-for-k8s-terraform-templates/terraform
+      terraform_source: cf-for-k8s-gke-terraform-templates/terraform
       env_name_file: new-cluster/name
       delete_on_failure: true
       var_files: [ tf-vars/input.tfvars ]
@@ -325,7 +325,7 @@ jobs:
       version: every
       passed: [acquire-lock-for-destroy-cluster]
       trigger: true
-    - get: cf-for-k8s-terraform-templates
+    - get: cf-for-k8s-gke-terraform-templates
   - task: create-tf-vars-file
     config:
       platform: linux
@@ -351,7 +351,7 @@ jobs:
           EOT
   - put: terraform
     params:
-      terraform_source: cf-for-k8s-terraform-templates/terraform
+      terraform_source: cf-for-k8s-gke-terraform-templates/terraform
       env_name_file: destroy-pool/name
       action: destroy
       var_files: [ tf-vars/input.tfvars ]

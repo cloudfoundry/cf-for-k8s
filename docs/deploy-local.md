@@ -73,11 +73,11 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
 1. Follow the instructions in [Deploying CF for K8s](deploy.md).
    * Include the [remove-resource-requirements.yml](../config-optional/remove-resource-requirements.yml) and
-     [use-nodeport-for-ingress.yml](../config-optional/use-nodeport-for-ingress.yml)
+     [remove-ingressgateway-service.yml](../config-optional/remove-ingressgateway-service.yml)
      overlay files in the set of templates to be deployed. This can be achieved by
      using the following command instead of running the install-cf.sh script:
      ```bash
-     $ kapp deploy -a cf -f <(ytt -f config -f <cf_install_values_path> -f config-optional/remove-resource-requirements.yml -f config-optional/use-nodeport-for-ingress.yml)
+     $ kapp deploy -a cf -f <(ytt -f config -f <cf_install_values_path> -f config-optional/remove-resource-requirements.yml -f config-optional/remove-ingressgateway-service.yml)
      ```
    * Use `vcap.me` as the domain for the installation. This means that you do not have to
      configure DNS for the domain.

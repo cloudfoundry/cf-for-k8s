@@ -267,7 +267,7 @@ jobs:
           EOT
   - put: terraform
     params:
-      terraform_source: cf-for-k8s-gke-terraform-templates/terraform
+      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/terraform/gke
       env_name_file: new-cluster/name
       delete_on_failure: true
       var_files: [ tf-vars/input.tfvars ]

@@ -79,6 +79,9 @@ var _ = Describe("Smoke Tests", func() {
 		})
 
 		It("creates a routable app pod in Kubernetes from a docker image-based app", func() {
+			// Enable Docker Feature Flag
+			Eventually(cf.Cf("enable-feature-flag", "diego_docker")).Should(Exit(0))
+
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
@@ -114,6 +117,9 @@ var _ = Describe("Smoke Tests", func() {
 		})
 
 		It("creates a routable app pod in Kubernetes from a source-based app", func() {
+			// Disable Docker Feature Flag
+			Eventually(cf.Cf("disable-feature-flag", "diego_docker")).Should(Exit(0))
+
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")

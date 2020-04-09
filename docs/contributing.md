@@ -70,7 +70,7 @@ In `cf-for-k8s` repo:
     export SMOKE_TEST_USERNAME=admin
     export SMOKE_TEST_APPS_DOMAIN=${SYSTEM_DOMAIN}
     export SMOKE_TEST_SKIP_SSL=true
-    ginkgo ./...
+    ginkgo -v -r ./
     ```
 
 ## Suggested Component Directory Structure and Local Development Workflow

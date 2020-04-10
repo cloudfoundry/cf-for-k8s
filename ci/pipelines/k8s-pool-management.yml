@@ -262,6 +262,8 @@ jobs:
           region = "((ci_k8s_gcp_project_region))"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat building-cluster/name)"
+          env_dns_domain = "$(cat building-cluster/name).k8s-dev.relint.rocks"
+          dns_zone_name = "k8s-dev-relint-rocks"
           EOT
   - put: terraform
     params:
@@ -365,6 +367,8 @@ jobs:
           region = "((ci_k8s_gcp_project_region))"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat destroy-cluster/name)"
+          env_dns_domain = "$(cat building-cluster/name).k8s-dev.relint.rocks"
+          dns_zone_name = "k8s-dev-relint-rocks"
           EOT
   - put: terraform
     params:

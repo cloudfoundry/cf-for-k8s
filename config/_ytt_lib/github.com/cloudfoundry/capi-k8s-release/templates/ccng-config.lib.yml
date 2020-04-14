@@ -10,7 +10,7 @@ readiness_port:
   deployment_updater: 4445
   clock: 4446
 
-internal_service_hostname: cloud_controller_ng
+internal_service_hostname: #@ "capi.{}.svc.cluster.local".format(data.values.system_namespace)
 
 pid_filename: /cloud_controller_ng/cloud_controller_ng.pid
 newrelic_enabled: false

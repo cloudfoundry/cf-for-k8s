@@ -25,14 +25,6 @@ spec:
     spec:
       #@ if/end data.values.imagePullSecrets:
       imagePullSecrets: #@ data.values.imagePullSecrets
-      initContainers:
-        - name: pre-start
-          image: #@ data.values.images.ccng
-          imagePullPolicy: Always
-          command: ['bundle', 'exec', 'rake', 'db:setup_database']
-          volumeMounts:
-          - name: cloud-controller-ng-yaml
-            mountPath: /config
       containers:
         - name: capi-api-server
           image: #@ data.values.images.ccng

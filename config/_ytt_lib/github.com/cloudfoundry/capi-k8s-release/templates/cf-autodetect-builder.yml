@@ -11,4 +11,4 @@ metadata:
   name: cf-autodetect-builder
   namespace: #@ data.values.staging_namespace
 spec:
-  image: cloudfoundry/cnb:0.0.55-bionic
+  image: #@ data.values.images.cf_autodetect_builder

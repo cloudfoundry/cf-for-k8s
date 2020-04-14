@@ -3,7 +3,7 @@
 replicaCount: 1
 
 images:
-  ccng: cloudfoundry/cloud-controller-ng:c3b2d6dcb6a084d04f3480e4995106474dd481c3@sha256:0afeeb0d2eb10367e06e652c6720e23145dbf7f9af854f8fb403c2385231c8eb
+  ccng: cloudfoundry/cloud-controller-ng:d1cf638f6b7bf5038073c51b8661e68aede859b0@sha256:f5bda8e6e15bf84d6bcc4baf820ffc19cf85c1cff5409c2fd549af9d20a3fccd
   nginx: cloudfoundry/capi:nginx@sha256:51e4e48c457d5cb922cf0f569e145054e557e214afa78fb2b312a39bb2f938b6
   capi_kpack_watcher: cloudfoundry/capi-kpack-watcher:956150dae0a95dcdf3c1f29c23c3bf11db90f7a0@sha256:67125e0d3a4026a23342d80e09aad9284c08ab4f7b3d9a993ae66e403d5d0796
   statsd_exporter: prom/statsd-exporter:v0.15.0@sha256:e3174186628b401e4a441b78513ba06e957644267332436be0c77dd7af9bdddc

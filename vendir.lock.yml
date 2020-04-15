@@ -10,8 +10,8 @@ directories:
       sha: 9f70c276584718fbc4a72a0ca3460774806a0b15
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: Merge branch 'db-migration-with-sidecars'
-      sha: 86f091d878861e88ad20aabe38e8439cd89c7641
+      commitTitle: Add Job update strategy "fallback-on-replace" per Dmitiry's suggestion...
+      sha: 4d461bdb050464d93a0252b519210b4f42322c8f
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/24864777

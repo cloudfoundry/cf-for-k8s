@@ -7,15 +7,17 @@ metadata:
   namespace: #@ data.values.system_namespace
 spec:
   template:
-    metadata:
-      annotations:
-        sidecar.istio.io/inject: "false"
     spec:
       containers:
       - name: run-migrations
         image: #@ data.values.images.ccng
         imagePullPolicy: Always
-        command: ['bundle', 'exec', 'rake', 'db:setup_database']
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          bundle exec rake db:wait_for_istio && \
+          bundle exec rake db:setup_database && \
+          bundle exec rake db:terminate_istio
         volumeMounts:
         - name: cloud-controller-ng-yaml
           mountPath: /config

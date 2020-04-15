@@ -5,6 +5,8 @@ kind: Job
 metadata:
   name: ccdb-migrate
   namespace: #@ data.values.system_namespace
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
 spec:
   template:
     spec:

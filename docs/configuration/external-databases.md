@@ -2,7 +2,7 @@
 
 ## Cloud controller database
 
-You can use an external database for the cloud controller by applying an overlay like
+You can use an external database for the cloud controller by providing following values:
 
 ```yaml
 #@data/values

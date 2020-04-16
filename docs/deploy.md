@@ -231,6 +231,8 @@ Currently, we have tested the following two container registries:
    Hello World
    ```
 
+**NOTE:** Applications are only accessible via HTTP (`http://`), not HTTPS (`https://`). See [ticket for work in progress](https://www.pivotaltracker.com/n/projects/1382120/stories/171482241) to support HTTPS soon.
+
 Alternatively, you can validate with a docker image based app,
 
    ```console

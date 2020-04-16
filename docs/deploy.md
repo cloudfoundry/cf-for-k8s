@@ -106,16 +106,15 @@ This project is in it's early stages of development and hence there are features
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
       - **IMPORTANT** Your certificates must include a subject alternative name entry for the internal `*.cf-system.svc.cluster.local` domain in addition to your chosen external domain.
 
-1. To enable Cloud Native buildpacks feature, configure access to an external registry in `cf-values.yml`:
+1. To enable Cloud Native buildpacks feature, configure access to an external registry in a file `/tmp/app-registry.yml`:
 
    You can choose any of the cloud provider container registries, such as [dockerhub.com](dockerhub.com), [Google container registry](https://cloud.google.com/container-registry), [Azure container registry](https://azure.microsoft.com/en-us/services/container-registry/) and so on. Below are examples for dockerhub or google container registry.
 
-   1. To configure Dockerhub.com
-
-      Add the following registry config block to the end of `cf-values.yml` file.
+   1. To configure Dockerhub.com, create a file `/tmp/app-registry.yml`:
 
       ```yml
-
+      #@data/values
+      ---
       app_registry:
          hostname: https://index.docker.io/v1/
          repository: "<my_username>"
@@ -127,25 +126,29 @@ This project is in it's early stages of development and hence there are features
       1. Update `<my_username>` with your docker username.
       1. Update `<my_password>` with your docker password.
 
-   1. To configure a Google Container Registry, add the following registry config block to the end of `cf-values.yml` file.
+   1. To configure a Google Container Registry, create a file `/tmp/app-registry.yml`:
 
       ```yml
+      #@data/values
+      ---
       app_registry:
          hostname: gcr.io
          repository: gcr.io/<gcp_project_id>/cf-workloads
          username: _json_key
          password: |
-         <contents_of_service_account_json>
+           <contents_of_service_account_json>
       ```
 
       1. Update the `gcp_project_id` portion to your GCP Project Id.
       1. Change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON.
 </br>
 
+> If you do NOT wish to enable Cloud Native Buildpacks feature, then do not provide the `/tmp/app-registry.yml` file below.
+
 1. Run the install script with your "CF Install Values" file.
 
    ```console
-   ./bin/install-cf.sh /tmp/cf-values.yml
+   ./bin/install-cf.sh /tmp/cf-values.yml /tmp/app-registry.yml
    ```
 
    > cf-for-k8s uses [kapp](https://github.com/k14s/kapp) to manage it's lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit untill all resources are installed and their status is running.

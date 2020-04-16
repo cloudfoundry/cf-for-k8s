@@ -10,12 +10,15 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd)"
 CONFIG_DIR="${SCRIPT_DIR}/../config"
 
-cf_install_values_path="$1"
+ytt_args=()
+for file in "$@"; do
+  if [[ ! -r "${file}" ]]; then
+    echo "File $file does not exist"
+    exit 1
+  fi
+  ytt_args+=("-f" "$file")
+done
 
-if [[ ! -r "${cf_install_values_path}" ]]; then
-  echo "Unable to read CF install values file: ${cf_install_values_path}"
-  exit 1
-fi
 
 # Deploy CF for Kubernetes
-kapp deploy -a cf -f <(ytt -f "${CONFIG_DIR}" -f "${cf_install_values_path}") -y
+kapp deploy -a cf -f <(ytt -f "${CONFIG_DIR}" "${ytt_args[@]}") -y

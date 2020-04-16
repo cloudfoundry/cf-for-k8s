@@ -1,3 +1,4 @@
 **/*.tfstate
 **/*.tfstate.backup
 **/.terraform/
+/tmp

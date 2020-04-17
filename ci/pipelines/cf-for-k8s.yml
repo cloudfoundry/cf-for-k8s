@@ -6,11 +6,13 @@ groups:
   - validate-cf-for-k8s
   - release-validation-pool-manual
   - validate-azure
+  - delete-azure-cluster
 - name: stability-check
   jobs:
   - stability-test-cf-for-k8s
   - release-stability-pool-manual
   - validate-azure
+  - delete-azure-cluster
 - name: pr-checks
   jobs:
   - fail-prs-to-cf-for-k8s-master
@@ -765,6 +767,7 @@ jobs:
         push: true
 
 - name: validate-azure
+  public: true
   serial: true
   plan:
   - in_parallel:
@@ -842,6 +845,14 @@ jobs:
           export SMOKE_TEST_SKIP_SSL=true
           cf-for-k8s-master/hack/run-smoke-tests.sh
 
+- name: delete-azure-cluster
+  public: true
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-master
+      passed: [validate-azure]
+      trigger: true
   - task: delete-cluster
     config:
       platform: linux

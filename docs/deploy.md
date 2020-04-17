@@ -5,6 +5,7 @@
   - [Kubernetes Cluster Requirements](#kubernetes-cluster-requirements)
   - [IaaS Requirements](#iaas-requirements)
   - [Requirements for pushing source-code based apps to Cloud Foundry foundation](#requirements-for-pushing-source-code-based-apps-to-cloud-foundry-foundation)
+- [Known Issues](#knownissues)
 - [Steps to deploy](#steps-to-deploy)
   - [Option A - Use the included hack-script to generate the install values](#option-a---use-the-included-hack-script-to-generate-the-install-values)
   - [Option B - Create the install values by hand](#option-b---create-the-install-values-by-hand)
@@ -41,6 +42,13 @@ To deploy cf-for-k8s as is, the cluster should:
 ### IaaS Requirements
 
 - Supports `LoadBalancer` services
+- Supports `metrics-server`
+  - Most IaaSes come with `metrics-server`, but if yours does not come with it or if you're using `kind`, then you may want to run something like 
+  
+  ```console
+    kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml
+  ```
+  
 - Defines a default StorageClass
   - requires [additional config on vSphere](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/storageclass.html), for example
 
@@ -59,6 +67,9 @@ Currently, we have tested the following two container registries:
 - Google Container Registry:
   1. Create a GCP Service Account with `Storage/Storage Admin` role.
   1. Create a Service Key JSON and download it to the machine from which you will install cf-for-k8s (referred to, below, as `path-to-kpack-gcr-service-account`).
+
+## <a name='knownissues'></a> Known Issues
+This project is in it's early stages of development and hence there are features missing. For a list of the known issues, take a look at the [GitHub issues tagged 'known-issue'](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aissue+is%3Aopen+label%3Aknown-issue).
 
 ## Steps to deploy
 
@@ -129,10 +140,6 @@ Currently, we have tested the following two container registries:
 
       1. Update the `gcp_project_id` portion to your GCP Project Id.
       1. Change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON.
-</br>
-
-> If you do NOT wish to enable Cloud Native Buildpacks feature, then remove the `app_registry` block from your `cf-values.yml`
-
 1. Run the install script with your "CF Install Values" file.
 
    ```console
@@ -224,22 +231,11 @@ Currently, we have tested the following two container registries:
 
    </br>
 
-   > Note that the "`Failed to retrieve logs...`" messages are expected, at this time given that we're still working on integrating CF logging components.
-
 1. Validate the app is reachable
 
    ```console
    $ curl http://test-node-app.<cf-domain>/env
    Hello World
-   ```
-
-Alternatively, you can validate with a docker image based app,
-
-   ```console
-   $ cf push diego-docker-app -o cloudfoundry/diego-docker-app
-
-   $ curl diego-docker-app.<cf-domain>/env
-   {...json values...}
    ```
 
 ## Delete the cf-for-k8s deployment

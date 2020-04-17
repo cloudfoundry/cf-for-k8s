@@ -31,9 +31,11 @@ You need the following CLIs on your system to be able to run the script:
 
 To deploy cf-for-k8s as is, the cluster should:
 
-- be running version 1.14.x, 1.15.x, or 1.16.x
+- be running Kubernetes version 1.14.x, 1.15.x, or 1.16.x
 - have a minimum of 5 nodes
 - have a minimum of 3 CPU, 7.5GB memory per node
+- have a metrics-server
+  - This may be as simple as running something like `kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml`
 
 ### IaaS Requirements
 

@@ -8,6 +8,7 @@ metadata:
   annotations:
     kapp.k14s.io/update-strategy: fallback-on-replace
 spec:
+  backoffLimit: 3
   template:
     spec:
       containers:
@@ -23,7 +24,7 @@ spec:
         volumeMounts:
         - name: cloud-controller-ng-yaml
           mountPath: /config
-      restartPolicy: Never
+      restartPolicy: OnFailure
       volumes:
       - name: cloud-controller-ng-yaml
         configMap:

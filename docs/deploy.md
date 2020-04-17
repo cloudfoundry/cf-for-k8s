@@ -140,6 +140,8 @@ This project is in it's early stages of development and hence there are features
 
       1. Update the `gcp_project_id` portion to your GCP Project Id.
       1. Change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON.
+</br>
+
 1. Run the install script with your "CF Install Values" file.
 
    ```console

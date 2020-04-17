@@ -19,7 +19,8 @@
 
 You need the following CLIs on your system to be able to run the script:
 
-- [`kapp`](https://k14s.io/#install)
+- [`cf cli`](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) (v6.50+)
+- [`kapp`](https://k14s.io/#install) (v0.21.0+)
 - [`ytt`](https://k14s.io/#install) (v0.26.0+)
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
@@ -57,7 +58,6 @@ Currently, we have tested the following two container registries:
 
 - Google Container Registry:
   1. Create a GCP Service Account with `Storage/Storage Admin` role.
-      - (optionally) if you want to limit the permissions this service account has, see https://cloud.google.com/container-registry/docs/access-control for the minimum permission set.
   1. Create a Service Key JSON and download it to the machine from which you will install cf-for-k8s (referred to, below, as `path-to-kpack-gcr-service-account`).
 
 ## Steps to deploy

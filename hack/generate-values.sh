@@ -278,3 +278,14 @@ app_registry:
 $( cat ${GCP_SERVICE_ACCOUNT_JSON} | sed -e 's/^/    /' )
 EOF
 fi
+
+if [[ -n "${K8S_ENV:-}" ]] ; then
+    k8s_env_path=$HOME/workspace/relint-ci-pools/k8s-dev/ready/claimed/"$K8S_ENV"
+    if [[ -f "$k8s_env_path" ]] ; then
+	      ip_addr=$(jq -r .lb_static_ip < "$k8s_env_path")
+        echo 1>&2 "Detected \$K8S_ENV environment var; writing \"istio_static_ip: $ip_addr\" entry to end of output"
+        echo "
+istio_static_ip: $ip_addr
+"
+    fi
+fi

@@ -769,6 +769,8 @@ jobs:
 - name: validate-azure
   public: true
   serial: true
+  serial_groups:
+  - azure
   plan:
   - in_parallel:
     - get: cf-for-k8s-master
@@ -848,6 +850,8 @@ jobs:
 - name: delete-azure-cluster
   public: true
   serial: true
+  serial_groups:
+  - azure
   plan:
   - in_parallel:
     - get: cf-for-k8s-master

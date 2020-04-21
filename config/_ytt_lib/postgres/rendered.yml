@@ -4,7 +4,7 @@ metadata:
   name: cf-db-postgresql-init-scripts
   labels:
     app: postgresql
-    chart: postgresql-8.6.4
+    chart: postgresql-8.9.0
     release: cf-db
     heritage: Helm
 data:
@@ -16,7 +16,7 @@ metadata:
   name: cf-db-postgresql-headless
   labels:
     app: postgresql
-    chart: postgresql-8.6.4
+    chart: postgresql-8.9.0
     release: cf-db
     heritage: Helm
 spec:
@@ -36,9 +36,10 @@ metadata:
   name: cf-db-postgresql
   labels:
     app: postgresql
-    chart: postgresql-8.6.4
+    chart: postgresql-8.9.0
     release: cf-db
     heritage: Helm
+  annotations: null
 spec:
   type: ClusterIP
   ports:
@@ -56,9 +57,10 @@ metadata:
   name: cf-db-postgresql
   labels:
     app: postgresql
-    chart: postgresql-8.6.4
+    chart: postgresql-8.9.0
     release: cf-db
     heritage: Helm
+  annotations: null
 spec:
   serviceName: cf-db-postgresql-headless
   replicas: 1
@@ -74,17 +76,16 @@ spec:
       name: cf-db-postgresql
       labels:
         app: postgresql
-        chart: postgresql-8.6.4
+        chart: postgresql-8.9.0
         release: cf-db
         heritage: Helm
         role: master
     spec:
       securityContext:
         fsGroup: 1001
-      initContainers: null
       containers:
       - name: cf-db-postgresql
-        image: docker.io/bitnami/postgresql:11.7.0-debian-10-r26
+        image: docker.io/bitnami/postgresql:11.7.0-debian-10-r77
         imagePullPolicy: IfNotPresent
         resources:
           requests:

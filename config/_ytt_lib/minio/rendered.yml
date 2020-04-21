@@ -1,10 +1,26 @@
 apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cf-blobstore-minio-update-prometheus-secret
+  labels:
+    app: minio-update-prometheus-secret
+    chart: minio-5.0.22
+    release: cf-blobstore
+    heritage: Helm
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cf-blobstore-minio
+  namespace: cf-blobstore
+---
+apiVersion: v1
 kind: Secret
 metadata:
   name: cf-blobstore-minio
   labels:
     app: minio
-    chart: minio-5.0.6
+    chart: minio-5.0.22
     release: cf-blobstore
     heritage: Helm
 type: Opaque
@@ -18,13 +34,15 @@ metadata:
   name: cf-blobstore-minio
   labels:
     app: minio
-    chart: minio-5.0.6
+    chart: minio-5.0.22
     release: cf-blobstore
     heritage: Helm
 data:
   initialize: |-
     #!/bin/sh
     set -e ; # Have script exit in the event of a failed command.
+    MC_CONFIG_DIR="/etc/minio/mc/"
+    MC="/usr/bin/mc --config-dir ${MC_CONFIG_DIR}"
 
     # connectToMinio
     # Use a check-sleep-check loop to wait for Minio service to be available
@@ -35,7 +53,7 @@ data:
       ACCESS=$(cat /config/accesskey) ; SECRET=$(cat /config/secretkey) ;
       set +e ; # The connections to minio are allowed to fail.
       echo "Connecting to Minio server: $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT" ;
-      MC_COMMAND="mc config host add myminio $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
+      MC_COMMAND="${MC} config host add myminio $SCHEME://$MINIO_ENDPOINT:$MINIO_PORT $ACCESS $SECRET" ;
       $MC_COMMAND ;
       STATUS=$? ;
       until [ $STATUS = 0 ]
@@ -57,7 +75,7 @@ data:
     # Check if the bucket exists, by using the exit code of `mc ls`
     checkBucketExists() {
       BUCKET=$1
-      CMD=$(/usr/bin/mc ls myminio/$BUCKET > /dev/null 2>&1)
+      CMD=$(${MC} ls myminio/$BUCKET > /dev/null 2>&1)
       return $?
     }
 
@@ -74,7 +92,7 @@ data:
         if checkBucketExists $BUCKET ; then
           echo "Purging bucket '$BUCKET'."
           set +e ; # don't exit if this fails
-          /usr/bin/mc rm -r --force myminio/$BUCKET
+          ${MC} rm -r --force myminio/$BUCKET
           set -e ; # reset `e` as active
         else
           echo "Bucket '$BUCKET' does not exist, skipping purge."
@@ -84,7 +102,7 @@ data:
       # Create the bucket if it does not exist
       if ! checkBucketExists $BUCKET ; then
         echo "Creating bucket '$BUCKET'"
-        /usr/bin/mc mb myminio/$BUCKET
+        ${MC} mb myminio/$BUCKET
       else
         echo "Bucket '$BUCKET' already exists."
       fi
@@ -92,7 +110,7 @@ data:
       # At this point, the bucket should exist, skip checking for existence
       # Set policy on the bucket
       echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
-      /usr/bin/mc policy set $POLICY myminio/$BUCKET
+      ${MC} policy set $POLICY myminio/$BUCKET
     }
 
     # Try connecting to Minio instance
@@ -105,7 +123,7 @@ metadata:
   name: cf-blobstore-minio
   labels:
     app: minio
-    chart: minio-5.0.6
+    chart: minio-5.0.22
     release: cf-blobstore
     heritage: Helm
 spec:
@@ -115,10 +133,58 @@ spec:
     requests:
       storage: 10Gi
 ---
-apiVersion: v1
-kind: ServiceAccount
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
 metadata:
-  name: cf-blobstore-minio
+  name: cf-blobstore-minio-update-prometheus-secret
+  labels:
+    app: minio-update-prometheus-secret
+    chart: minio-5.0.22
+    release: cf-blobstore
+    heritage: Helm
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - create
+  - update
+  - patch
+  resourceNames:
+  - cf-blobstore-minio-prometheus
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - servicemonitors
+  verbs:
+  - get
+  resourceNames:
+  - cf-blobstore-minio
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cf-blobstore-minio-update-prometheus-secret
+  labels:
+    app: minio-update-prometheus-secret
+    chart: minio-5.0.22
+    release: cf-blobstore
+    heritage: Helm
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cf-blobstore-minio-update-prometheus-secret
+subjects:
+- kind: ServiceAccount
+  name: cf-blobstore-minio-update-prometheus-secret
   namespace: cf-blobstore
 ---
 apiVersion: v1
@@ -127,13 +193,13 @@ metadata:
   name: cf-blobstore-minio
   labels:
     app: minio
-    chart: minio-5.0.6
+    chart: minio-5.0.22
     release: cf-blobstore
     heritage: Helm
 spec:
   type: ClusterIP
   ports:
-  - name: service
+  - name: http
     port: 9000
     protocol: TCP
     targetPort: 9000
@@ -147,7 +213,7 @@ metadata:
   name: cf-blobstore-minio
   labels:
     app: minio
-    chart: minio-5.0.6
+    chart: minio-5.0.22
     release: cf-blobstore
     heritage: Helm
 spec:
@@ -167,13 +233,14 @@ spec:
         app: minio
         release: cf-blobstore
       annotations:
-        checksum/secrets: 08a375eaa16e979d47d4bf4aaa55a33950c63a90345fe01ca6b913b3731db4a9
-        checksum/config: bf453ab73aeaad88586b68e552b5831a1186c4a14d2923c8a9ebdb2698d7eb2e
+        rollme: IE8sm
+        checksum/secrets: be465545d935bfa4b2d7bba629da94c60c0ef6e4cbe78a6d842373897d74d952
+        checksum/config: 5d754ff6661141c802675a9180286885b3e839450ebe2e1260dd07aeb2343383
     spec:
       serviceAccountName: cf-blobstore-minio
       containers:
       - name: minio
-        image: minio/minio:RELEASE.2020-01-16T22-40-29Z
+        image: minio/minio:RELEASE.2020-03-25T07-03-04Z
         imagePullPolicy: IfNotPresent
         command:
         - /bin/sh
@@ -183,7 +250,7 @@ spec:
         - name: export
           mountPath: /export
         ports:
-        - name: service
+        - name: http
           containerPort: 9000
         env:
         - name: MINIO_ACCESS_KEY
@@ -196,12 +263,10 @@ spec:
             secretKeyRef:
               name: cf-blobstore-minio
               key: secretkey
-        - name: MINIO_BROWSER
-          value: "on"
         livenessProbe:
           httpGet:
             path: /minio/health/live
-            port: service
+            port: http
             scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 30
@@ -211,7 +276,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /minio/health/ready
-            port: service
+            port: http
           initialDelaySeconds: 60
           periodSeconds: 15
           timeoutSeconds: 1

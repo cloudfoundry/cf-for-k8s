@@ -36,8 +36,9 @@ directories:
   path: config/_ytt_lib
 - contents:
   - git:
-      commitTitle: '[stable/minio] fix update to latest release (#20257)...'
-      sha: 21546e62d205fe6d197a8f920532d9b78b67a71f
+      commitTitle: '[stable/minio]: add serviceAccountName in create-bucket-job to
+        make it consistent (#21907)...'
+      sha: f8d1e522df1e4841e7a4a1a46d59bce9a9bad904
     path: .
   path: build/minio/_vendir
 - contents:
@@ -47,8 +48,9 @@ directories:
   path: build/eirini/_vendir
 - contents:
   - git:
-      commitTitle: '[bitnami/postgresql] Release 8.6.4 updating components versions...'
-      sha: a4df45b81a9d0a7862f043765bc13bc875bdad96
+      commitTitle: '[bitnami/postgresql] Add option to add annotations to all generated
+        resources (#2368)...'
+      sha: 1765929fa8cf37819309ff975ebf0a8dfcf7824d
     path: .
   path: build/postgres/_vendir
 kind: LockConfig

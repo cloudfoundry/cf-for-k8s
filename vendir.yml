@@ -71,7 +71,7 @@ directories:
   - path: .
     git:
       url: https://github.com/helm/charts
-      ref: 21546e62d205fe6d197a8f920532d9b78b67a71f # version: 5.0.6
+      ref: f8d1e522df1e4841e7a4a1a46d59bce9a9bad904 # version: 5.0.22
     includePaths:
     - stable/minio/**/*
 
@@ -89,6 +89,6 @@ directories:
   - path: .
     git:
       url: https://github.com/bitnami/charts
-      ref: a4df45b81a9d0a7862f043765bc13bc875bdad96 # version: 8.6.4
+      ref: 1765929fa8cf37819309ff975ebf0a8dfcf7824d # version: 8.9.0
     includePaths:
     - bitnami/postgresql/**/*

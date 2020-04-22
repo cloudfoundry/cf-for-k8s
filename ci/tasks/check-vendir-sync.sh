@@ -1,8 +1,11 @@
 #!/bin/bash
 
-set -exc
+set -excu
 
-cd cf-for-k8s-repo
+# ENV
+: "${REPO_DIR:?}"
+
+cd "$REPO_DIR"
 echo "Verifying vendir sync doesn't create new changes..."
 vendir sync > /dev/null
 

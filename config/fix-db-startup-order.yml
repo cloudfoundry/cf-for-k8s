@@ -4,7 +4,9 @@
 ---
 metadata:
   #@overlay/match missing_ok=True
-  annotations: { kapp.k14s.io/change-group.cf-db-postgresql: cf-for-k8s.cloudfoundry.org/cf-db-postgresql }
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group.cf-db-postgresql: cf-for-k8s.cloudfoundry.org/cf-db-postgresql
 
 #@overlay/match by=overlay.subset({"kind":"Job", "metadata":{"name": "ccdb-migrate"}})
 ---

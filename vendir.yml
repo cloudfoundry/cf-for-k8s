@@ -19,6 +19,7 @@ directories:
     - config/*
     - cfroutesync/crds/**/*
     - config/cfroutesync/**/*
+    - config/crd/**/*
     - config/istio-generated/**/*
   - path: github.com/cloudfoundry/capi-k8s-release
     git:

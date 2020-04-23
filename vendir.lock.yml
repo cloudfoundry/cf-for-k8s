@@ -6,8 +6,8 @@ directories:
       sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
     path: github.com/GoogleCloudPlatform/metacontroller
   - git:
-      commitTitle: 'feat: Change DaemonSet''s maxUnavailable to one...'
-      sha: 9f70c276584718fbc4a72a0ca3460774806a0b15
+      commitTitle: Remove hub from istio-values...
+      sha: c31566adbe6f3c3f110aee35e91d314965f99315
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: add retry policy for ccdb-migration job...

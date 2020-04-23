@@ -27,7 +27,7 @@ istio_static_ip: ""
 images:
   capi: ""
   nginx: ""
-  cfroutesync: "gcr.io/cf-networking-images/cf-k8s-networking/cfroutesync@sha256:3b2b25614d6da572175a848003e379894b154dd719f2e77a2325b98ad857d416"
+  cfroutesync: ""
 
 system_certificate:
   #! Base64-encoded certificate for the wildcard

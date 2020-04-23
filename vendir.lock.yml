@@ -21,8 +21,8 @@ directories:
       sha: 614dbcd1a80512fb707f936067d8c498e3471682
     path: github.com/cloudfoundry/metric-proxy
   - git:
-      commitTitle: 'Merge pull request #1248 from cloudfoundry/dependabot/gradle/versions.springBootVersion-2.2.6.RELEASE'
-      sha: 20d4f7bb7c20b4987e8a9f6e2f6136b9d93c7b32
+      commitTitle: 'Merge pull request #1262 from cloudfoundry/dependabot/go_modules/k8s/k8s.io/api-0.18.1'
+      sha: 211c15994f39fde797a66c2dfd7e15dcad65924c
     path: github.com/cloudfoundry/uaa
   - githubRelease:
       url: https://api.github.com/repos/pivotal/kpack/releases/25016868

@@ -1,0 +1,10 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"StatefulSet", "metadata":{"name": "metacontroller"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.index(0)
+      - image: metacontroller/metacontroller@sha256:ad85cb5f5ad9a61a3f38277fed371df43ea0fc55d9073dfa8f4fc2e27c127603

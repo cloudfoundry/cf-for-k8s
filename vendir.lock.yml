@@ -2,10 +2,6 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Update install manifest to v0.4.0.
-      sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
-    path: github.com/GoogleCloudPlatform/metacontroller
-  - git:
       commitTitle: Update cfroutesync image digest to sha256:356095a64b14cec7da9a23374e1d885ecd9bd8f4b4857d13e0b84e6706ff1607
       sha: 916108daf45bcdf7a28a5e53b9aad74fed464586
     path: github.com/cloudfoundry/cf-k8s-networking
@@ -32,8 +28,16 @@ directories:
   - manual: {}
     path: minio
   - manual: {}
+    path: metacontroller
+  - manual: {}
     path: postgres
   path: config/_ytt_lib
+- contents:
+  - git:
+      commitTitle: Update install manifest to v0.4.0.
+      sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
+    path: .
+  path: build/metacontroller/_vendir
 - contents:
   - git:
       commitTitle: '[stable/minio]: add serviceAccountName in create-bucket-job to

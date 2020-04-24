@@ -45,7 +45,6 @@ directories:
       ref: v74.17.0
     includePaths:
     - k8s/templates/**/*
-    - k8s/values/default-values.yml
   - path: github.com/pivotal/kpack
     githubRelease:
       slug: pivotal/kpack

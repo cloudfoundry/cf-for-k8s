@@ -16,6 +16,9 @@
 #@ end
 
 #@ def uaa_values():
+admin:
+  client_secret: #@ data.values.uaa.admin_client_secret
+
 database:
   scheme: #@ data.values.uaa.database.adapter
   address: #@ uaa_db_host()
@@ -79,22 +82,9 @@ scim:
 
 #@overlay/match missing_ok=True
 oauth:
-  user:
-    authorities:
-      - openid
-      - scim.me
-      - cloud_controller.read
-      - cloud_controller.write
-      - cloud_controller_service_permissions.read
-      - password.write
-      - scim.userids
-      - uaa.user
-      - approvals.me
-      - oauth.approvals
-      - profile
-      - roles
-      - user_attributes
-      - uaa.offline_token
+  client:
+    override: true
+  #@overlay/match-child-defaults missing_ok=True
   clients:
     cf:
       id: cf
@@ -111,7 +101,6 @@ oauth:
       autoapprove:
       - openid
       id: admin
-      secret: #@ data.values.uaa.admin_client_secret
     #! TODO: each client should use different secrets!
     cf-k8s-networking:
       authorities: uaa.resource,cloud_controller.admin_read_only

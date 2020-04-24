@@ -42,7 +42,7 @@ directories:
   - path: github.com/cloudfoundry/uaa
     git:
       url: https://github.com/cloudfoundry/uaa
-      ref: 211c15994f39fde797a66c2dfd7e15dcad65924c # v74.17.0
+      ref: v74.17.0
     includePaths:
     - k8s/templates/**/*
     - k8s/values/default-values.yml

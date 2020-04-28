@@ -1,8 +1,8 @@
 resource "google_container_cluster" "primary" {
   provider           = google-beta
   name               = var.env_name
-  location           = "us-central1-a"
-  initial_node_count = 5
+  location           = var.zone
+  initial_node_count = var.node_count
 
   release_channel {
     channel = var.release_channel
@@ -26,7 +26,7 @@ resource "google_container_cluster" "primary" {
   }
 
   node_config {
-    machine_type = "n1-standard-4"
+    machine_type = var.node_machine_type
 
     oauth_scopes = [
       "https://www.googleapis.com/auth/devstorage.read_only",

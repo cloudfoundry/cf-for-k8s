@@ -6,6 +6,10 @@ variable "region" {
   type = string
 }
 
+variable "zone" {
+  type = string
+}
+
 variable "service_account_key" {
   type = string
 }
@@ -20,6 +24,16 @@ variable "env_dns_domain" {
 
 variable "dns_zone_name" {
   type = string
+}
+
+variable "node_count" {
+  type = number
+  default = 5
+}
+
+variable "node_machine_type" {
+  type = string
+  default = "n1-standard-4"
 }
 
 variable "release_channel" {

@@ -69,6 +69,9 @@ fi
 
 VARS_FILE="/tmp/${DOMAIN}/cf-vars.yaml"
 
+SYSTEM_DOMAIN="sys.${DOMAIN}"
+APPS_DOMAIN="apps.${DOMAIN}"
+
 # Make sure bosh binary exists
 bosh --version >/dev/null
 
@@ -99,10 +102,21 @@ variables:
   type: certificate
   options:
     ca: default_ca
-    common_name: "*.${DOMAIN}"
+    common_name: "*.${SYSTEM_DOMAIN}"
     alternative_names:
-    - "*.${DOMAIN}"
+    - "*.${SYSTEM_DOMAIN}"
     - "*.cf-system.svc.cluster.local"
+    extended_key_usage:
+    - client_auth
+    - server_auth
+
+- name: workloads_certificate
+  type: certificate
+  options:
+    ca: default_ca
+    common_name: "*.${APPS_DOMAIN}"
+    alternative_names:
+    - "*.${APPS_DOMAIN}"
     extended_key_usage:
     - client_auth
     - server_auth
@@ -183,10 +197,10 @@ EOF
 cat <<EOF
 #@data/values
 ---
-system_domain: "${DOMAIN}"
+system_domain: "${SYSTEM_DOMAIN}"
 app_domains:
 #@overlay/append
-- "${DOMAIN}"
+- "${APPS_DOMAIN}"
 cf_admin_password: $( bosh interpolate ${VARS_FILE} --path=/cf_admin_password )
 
 cf_blobstore:
@@ -204,10 +218,16 @@ log_cache_client:
   secret: $( bosh interpolate ${VARS_FILE} --path=/log_cache_client_password )
 
 system_certificate:
-  #! This certificates and keys are base64 encoded and should be valid for *.system.cf.example.com
+  #! These certificates and keys are base64 encoded and should be valid for *.sys.cf.example.com
   crt: &crt $( bosh interpolate ${VARS_FILE} --path=/system_certificate/certificate | base64 | tr -d '\n' )
   key: &key $( bosh interpolate ${VARS_FILE} --path=/system_certificate/private_key | base64 | tr -d '\n' )
   ca: $( bosh interpolate ${VARS_FILE} --path=/system_certificate/ca | base64 | tr -d '\n' )
+
+workloads_certificate:
+  #! These certificates and keys are base64 encoded and should be valid for *.apps.cf.example.com
+  crt: $( bosh interpolate ${VARS_FILE} --path=/workloads_certificate/certificate | base64 | tr -d '\n' )
+  key: $( bosh interpolate ${VARS_FILE} --path=/workloads_certificate/private_key | base64 | tr -d '\n' )
+  ca: $( bosh interpolate ${VARS_FILE} --path=/workloads_certificate/ca | base64 | tr -d '\n' )
 
 log_cache_ca:
   crt: $( bosh interpolate ${VARS_FILE} --path=/log_cache_ca/certificate | base64 | tr -d '\n' )

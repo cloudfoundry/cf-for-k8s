@@ -14,6 +14,18 @@ data:
   tls.key: #@ data.values.system_certificate.key
   tls.crt: #@ data.values.system_certificate.crt
 
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cf-workloads-cert
+  namespace: istio-system
+  annotations:
+    kapp.k14s.io/change-rule.istio-ingressgateway: "upsert before upserting istio.io/ingressgateway"
+data:
+  tls.key: #@ data.values.workloads_certificate.key
+  tls.crt: #@ data.values.workloads_certificate.crt
+
 #! the following overlay ensures the above Secret is created before the ingressgateway Deployment since we're not using SDS
 #@overlay/match by=overlay.subset({"kind":"DaemonSet","metadata":{"name":"istio-ingressgateway"}})
 ---
@@ -42,14 +54,24 @@ spec:
       number: 80
       protocol: HTTP
   - hosts:
-    - '*'
+    - #@ data.values.system_namespace + '/*.' + data.values.system_domain
     port:
-      name: https
+      name: https-system
       number: 443
       protocol: HTTPS
     tls:
       mode: SIMPLE
       credentialName: istio-ingressgateway-certs
+  - hosts:
+    #@ for/end domain in data.values.app_domains:
+    - #@ data.values.workloads_namespace + '/*.' + domain
+    port:
+      name: https-workloads
+      number: 443
+      protocol: HTTPS
+    tls:
+      credentialName: cf-workloads-cert
+      mode: SIMPLE
 
 #! This will set overlay a static IP for the istio load balancer.
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "istio-ingressgateway"}})

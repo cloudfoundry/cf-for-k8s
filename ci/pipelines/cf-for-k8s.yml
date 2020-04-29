@@ -6,13 +6,11 @@ groups:
   - validate-cf-for-k8s
   - release-validation-pool-manual
   - validate-azure
-  - delete-azure-cluster
 - name: stability-check
   jobs:
   - stability-test-cf-for-k8s
   - release-stability-pool-manual
   - validate-azure
-  - delete-azure-cluster
 - name: pr-checks
   jobs:
   - fail-prs-to-cf-for-k8s-master
@@ -831,42 +829,33 @@ jobs:
           export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
           export SMOKE_TEST_SKIP_SSL=true
           cf-for-k8s-master/hack/run-smoke-tests.sh
+  ensure:
+    do:
+    - task: delete-azure-cluster
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: relintdockerhubpushbot/cf-for-k8s-azure
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            cluster_name='azure-ci-test-cluster'
+            cluster_resource_group='azure-ci-test-resource-group'
+            export KUBECONFIG=kube-config.yml
 
-- name: delete-azure-cluster
-  public: true
-  serial: true
-  serial_groups:
-  - azure
-  plan:
-  - in_parallel:
-    - get: cf-for-k8s-master
-      passed: [validate-azure]
-      trigger: true
-  - task: delete-cluster
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: relintdockerhubpushbot/cf-for-k8s-azure
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          cluster_name='azure-ci-test-cluster'
-          cluster_resource_group='azure-ci-test-resource-group'
-          export KUBECONFIG=kube-config.yml
+            echo "Logging into azure..."
+            az login --service-principal --username '((aks_cluster_creation_service_principal_username))' --password '((aks_cluster_creation_service_principal_password))' --tenant '((aks_cluster_creation_tenant))' >/dev/null 2>&1
+            echo "Setting azure account subscription..."
+            az account set --subscription '((relint_azure_subscription))' >/dev/null 2>&1
+            echo "Getting credentials..."
+            az aks get-credentials --resource-group $cluster_resource_group --name $cluster_name --file $KUBECONFIG --overwrite-existing >/dev/null 2>&1
 
-          echo "Logging into azure..."
-          az login --service-principal --username '((aks_cluster_creation_service_principal_username))' --password '((aks_cluster_creation_service_principal_password))' --tenant '((aks_cluster_creation_tenant))' >/dev/null 2>&1
-          echo "Setting azure account subscription..."
-          az account set --subscription '((relint_azure_subscription))' >/dev/null 2>&1
-          echo "Getting credentials..."
-          az aks get-credentials --resource-group $cluster_resource_group --name $cluster_name --file $KUBECONFIG --overwrite-existing >/dev/null 2>&1
-
-          echo "Deleting AKS cluster..."
-          az aks delete --resource-group ${cluster_resource_group} --name ${cluster_name} -y >/dev/null 2>&1
-          echo "Deleting resource group..."
-          az group delete --name ${cluster_resource_group} -y >/dev/null 2>&1
-          echo "Cluster cleanup complete."
+            echo "Deleting AKS cluster..."
+            az aks delete --resource-group ${cluster_resource_group} --name ${cluster_name} -y >/dev/null 2>&1
+            echo "Deleting resource group..."
+            az group delete --name ${cluster_resource_group} -y >/dev/null 2>&1
+            echo "Cluster cleanup complete."

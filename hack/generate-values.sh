@@ -10,8 +10,8 @@ Usage:
 
 flags:
   -d, --cf-domain
-      (required) Root DNS domain name for the CF install
-      (e.g. if CF API at api.inglewood.k8s-dev.relint.rocks, cf-domain = inglewood.k8s-dev.relint.rocks)
+      (required) Root DNS domain name for the CF install.
+      (e.g. if CF API at api.sys.inglewood.k8s-dev.relint.rocks, cf-domain = inglewood.k8s-dev.relint.rocks)
 
   -g, --gcr-service-account-json
       (optional) Filepath to the GCP Service Account JSON describing a service account

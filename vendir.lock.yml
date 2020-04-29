@@ -6,8 +6,8 @@ directories:
       sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
     path: github.com/GoogleCloudPlatform/metacontroller
   - git:
-      commitTitle: Remove hub from istio-values...
-      sha: c31566adbe6f3c3f110aee35e91d314965f99315
+      commitTitle: Update cfroutesync image digest to sha256:356095a64b14cec7da9a23374e1d885ecd9bd8f4b4857d13e0b84e6706ff1607
+      sha: 916108daf45bcdf7a28a5e53b9aad74fed464586
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: add retry policy for ccdb-migration job...

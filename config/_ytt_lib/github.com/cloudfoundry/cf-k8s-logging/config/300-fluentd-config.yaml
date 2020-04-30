@@ -8,9 +8,11 @@ metadata:
 data:
   fluentd.conf: |
     # Inputs
-    <match kubernetes.var.log.containers.fluentd**>
-      @type null
-    </match>
+    <source>
+      @type forward
+      tag forwarded.test
+      port 24224
+    </source>
 
     <source>
       @type tail
@@ -35,32 +37,55 @@ data:
     </source>
 
     # Filters
+    <match kubernetes.var.log.containers.fluentd**>
+      @type null
+    </match>
+
     <filter kubernetes.**>
       @type kubernetes_metadata
+    </filter>
+
+    <filter kubernetes.**>
+      @type record_transformer
+      enable_ruby
+      <record>
+        app_id ${record.dig("kubernetes", "labels", "cloudfoundry_org/app_guid")}
+        instance_id ${record.dig("kubernetes", "pod_id")}
+        structured_data \[tags@47450 source_type="${record.dig("kubernetes", "labels", "cloudfoundry_org/source_type")}"\]
+      </record>
+    </filter>
+
+    <filter forwarded.**>
+      @type record_transformer
+      enable_ruby
+      <record>
+        structured_data \[tags@47450 source_type="${record.dig("source_type")}"\]
+      </record>
     </filter>
 
     <filter **>
       @type grep
       <regexp>
-        key $.kubernetes.labels.cloudfoundry_org/app_guid
+        key $.app_id
         pattern /.+/
       </regexp>
     </filter>
 
     <match **>
-     @type syslog_rfc5424
-     host log-cache-syslog
-     port 8082
-     transport tls
-     trusted_ca_path /ca/tls.crt
-     <format>
-       @type syslog_rfc5424
-       proc_id_field kubernetes.pod_id
-       app_name_field kubernetes.labels.cloudfoundry_org/app_guid
-     </format>
+      @type syslog_rfc5424
+      host log-cache-syslog
+      port 8082
+      transport tls
+      trusted_ca_path /ca/tls.crt
+      <format>
+        @type syslog_rfc5424
+        proc_id_field instance_id
+        app_name_field app_id
+        structured_data_field structured_data
+      </format>
 
-     <buffer>
-       @type memory
-       flush_mode immediate
-     </buffer>
+      <buffer>
+        @type memory
+        flush_mode immediate
+      </buffer>
     </match>

@@ -29,10 +29,6 @@ spec:
           value: #@ "http://capi.{}.svc.cluster.local:80".format(data.values.system_namespace)
         - name: UAA_ADDR
           value: #@ "http://uaa.{}.svc.cluster.local:8080".format(data.values.system_namespace)
-        - name: UAA_CLIENT_ID
-          value: #@ data.values.client.id
-        - name: UAA_CLIENT_SECRET
-          value: #@ data.values.client.secret
         volumeMounts:
         - mountPath: /ca
           name: ca

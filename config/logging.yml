@@ -28,9 +28,6 @@ log_cache_syslog:
   crt: #@ data.values.log_cache_syslog.crt
   key: #@ data.values.log_cache_syslog.key
 
-client:
-  id: #@ data.values.log_cache_client.id
-  secret: #@ data.values.log_cache_client.secret
 #@ end
 
 #@ logging = library.get("github.com/cloudfoundry/cf-k8s-logging")

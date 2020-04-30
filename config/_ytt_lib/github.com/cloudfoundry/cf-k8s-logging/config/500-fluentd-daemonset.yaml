@@ -20,11 +20,11 @@ spec:
       tolerations:
       - key: node-role.kubernetes.io/master
         effect: NoSchedule
-      imagePullSecrets:
-      - name: image-registry-credentials
       containers:
       - name: fluentd
         image: #@ data.values.images.fluent
+        ports:
+        - containerPort: 24224
         resources:
           limits:
             memory: 200Mi

@@ -14,7 +14,7 @@ directories:
       sha: a01701bac6c76957df1617ac1ec4f98697f1f111
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/24864777
+      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26057148
     path: github.com/cloudfoundry/cf-k8s-logging/config
   - git:
       commitTitle: Fix image sha...

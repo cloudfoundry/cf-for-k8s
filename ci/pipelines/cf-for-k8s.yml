@@ -5,11 +5,12 @@ groups:
   - test-vendir-sync-on-cf-for-k8s
   - validate-cf-for-k8s
   - release-validation-pool-manual
-  - validate-azure
-- name: stability-check
+- name: stability-checks-and-slis
   jobs:
   - stability-test-cf-for-k8s
   - release-stability-pool-manual
+  - long-lived-env-sli
+  - redeploy-long-lived-env-with-latest-master
   - validate-azure
 - name: pr-checks
   jobs:
@@ -91,6 +92,15 @@ resources:
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     start: 9:00 AM
     stop: 10:00 AM
+    location: America/Los_Angeles
+
+- name: weekday-pm
+  type: time
+  icon: clock-outline
+  source:
+    days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+    start: 6:00 PM
+    stop: 7:00 PM
     location: America/Los_Angeles
 
 - name: every-20-minutes
@@ -477,6 +487,95 @@ jobs:
     try:
       put: stability-pool
       params: {release: stability-pool}
+
+- name: long-lived-env-sli
+  serial: true
+  serial_groups: [long-lived-env]
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-master
+    - get: every-20-minutes
+      trigger: true
+  - task: run-smoke-test
+    config:
+      <<: *common-test-config
+      inputs:
+      - name: cf-for-k8s-master
+      params:
+        CF_ADMIN_PASSWORD: ((ll_dep_cf_admin_pass))
+        DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
+      run:
+        path: /bin/sh
+        args:
+        - -ec
+        - |
+          DNS_DOMAIN="ci-long-lived-deployment.${DNS_ROOT_DOMAIN}"
+          export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
+          export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
+          export SMOKE_TEST_USERNAME=admin
+          export SMOKE_TEST_PASSWORD=${CF_ADMIN_PASSWORD}
+          export SMOKE_TEST_SKIP_SSL=true
+          cf-for-k8s-master/hack/run-smoke-tests.sh
+
+- name: redeploy-long-lived-env-with-latest-master
+  serial: true
+  serial_groups: [long-lived-env]
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-master
+    - get: weekday-pm
+      trigger: true
+
+  - task: delete-cf
+    config:
+      <<: *common-task-config
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cluster_name="ci-long-lived-deployment"
+          export KUBECONFIG=kube-config.yml
+          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+          gcloud container clusters get-credentials "${cluster_name}" --zone 'us-central1-c' >/dev/null 2>&1
+
+          kapp delete -a cf --yes
+
+  - task: install-cf
+    input_mapping: {pool-lock: stability-pool}
+    config:
+      <<: *common-task-config
+      inputs:
+      - name: cf-for-k8s-master
+      outputs:
+      - name: env-metadata
+      params:
+        DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
+        DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          export KUBECONFIG=kube-config.yml
+          cluster_name="ci-long-lived-deployment"
+          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+          gcloud container clusters get-credentials "${cluster_name}" --zone 'us-central1-c' >/dev/null 2>&1
+
+          export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
+          cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" 'us-central1-c'
+
+          echo "Generating install values..."
+          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
+          echo "istio_static_ip: ((ll_dep_static_ip))" >> cf-install-values.yml
+
+          echo "Installing CF..."
+          cf-for-k8s-master/bin/install-cf.sh cf-install-values.yml
 
 - name: fail-prs-to-cf-for-k8s-master
   public: true

@@ -234,6 +234,8 @@ spec:
   hosts:
   - #@ "uaa." + data.values.system_domain
   - #@ "login." + data.values.system_domain
+  - #@ "*.uaa." + data.values.system_domain
+  - #@ "*.login." + data.values.system_domain
   gateways:
   - #@ data.values.system_namespace + "/istio-ingressgateway"
   http:

@@ -1,26 +1,26 @@
+---
 apiVersion: v1
+data:
+  init.sh: ""
 kind: ConfigMap
 metadata:
-  name: cf-db-postgresql-init-scripts
   labels:
     app: postgresql
     chart: postgresql-8.9.0
-    release: cf-db
     heritage: Helm
-data:
-  init.sh: ""
+    release: cf-db
+  name: cf-db-postgresql-init-scripts
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: cf-db-postgresql-headless
   labels:
     app: postgresql
     chart: postgresql-8.9.0
-    release: cf-db
     heritage: Helm
+    release: cf-db
+  name: cf-db-postgresql-headless
 spec:
-  type: ClusterIP
   clusterIP: None
   ports:
   - name: tcp-postgresql
@@ -29,19 +29,19 @@ spec:
   selector:
     app: postgresql
     release: cf-db
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: cf-db-postgresql
+  annotations: null
   labels:
     app: postgresql
     chart: postgresql-8.9.0
-    release: cf-db
     heritage: Helm
-  annotations: null
+    release: cf-db
+  name: cf-db-postgresql
 spec:
-  type: ClusterIP
   ports:
   - name: tcp-postgresql
     port: 5432
@@ -50,50 +50,44 @@ spec:
     app: postgresql
     release: cf-db
     role: master
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: cf-db-postgresql
+  annotations:
+    kbld.k14s.io/images: |
+      - Metas:
+        - Tag: 11.7.0-debian-10-r77
+          Type: resolved
+          URL: docker.io/bitnami/postgresql:11.7.0-debian-10-r77
+        URL: index.docker.io/bitnami/postgresql@sha256:9762d9a80b90a5efe299d4848057ac5c45fb384570b36f60aad38fe2b1704bd6
   labels:
     app: postgresql
     chart: postgresql-8.9.0
-    release: cf-db
     heritage: Helm
-  annotations: null
+    release: cf-db
+  name: cf-db-postgresql
 spec:
-  serviceName: cf-db-postgresql-headless
   replicas: 1
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app: postgresql
       release: cf-db
       role: master
+  serviceName: cf-db-postgresql-headless
   template:
     metadata:
-      name: cf-db-postgresql
       labels:
         app: postgresql
         chart: postgresql-8.9.0
-        release: cf-db
         heritage: Helm
+        release: cf-db
         role: master
+      name: cf-db-postgresql
     spec:
-      securityContext:
-        fsGroup: 1001
       containers:
-      - name: cf-db-postgresql
-        image: docker.io/bitnami/postgresql:11.7.0-debian-10-r77
-        imagePullPolicy: IfNotPresent
-        resources:
-          requests:
-            cpu: 250m
-            memory: 256Mi
-        securityContext:
-          runAsUser: 1001
-        env:
+      - env:
         - name: BITNAMI_DEBUG
           value: "false"
         - name: POSTGRESQL_PORT_NUMBER
@@ -107,24 +101,27 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: cf-db-admin-secret
               key: postgresql-password
+              name: cf-db-admin-secret
         - name: POSTGRESQL_ENABLE_LDAP
           value: "no"
-        ports:
-        - name: tcp-postgresql
-          containerPort: 5432
+        image: index.docker.io/bitnami/postgresql@sha256:9762d9a80b90a5efe299d4848057ac5c45fb384570b36f60aad38fe2b1704bd6
+        imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
             - exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
+          failureThreshold: 6
           initialDelaySeconds: 30
           periodSeconds: 10
-          timeoutSeconds: 5
           successThreshold: 1
-          failureThreshold: 6
+          timeoutSeconds: 5
+        name: cf-db-postgresql
+        ports:
+        - containerPort: 5432
+          name: tcp-postgresql
         readinessProbe:
           exec:
             command:
@@ -134,32 +131,42 @@ spec:
             - |
               exec pg_isready -U "postgres" -h 127.0.0.1 -p 5432
               [ -f /opt/bitnami/postgresql/tmp/.initialized ] || [ -f /bitnami/postgresql/.initialized ]
+          failureThreshold: 6
           initialDelaySeconds: 5
           periodSeconds: 10
-          timeoutSeconds: 5
           successThreshold: 1
-          failureThreshold: 6
+          timeoutSeconds: 5
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        securityContext:
+          runAsUser: 1001
         volumeMounts:
-        - name: custom-init-scripts
-          mountPath: /docker-entrypoint-initdb.d/
-        - name: custom-init-scripts-secret
-          mountPath: /docker-entrypoint-initdb.d/secret
-        - name: dshm
-          mountPath: /dev/shm
-        - name: data
-          mountPath: /bitnami/postgresql
+        - mountPath: /docker-entrypoint-initdb.d/
+          name: custom-init-scripts
+        - mountPath: /docker-entrypoint-initdb.d/secret
+          name: custom-init-scripts-secret
+        - mountPath: /dev/shm
+          name: dshm
+        - mountPath: /bitnami/postgresql
+          name: data
           subPath: null
+      securityContext:
+        fsGroup: 1001
       volumes:
-      - name: custom-init-scripts
-        configMap:
+      - configMap:
           name: cf-db-postgresql-init-scripts
+        name: custom-init-scripts
       - name: custom-init-scripts-secret
         secret:
           secretName: cf-db-credentials
-      - name: dshm
-        emptyDir:
+      - emptyDir:
           medium: Memory
           sizeLimit: 1Gi
+        name: dshm
+  updateStrategy:
+    type: RollingUpdate
   volumeClaimTemplates:
   - metadata:
       name: data

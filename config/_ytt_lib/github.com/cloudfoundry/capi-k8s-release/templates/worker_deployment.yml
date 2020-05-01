@@ -34,6 +34,7 @@ spec:
           #@ if/end data.values.eirini.serverCerts.secretName:
           - name: eirini-certs
             mountPath: /config/eirini/certs
+      serviceAccountName: cc-worker-service-account
       volumes:
       - name: cloud-controller-ng-yaml
         configMap:

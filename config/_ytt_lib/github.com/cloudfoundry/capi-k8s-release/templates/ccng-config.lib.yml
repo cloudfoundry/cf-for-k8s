@@ -99,7 +99,7 @@ logcache_tls:
 
 loggregator:
   router: 127.0.0.1:3457
-  internal_url: #@ "https://log-api.{}:8081".format(data.values.system_domain)
+  internal_url: #@ "https://log-api.{}.svc.cluster.local:8081".format(data.values.system_namespace)
 log_stream:
   url: #@ "https://log-stream.{}".format(data.values.system_domain)
 
@@ -360,6 +360,7 @@ kubernetes:
   service_account:
     token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  workloads_namespace: cf-workloads
   kpack:
     builder_namespace: #@ data.values.staging_namespace
     registry_service_account_name: cc-kpack-registry-service-account

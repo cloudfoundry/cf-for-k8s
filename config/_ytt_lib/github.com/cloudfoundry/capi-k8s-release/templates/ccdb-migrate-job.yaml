@@ -8,7 +8,7 @@ metadata:
   annotations:
     kapp.k14s.io/update-strategy: fallback-on-replace
 spec:
-  backoffLimit: 3
+  backoffLimit: 6
   template:
     spec:
       containers:

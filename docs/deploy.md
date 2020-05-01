@@ -36,20 +36,15 @@ To deploy cf-for-k8s as is, the cluster should:
 - be running Kubernetes version 1.14.x, 1.15.x, or 1.16.x
 - have a minimum of 5 nodes
 - have a minimum of 3 CPU, 7.5GB memory per node
-- have a metrics-server
-  - This may be as simple as running something like `kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml`
-
-### IaaS Requirements
-
-- Supports `LoadBalancer` services
-- Supports `metrics-server`
+- support `LoadBalancer` services
+- support `metrics-server`
   - Most IaaSes come with `metrics-server`, but if yours does not come with it or if you're using `kind`, then you may want to run something like 
   
   ```console
     kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml
   ```
-  
-- Defines a default StorageClass
+
+- defines a default StorageClass
   - requires [additional config on vSphere](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/storageclass.html), for example
 
 ### Requirements for pushing source-code based apps to Cloud Foundry foundation
@@ -140,16 +135,30 @@ This project is in it's early stages of development and hence there are features
 
       1. Update the `gcp_project_id` portion to your GCP Project Id.
       1. Change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON.
-</br>
 
-1. Run the install script with your "CF Install Values" file.
+1. Run the following commands to install Cloud Foundry on your Kubernetes cluster.
 
+      i. Render the final K8s template to raw K8s configuration
+      ```console
+      ytt -f config -f /tmp/cf-values.yml > /tmp/cf-for-k8s-rendered.yml
+      ```
+      > cf-for-k8s uses [ytt](https://github.com/k14s/ytt) to create and maintain reusable YAML templates. You can visit the ytt [playground](https://get-ytt.io/) to learn more about it's templating features. 
+      > In the above command, `ytt` can take a folder e.g. `config` or file via `-f`. See all options by running `ytt help`.
+    
+      ii. Install using `kapp` and pass the above K8s configuration file
+      ```console
+      kapp deploy -a cf -f /tmp/cf-for-k8s-rendered.yml -y
+      ```
+      > cf-for-k8s uses [kapp](https://github.com/k14s/kapp) to manage it's lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit untill all resources are installed and their status is running. See all options by running `kapp help`.
+
+   Once you run the command, it should take about ~10-15mins dependning on your cluster bandwidth, size. `kapp` will provide updates on pending resource creations in the cluster (pods, lbs) and will wait till all resources are created and running. Following shows a sample output from `kapp`. 
+   
    ```console
-   ytt -f config -f /tmp/cf-values.yml > /tmp/cf-for-k8s-rendered.yml
-   kapp deploy -a cf -f /tmp/cf-for-k8s-rendered.yml -y
+   4:08:19PM: ---- waiting on 1 changes [0/1 done] ----
+   4:08:19PM: ok: reconcile serviceaccount/cc-kpack-registry-service-account (v1) namespace: cf-workloads-staging
+   4:08:19PM: ---- waiting complete [5/10 done] ----
+   ...
    ```
-
-   > cf-for-k8s uses [kapp](https://github.com/k14s/kapp) to manage it's lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit untill all resources are installed and their status is running.
 
 1. Configure DNS on your IaaS provider to point the wildcard subdomain of your system domain and the wildcard subdomain of all apps domains to point to external IP of the Istio Ingress Gateway service. You can retrieve the external IP of this service by running
 
@@ -157,7 +166,7 @@ This project is in it's early stages of development and hence there are features
    kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].ip}'
    ```
 
-   1. If you used a single DNS record for both `system_domain` and `app_domains`, then have it resolve to the Ingress Gateway's external IP
+   > If you used a single DNS record for both `system_domain` and `app_domains`, then have it resolve to the Ingress Gateway's external IP
 
       e.g.
 

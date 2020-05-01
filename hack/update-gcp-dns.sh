@@ -6,6 +6,10 @@
 
 set -eu
 
+echo "WARNING: The hack scripts are intended for development of cf-for-k8s. 
+They are not officially supported product bits.  Their interface and behavior
+may change at any time without notice." 1>&2
+
 if [ $# -lt 2 ]; then
   echo "Usage: $(basename "$0") <dns-domain> <dns-zone-name>"
   exit 1

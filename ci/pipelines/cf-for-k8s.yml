@@ -229,7 +229,6 @@ jobs:
   public: true
   plan:
   - in_parallel:
-    - get: runtime-ci
     - get: cf-for-k8s-develop
       trigger: true
     - get: cf-for-k8s-develop-ci

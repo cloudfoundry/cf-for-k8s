@@ -7,7 +7,7 @@ if [[ $# -lt 1 ]]; then
   exit 1
 fi
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" > /dev/null 2>&1 && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 CONFIG_DIR="${SCRIPT_DIR}/../config"
 
 cf_install_values_path="$1"

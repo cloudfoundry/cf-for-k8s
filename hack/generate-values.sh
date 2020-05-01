@@ -104,6 +104,8 @@ variables:
     common_name: "*.${DOMAIN}"
     alternative_names:
     - "*.${DOMAIN}"
+    - "*.login.${DOMAIN}"
+    - "*.uaa.${DOMAIN}"
     - "*.cf-system.svc.cluster.local"
     extended_key_usage:
     - client_auth

@@ -145,7 +145,8 @@ This project is in it's early stages of development and hence there are features
 1. Run the install script with your "CF Install Values" file.
 
    ```console
-   ./bin/install-cf.sh /tmp/cf-values.yml
+   ytt -f config -f /tmp/cf-values.yml > /tmp/cf-for-k8s-rendered.yml
+   kapp deploy -a cf -f /tmp/cf-for-k8s-rendered.yml -y
    ```
 
    > cf-for-k8s uses [kapp](https://github.com/k14s/kapp) to manage it's lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit untill all resources are installed and their status is running.
@@ -193,9 +194,10 @@ This project is in it's early stages of development and hence there are features
 1. Deploy a source code based app:
 
    ```console
+   cf push test-node-app -p tests/smoke/assets/test-node-app
+   ```
 
-   $ cf push test-node-app -p tests/smoke/assets/test-node-app
-
+   ```console
    Pushing app test-node-app to org test-org / space test-space as admin...
    Getting app info...
    Creating app with these attributes...
@@ -228,7 +230,6 @@ This project is in it's early stages of development and hence there are features
    memory usage: 1024M
    state since cpu memory disk details
    #0 running 2020-03-18T02:24:51Z 0.0% 0 of 1G 0 of 1G
-
    ```
 
    </br>
@@ -236,7 +237,10 @@ This project is in it's early stages of development and hence there are features
 1. Validate the app is reachable
 
    ```console
-   $ curl http://test-node-app.<cf-domain>/env
+   curl http://test-node-app.<cf-domain>/env
+   ```
+
+   ```console
    Hello World
    ```
 
@@ -245,6 +249,6 @@ This project is in it's early stages of development and hence there are features
 You can delete the cf-for-k8s deployment by running the following command.
 
    ```console
-   # Assuming that you ran `bin/install.sh...` or `kapp deploy -a cf...`
+   # Assuming that you ran `kapp deploy -a cf...`
    kapp delete -a cf
    ```

@@ -303,7 +303,7 @@ jobs:
           cf-for-k8s-develop/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
 
           echo "Installing CF..."
-          cf-for-k8s-develop/bin/install-cf.sh cf-install-values.yml
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-develop/config -f cf-install-values.yml) -y
 
           echo "Configuring DNS..."
           cf-for-k8s-develop/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
@@ -430,7 +430,7 @@ jobs:
           cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
 
           echo "Installing CF..."
-          cf-for-k8s-master/bin/install-cf.sh cf-install-values.yml
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
 
           echo "Configuring DNS..."
           cf-for-k8s-master/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
@@ -575,7 +575,7 @@ jobs:
           echo "istio_static_ip: ((ll_dep_static_ip))" >> cf-install-values.yml
 
           echo "Installing CF..."
-          cf-for-k8s-master/bin/install-cf.sh cf-install-values.yml
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
 
 - name: fail-prs-to-cf-for-k8s-master
   public: true
@@ -679,7 +679,7 @@ jobs:
               cf-for-k8s-pr-all-branches/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
 
               echo "Installing CF..."
-              cf-for-k8s-pr-all-branches/bin/install-cf.sh cf-install-values.yml
+              kapp deploy -a cf -f <(ytt -f cf-for-k8s-pr-all-branches/config -f cf-install-values.yml) -y
 
               echo "Configuring DNS..."
               cf-for-k8s-pr-all-branches/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
@@ -900,7 +900,7 @@ jobs:
           cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
 
           echo "Installing CF..."
-          cf-for-k8s-master/bin/install-cf.sh cf-install-values.yml
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
 
           echo "Configuring DNS..."
           echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json

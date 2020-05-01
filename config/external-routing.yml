@@ -24,32 +24,8 @@ metadata:
     kapp.k14s.io/change-group: istio.io/ingressgateway
 
 #! this gateway is used to expose CF services in the cluster, externally
----
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: istio-ingressgateway
-  namespace: #@ data.values.system_namespace
-spec:
-  selector:
-    istio: ingressgateway
-  servers:
-  - hosts:
-    #! TODO: restrict this
-    - '*'
-    port:
-      name: http
-      number: 80
-      protocol: HTTP
-  - hosts:
-    - '*'
-    port:
-      name: https
-      number: 443
-      protocol: HTTPS
-    tls:
-      mode: SIMPLE
-      credentialName: istio-ingressgateway-certs
+#@ load("gateway.lib.yml", "gateway")
+--- #@ gateway(data.values.system_domain, data.values.app_domains, data.values.system_namespace, data.values.workloads_namespace)
 
 #! This will set overlay a static IP for the istio load balancer.
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "istio-ingressgateway"}})

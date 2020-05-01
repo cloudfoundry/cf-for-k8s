@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -25,23 +26,23 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: metacontroller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: metacontroller
 subjects:
 - kind: ServiceAccount
   name: metacontroller
   namespace: metacontroller
-roleRef:
-  kind: ClusterRole
-  name: metacontroller
-  apiGroup: rbac.authorization.k8s.io
 ---
-kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
-  name: aggregate-metacontroller-view
   labels:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
     rbac.authorization.k8s.io/aggregate-to-view: "true"
+  name: aggregate-metacontroller-view
 rules:
 - apiGroups:
   - metacontroller.k8s.io
@@ -54,13 +55,13 @@ rules:
   - list
   - watch
 ---
-kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
-  name: aggregate-metacontroller-edit
   labels:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
+  name: aggregate-metacontroller-edit
 rules:
 - apiGroups:
   - metacontroller.k8s.io
@@ -82,15 +83,15 @@ metadata:
   name: compositecontrollers.metacontroller.k8s.io
 spec:
   group: metacontroller.k8s.io
-  version: v1alpha1
-  scope: Cluster
   names:
-    plural: compositecontrollers
-    singular: compositecontroller
     kind: CompositeController
+    plural: compositecontrollers
     shortNames:
     - cc
     - cctl
+    singular: compositecontroller
+  scope: Cluster
+  version: v1alpha1
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -98,15 +99,15 @@ metadata:
   name: decoratorcontrollers.metacontroller.k8s.io
 spec:
   group: metacontroller.k8s.io
-  version: v1alpha1
-  scope: Cluster
   names:
-    plural: decoratorcontrollers
-    singular: decoratorcontroller
     kind: DecoratorController
+    plural: decoratorcontrollers
     shortNames:
     - dec
     - decorators
+    singular: decoratorcontroller
+  scope: Cluster
+  version: v1alpha1
 ---
 apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
@@ -114,16 +115,23 @@ metadata:
   name: controllerrevisions.metacontroller.k8s.io
 spec:
   group: metacontroller.k8s.io
-  version: v1alpha1
-  scope: Namespaced
   names:
+    kind: ControllerRevision
     plural: controllerrevisions
     singular: controllerrevision
-    kind: ControllerRevision
+  scope: Namespaced
+  version: v1alpha1
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      - Metas:
+        - Tag: v0.4.0
+          Type: resolved
+          URL: metacontroller/metacontroller:v0.4.0
+        URL: index.docker.io/metacontroller/metacontroller@sha256:ad85cb5f5ad9a61a3f38277fed371df43ea0fc55d9073dfa8f4fc2e27c127603
   labels:
     app.kubernetes.io/name: metacontroller
   name: metacontroller
@@ -139,14 +147,14 @@ spec:
       labels:
         app.kubernetes.io/name: metacontroller
     spec:
-      serviceAccountName: metacontroller
       containers:
-      - name: metacontroller
-        image: metacontroller/metacontroller@sha256:ad85cb5f5ad9a61a3f38277fed371df43ea0fc55d9073dfa8f4fc2e27c127603
-        command:
-        - /usr/bin/metacontroller
-        args:
+      - args:
         - --logtostderr
         - -v=4
         - --discovery-interval=20s
+        command:
+        - /usr/bin/metacontroller
+        image: index.docker.io/metacontroller/metacontroller@sha256:ad85cb5f5ad9a61a3f38277fed371df43ea0fc55d9073dfa8f4fc2e27c127603
+        name: metacontroller
+      serviceAccountName: metacontroller
   volumeClaimTemplates: []

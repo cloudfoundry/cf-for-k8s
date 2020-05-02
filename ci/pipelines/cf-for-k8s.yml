@@ -2,6 +2,7 @@
 groups:
 - name: validation-checks
   jobs:
+  - unit-test-config-optional-files
   - test-vendir-sync-on-cf-for-k8s
   - validate-cf-for-k8s
   - release-validation-pool-manual
@@ -225,6 +226,22 @@ test-runner-config: &common-test-config
       repository: relintdockerhubpushbot/cf-test-runner
 
 jobs:
+- name: unit-test-config-optional-files
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-develop
+      trigger: true
+    - get: cf-for-k8s-develop-ci
+
+  - task: unit-test-config-optional-files
+    file: cf-for-k8s-develop-ci/ci/tasks/unit-test-config-optional-files/task.yml
+    input_mapping:
+      cf-for-k8s-ci: cf-for-k8s-develop-ci
+      cf-for-k8s-repo: cf-for-k8s-develop
+    params:
+      REPO_DIR: cf-for-k8s-repo
+
 - name: test-vendir-sync-on-cf-for-k8s
   public: true
   plan:

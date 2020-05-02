@@ -12,3 +12,18 @@ RUN curl -LO https://github.com/cloudfoundry/bosh-cli/releases/download/v6.2.1/b
     chmod +x ./bosh-cli-6.2.1-linux-amd64 && \
     mv ./bosh-cli-6.2.1-linux-amd64 /usr/local/bin/bosh
 RUN apk add jq=1.6-r0
+
+# ginkgo
+RUN export GO_TAR=go1.13.8.linux-amd64.tar.gz && \
+    wget https://dl.google.com/go/${GO_TAR} && \
+    tar -C /usr/local -xzf ${GO_TAR}
+
+ENV PATH=$PATH:/usr/local/go/bin:/root/go/bin
+# https://github.com/golang/go/issues/28065
+ENV CGO_ENABLED=0
+# https://golang.org/doc/go1.13#modules
+ENV GO111MODULE=on
+
+# https://github.com/onsi/ginkgo/releases
+RUN go get -u github.com/onsi/ginkgo/ginkgo@v1.11.0
+

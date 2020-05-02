@@ -28,3 +28,6 @@ RUN rm -rf /tmp/*
 RUN go version && \
     ginkgo version && \
     cf --version
+
+RUN apt-get install perl-utils && \
+    wget -O- https://k14s.io/install.sh | bash

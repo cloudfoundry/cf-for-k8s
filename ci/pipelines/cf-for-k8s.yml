@@ -903,7 +903,7 @@ jobs:
           echo "Creating resource group..."
           az group create --name $cluster_resource_group --location westus  >/dev/null 2>&1
           echo "Creating AKS cluster..."
-          az aks create --resource-group $cluster_resource_group --name $cluster_name --node-count 5 --node-vm-size Standard_DS3_v2 --network-plugin azure --network-policy azure --enable-addons monitoring --generate-ssh-keys --service-principal '((aks_cluster_creation_service_principal_username))' --client-secret '((aks_cluster_creation_service_principal_password))' >/dev/null 2>&1
+          az aks create --resource-group $cluster_resource_group --name $cluster_name --node-count 5 --node-vm-size Standard_DS3_v2 --network-plugin azure --network-policy calico --enable-addons monitoring --generate-ssh-keys --service-principal '((aks_cluster_creation_service_principal_username))' --client-secret '((aks_cluster_creation_service_principal_password))' >/dev/null 2>&1
           echo "Getting credentials..."
           az aks get-credentials --resource-group $cluster_resource_group --name $cluster_name --file $KUBECONFIG --overwrite-existing >/dev/null 2>&1
 

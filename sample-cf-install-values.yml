@@ -32,11 +32,19 @@ capi:
 #! - all of the certs should have KeyUsage that includes server and client authentication
 
 #! certificate, private key, and certificate authority used to identify the CF installation (i.e. the ingress gateway).
-#! - should be valid for *.system.cf.example.com, *.apps.cf.example.com and *.cf-system.svc.cluster.local
+#! - should be valid for *.system.cf.example.com, and *.cf-system.svc.cluster.local
 system_certificate:
   crt: &crt ingress_gateway_certificate
   key: &key ingress_gateway_private_key
   ca: ingress_gateway_certificate_ca
+
+#! certificate, private key, and certificate authority used to identify the CF installation (i.e. the ingress gateway).
+#! - should be valid for *.apps.cf.example.com
+#! - may be the system cert, as long as the system cert is valid for the apps domain as well
+workloads_certificate:
+  crt: workload_certificate
+  key: workload_private_key
+  ca: workload_certificate_ca
 
 #! Log Cache CA certificate and private key
 #! - the common name needs to be log-cache-ca

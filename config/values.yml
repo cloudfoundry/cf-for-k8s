@@ -38,6 +38,15 @@ system_certificate:
   #! Base64-encoded CA certificate used to sign the system certifcate
   ca: ""
 
+workloads_certificate:
+  #! Base64-encoded certificate for the wildcard
+  #! subdomain of the system domain (e.g., CN=*.apps.cf.example.com)
+  crt: ""
+  #! Base64-encoded private key for the cert above
+  key: ""
+  #! Base64-encoded CA certificate used to sign the workloads certifcate
+  ca: ""
+
 capi:
   blobstore:
     package_directory_key: cc-packages

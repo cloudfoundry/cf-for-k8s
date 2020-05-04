@@ -27,12 +27,6 @@ capi:
   database:
     password: ccdb_password
 
-#! Credentials for a UAA client used by the Log Cache to verify that callees have the correct privileges to access the logs.
-#! - the client is automatically created in UAA with these credentials
-log_cache_client:
-  id: log-cache
-  secret: log_cache_password
-
 #! Notes about X.509 certificates:
 #! - the certificates and keys are base64 encoded
 #! - all of the certs should have KeyUsage that includes server and client authentication
@@ -116,6 +110,17 @@ eirini:
     #! - this certificate should be valid for eirini.cf-system.svc.cluster.local
     crt: *crt
     key: *key
+    
+metric_proxy:
+  ca:
+    secret_name: "metric-proxy-ca"
+    crt: *crt
+    key: *key
+  cert:
+    secret_name: "metric-proxy-cert"
+    #! This certificate should be valid for metric-proxy.cf-system.svc.cluster.local
+    crt: *crt
+    key: *key
 
 #! To push apps from source code, you need to configure the `app_registry` block
 #! Example below is for docker hub. For other registry examples, see below. 
@@ -141,14 +146,3 @@ app_registry:
 #!  repository: <registry-name>.azurecr.io
 #!  username: <username>
 #!  password: <password>
-
-metric_proxy:
-  ca:
-    secret_name: "metric-proxy-ca"
-    crt: *crt
-    key: *key
-  cert:
-    secret_name: "metric-proxy-cert"
-    #! This certificate should be valid for metric-proxy.cf-system.svc.cluster.local
-    crt: *crt
-    key: *key

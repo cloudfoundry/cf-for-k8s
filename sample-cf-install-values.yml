@@ -27,12 +27,6 @@ capi:
   database:
     password: ccdb_password
 
-#! Credentials for a UAA client used by the Log Cache to verify that callees have the correct privileges to access the logs.
-#! - the client is automatically created in UAA with these credentials
-log_cache_client:
-  id: log-cache
-  secret: log_cache_password
-
 #! Notes about X.509 certificates:
 #! - the certificates and keys are base64 encoded
 #! - all of the certs should have KeyUsage that includes server and client authentication
@@ -79,6 +73,15 @@ log_cache_syslog:
   crt: log_cache_syslog_certificate
   key: log_cache_syslog_private_key
 
+metric_proxy:
+  ca:
+    crt: *crt
+    key: *key
+  cert:
+    #! This certificate should be valid for metric-proxy.cf-system.svc.cluster.local
+    crt: *crt
+    key: *key
+
 uaa:
   database:
     #! The db password shared between UAA and the database.
@@ -100,8 +103,8 @@ uaa:
   login:
     service_provider:
       #! This certificate/key should NOT be base64 encoded
-      certificate: login_service_provider_certificate
       key: login_service_provider_key
+      certificate: login_service_provider_certificate
 
 doppler:
   tls:
@@ -141,14 +144,3 @@ app_registry:
 #!  repository: <registry-name>.azurecr.io
 #!  username: <username>
 #!  password: <password>
-
-metric_proxy:
-  ca:
-    secret_name: "metric-proxy-ca"
-    crt: *crt
-    key: *key
-  cert:
-    secret_name: "metric-proxy-cert"
-    #! This certificate should be valid for metric-proxy.cf-system.svc.cluster.local
-    crt: *crt
-    key: *key

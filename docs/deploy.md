@@ -151,7 +151,7 @@ This project is in it's early stages of development and hence there are features
       ```
       > cf-for-k8s uses [kapp](https://github.com/k14s/kapp) to manage it's lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit untill all resources are installed and their status is running. See all options by running `kapp help`.
 
-   Once you run the command, it should take about ~10-15mins dependning on your cluster bandwidth, size. `kapp` will provide updates on pending resource creations in the cluster (pods, lbs) and will wait till all resources are created and running. Following shows a sample output from `kapp`. 
+   Once you run the command, it should take about 10 minutes depending on your cluster bandwidth, size. `kapp` will provide updates on pending resource creations in the cluster and will wait until all resources are created and running. Here is a sample snippet from `kapp` output:
    
    ```console
    4:08:19PM: ---- waiting on 1 changes [0/1 done] ----

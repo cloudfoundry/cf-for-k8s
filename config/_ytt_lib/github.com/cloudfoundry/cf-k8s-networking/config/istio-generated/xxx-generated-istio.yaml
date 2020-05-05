@@ -9851,6 +9851,7 @@ spec:
     - port: 15004
     - port: 15010
     - port: 15011
+    - port: 15014
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

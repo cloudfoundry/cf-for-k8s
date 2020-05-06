@@ -18,7 +18,8 @@ See the requirements in [Deploying CF for K8s](deploy.md#required-tools).
 In addition to the Kubernetes version requirement in [Deploying CF for K8s](deploy.md#kubernetes-cluster-requirements), the cluster should:
 
 - have a minimum of 1 node
-- have a minimum of 4 CPU, 8GB memory per node
+- have a minimum of 7 CPU, 14GB memory if using 1 node
+  - commonly configured via Docker Desktop > Preferences > Resources
 - have a running metrics-server (this is an important consideration for **Kind** or **kubeadm** clusters. You can see one way to install it in the [Kind deploy instructions](#steps-to-deploy-on-kind))
 
 ## Considerations
@@ -93,6 +94,7 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
    ```console
    kind create cluster --config=./deploy/kind/cluster.yml
+   # optional flag: "--image kindest/node:v1.18.2", for example
    ```
 
 1. Follow the instructions in [Deploying CF for K8s](deploy.md).
@@ -109,3 +111,5 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
 1. Make sure you've installed a metrics-server.
    - this may be as simple as running something like `kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml`
+
+1. Once the `kapp deploy` succeeds, you should be able to run `cf api api.vcap.me --skip-ssl-validation`, etc

@@ -61,7 +61,7 @@ resources:
     branch: develop
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
-    - deploy/terraform/gke/**
+    - deploy/gke/terraform/**
 
 - name: pool-repo
   type: git
@@ -268,7 +268,7 @@ jobs:
           EOT
   - put: terraform
     params:
-      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/terraform/gke
+      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
       env_name_file: building-cluster/name
       delete_on_failure: true
       var_files: [ tf-vars/input.tfvars ]
@@ -373,7 +373,7 @@ jobs:
           EOT
   - put: terraform
     params:
-      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/terraform/gke
+      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
       env_name_file: destroy-cluster/name
       action: destroy
       var_files: [ tf-vars/input.tfvars ]

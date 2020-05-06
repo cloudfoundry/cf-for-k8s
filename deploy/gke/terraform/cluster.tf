@@ -25,6 +25,16 @@ resource "google_container_cluster" "primary" {
     }
   }
 
+  addons_config {
+    network_policy_config {
+      disabled = false
+    }
+  }
+
+  network_policy {
+    enabled = true
+  }
+
   node_config {
     machine_type = var.node_machine_type
 

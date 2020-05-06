@@ -278,7 +278,7 @@ if [[ -n "${GCP_SERVICE_ACCOUNT_JSON:=}" ]]; then
   encoded_password=$(kubectl create secret docker-registry registry-credentials \
     --docker-server=${hostname} --docker-username=${username} \
     --docker-password="$(cat ${GCP_SERVICE_ACCOUNT_JSON})" \
-    --dry-run -o json | jq .data.\".dockerconfigjson\" -r)
+    --dry-run=client -o json | jq .data.\".dockerconfigjson\" -r)
   cat <<EOF
 
 app_registry:

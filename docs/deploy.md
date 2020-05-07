@@ -21,7 +21,7 @@
 You need the following CLIs on your system to be able to run the script:
 
 - [`cf cli`](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) (v6.50+)
-- [`kapp`](https://k14s.io/#install) (v0.21.0+)
+- [`kapp`](https://k14s.io/#install) (v0.24.0+)
 - [`ytt`](https://k14s.io/#install) (v0.26.0+)
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 

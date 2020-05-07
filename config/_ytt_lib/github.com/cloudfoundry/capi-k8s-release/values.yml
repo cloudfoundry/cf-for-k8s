@@ -25,7 +25,7 @@ ccdb:
   database: cloud_controller
 
 blobstore:
-  region: "''"
+  region: ""
   package_directory_key: cc-packages
   droplet_directory_key: cc-droplets
   resource_directory_key: cc-resources

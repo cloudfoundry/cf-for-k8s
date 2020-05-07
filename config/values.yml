@@ -53,7 +53,7 @@ capi:
     droplet_directory_key: cc-droplets
     resource_directory_key: cc-resources
     buildpack_directory_key: cc-buildpacks
-    region: "''"
+    region: ""
     endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
   database:
     #! or mysql2, as needed

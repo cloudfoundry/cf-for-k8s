@@ -3,6 +3,7 @@ groups:
 - name: validation-checks
   jobs:
   - unit-test-config-optional-files
+  - branch-freshness
   - test-vendir-sync-on-cf-for-k8s
   - validate-cf-for-k8s
   - release-validation-pool-manual
@@ -41,6 +42,13 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     ignore_paths:
       - ci/**
+
+- name: cf-for-k8s-all-branches
+  type: git
+  icon: github-box
+  source:
+    branch: develop
+    uri: https://github.com/cloudfoundry/cf-for-k8s.git
 
 - name: cf-for-k8s-develop-ci
   type: git
@@ -241,6 +249,18 @@ jobs:
       cf-for-k8s-repo: cf-for-k8s-develop
     params:
       REPO_DIR: cf-for-k8s-repo
+
+- name: branch-freshness
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-all-branches
+      trigger: true
+    - get: runtime-ci
+  - task: validate-branch-freshness
+    file: runtime-ci/tasks/validate-branch-freshness/task.yml
+    input_mapping:
+      repo: cf-for-k8s-all-branches
 
 - name: test-vendir-sync-on-cf-for-k8s
   public: true

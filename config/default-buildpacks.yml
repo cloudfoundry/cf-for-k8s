@@ -41,3 +41,11 @@ spec:
     - id: paketo-buildpacks/go
   - group:
     - id: paketo-buildpacks/dotnet-core
+  - group:
+    - id: paketo-buildpacks/php
+  - group:
+    - id: paketo-buildpacks/httpd
+  - group:
+    - id: paketo-buildpacks/nginx
+  - group:
+    - id: paketo-buildpacks/procfile

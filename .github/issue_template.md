@@ -9,7 +9,8 @@ _In your own words, describe the issue._
 
 [IaaS name(s) here (GKE, AKS, EKS, minikube, kind, etc)]
 
-[Kubernetes version here]
+output of `ytt --version ; kapp --version ; kubectl version`:
+[paste output here]
 
 [Special configuration here]
 

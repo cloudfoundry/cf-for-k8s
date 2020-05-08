@@ -29,6 +29,7 @@ images:
   capi: ""
   nginx: ""
   cfroutesync: ""
+  default_builder: "gcr.io/paketo-buildpacks/builder@sha256:d89cb0170bb37b1905d008cab8845b5442a773afdc89d964ace8acd5561439c9"
 
 system_certificate:
   #! Base64-encoded certificate for the wildcard

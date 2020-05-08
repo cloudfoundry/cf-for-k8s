@@ -7,7 +7,7 @@ metadata:
   name: cf-buildpack-store
 spec:
   sources:
-  - image: "gcr.io/paketo-buildpacks/builder@sha256:d89cb0170bb37b1905d008cab8845b5442a773afdc89d964ace8acd5561439c9"
+  - image: #@ data.values.images.default_builder
 
 ---
 apiVersion: experimental.kpack.pivotal.io/v1alpha1

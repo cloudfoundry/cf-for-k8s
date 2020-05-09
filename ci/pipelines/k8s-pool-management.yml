@@ -22,8 +22,8 @@ resources:
   source:
     backend_type: gcs
     backend_config:
-      bucket: dev-cluster-pool-state
-      prefix: mydir
+      bucket: relint-k8s-cluster-state
+      prefix: k8s-dev
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
 - name: every-5-minutes

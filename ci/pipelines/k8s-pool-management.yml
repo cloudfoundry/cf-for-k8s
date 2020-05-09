@@ -318,12 +318,15 @@ jobs:
         args:
         - -ec
         - |
-          git config --global user.name "Environment Management Overlord"
+          git config --global user.name "Cluster Management Overlord"
           git config --global user.email "cf-release-integration+ci@pivotal.io"
           git clone pool-repo updated-pool-repo
           cd updated-pool-repo
-          git mv k8s-dev/ready/unclaimed/* k8s-dev/destroy/unclaimed
-          git commit -m'Destroying unclaimed K8s dev pool environments'
+          find k8s-dev/ready/unclaimed -type f ! -name .gitkeep | xargs -n1 -I{} git mv -v {} k8s-dev/destroy/unclaimed
+
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git commit -m'Destroying unclaimed K8s dev pool environments'
+          fi
   - put: pool-repo
     params:
       repository: updated-pool-repo

@@ -16,7 +16,7 @@ metadata:
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-rule.cf-db-postgresql: "upsert after upserting cf-for-k8s.cloudfoundry.org/cf-db-postgresql"
 
-#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name": "capi-api-server"}})
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name": "cf-api-server"}})
 ---
 metadata:
   #@overlay/match missing_ok=True
@@ -24,7 +24,7 @@ metadata:
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-rule.cf-db-postgresql: "upsert after upserting cf-for-k8s.cloudfoundry.org/cf-db-postgresql"
 
-#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name": "capi-clock"}})
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name": "cf-api-clock"}})
 ---
 metadata:
   #@overlay/match missing_ok=True
@@ -32,7 +32,7 @@ metadata:
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-rule.cf-db-postgresql: "upsert after upserting cf-for-k8s.cloudfoundry.org/cf-db-postgresql"
 
-#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name": "capi-worker"}})
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name": "cf-api-worker"}})
 ---
 metadata:
   #@overlay/match missing_ok=True

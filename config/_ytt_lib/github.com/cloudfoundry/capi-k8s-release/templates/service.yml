@@ -12,4 +12,4 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app.kubernetes.io/name: capi-api-server
+    app.kubernetes.io/name: cf-api-server

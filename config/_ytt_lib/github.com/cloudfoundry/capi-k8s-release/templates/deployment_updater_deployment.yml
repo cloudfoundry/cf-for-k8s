@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capi-deployment-updater
+  name: cf-api-deployment-updater
   namespace: #@ data.values.system_namespace
 spec:
   replicas: 1
@@ -13,16 +13,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: capi-deployment-updater
+      app.kubernetes.io/name: cf-api-deployment-updater
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: capi-deployment-updater
+        app.kubernetes.io/name: cf-api-deployment-updater
     spec:
       #@ if/end data.values.imagePullSecrets:
       imagePullSecrets: #@ data.values.imagePullSecrets
       containers:
-        - name: capi-deployment-updater
+        - name: cf-api-deployment-updater
           workingDir: "/cloud_controller_ng"
           command: ["/usr/local/bin/bundle"]
           args: ["exec", "rake", "deployment_updater:start"]

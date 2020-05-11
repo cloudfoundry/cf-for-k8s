@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capi-api-server
+  name: cf-api-server
   namespace: #@ data.values.system_namespace
 spec:
   replicas: 2
@@ -13,7 +13,7 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: capi-api-server
+      app.kubernetes.io/name: cf-api-server
   template:
     metadata:
       annotations:
@@ -21,12 +21,12 @@ spec:
         prometheus.io/port: '9102'
         prometheus.io/path: 'metrics'
       labels:
-        app.kubernetes.io/name: capi-api-server
+        app.kubernetes.io/name: cf-api-server
     spec:
       #@ if/end data.values.imagePullSecrets:
       imagePullSecrets: #@ data.values.imagePullSecrets
       containers:
-        - name: capi-api-server
+        - name: cf-api-server
           image: #@ data.values.images.ccng
           imagePullPolicy: Always
           volumeMounts:
@@ -46,7 +46,7 @@ spec:
           #@ if/end data.values.metric_proxy.ca.secret_name:
           - name: metric-proxy-ca
             mountPath: /config/metric_proxy/ca
-        - name: capi-local-worker
+        - name: cf-api-local-worker
           image: #@ data.values.images.ccng
           imagePullPolicy: Always
           command: ["/usr/local/bin/bundle"]

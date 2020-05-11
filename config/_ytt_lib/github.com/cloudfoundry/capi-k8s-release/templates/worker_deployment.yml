@@ -3,22 +3,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capi-worker
+  name: cf-api-worker
   namespace: #@ data.values.system_namespace
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: capi-worker
+      app.kubernetes.io/name: cf-api-worker
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: capi-worker
+        app.kubernetes.io/name: cf-api-worker
     spec:
       #@ if/end data.values.imagePullSecrets:
       imagePullSecrets: #@ data.values.imagePullSecrets
       containers:
-        - name: capi-worker
+        - name: cf-api-worker
           workingDir: "/cloud_controller_ng"
           command: ["/usr/local/bin/bundle"]
           args: ["exec", "rake", "jobs:generic"]

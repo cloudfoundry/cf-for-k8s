@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: capi-clock
+  name: cf-api-clock
   namespace: #@ data.values.system_namespace
 spec:
   replicas: 1
@@ -13,16 +13,16 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: capi-clock
+      app.kubernetes.io/name: cf-api-clock
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: capi-clock
+        app.kubernetes.io/name: cf-api-clock
     spec:
       #@ if/end data.values.imagePullSecrets:
       imagePullSecrets: #@ data.values.imagePullSecrets
       containers:
-        - name: capi-clock
+        - name: cf-api-clock
           workingDir: "/cloud_controller_ng"
           command: ["/usr/local/bin/bundle"]
           args: ["exec", "rake", "clock:start"]

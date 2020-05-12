@@ -4,4 +4,5 @@ output "lb_static_ip" {
 
 output "kubeconfig" {
   value = azurerm_kubernetes_cluster.primary.kube_config_raw
+  sensitive = true
 }

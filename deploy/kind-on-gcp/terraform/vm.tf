@@ -43,7 +43,7 @@ resource "google_compute_instance" "default" {
     }
   }
 
-  metadata {
+  metadata = {
     ssh_keys = "tester:${tls_private_key.default.public_key_openssh}"
   }
 

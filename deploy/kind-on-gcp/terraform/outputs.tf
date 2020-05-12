@@ -3,7 +3,7 @@ output "vm_name" {
 }
 
 output "vm_ssh_private_key" {
-  value = tls_private_key.default.private_key
+  value = tls_private_key.default.private_key_pem
   sensitive = true
 }
 

@@ -30,4 +30,4 @@ ENV GO111MODULE=on
 RUN go get -u github.com/onsi/ginkgo/ginkgo@v1.11.0
 
 # Install beta gcloud components
-gcloud components install beta -q
+RUN gcloud components install beta -q

@@ -18,6 +18,10 @@ resource "google_compute_network" "default" {
   name = "kind-vm-${random_id.instance_id.hex}-network"
 }
 
+resource "tls_private_key" "default" {
+  algorithm = "RSA"
+}
+
 // A single Google Cloud Engine instance
 resource "google_compute_instance" "default" {
   name         = "kind-vm-${random_id.instance_id.hex}"
@@ -37,6 +41,10 @@ resource "google_compute_instance" "default" {
     access_config {
       // Include this section to give the VM an external ip address
     }
+  }
+
+  metadata {
+    ssh_keys = "tester:${tls_private_key.default.public_key_openssh}"
   }
 
   metadata_startup_script = <<EOT
@@ -115,8 +123,8 @@ cd $HOME
   retry 5 go get -u "github.com/onsi/ginkgo/ginkgo@v1.11.0"
   ginkgo version
 
-  echo "Change ownership of $HOME to pivotal..."
-  chown -R pivotal .
+  echo "Change ownership of $HOME to tester..."
+  chown -R tester .
 cd -
 
 EOT

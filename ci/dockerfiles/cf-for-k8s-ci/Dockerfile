@@ -2,6 +2,7 @@ FROM google/cloud-sdk:alpine
 
 RUN apk update
 RUN apk add jq=1.6-r0
+RUN pip3 install yq
 RUN apk add openssl && \
     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 RUN apk add perl-utils && \

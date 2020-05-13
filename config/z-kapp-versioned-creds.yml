@@ -1,6 +1,6 @@
 #@ load("@ytt:overlay", "overlay")
 
-#@overlay/match by=overlay.subset({"kind":"ConfigMap"}), expects="1+"
+#@overlay/match by=overlay.or_op(overlay.subset({"kind":"ConfigMap"}), overlay.subset({"kind":"Secret"})), expects="1+"
 #@overlay/match-child-defaults missing_ok=True
 ---
 metadata:

@@ -403,7 +403,7 @@ jobs:
         - |
           DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
           export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
-          export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
+          export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
           export SMOKE_TEST_USERNAME=admin
           export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
           export SMOKE_TEST_SKIP_SSL=true
@@ -530,7 +530,7 @@ jobs:
         - |
           DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
           export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
-          export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
+          export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
           export SMOKE_TEST_USERNAME=admin
           export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
           export SMOKE_TEST_SKIP_SSL=true
@@ -591,7 +591,7 @@ jobs:
         - |
           DNS_DOMAIN="ci-long-lived-deployment.${DNS_ROOT_DOMAIN}"
           export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
-          export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
+          export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
           export SMOKE_TEST_USERNAME=admin
           export SMOKE_TEST_PASSWORD=${CF_ADMIN_PASSWORD}
           export SMOKE_TEST_SKIP_SSL=true
@@ -779,7 +779,7 @@ jobs:
             - |
               DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
               export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
-              export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
+              export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
               export SMOKE_TEST_USERNAME=admin
               export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
               export SMOKE_TEST_SKIP_SSL=true
@@ -1022,7 +1022,7 @@ jobs:
             - |
               DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
               export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
-              export SMOKE_TEST_APPS_DOMAIN="${DNS_DOMAIN}"
+              export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
               export SMOKE_TEST_USERNAME=admin
               export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
               export SMOKE_TEST_SKIP_SSL=true

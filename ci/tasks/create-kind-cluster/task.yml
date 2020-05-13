@@ -1,0 +1,15 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+inputs:
+- name: cf-for-k8s
+- name: cf-for-k8s-ci
+- name: terraform
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.sh

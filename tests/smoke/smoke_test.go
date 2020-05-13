@@ -1,6 +1,7 @@
 package smoke_test
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -42,9 +43,10 @@ var _ = Describe("Smoke Tests", func() {
 			appsDomain = GetRequiredEnvVar("SMOKE_TEST_APPS_DOMAIN")
 
 			apiArguments := []string{"api", apiEndpoint}
-			_, ok := os.LookupEnv("SMOKE_TEST_SKIP_SSL")
-			if ok {
+			skip_ssl, _ := os.LookupEnv("SMOKE_TEST_SKIP_SSL")
+			if skip_ssl == "true" {
 				apiArguments = append(apiArguments, "--skip-ssl-validation")
+				http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 			}
 
 			// Target CF and auth
@@ -78,6 +80,11 @@ var _ = Describe("Smoke Tests", func() {
 			}
 		})
 
+		mapRoute := func(appName string) {
+			session := cf.Cf("map-route", appName, appsDomain, "--hostname", appName)
+			Eventually(session).Should(Exit(0))
+		}
+
 		It("creates a routable app pod in Kubernetes from a docker image-based app", func() {
 			// Enable Docker Feature Flag
 			Eventually(cf.Cf("enable-feature-flag", "diego_docker")).Should(Exit(0))
@@ -85,15 +92,16 @@ var _ = Describe("Smoke Tests", func() {
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
-			cfPush := cf.Cf("push", appName, "-o", "cloudfoundry/diego-docker-app")
+			cfPush := cf.Cf("push", appName, "-o", "cloudfoundry/diego-docker-app", "--no-route")
 			Eventually(cfPush).Should(Exit(0))
+			mapRoute(appName)
 
 			By("querying the app")
 			var resp *http.Response
 
 			Eventually(func() int {
 				var err error
-				resp, err = http.Get(fmt.Sprintf("http://%s.%s/env", appName, appsDomain))
+				resp, err = http.Get(fmt.Sprintf("https://%s.%s/env", appName, appsDomain))
 				Expect(err).NotTo(HaveOccurred())
 				return resp.StatusCode
 			}, 2*time.Minute, 30*time.Second).Should(Equal(200))
@@ -123,15 +131,16 @@ var _ = Describe("Smoke Tests", func() {
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
-			cfPush := cf.Cf("push", appName, "-p", "assets/test-node-app")
+			cfPush := cf.Cf("push", appName, "-p", "assets/test-node-app", "--no-route")
 			Eventually(cfPush).Should(Exit(0))
+			mapRoute(appName)
 
 			By("querying the app")
 			var resp *http.Response
 
 			Eventually(func() int {
 				var err error
-				resp, err = http.Get(fmt.Sprintf("http://%s.%s", appName, appsDomain))
+				resp, err = http.Get(fmt.Sprintf("https://%s.%s", appName, appsDomain))
 				Expect(err).NotTo(HaveOccurred())
 				return resp.StatusCode
 			}, 2*time.Minute, 30*time.Second).Should(Equal(200))

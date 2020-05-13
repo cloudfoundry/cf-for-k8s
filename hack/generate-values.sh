@@ -106,6 +106,7 @@ variables:
     - "*.${DOMAIN}"
     - "*.login.${DOMAIN}"
     - "*.uaa.${DOMAIN}"
+    - "*.apps.${DOMAIN}"
     - "*.cf-system.svc.cluster.local"
     extended_key_usage:
     - client_auth
@@ -190,7 +191,7 @@ cat <<EOF
 system_domain: "${DOMAIN}"
 app_domains:
 #@overlay/append
-- "${DOMAIN}"
+- "apps.${DOMAIN}"
 cf_admin_password: $(bosh interpolate ${VARS_FILE} --path=/cf_admin_password)
 
 cf_blobstore:

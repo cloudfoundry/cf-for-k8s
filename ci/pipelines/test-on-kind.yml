@@ -99,8 +99,8 @@ jobs:
         cf-for-k8s-ci: cf-for-k8s-develop-ci
       file: cf-for-k8s-develop-ci/ci/tasks/create-kind-cluster/task.yml
       params:
-        - GCP_KEY: ((ci_k8s_gcp_service_account_json))
-        - GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
     - task: install-cf
       config:
         <<: *common-task-config

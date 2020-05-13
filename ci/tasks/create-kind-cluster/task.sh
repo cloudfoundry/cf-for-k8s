@@ -7,8 +7,9 @@ K8S_VERSION=${K8S_MINOR_VERSION}.${PATCH_VERSION}
 
 vm_name=$(jq -r '.vm_name' terraform/metadata)
 user_host="tester@${vm_name}"
-echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+echo ${GCP_KEY} > gcp-service-account.json
+gcloud config set project "${GCP_PROJECT_NAME}"
+gcloud auth activate-service-account --key-file=gcp-service-account.json  >/dev/null 2>&1
 gcloud components install beta -q
 mkdir $HOME/.ssh
 chmod 0700 $HOME/.ssh
@@ -27,13 +28,13 @@ chmod +x remote-check-permissions.sh
 echo "Uploading remote-check-permissions.sh..."
 gcloud beta compute \
   scp remote-check-permissions.sh ${user_host}:/tmp/ \
-  --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a" > /dev/null
+  --zone "us-central1-a" > /dev/null
 
 echo "Running remote-check-permissions.sh..."
 gcloud beta compute \
   ssh ${user_host} \
   --command "/tmp/remote-check-permissions.sh" \
-  --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a"
+  --zone "us-central1-a"
 
 cat <<EOT > remote-create-kind-cluster.sh
 #!/usr/bin/env bash
@@ -49,15 +50,15 @@ chmod +x remote-create-kind-cluster.sh
 echo "Uploading cf-for-k8s repo..."
 gcloud beta compute \
   scp --recurse cf-for-k8s ${user_host}:/tmp/kind/ --compress \
-  --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a" > /dev/null
+  --zone "us-central1-a" > /dev/null
 
 echo "Uploading remote-create-kind-cluster.sh..."
 gcloud beta compute \
   scp remote-create-kind-cluster.sh ${user_host}:/tmp/ \
-  --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a" > /dev/null
+  --zone "us-central1-a" > /dev/null
 
 echo "Running remote-create-kind-cluster.sh..."
 gcloud beta compute \
   ssh ${user_host} \
   --command "/tmp/remote-create-kind-cluster.sh" \
-  --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a"
+  --zone "us-central1-a"

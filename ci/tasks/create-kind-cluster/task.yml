@@ -11,5 +11,9 @@ inputs:
 - name: cf-for-k8s-ci
 - name: terraform
 
+params:
+  - GCP_KEY: ~
+  - GCP_PROJECT_NAME: ~
+
 run:
   path: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.sh

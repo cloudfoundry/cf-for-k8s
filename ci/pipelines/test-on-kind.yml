@@ -1,0 +1,337 @@
+---
+resource_types:
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource
+
+resources:
+- name: cf-for-k8s-develop
+  type: git
+  icon: github-box
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    ignore_paths:
+      - ci/**
+
+- name: terraform
+  type: terraform
+  source:
+    backend_type: gcs
+    backend_config:
+      bucket: relint-k8s-cluster-state
+      prefix: kind
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
+
+- name: cf-for-k8s-kind-gcp-terraform-templates
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - deploy/kind-on-gcp/terraform/**
+
+# Extract common platform and image_resource details so task configs can be more concise
+x-config: &common-task-config
+  platform: linux
+  image_resource:
+    type: docker-image
+    source:
+      repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+jobs:
+- name: validate-cf-for-k8s
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-develop
+    - get: cf-for-k8s-kind-gcp-terraform-templates
+
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          echo "ci-test-cluster" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "us-central1"
+          zone = "us-central1-a"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          machine_type = "n1-standard-8"
+          EOT
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
+  - do:
+    - task: create-kind-cluster
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      config:
+        <<: *common-task-config
+        inputs:
+        - name: cf-for-k8s
+        - name: terraform
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            vm_name=$(jq -r '.vm_name' terraform/metadata)
+            user_host="tester@${vm_name}"
+            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+            gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+            gcloud components install beta -q
+            mkdir $HOME/.ssh
+            chmod 0700 $HOME/.ssh
+            jq -r '.vm_ssh_private_key' terraform/metadata > $HOME/.ssh/google_compute_engine
+            jq -r '.vm_ssh_public_key' terraform/metadata > $HOME/.ssh/google_compute_engine.pub
+            chmod 0600 $HOME/.ssh/google_compute_engine
+
+            cat <<EOT > remote-check-permissions.sh
+            while [[ ! -w /tmp/kind ]]; do
+              echo "Waiting for write access to /tmp/kind..."
+              sleep 5
+            done
+            EOT
+            chmod +x remote-check-permissions.sh
+
+            echo "Uploading remote-check-permissions.sh..."
+            gcloud beta compute \
+              scp remote-check-permissions.sh ${user_host}:/tmp/ \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a" > /dev/null
+
+            echo "Running remote-check-permissions.sh..."
+            gcloud beta compute \
+              ssh ${user_host} \
+              --command "/tmp/remote-check-permissions.sh" \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a"
+
+            cat <<EOT > remote-create-kind-cluster.sh
+            #!/usr/bin/env bash
+            set -euo pipefail
+
+            export HOME=/tmp/kind
+            export PATH=/tmp/kind/bin:/tmp/kind/go/bin:$PATH
+
+            kind create cluster --config=\$HOME/cf-for-k8s/deploy/kind/cluster.yml
+            EOT
+            chmod +x remote-create-kind-cluster.sh
+
+            echo "Uploading cf-for-k8s repo..."
+            gcloud beta compute \
+              scp --recurse cf-for-k8s ${user_host}:/tmp/kind/ --compress \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a" > /dev/null
+
+            echo "Uploading remote-create-kind-cluster.sh..."
+            gcloud beta compute \
+              scp remote-create-kind-cluster.sh ${user_host}:/tmp/ \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a" > /dev/null
+
+            echo "Running remote-create-kind-cluster.sh..."
+            gcloud beta compute \
+              ssh ${user_host} \
+              --command "/tmp/remote-create-kind-cluster.sh" \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a"
+
+    - task: install-cf
+      config:
+        <<: *common-task-config
+        inputs:
+        - name: cf-for-k8s-develop
+        - name: terraform
+        outputs:
+        - name: cf-install-values
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            vm_name=$(jq -r '.vm_name' terraform/metadata)
+            user_host="tester@${vm_name}"
+            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+            gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+            gcloud components install beta -q
+            mkdir $HOME/.ssh
+            chmod 0700 $HOME/.ssh
+            jq -r '.vm_ssh_private_key' terraform/metadata > ~/.ssh/google_compute_engine
+            jq -r '.vm_ssh_public_key' terraform/metadata > $HOME/.ssh/google_compute_engine.pub
+            chmod 0600 ~/.ssh/google_compute_engine
+
+            echo "Generating install values..."
+            cf-for-k8s-develop/hack/generate-values.sh -d vcap.me -g gcp-service-account.json > cf-install-values/cf-install-values.yml
+
+            echo "Uploading cf-install-values.yml..."
+            gcloud beta compute \
+              scp cf-install-values/cf-install-values.yml ${user_host}:/tmp \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a" > /dev/null
+
+            cat <<EOT > remote-install-cf.sh
+            #!/usr/bin/env bash
+            set -euo pipefail
+
+            export HOME=/tmp/kind
+            export PATH=/tmp/kind/bin:/tmp/kind/go/bin:$PATH
+
+            CF_VALUES=/tmp/cf-install-values.yml
+            CF_RENDERED=/tmp/cf-rendered.yml
+            cd /tmp/kind/cf-for-k8s
+            ytt -f config -f config-optional/remove-ingressgateway-service.yml -f config-optional/remove-resource-requirements.yml -f \$CF_VALUES > \$CF_RENDERED
+            kapp deploy -f \$CF_RENDERED -a cf -y
+            kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml
+            EOT
+            chmod +x remote-install-cf.sh
+
+            echo "Uploading remote-install-cf.sh..."
+            gcloud beta compute \
+              scp remote-install-cf.sh ${user_host}:/tmp \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a" > /dev/null
+
+            echo "Running remote-install-cf.sh..."
+            gcloud beta compute \
+              ssh ${user_host} \
+              --command "/tmp/remote-install-cf.sh" \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a"
+
+    - task: ensure-api-healthy
+      config:
+        <<: *common-task-config
+        inputs:
+        - name: terraform
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            vm_name=$(jq -r '.vm_name' terraform/metadata)
+            user_host="tester@${vm_name}"
+            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+            gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+            gcloud components install beta -q
+            mkdir $HOME/.ssh
+            chmod 0700 $HOME/.ssh
+            jq -r '.vm_ssh_private_key' terraform/metadata > ~/.ssh/google_compute_engine
+            jq -r '.vm_ssh_public_key' terraform/metadata > $HOME/.ssh/google_compute_engine.pub
+            chmod 0600 ~/.ssh/google_compute_engine
+
+            cat <<EOT > remote-ensure-api-healthy.sh
+            #!/usr/bin/env bash
+            set -euo pipefail
+
+            export HOME=/tmp/kind
+            export PATH=/tmp/kind/bin:/tmp/kind/go/bin:$PATH
+
+            function retry {
+              local retries=\$1
+              shift
+
+              local count=0
+              until "\$@"; do
+                exit=\$?
+                wait=\$((2 ** count))
+                count=\$((count + 1))
+                if [[ \$count < \$retries ]]; then
+                  echo "Retry \$count/\$retries exited \$exit, retrying in \$wait seconds..."
+                  sleep \$wait
+                else
+                  echo "Retry \$count/\$retries exited \$exit, no more retries left."
+                  return \$exit
+                fi
+              done
+              return 0
+            }
+
+            retry 7 cf api api.vcap.me --skip-ssl-validation
+            EOT
+            chmod +x remote-ensure-api-healthy.sh
+
+            echo "Uploading remote-ensure-api-healthy.sh..."
+            gcloud beta compute \
+              scp remote-ensure-api-healthy.sh ${user_host}:/tmp \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a" > /dev/null
+
+            echo "Running remote-ensure-api-healthy.sh..."
+            gcloud beta compute \
+              ssh ${user_host} \
+              --command "/tmp/remote-ensure-api-healthy.sh" \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a"
+
+    - task: run-smoke-tests
+      config:
+        <<: *common-task-config
+        inputs:
+        - name: terraform
+        - name: cf-install-values
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            vm_name=$(jq -r '.vm_name' terraform/metadata)
+            user_host="tester@${vm_name}"
+            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+            gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+            gcloud components install beta -q
+            mkdir $HOME/.ssh
+            chmod 0700 $HOME/.ssh
+            jq -r '.vm_ssh_private_key' terraform/metadata > ~/.ssh/google_compute_engine
+            jq -r '.vm_ssh_public_key' terraform/metadata > $HOME/.ssh/google_compute_engine.pub
+            chmod 0600 ~/.ssh/google_compute_engine
+
+            cat <<EOT > remote-run-smoke-tests.sh
+            #!/usr/bin/env bash
+            set -euo pipefail
+
+            export HOME=/tmp/kind
+            export PATH=/tmp/kind/bin:/tmp/kind/go/bin:\$PATH
+            export CGO_ENABLED=0
+            export GO111MODULE=on
+
+            export SMOKE_TEST_API_ENDPOINT="https://api.vcap.me"
+            export SMOKE_TEST_APPS_DOMAIN=vcap.me
+            export SMOKE_TEST_USERNAME=admin
+            # The yq command to interpolate the CF admin password needs to run on the Concourse worker
+            export SMOKE_TEST_PASSWORD="$(yq -r '.cf_admin_password' cf-install-values/cf-install-values.yml)"
+            export SMOKE_TEST_SKIP_SSL=true
+            /tmp/kind/cf-for-k8s/hack/run-smoke-tests.sh
+            EOT
+            chmod +x remote-run-smoke-tests.sh
+
+            echo "Uploading remote-run-smoke-tests.sh..."
+            gcloud beta compute \
+              scp remote-run-smoke-tests.sh ${user_host}:/tmp \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a" > /dev/null
+
+            echo "Running remote-run-smoke-tests.sh..."
+            gcloud beta compute \
+              ssh ${user_host} \
+              --command "/tmp/remote-run-smoke-tests.sh" \
+              --project "((ci_k8s_gcp_project_name))" --zone "us-central1-a"
+
+    ensure:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy

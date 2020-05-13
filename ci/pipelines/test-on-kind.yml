@@ -58,6 +58,7 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-develop
+    - get: cf-for-k8s-develop-ci
     - get: cf-for-k8s-kind-gcp-terraform-templates
 
   - task: create-tf-vars-file

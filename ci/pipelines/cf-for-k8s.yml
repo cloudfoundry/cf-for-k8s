@@ -22,7 +22,7 @@ groups:
   - test-vendir-sync-on-cf-for-k8s-pr
 - name: docker-images
   jobs:
-  - build-cf-for-k8s-ci-gcp-image
+  - build-cf-for-k8s-ci-image
   - build-cf-test-runner-image
   - build-cf-for-k8s-azure-image
 
@@ -65,7 +65,7 @@ resources:
     paths:
       - ci/**
 
-- name: cf-for-k8s-dockerfiles
+- name: cf-for-k8s-ci-dockerfile
   type: git
   icon: github-box
   source:
@@ -73,7 +73,27 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
-      - ci/dockerfiles/**
+      - ci/dockerfiles/cf-for-k8s-ci/Dockerfile
+
+- name: cf-for-k8s-azure-dockerfile
+  type: git
+  icon: github-box
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+      - ci/dockerfiles/cf-for-k8s-azure/Dockerfile
+
+- name: cf-test-runner-dockerfile
+  type: git
+  icon: github-box
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+      - ci/dockerfiles/cf-test-runner/Dockerfile
 
 - name: cf-for-k8s-master
   type: git
@@ -160,7 +180,7 @@ resources:
     disable_forks: false
     base_branch: develop
 
-- name: cf-for-k8s-ci-gcp-image
+- name: cf-for-k8s-ci-image
   type: docker-image
   icon: docker
   source:
@@ -858,7 +878,7 @@ jobs:
         context: check-vendir-sync
 
 
-- name: build-cf-for-k8s-ci-gcp-image
+- name: build-cf-for-k8s-ci-image
   public: true
   plan:
   - timeout: 4h
@@ -866,13 +886,13 @@ jobs:
     - in_parallel:
       - get: weekly
         trigger: true
-      - get: cf-for-k8s-dockerfiles
+      - get: cf-for-k8s-ci-dockerfile
         trigger: true
       - get: k14s-io
         trigger: true
-    - put: cf-for-k8s-ci-gcp-image
+    - put: cf-for-k8s-ci-image
       params:
-        build: cf-for-k8s-dockerfiles/ci/dockerfiles/cf-for-k8s-ci/
+        build: cf-for-k8s-ci-dockerfile/ci/dockerfiles/cf-for-k8s-ci/
         push: true
 
 - name: build-cf-test-runner-image
@@ -883,11 +903,11 @@ jobs:
     - in_parallel:
       - get: weekly
         trigger: true
-      - get: cf-for-k8s-dockerfiles
+      - get: cf-test-runner-dockerfile
         trigger: true
     - put: cf-test-runner-image
       params:
-        build: cf-for-k8s-dockerfiles/ci/dockerfiles/cf-test-runner/
+        build: cf-test-runner-dockerfile/ci/dockerfiles/cf-test-runner/
         push: true
 
 - name: build-cf-for-k8s-azure-image
@@ -898,13 +918,13 @@ jobs:
     - in_parallel:
       - get: weekly
         trigger: true
-      - get: cf-for-k8s-dockerfiles
+      - get: cf-for-k8s-azure-dockerfile
         trigger: true
       - get: k14s-io
         trigger: true
     - put: cf-for-k8s-azure-image
       params:
-        build: cf-for-k8s-dockerfiles/ci/dockerfiles/cf-for-k8s-azure/
+        build: cf-for-k8s-azure-dockerfile/ci/dockerfiles/cf-for-k8s-azure/
         push: true
 
 - name: validate-azure

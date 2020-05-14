@@ -6,6 +6,8 @@ groups:
   - branch-freshness
   - test-vendir-sync-on-cf-for-k8s
   - validate-cf-for-k8s
+  - validate-cf-for-k8s-oldest
+  - validate-cf-for-k8s-newest
   - release-validation-pool-manual
 - name: stability-checks-and-slis
   jobs:
@@ -251,6 +253,15 @@ resources:
       prefix: azure
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
+- name: terraform-kind
+  type: terraform
+  source:
+    backend_type: gcs
+    backend_config:
+      bucket: relint-k8s-cluster-state
+      prefix: kind
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
+
 - name: cf-for-k8s-aks-terraform-templates
   type: git
   source:
@@ -259,6 +270,15 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
     - deploy/aks/terraform/**
+
+- name: cf-for-k8s-kind-gcp-terraform-templates
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - deploy/kind-on-gcp/terraform/**
 
 # Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
@@ -439,6 +459,182 @@ jobs:
 
   - put: validation-pool
     params: {release: validation-pool}
+
+- name: validate-cf-for-k8s-oldest
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-develop
+      passed:
+      - test-vendir-sync-on-cf-for-k8s
+      trigger: true
+    - get: cf-for-k8s-develop-ci
+    - get: cf-for-k8s-kind-gcp-terraform-templates
+
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      outputs:
+      - name: tf-vars
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "${GCP_PROJECT_NAME}"
+          region = "us-central1"
+          zone = "us-central1-a"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          machine_type = "n1-standard-8"
+          EOT
+
+  - put: terraform-kind
+    params:
+      terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
+  - do:
+    - task: create-kind-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+        cf-for-k8s-ci: cf-for-k8s-develop-ci
+      file: cf-for-k8s-develop-ci/ci/tasks/create-kind-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: oldest_version
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+        cf-for-k8s-ci: cf-for-k8s-develop-ci
+      file: cf-for-k8s-develop-ci/ci/tasks/install-cf-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    - task: ensure-api-healthy
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+        cf-for-k8s-ci: cf-for-k8s-develop-ci
+      file: cf-for-k8s-develop-ci/ci/tasks/ensure-api-healthy-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+        cf-for-k8s-ci: cf-for-k8s-develop-ci
+      file: cf-for-k8s-develop-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    ensure:
+      put: terraform-kind
+      params:
+        terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy
+
+- name: validate-cf-for-k8s-newest
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-develop
+      passed:
+      - test-vendir-sync-on-cf-for-k8s
+      trigger: true
+    - get: cf-for-k8s-develop-ci
+    - get: cf-for-k8s-kind-gcp-terraform-templates
+
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      outputs:
+      - name: tf-vars
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "${GCP_PROJECT_NAME}"
+          region = "us-central1"
+          zone = "us-central1-a"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          machine_type = "n1-standard-8"
+          EOT
+
+  - put: terraform-kind
+    params:
+      terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
+  - do:
+    - task: create-kind-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+        cf-for-k8s-ci: cf-for-k8s-develop-ci
+      file: cf-for-k8s-develop-ci/ci/tasks/create-kind-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: newest_version
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+        cf-for-k8s-ci: cf-for-k8s-develop-ci
+      file: cf-for-k8s-develop-ci/ci/tasks/install-cf-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    - task: ensure-api-healthy
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+        cf-for-k8s-ci: cf-for-k8s-develop-ci
+      file: cf-for-k8s-develop-ci/ci/tasks/ensure-api-healthy-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+        cf-for-k8s-ci: cf-for-k8s-develop-ci
+      file: cf-for-k8s-develop-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    ensure:
+      put: terraform-kind
+      params:
+        terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy
 
 - name: release-validation-pool-manual
   public: true

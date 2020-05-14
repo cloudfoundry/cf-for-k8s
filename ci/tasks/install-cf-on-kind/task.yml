@@ -11,6 +11,9 @@ inputs:
 - name: cf-for-k8s-ci
 - name: terraform
 
+outputs:
+- name: cf-install-values
+
 params:
   GCP_KEY: ~
   GCP_PROJECT_NAME: ~

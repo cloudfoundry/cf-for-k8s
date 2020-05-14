@@ -6,8 +6,8 @@ directories:
       sha: 2df0c84177c4421ae3e1662b7b1340451d984e4f
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: Switch prefix from "capi-" to "cf-api-"...
-      sha: a698364eebf83a27f8da83210fc6c47c1d83b174
+      commitTitle: Split apart our values file...
+      sha: ede3288f7fd822b1a43bcae02960a81457322900
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26057148

@@ -496,7 +496,8 @@ jobs:
           machine_type = "n1-standard-8"
           EOT
 
-  - put: terraform-kind
+  - put: terraform
+    resource: terraform-kind
     params:
       terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
@@ -539,7 +540,8 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
     ensure:
-      put: terraform-kind
+      put: terraform
+      resource: terraform-kind
       params:
         terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
@@ -584,7 +586,8 @@ jobs:
           machine_type = "n1-standard-8"
           EOT
 
-  - put: terraform-kind
+  - put: terraform
+    resource: terraform-kind
     params:
       terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
@@ -627,7 +630,8 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
     ensure:
-      put: terraform-kind
+      put: terraform
+      resource: terraform-kind
       params:
         terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt

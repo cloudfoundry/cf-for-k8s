@@ -76,7 +76,8 @@ jobs:
         args:
         - -ec
         - |
-          echo "ci-test-cluster" > tf-vars/env-name.txt
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
           cat <<EOT > tf-vars/input.tfvars
           project = "${GCP_PROJECT_NAME}"
           region = "us-central1"
@@ -160,7 +161,8 @@ jobs:
         args:
         - -ec
         - |
-          echo "ci-test-cluster" > tf-vars/env-name.txt
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
           cat <<EOT > tf-vars/input.tfvars
           project = "${GCP_PROJECT_NAME}"
           region = "us-central1"

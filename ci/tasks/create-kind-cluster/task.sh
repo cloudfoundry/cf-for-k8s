@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eou pipefail
 
-K8S_MINOR_VERSION=$(yq -r '.oldest_version' cf-for-k8s/supported_k8s_versions.yml)
+K8S_MINOR_VERSION=$(yq -r ".${VERSION_SELECTOR}" cf-for-k8s/supported_k8s_versions.yml)
 PATCH_VERSION=$(wget -q https://registry.hub.docker.com/v1/repositories/kindest/node/tags -O - | jq -r '.[].name' | grep -E "^v${K8S_MINOR_VERSION}.[0-9]+$" | cut -d. -f3 | sort -rn | head -1)
 K8S_VERSION=${K8S_MINOR_VERSION}.${PATCH_VERSION}
 

@@ -21,8 +21,8 @@
 You need the following CLIs on your system to be able to run the script:
 
 - [`cf cli`](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) (v6.50+)
-- [`kapp`](https://k14s.io/#install) (v0.24.0+)
-- [`ytt`](https://k14s.io/#install) (v0.26.0+)
+- [`kapp`](https://k14s.io/#install)
+- [`ytt`](https://k14s.io/#install)
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
 > Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the cluster you intend to deploy cf-for-k8s to.

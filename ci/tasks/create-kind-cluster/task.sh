@@ -5,17 +5,7 @@ K8S_MINOR_VERSION=$(yq -r '.oldest_version' cf-for-k8s/supported_k8s_versions.ym
 PATCH_VERSION=$(wget -q https://registry.hub.docker.com/v1/repositories/kindest/node/tags -O - | jq -r '.[].name' | grep -E "^v${K8S_MINOR_VERSION}.[0-9]+$" | cut -d. -f3 | sort -rn | head -1)
 K8S_VERSION=${K8S_MINOR_VERSION}.${PATCH_VERSION}
 
-vm_name=$(jq -r '.vm_name' terraform/metadata)
-user_host="tester@${vm_name}"
-echo ${GCP_KEY} > gcp-service-account.json
-gcloud config set project "${GCP_PROJECT_NAME}"
-gcloud auth activate-service-account --key-file=gcp-service-account.json  >/dev/null 2>&1
-gcloud components install beta -q
-mkdir $HOME/.ssh
-chmod 0700 $HOME/.ssh
-jq -r '.vm_ssh_private_key' terraform/metadata > $HOME/.ssh/google_compute_engine
-jq -r '.vm_ssh_public_key' terraform/metadata > $HOME/.ssh/google_compute_engine.pub
-chmod 0600 $HOME/.ssh/google_compute_engine
+source cf-for-k8s-ci/ci/helpers/auth-to-gcp.sh
 
 cat <<EOT > remote-check-permissions.sh
 while [[ ! -w /tmp/kind ]]; do

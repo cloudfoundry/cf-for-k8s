@@ -13,11 +13,11 @@ spec:
     matchLabels:
       app: metric-proxy
   template:
-    annotations:
-      prometheus.io/scrape: true
-      prometheus.io/port: 9090
-      prometheus.io/path: /metrics
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
+        prometheus.io/path: "/metrics"
       labels:
         app: metric-proxy
     spec:

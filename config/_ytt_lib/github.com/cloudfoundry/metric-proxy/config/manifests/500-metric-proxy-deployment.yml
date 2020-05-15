@@ -33,7 +33,7 @@ spec:
         - name: ADDR
           value: :8080
         - name: APP_SELECTOR
-          value: cloudfoundry.org/app_guid
+          value: cloudfoundry.org/guid
         - name: NAMESPACE
           value: cf-workloads
         - name: QUERY_TIMEOUT

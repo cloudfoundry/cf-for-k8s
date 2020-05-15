@@ -68,7 +68,7 @@ In `cf-for-k8s` repo:
     cd tests/smoke
     export SMOKE_TEST_API_ENDPOINT=api.${SYSTEM_DOMAIN}
     export SMOKE_TEST_USERNAME=admin
-    export SMOKE_TEST_APPS_DOMAIN=${SYSTEM_DOMAIN}
+    export SMOKE_TEST_APPS_DOMAIN=apps.${SYSTEM_DOMAIN}
     export SMOKE_TEST_SKIP_SSL=true
     ginkgo -v -r ./
     ```

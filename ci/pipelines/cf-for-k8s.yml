@@ -27,6 +27,12 @@ groups:
   - build-cf-for-k8s-ci-image
   - build-cf-test-runner-image
   - build-cf-for-k8s-azure-image
+- name: infrastructure
+  jobs:
+  - add-stability-cluster-lock
+  - create-stability-cluster
+  - destroy-stability-cluster
+  - remove-stability-cluster-lock
 
 resource_types:
 - name: pull-request
@@ -252,6 +258,14 @@ resources:
       bucket: relint-k8s-cluster-state
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
+- name: cf-for-k8s-gke-terraform-templates
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - deploy/gke/terraform/**
 
 - name: cf-for-k8s-aks-terraform-templates
   type: git
@@ -653,6 +667,8 @@ jobs:
     - get: cf-for-k8s-master
     - get: every-20-minutes
       trigger: true
+    - get: runtime-ci
+
   - put: stability-pool
     params: {acquire: true}
 
@@ -703,12 +719,10 @@ jobs:
 
           echo "Generating install values..."
           cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
 
           echo "Installing CF..."
           kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
-
-          echo "Configuring DNS..."
-          cf-for-k8s-master/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
 
           bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
@@ -772,6 +786,7 @@ jobs:
     - get: cf-for-k8s-master
     - get: every-20-minutes
       trigger: true
+
   - task: run-smoke-test
     config:
       <<: *common-test-config
@@ -1258,3 +1273,159 @@ jobs:
           var_files: [tf-vars/input.tfvars]
         get_params:
           action: destroy
+
+- name: add-stability-cluster-lock
+  serial: true
+  public: true
+  plan:
+  - get: runtime-ci
+
+  - task: prepare-to-modify-pool-resource
+    file: runtime-ci/tasks/prepare-to-modify-pool-resource/task.yml
+    output_mapping:
+      pool-resource: stability-pool
+    params:
+      NAME: stability
+
+  - put: stability-pool
+    params:
+      add_claimed: stability-pool
+
+- name: create-stability-cluster
+  serial: true
+  public: true
+  plan:
+  - in_parallel:
+    - get: stability-pool
+      passed: [ add-stability-cluster-lock ]
+      trigger: true
+    - get: cf-for-k8s-gke-terraform-templates
+
+  - task: create-tf-vars-file
+    config:
+      <<: *common-task-config
+      inputs:
+      - name: stability-pool
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "us-central1"
+          zone = "us-central1-a"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat stability-pool/name)"
+          env_dns_domain = "$(cat stability-pool/name).cf-for-k8s.relint.rocks"
+          dns_zone_name = "cf-for-k8s-relint-rocks"
+          EOT
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+      env_name_file: stability-pool/name
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
+  - task: write-metadata-to-lock-file
+    config:
+      <<: *common-task-config
+      inputs:
+      - name: stability-pool
+      - name: terraform
+      outputs:
+      - name: updated-stability-pool
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cp -v stability-pool/name updated-stability-pool/name
+          cp -v terraform/metadata updated-stability-pool/metadata
+
+  - put: stability-pool
+    params:
+      remove: stability-pool
+
+  - put: stability-pool
+    params:
+      add: updated-stability-pool
+
+- name: destroy-stability-cluster
+  serial: true
+  public: true
+  plan:
+  - in_parallel:
+    - put: stability-pool
+      params:
+        claim: stability
+    - get: cf-for-k8s-gke-terraform-templates
+
+  - task: delete-cf
+    input_mapping: {pool-lock: stability-pool}
+    config:
+      <<: *common-task-config
+      inputs:
+      - name: pool-lock
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cluster_name=$(cat pool-lock/name)
+          export KUBECONFIG=kube-config.yml
+          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+
+          kapp delete -a cf --yes
+
+  - task: create-tf-vars-file
+    config:
+      <<: *common-task-config
+      inputs:
+      - name: stability-pool
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "us-central1"
+          zone = "us-central1-a"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat stability-pool/name)"
+          env_dns_domain = "$(cat stability-pool/name).cf-for-k8s.relint.rocks"
+          dns_zone_name = "cf-for-k8s-relint-rocks"
+          EOT
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+      env_name_file: stability-pool/name
+      action: destroy
+      var_files: [ tf-vars/input.tfvars ]
+    get_params:
+      action: destroy
+
+- name: remove-stability-cluster-lock
+  serial: true
+  public: true
+  plan:
+  - get: stability-pool
+    passed: [ destroy-stability-cluster ]
+    trigger: true
+
+  - put: stability-pool
+    params:
+      remove: stability-pool

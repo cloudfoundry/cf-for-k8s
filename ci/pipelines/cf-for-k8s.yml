@@ -250,17 +250,8 @@ resources:
     backend_type: gcs
     backend_config:
       bucket: relint-k8s-cluster-state
-      prefix: azure
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
-- name: terraform-kind
-  type: terraform
-  source:
-    backend_type: gcs
-    backend_config:
-      bucket: relint-k8s-cluster-state
-      prefix: kind
-      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
 - name: cf-for-k8s-aks-terraform-templates
   type: git
@@ -320,6 +311,7 @@ jobs:
     - get: cf-for-k8s-all-branches
       trigger: true
     - get: runtime-ci
+
   - task: validate-branch-freshness
     file: runtime-ci/tasks/validate-branch-freshness/task.yml
     input_mapping:
@@ -497,7 +489,6 @@ jobs:
           EOT
 
   - put: terraform
-    resource: terraform-kind
     params:
       terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
@@ -515,6 +506,7 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: oldest_version
+
     - task: install-cf
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
@@ -523,6 +515,7 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
     - task: ensure-api-healthy
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
@@ -531,6 +524,7 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
@@ -539,9 +533,9 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
     ensure:
       put: terraform
-      resource: terraform-kind
       params:
         terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
@@ -587,7 +581,6 @@ jobs:
           EOT
 
   - put: terraform
-    resource: terraform-kind
     params:
       terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
@@ -605,6 +598,7 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: newest_version
+
     - task: install-cf
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
@@ -613,6 +607,7 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
     - task: ensure-api-healthy
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
@@ -621,6 +616,7 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
@@ -629,9 +625,9 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
     ensure:
       put: terraform
-      resource: terraform-kind
       params:
         terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
@@ -864,10 +860,12 @@ jobs:
     - get: cf-for-k8s-pr-master
       trigger: true
       version: every
+
   - task: write-pr-check-failure-comment
     file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
     input_mapping:
       pull-request: cf-for-k8s-pr-master
+
   - put: cf-for-k8s-pr-master
     params:
       path: cf-for-k8s-pr-master
@@ -881,6 +879,7 @@ jobs:
   - get: cf-for-k8s-pr-develop
     trigger: true
     version: every
+
   - put: cf-for-k8s-pr-develop
     params:
       path: cf-for-k8s-pr-develop
@@ -1090,6 +1089,7 @@ jobs:
         trigger: true
       - get: k14s-io
         trigger: true
+
     - put: cf-for-k8s-ci-image
       params:
         build: cf-for-k8s-ci-dockerfile/ci/dockerfiles/cf-for-k8s-ci/
@@ -1105,6 +1105,7 @@ jobs:
         trigger: true
       - get: cf-test-runner-dockerfile
         trigger: true
+
     - put: cf-test-runner-image
       params:
         build: cf-test-runner-dockerfile/ci/dockerfiles/cf-test-runner/
@@ -1122,6 +1123,7 @@ jobs:
         trigger: true
       - get: k14s-io
         trigger: true
+
     - put: cf-for-k8s-azure-image
       params:
         build: cf-for-k8s-azure-dockerfile/ci/dockerfiles/cf-for-k8s-azure/

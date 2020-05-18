@@ -2,7 +2,7 @@
 groups:
 - name: validation-checks
   jobs:
-  - unit-test-config-optional-files
+  - run-unit-tests
   - branch-freshness
   - test-vendir-sync-on-cf-for-k8s
   - validate-cf-for-k8s-gke
@@ -314,7 +314,7 @@ test-runner-config: &common-test-config
       repository: relintdockerhubpushbot/cf-test-runner
 
 jobs:
-- name: unit-test-config-optional-files
+- name: run-unit-tests
   public: true
   plan:
   - in_parallel:
@@ -322,8 +322,8 @@ jobs:
       trigger: true
     - get: cf-for-k8s-develop-ci
 
-  - task: unit-test-config-optional-files
-    file: cf-for-k8s-develop-ci/ci/tasks/unit-test-config-optional-files/task.yml
+  - task: run-unit-tests
+    file: cf-for-k8s-develop-ci/ci/tasks/run-unit-tests/task.yml
     input_mapping:
       cf-for-k8s-ci: cf-for-k8s-develop-ci
       cf-for-k8s-repo: cf-for-k8s-develop
@@ -367,7 +367,7 @@ jobs:
   - get: cf-for-k8s-develop
     passed:
     - test-vendir-sync-on-cf-for-k8s
-    - unit-test-config-optional-files
+    - run-unit-tests
     trigger: true
   - put: validation-pool
     params: {acquire: true}
@@ -476,7 +476,7 @@ jobs:
     - get: cf-for-k8s-develop
       passed:
       - test-vendir-sync-on-cf-for-k8s
-      - unit-test-config-optional-files
+      - run-unit-tests
       trigger: true
     - get: cf-for-k8s-develop-ci
     - get: cf-for-k8s-kind-gcp-terraform-templates
@@ -569,7 +569,7 @@ jobs:
     - get: cf-for-k8s-develop
       passed:
       - test-vendir-sync-on-cf-for-k8s
-      - unit-test-config-optional-files
+      - run-unit-tests
       trigger: true
     - get: cf-for-k8s-develop-ci
     - get: cf-for-k8s-kind-gcp-terraform-templates

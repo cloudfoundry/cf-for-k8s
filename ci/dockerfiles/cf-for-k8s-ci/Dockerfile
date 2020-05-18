@@ -15,6 +15,10 @@ RUN bosh_cli_version=$(curl --silent "https://api.github.com/repos/cloudfoundry/
     curl -LO https://github.com/cloudfoundry/bosh-cli/releases/download/v${bosh_cli_version}/bosh-cli-${bosh_cli_version}-linux-amd64 && \
     chmod +x ./bosh-cli-${bosh_cli_version}-linux-amd64 && \
     mv ./bosh-cli-${bosh_cli_version}-linux-amd64 /usr/local/bin/bosh
+RUN wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz && \
+    tar xf kubeval-linux-amd64.tar.gz && \
+    mv kubeval /usr/local/bin
+
 
 # ginkgo
 RUN export GO_TAR=go1.13.8.linux-amd64.tar.gz && \

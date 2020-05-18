@@ -2,8 +2,7 @@
 apiVersion: kapp.k14s.io/v1alpha1
 kind: Config
 metadata:
-  name: "test"
-  namespace: "test"
+  name: "kapp-config"
 rebaseRules:
 - path: [metadata, annotations, pv.kubernetes.io/bind-completed]
   type: copy

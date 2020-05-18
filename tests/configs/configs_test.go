@@ -14,6 +14,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gexec"
+	"gopkg.in/yaml.v1"
 )
 
 var _ = Describe("Configs", func() {
@@ -91,16 +92,38 @@ var _ = Describe("Configs", func() {
 	})
 	When("validating with kubeval", func() {
 		It("should pass", func() {
-			command := exec.Command("kubeval", "--strict", "--ignore-missing-schemas", "--skip-kinds", "Config", templatedPath)
-			session, err := Start(command, ioutil.Discard, GinkgoWriter)
-			Expect(err).NotTo(HaveOccurred())
-			session.Wait(10 * time.Second)
-			stdOut := removeExpectedKubevalOutput(session.Out.Contents())
-			Eventually(session).Should(Exit(0),
-				fmt.Sprintf("kubeval failed with output: %s\n", stdOut))
+			for _, v := range getSupportedK8Versions() {
+				By(fmt.Sprintf("checking version '%s'", v))
+				print("kubeval", "--strict", "--ignore-missing-schemas", "--skip-kinds", "Config", "-v", v, templatedPath)
+				command := exec.Command("kubeval", "--strict", "--ignore-missing-schemas", "--skip-kinds", "Config", "-v", v, templatedPath)
+				session, err := Start(command, ioutil.Discard, GinkgoWriter)
+				Expect(err).NotTo(HaveOccurred())
+				session.Wait(10 * time.Second)
+				stdOut := removeExpectedKubevalOutput(session.Out.Contents())
+				Eventually(session).Should(Exit(0),
+					fmt.Sprintf("kubeval failed with (filtered) output: %s\n", stdOut))
+			}
 		})
 	})
 })
+
+type supportedK8sVersions struct {
+	OldestVersion string `yaml:"oldest_version"`
+	NewestVersion string `yaml:"newest_version"`
+}
+
+func getSupportedK8Versions() []string {
+	currentDirectory, err := os.Getwd()
+	repoDir := filepath.Dir(filepath.Dir(currentDirectory))
+
+	v := supportedK8sVersions{}
+	f, err := ioutil.ReadFile(filepath.Join(repoDir, "supported_k8s_versions.yml"))
+	Expect(err).NotTo(HaveOccurred())
+	err = yaml.Unmarshal(f, &v)
+	Expect(err).NotTo(HaveOccurred())
+	Expect(v.NewestVersion).ToNot(Equal(""))
+	return []string{v.NewestVersion, v.OldestVersion}
+}
 
 func removeExpectedKubevalOutput(output []byte) []byte {
 	reMissingSchema := regexp.MustCompile("(?m)[\r\n]+^.*not validated against a schema$")

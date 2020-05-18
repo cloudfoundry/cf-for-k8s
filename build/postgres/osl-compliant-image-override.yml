@@ -1,0 +1,7 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.22.0
+overrides:
+  - image: docker.io/bitnami/postgresql:11.7.0-debian-10-r77
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-postgres@sha256:e7dd977c4de19a3848c16843f7cd724ad44141433c2460fc1297bab8b70e414c
+    preresolved: true

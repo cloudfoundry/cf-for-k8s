@@ -13,8 +13,8 @@ directories:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26057148
     path: github.com/cloudfoundry/cf-k8s-logging/config
   - git:
-      commitTitle: Add quotes to prometheus annotations
-      sha: 8cda308b4681174df273ccb9cf9a7fdebdc7b053
+      commitTitle: Remove reference to cf-for-k8s script that no longer exists...
+      sha: 338ca2d94390bc0758ef7388b6ecfbf43269f99f
     path: github.com/cloudfoundry/metric-proxy
   - git:
       commitTitle: 'Merge pull request #1262 from cloudfoundry/dependabot/go_modules/k8s/k8s.io/api-0.18.1'

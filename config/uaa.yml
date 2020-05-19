@@ -175,8 +175,7 @@ logging:
 #@ end
 
 #@ uaa = library.get("github.com/cloudfoundry/uaa")
-#@ uaa_resources = uaa.with_data_values(uaa_values()).eval()
---- #@ template.replace(overlay.apply(uaa_resources, place_in_system_namespace()))
+--- #@ template.replace(uaa.with_data_values(uaa_values()).eval())
 
 #! overlay CF-specific UAA configuration given there is no equivalent data values.
 #@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"uaa-config"}})

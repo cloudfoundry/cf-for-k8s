@@ -27,6 +27,8 @@ database:
   username: #@ data.values.uaa.database.user
   password: #@ data.values.uaa.database.password
 
+namespace: #@ data.values.system_namespace
+
 jwt:
   policy:
     activeKeyId: #@ data.values.uaa.jwt_policy.key_id
@@ -170,14 +172,6 @@ logging:
 
 #@ def overlay_uaa_config(old, new):
 #@   return yaml.encode(overlay.apply(yaml.decode(old), uaa_config()))
-#@ end
-
-#@ def place_in_system_namespace():
-#@overlay/match by=overlay.all,expects="1+"
----
-metadata:
-  #@overlay/match missing_ok=True
-  namespace: #@ data.values.system_namespace
 #@ end
 
 #@ uaa = library.get("github.com/cloudfoundry/uaa")

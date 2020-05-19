@@ -1,8 +1,5 @@
 #!/bin/bash
 set -eux
 
-# ENV
-: "${REPO_DIR:?}"
-
-cd "${REPO_DIR}/tests/configs"
+cd "cf-for-k8s-repo/tests/configs"
 ginkgo -r -v .

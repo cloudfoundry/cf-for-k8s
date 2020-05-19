@@ -327,8 +327,6 @@ jobs:
     input_mapping:
       cf-for-k8s-ci: cf-for-k8s-develop-ci
       cf-for-k8s-repo: cf-for-k8s-develop
-    params:
-      REPO_DIR: cf-for-k8s-repo
 
 - name: branch-freshness
   public: true

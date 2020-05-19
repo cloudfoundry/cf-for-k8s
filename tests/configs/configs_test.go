@@ -93,9 +93,9 @@ var _ = Describe("Configs", func() {
 	When("validating with kubeval", func() {
 		It("should pass", func() {
 			for _, v := range getSupportedK8Versions() {
-				By(fmt.Sprintf("checking version '%s'", v))
-				print("kubeval", "--strict", "--ignore-missing-schemas", "--skip-kinds", "Config", "-v", v, templatedPath)
-				command := exec.Command("kubeval", "--strict", "--ignore-missing-schemas", "--skip-kinds", "Config", "-v", v, templatedPath)
+				By(fmt.Sprintf("checking with K8s version '%s'", v))
+				command := exec.Command("kubeval", "--strict", "--ignore-missing-schemas", "-v", v, templatedPath)
+				fmt.Println(command.Args)
 				session, err := Start(command, ioutil.Discard, GinkgoWriter)
 				Expect(err).NotTo(HaveOccurred())
 				session.Wait(10 * time.Second)

@@ -1,0 +1,2 @@
+DeploymentUpdate:
+  maxUnavailable: 1

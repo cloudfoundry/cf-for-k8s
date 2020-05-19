@@ -231,14 +231,14 @@ spec:
   strategy:
     rollingUpdate:
       maxSurge: 100%
-      maxUnavailable: 0
+      maxUnavailable: 1
     type: RollingUpdate
   template:
     metadata:
       annotations:
         checksum/config: 5d754ff6661141c802675a9180286885b3e839450ebe2e1260dd07aeb2343383
         checksum/secrets: be465545d935bfa4b2d7bba629da94c60c0ef6e4cbe78a6d842373897d74d952
-        rollme: YY3ZO
+        rollme: rWG3N
       labels:
         app: minio
         release: cf-blobstore

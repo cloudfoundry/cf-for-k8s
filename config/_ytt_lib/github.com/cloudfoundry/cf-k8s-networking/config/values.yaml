@@ -7,7 +7,7 @@ systemNamespace: cf-system
 workloadsNamespace: cf-workloads
 
 cfroutesync:
-  image: gcr.io/cf-networking-images/cf-k8s-networking/cfroutesync@sha256:0459226037166b15d4a80f0c4a0be9a16d1cffb76c7dd9c7ad2efbe763e23c61
+  image: gcr.io/cf-networking-images/cf-k8s-networking/cfroutesync@sha256:87704f76960a66e5f11a73ad1a853f5e06203d29d00ef4dc3f61ad81feee1898
 
   ccCA: 'base64_encoded_cloud_controller_ca'
   ccBaseURL: 'https://api.example.com'
@@ -17,7 +17,7 @@ cfroutesync:
   clientSecret: 'base64_encoded_uaaClientSecret'
 
 routecontroller:
-  image: gcr.io/cf-networking-images/cf-k8s-networking/routecontroller@sha256:e097d844f30ad4516b646ee3dc32614d9e76ba764c7ac280c3d1094163a35692
+  image: gcr.io/cf-networking-images/cf-k8s-networking/routecontroller@sha256:717940947ac6b90ccf17a202b5e8eec58388c211dfa26495503471442f5a7202
 
 service:
   externalPort: 80

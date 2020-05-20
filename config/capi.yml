@@ -24,6 +24,7 @@ images:
 
 system_namespace: #@ data.values.system_namespace
 workloads_namespace: #@ data.values.workloads_namespace
+staging_namespace: #@ data.values.staging_namespace
 system_domain: #@ data.values.system_domain
 app_domains:
 #@ for/end domain in data.values.app_domains:

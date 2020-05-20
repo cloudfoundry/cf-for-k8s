@@ -2,6 +2,7 @@
 ---
 system_namespace: cf-system
 workloads_namespace: cf-workloads
+staging_namespace: cf-workloads-staging
 
 #! your system domain, e.g., "system.cf.example.com"
 system_domain:

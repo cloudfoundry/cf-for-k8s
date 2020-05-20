@@ -10,7 +10,7 @@ directories:
       sha: 3cd77b697476085a8b7c91c586ffba50e260d4fa
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26057148
+      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288
     path: github.com/cloudfoundry/cf-k8s-logging/config
   - git:
       commitTitle: Remove reference to cf-for-k8s script that no longer exists...

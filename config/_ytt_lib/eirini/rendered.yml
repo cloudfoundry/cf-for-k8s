@@ -1,12 +1,10 @@
+---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: deny-app-ingress
   namespace: cf-workloads
 spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
   ingress:
   - from:
     - namespaceSelector:
@@ -21,110 +19,113 @@ spec:
       podSelector:
         matchLabels:
           app.kubernetes.io/component: adapter
+  podSelector: {}
+  policyTypes:
+  - Ingress
 ---
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default,runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
   name: cf-workloads-app-psp
-  annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default,runtime/default
-    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
 spec:
-  privileged: false
   allowPrivilegeEscalation: false
-  requiredDropCapabilities:
-  - ALL
-  volumes:
-  - configMap
-  - emptyDir
-  - projected
-  - secret
-  - downwardAPI
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
-  runAsUser:
-    rule: RunAsAny
-  seLinux:
-    rule: RunAsAny
-  supplementalGroups:
-    rule: MustRunAs
-    ranges:
-    - min: 1
-      max: 65535
   fsGroup:
-    rule: MustRunAs
     ranges:
-    - min: 1
-      max: 65535
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  hostIPC: false
+  hostNetwork: false
+  hostPID: false
+  privileged: false
   readOnlyRootFilesystem: false
----
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  name: cf-workloads-privileged-app-psp
-  annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default,runtime/default
-    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
-spec:
-  privileged: false
-  allowPrivilegeEscalation: false
   requiredDropCapabilities:
   - ALL
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
   volumes:
   - configMap
   - emptyDir
   - projected
   - secret
   - downwardAPI
-  hostNetwork: false
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default,runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+  name: cf-workloads-privileged-app-psp
+spec:
+  allowPrivilegeEscalation: false
+  fsGroup:
+    rule: RunAsAny
   hostIPC: false
+  hostNetwork: false
   hostPID: false
+  privileged: false
+  requiredDropCapabilities:
+  - ALL
   runAsUser:
     rule: RunAsAny
   seLinux:
     rule: RunAsAny
   supplementalGroups:
     rule: RunAsAny
-  fsGroup:
-    rule: RunAsAny
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
 ---
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: eirini
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
     seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+  name: eirini
 spec:
-  privileged: false
   allowPrivilegeEscalation: false
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  hostIPC: false
+  hostNetwork: false
+  hostPID: false
+  privileged: false
+  readOnlyRootFilesystem: false
   requiredDropCapabilities:
   - ALL
-  volumes:
-  - configMap
-  - emptyDir
-  - projected
-  - secret
-  - downwardAPI
-  hostNetwork: false
-  hostIPC: false
-  hostPID: false
   runAsUser:
     rule: MustRunAsNonRoot
   seLinux:
     rule: RunAsAny
   supplementalGroups:
-    rule: MustRunAs
     ranges:
-    - min: 1
-      max: 65535
-  fsGroup:
+    - max: 65535
+      min: 1
     rule: MustRunAs
-    ranges:
-    - min: 1
-      max: 65535
-  readOnlyRootFilesystem: false
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -145,11 +146,19 @@ metadata:
   namespace: cf-system
 ---
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: eirini
-  namespace: cf-system
 data:
+  events.yml: |
+    app_namespace: cf-workloads
+    cc_internal_api: "https://api.cf-system.svc.cluster.local:9023"
+    cc_cert_path: "/etc/eirini/secrets/cc.crt"
+    cc_key_path: "/etc/eirini/secrets/cc.key"
+    cc_ca_path: "/etc/eirini/secrets/cc.ca"
+  metrics.yml: |
+    app_namespace: cf-workloads
+    loggregator_address: "doppler-doppler.cf-system.svc.cluster.local:8082"
+    loggergator_cert_path: "/etc/eirini/secrets/doppler.crt"
+    loggregator_key_path: "/etc/eirini/secrets/doppler.key"
+    loggregator_ca_path: "/etc/eirini/secrets/doppler.ca"
   opi.yml: |
     opi:
       app_namespace: cf-workloads
@@ -186,23 +195,15 @@ data:
     app_namespace: cf-workloads
     nats_ip: "nats-nats.cf-system.svc.cluster.local"
     nats_port: 4222
-  metrics.yml: |
-    app_namespace: cf-workloads
-    loggregator_address: "doppler-doppler.cf-system.svc.cluster.local:8082"
-    loggergator_cert_path: "/etc/eirini/secrets/doppler.crt"
-    loggregator_key_path: "/etc/eirini/secrets/doppler.key"
-    loggregator_ca_path: "/etc/eirini/secrets/doppler.ca"
-  events.yml: |
-    app_namespace: cf-workloads
-    cc_internal_api: "https://api.cf-system.svc.cluster.local:9023"
-    cc_cert_path: "/etc/eirini/secrets/cc.crt"
-    cc_key_path: "/etc/eirini/secrets/cc.key"
-    cc_ca_path: "/etc/eirini/secrets/cc.ca"
   staging-reporter.yml: |
     app_namespace: cf-workloads
     eirini_cert_path: "/etc/eirini/secrets/eirini-client.crt"
     eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
     ca_path: "/etc/eirini/secrets/eirini-client.ca"
+kind: ConfigMap
+metadata:
+  name: eirini
+  namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -212,12 +213,12 @@ metadata:
 rules:
 - apiGroups:
   - policy
+  resourceNames:
+  - cf-workloads-app-psp
   resources:
   - podsecuritypolicies
   verbs:
   - use
-  resourceNames:
-  - cf-workloads-app-psp
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -227,12 +228,12 @@ metadata:
 rules:
 - apiGroups:
   - policy
+  resourceNames:
+  - cf-workloads-privileged-app-psp
   resources:
   - podsecuritypolicies
   verbs:
   - use
-  resourceNames:
-  - cf-workloads-privileged-app-psp
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -292,12 +293,12 @@ metadata:
 rules:
 - apiGroups:
   - policy
+  resourceNames:
+  - eirini
   resources:
   - podsecuritypolicies
   verbs:
   - use
-  resourceNames:
-  - eirini
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -305,9 +306,9 @@ metadata:
   name: cf-workloads-app-rolebinding
   namespace: cf-workloads
 roleRef:
+  apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: cf-workloads-app-role
-  apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
   name: eirini
@@ -319,9 +320,9 @@ metadata:
   name: cf-workloads-privileged-app-rolebinding
   namespace: cf-workloads
 roleRef:
+  apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: cf-workloads-privileged-app-role
-  apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
   name: eirini-privileged
@@ -333,9 +334,9 @@ metadata:
   name: eirini-rolebinding
   namespace: cf-workloads
 roleRef:
+  apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: eirini-role
-  apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
   name: opi
@@ -347,9 +348,9 @@ metadata:
   name: eirini-rolebinding
   namespace: cf-system
 roleRef:
+  apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: eirini-role
-  apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
   name: opi
@@ -368,15 +369,21 @@ metadata:
   namespace: cf-system
 spec:
   ports:
-  - port: 8085
+  - name: https
+    port: 8085
     protocol: TCP
-    name: https
   selector:
     name: eirini
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:abe7d83f1997d58fe8940c9d34d1144f8df5a0abe5f1133f6455b37ef27b8965
+        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:abe7d83f1997d58fe8940c9d34d1144f8df5a0abe5f1133f6455b37ef27b8965
   name: eirini
   namespace: cf-system
 spec:
@@ -386,56 +393,13 @@ spec:
   template:
     metadata:
       labels:
-        name: eirini
         eirinifs_version: v75.0.0
+        name: eirini
     spec:
-      dnsPolicy: ClusterFirst
-      serviceAccountName: opi
-      volumes:
-      - name: config-map-volume
-        configMap:
-          name: eirini
-          items:
-          - key: opi.yml
-            path: opi.yml
-      - name: cf-secrets
-        projected:
-          sources:
-          - secret:
-              name: eirini-internal-tls-certs
-              items:
-              - key: tls.crt
-                path: cc.crt
-              - key: tls.key
-                path: cc.key
-          - secret:
-              name: eirini-internal-tls-certs
-              items:
-              - key: tls.ca
-                path: cc.ca
-          - secret:
-              name: eirini-internal-tls-certs
-              items:
-              - key: tls.crt
-                path: eirini-server.crt
-              - key: tls.key
-                path: eirini-server.key
-          - secret:
-              name: eirini-internal-tls-certs
-              items:
-              - key: tls.ca
-                path: eirini.ca
-      securityContext:
-        runAsNonRoot: true
       containers:
-      - name: opi
-        image: eirini/opi@sha256:2e0b84c5fcb1e6e5cdb07a70210f2e462aa52119f7a330660a7444a938deefbb
+      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:abe7d83f1997d58fe8940c9d34d1144f8df5a0abe5f1133f6455b37ef27b8965
         imagePullPolicy: Always
-        volumeMounts:
-        - name: config-map-volume
-          mountPath: /workspace/jobs/opi/config
-        - name: cf-secrets
-          mountPath: /workspace/jobs/opi/secrets
+        name: opi
         ports:
         - containerPort: 8085
           name: https
@@ -443,3 +407,46 @@ spec:
           requests:
             cpu: 20m
             memory: 20Mi
+        volumeMounts:
+        - mountPath: /workspace/jobs/opi/config
+          name: config-map-volume
+        - mountPath: /workspace/jobs/opi/secrets
+          name: cf-secrets
+      dnsPolicy: ClusterFirst
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: opi
+      volumes:
+      - configMap:
+          items:
+          - key: opi.yml
+            path: opi.yml
+          name: eirini
+        name: config-map-volume
+      - name: cf-secrets
+        projected:
+          sources:
+          - secret:
+              items:
+              - key: tls.crt
+                path: cc.crt
+              - key: tls.key
+                path: cc.key
+              name: eirini-internal-tls-certs
+          - secret:
+              items:
+              - key: tls.ca
+                path: cc.ca
+              name: eirini-internal-tls-certs
+          - secret:
+              items:
+              - key: tls.crt
+                path: eirini-server.crt
+              - key: tls.key
+                path: eirini-server.key
+              name: eirini-internal-tls-certs
+          - secret:
+              items:
+              - key: tls.ca
+                path: eirini.ca
+              name: eirini-internal-tls-certs

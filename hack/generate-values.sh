@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-echo "WARNING: The hack scripts are intended for development of cf-for-k8s. 
-They are not officially supported product bits.  Their interface and behavior
-may change at any time without notice." 1>&2
-
 # This is a hack! see https://github.com/cloudfoundry/cf-for-k8s/blob/develop/hack/README.md
 set -euo pipefail
 
@@ -21,6 +17,8 @@ flags:
       (optional) Filepath to the GCP Service Account JSON describing a service account
       that has permissions to write to the project's container repository.
 
+  -s, --silence-hack-warning
+      (optional) Omit hack script warning message.
 EOF
   exit 1
 }
@@ -50,6 +48,10 @@ while [[ $# -gt 0 ]]; do
     shift
     shift
     ;;
+  -s | --silence-hack-warning)
+    SILENCE_HACK_WARNING="true"
+    shift
+    ;;
   *)
     echo -e "Error: Unknown flag: ${i/=*/}\n" >&2
     usage_text >&2
@@ -57,6 +59,12 @@ while [[ $# -gt 0 ]]; do
     ;;
   esac
 done
+
+if [[ -z ${SILENCE_HACK_WARNING:=} ]]; then
+  echo "WARNING: The hack scripts are intended for development of cf-for-k8s. 
+  They are not officially supported product bits.  Their interface and behavior
+  may change at any time without notice." 1>&2
+fi
 
 if [[ -z ${DOMAIN:=} ]]; then
   echo "Missing required flag: -d / --cf-domain" >&2

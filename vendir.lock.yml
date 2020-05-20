@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Update routecontroller image digest to sha256:e097d844f30ad4516b646ee3dc32614d9e76ba764c7ac280c3d1094163a35692
-      sha: 2df0c84177c4421ae3e1662b7b1340451d984e4f
+      commitTitle: Add tasks to label routecontroller and cfroutesync images...
+      sha: 1b5e17f00a6c1500eb988187cba1ce171ff58f34
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: Bump CCNG docker image manually...

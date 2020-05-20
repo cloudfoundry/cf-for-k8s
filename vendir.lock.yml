@@ -13,8 +13,8 @@ directories:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288
     path: github.com/cloudfoundry/cf-k8s-logging/config
   - git:
-      commitTitle: Remove reference to cf-for-k8s script that no longer exists...
-      sha: 338ca2d94390bc0758ef7388b6ecfbf43269f99f
+      commitTitle: Fix annotated image...
+      sha: 63ec659248536d203a399acba04e307e1825c9e2
     path: github.com/cloudfoundry/metric-proxy
   - git:
       commitTitle: 'Merge pull request #1262 from cloudfoundry/dependabot/go_modules/k8s/k8s.io/api-0.18.1'

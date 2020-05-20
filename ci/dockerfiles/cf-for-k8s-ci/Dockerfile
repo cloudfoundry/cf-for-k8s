@@ -17,8 +17,9 @@ RUN bosh_cli_version=$(curl --silent "https://api.github.com/repos/cloudfoundry/
     mv ./bosh-cli-${bosh_cli_version}-linux-amd64 /usr/local/bin/bosh
 RUN wget https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz && \
     tar xf kubeval-linux-amd64.tar.gz && \
+    chmod +x ./kubeval && \
     mv kubeval /usr/local/bin
-
+RUN gcloud components install beta -q
 
 # ginkgo
 RUN export GO_TAR=go1.13.8.linux-amd64.tar.gz && \
@@ -33,6 +34,3 @@ ENV GO111MODULE=on
 
 # https://github.com/onsi/ginkgo/releases
 RUN go get -u github.com/onsi/ginkgo/ginkgo@v1.11.0
-
-# Install beta gcloud components
-RUN gcloud components install beta -q

@@ -128,10 +128,9 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: v0.4.0
-          Type: resolved
-          URL: metacontroller/metacontroller:v0.4.0
-        URL: index.docker.io/metacontroller/metacontroller@sha256:ad85cb5f5ad9a61a3f38277fed371df43ea0fc55d9073dfa8f4fc2e27c127603
+        - Type: preresolved
+          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-metacontroller@sha256:731da6e0c4d544e0529126d74b32ccbf7d334db96d60745163d72b1334d93fe3
+        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-metacontroller@sha256:731da6e0c4d544e0529126d74b32ccbf7d334db96d60745163d72b1334d93fe3
   labels:
     app.kubernetes.io/name: metacontroller
   name: metacontroller
@@ -154,7 +153,7 @@ spec:
         - --discovery-interval=20s
         command:
         - /usr/bin/metacontroller
-        image: index.docker.io/metacontroller/metacontroller@sha256:ad85cb5f5ad9a61a3f38277fed371df43ea0fc55d9073dfa8f4fc2e27c127603
+        image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-metacontroller@sha256:731da6e0c4d544e0529126d74b32ccbf7d334db96d60745163d72b1334d93fe3
         name: metacontroller
       serviceAccountName: metacontroller
   volumeClaimTemplates: []

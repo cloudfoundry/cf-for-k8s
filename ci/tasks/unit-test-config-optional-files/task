@@ -1,8 +1,0 @@
-#!/bin/bash
-set -eux
-
-# ENV
-: "${REPO_DIR:?}"
-
-cd "${REPO_DIR}/tests/configs"
-ginkgo -r -v .

@@ -1,0 +1,5 @@
+#!/bin/bash
+set -eux
+
+cd "cf-for-k8s-repo/tests/configs"
+ginkgo -r -v .

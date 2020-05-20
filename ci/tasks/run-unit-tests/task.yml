@@ -10,8 +10,5 @@ inputs:
 - name: cf-for-k8s-ci
 - name: cf-for-k8s-repo
 
-params:
-  REPO_DIR:
-
 run:
-  path: cf-for-k8s-ci/ci/tasks/unit-test-config-optional-files/task
+  path: cf-for-k8s-ci/ci/tasks/run-unit-tests/task

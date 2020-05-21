@@ -61,6 +61,10 @@ spec:
           imagePullPolicy: Always
           ports:
           - containerPort: 80
+          readinessProbe:
+            httpGet:
+              port: 80
+              path: "/healthz"
           volumeMounts:
           - name: nginx
             mountPath: /etc/nginx

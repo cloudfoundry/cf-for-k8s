@@ -35,7 +35,7 @@ system_certificate:
   #! Base64-encoded certificate for the wildcard
   #! subdomain of the system domain (e.g., CN=*.system.cf.example.com)
   crt: ""
-  #! Base64-encoded private key for the cert above
+  #! Base64-encoded private key for the system certificate
   key: ""
   #! Base64-encoded CA certificate used to sign the system certifcate
   ca: ""
@@ -44,9 +44,18 @@ workloads_certificate:
   #! Base64-encoded certificate for the wildcard
   #! subdomain of the system domain (e.g., CN=*.apps.cf.example.com)
   crt: ""
-  #! Base64-encoded private key for the cert above
+  #! Base64-encoded private key for the workloads certificate
   key: ""
   #! Base64-encoded CA certificate used to sign the workloads certifcate
+  ca: ""
+
+internal_certificate:
+  #! Base64-encoded certificate for the wildcard
+  #! subdomain of the system domain (e.g., CN=*.cf-system.svc.cluster.local)
+  crt: ""
+  #! Base64-encoded private key for the internal certificate
+  key: ""
+  #! Base64-encoded CA certificate used to sign the internal certifcate
   ca: ""
 
 capi:
@@ -81,13 +90,6 @@ uaa:
     password: ""
     name: uaa
 
-  certificate:
-    #! Base64-encoded certificate for the uaa service inside
-    #! the kubernetes cluster (i.e., CN=uaa.cf-system.svc.cluster.local)
-    crt: ""
-    #! Base64-encoded private key for the cert above
-    key: ""
-
   jwt_policy:
     key_id: "default_jwt_policy_key"
     #! Plain text private key
@@ -108,22 +110,6 @@ uaa:
       certificate: ""
 
   login_secret_name: "uaa-login-secret"
-
-doppler:
-  tls:
-    #! Base64-encoded certificate for the doppler service inside
-    #! the kubernetes cluster (i.e., CN=doppler.cf-system.svc.cluster.local)
-    crt: ""
-    #! Base64-encoded private key for the cert above
-    key: ""
-
-eirini:
-  tls:
-    #! Base64-encoded certificate for the eirini service inside
-    #! the kubernetes cluster (i.e., CN=eirini.cf-system.svc.cluster.local)
-    crt: ""
-    #! Base64-encoded private key for the cert above
-    key: ""
 
 log_cache_ca:
   crt: "" #! Base64-encoded ca for the log cache

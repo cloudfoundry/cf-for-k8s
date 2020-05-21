@@ -6,8 +6,8 @@ directories:
       sha: 1b5e17f00a6c1500eb988187cba1ce171ff58f34
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: Bump CCNG docker image manually...
-      sha: 3cd77b697476085a8b7c91c586ffba50e260d4fa
+      commitTitle: images.yml updated by CI...
+      sha: 2b8c6b0a9aca6206937e86685edc57afe906848c
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288

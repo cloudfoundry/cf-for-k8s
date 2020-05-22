@@ -37,12 +37,7 @@ resource "google_container_cluster" "primary" {
 
   node_config {
     machine_type = var.node_machine_type
-
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring",
-    ]
+    service_account = google_service_account.node_service_account.email
 
     metadata = {
       disable-legacy-endpoints = "true"
@@ -52,4 +47,28 @@ resource "google_container_cluster" "primary" {
       "cluster_management_overload_env_name" = var.env_name
     }
   }
+}
+
+resource "google_service_account" "node_service_account" {
+  project = var.project
+  account_id   = "${var.env_name}-sa"
+  display_name = "${var.env_name} Service Account"
+}
+
+resource "google_project_iam_member" "node_service_member_iam_log_writer" {
+  project = var.project
+  role = "roles/logging.logWriter"
+  member = "serviceAccount:${google_service_account.node_service_account.email}"
+}
+
+resource "google_project_iam_member" "node_service_member_iam_monitoring_viewer" {
+  project = var.project
+  role = "roles/monitoring.viewer"
+  member = "serviceAccount:${google_service_account.node_service_account.email}"
+}
+
+resource "google_project_iam_member" "node_service_member_iam_monitoring_metric_writer" {
+  project = var.project
+  role = "roles/monitoring.metricWriter"
+  member = "serviceAccount:${google_service_account.node_service_account.email}"
 }

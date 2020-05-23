@@ -493,7 +493,6 @@ jobs:
       outputs:
       - name: tf-vars
       params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
       run:
         path: /bin/bash
@@ -503,9 +502,9 @@ jobs:
           env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
           echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
           cat <<EOT > tf-vars/input.tfvars
-          project = "${GCP_PROJECT_NAME}"
-          region = "us-central1"
-          zone = "us-central1-a"
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           machine_type = "n1-standard-8"
           EOT
@@ -586,7 +585,6 @@ jobs:
       outputs:
       - name: tf-vars
       params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
       run:
         path: /bin/bash
@@ -596,9 +594,9 @@ jobs:
           env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
           echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
           cat <<EOT > tf-vars/input.tfvars
-          project = "${GCP_PROJECT_NAME}"
-          region = "us-central1"
-          zone = "us-central1-a"
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           machine_type = "n1-standard-8"
           EOT
@@ -694,13 +692,14 @@ jobs:
     - get: cf-for-k8s-master
     - get: every-20-minutes
       trigger: true
-    - get: runtime-ci
 
   - put: stability-pool
-    params: {acquire: true}
+    params:
+      acquire: true
 
   - task: delete-cf
-    input_mapping: {pool-lock: stability-pool}
+    input_mapping:
+      pool-lock: stability-pool
     config:
       <<: *common-task-config
       inputs:
@@ -719,7 +718,8 @@ jobs:
           kapp delete -a cf --yes
 
   - task: install-cf
-    input_mapping: {pool-lock: stability-pool}
+    input_mapping:
+      pool-lock: stability-pool
     config:
       <<: *common-task-config
       inputs:
@@ -727,9 +727,6 @@ jobs:
       - name: pool-lock
       outputs:
       - name: env-metadata
-      params:
-        DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
-        DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
       run:
         path: /bin/bash
         args:
@@ -741,7 +738,7 @@ jobs:
           gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
           gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
 
-          export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
+          export DNS_DOMAIN="${cluster_name}.((ci_k8s_root_domain))"
           cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
           echo "Generating install values..."
@@ -774,7 +771,8 @@ jobs:
           cf-for-k8s-master/hack/run-smoke-tests.sh
 
   - task: delete-cf
-    input_mapping: {pool-lock: stability-pool}
+    input_mapping:
+      pool-lock: stability-pool
     config:
       <<: *common-task-config
       inputs:
@@ -793,7 +791,8 @@ jobs:
           kapp delete -a cf --yes
 
   - put: stability-pool
-    params: {release: stability-pool}
+    params:
+      release: stability-pool
 
 - name: release-stability-pool-manual
   public: true
@@ -802,7 +801,8 @@ jobs:
   ensure:
     try:
       put: stability-pool
-      params: {release: stability-pool}
+      params:
+        release: stability-pool
 
 - name: long-lived-env-sli
   serial: true
@@ -821,13 +821,12 @@ jobs:
       - name: cf-for-k8s-master
       params:
         CF_ADMIN_PASSWORD: ((ll_dep_cf_admin_pass))
-        DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
       run:
         path: /bin/sh
         args:
         - -ec
         - |
-          DNS_DOMAIN="long-lived-sli.${DNS_ROOT_DOMAIN}"
+          DNS_DOMAIN="long-lived-sli.((ci_k8s_root_domain))"
           export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
           export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
           export SMOKE_TEST_USERNAME=admin
@@ -857,7 +856,7 @@ jobs:
           export KUBECONFIG=kube-config.yml
           echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
           gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone 'us-central1-a' >/dev/null 2>&1
+          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
 
           kapp delete -a cf --yes
 
@@ -874,9 +873,6 @@ jobs:
       - name: terraform
       outputs:
       - name: env-metadata
-      params:
-        DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
-        DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
       run:
         path: /bin/bash
         args:
@@ -886,10 +882,10 @@ jobs:
           cluster_name="long-lived-sli"
           echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
           gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone 'us-central1-a' >/dev/null 2>&1
+          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
 
-          export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
-          cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" 'us-central1-a'
+          export DNS_DOMAIN="${cluster_name}.((ci_k8s_root_domain))"
+          cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
           echo "Generating install values..."
           cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
@@ -903,10 +899,10 @@ jobs:
   public: true
   plan:
   - in_parallel:
-    - get: runtime-ci
     - get: cf-for-k8s-pr-master
       trigger: true
       version: every
+    - get: runtime-ci
 
   - task: write-pr-check-failure-comment
     file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
@@ -1261,11 +1257,11 @@ jobs:
             subscription_id = "((relint_azure_subscription_id))"
             tenant_id = "((aks_cluster_creation_tenant))"
             google_project = "((ci_k8s_gcp_project_name))"
-            google_region = "us-central1"
+            google_region = "((ci_k8s_gcp_project_region))"
             google_service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-            env_name = "ci-test-cluster"
-            env_dns_domain = "azure-ci-test-cluster.k8s-dev.relint.rocks"
-            dns_zone_name = "k8s-dev-relint-rocks"
+            env_name = "$(cat tf-vars/env-name.txt)"
+            env_dns_domain = "azure-$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
+            dns_zone_name = "((ci_k8s_dns_zone_name))"
             EOT
 
     - put: terraform
@@ -1294,7 +1290,7 @@ jobs:
               echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
               jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
-              export DNS_DOMAIN="azure-$(cat terraform/name).k8s-dev.relint.rocks"
+              export DNS_DOMAIN="azure-$(cat terraform/name).((ci_k8s_root_domain))"
               #TODO, make this check work for AKS
               # cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
@@ -1399,12 +1395,12 @@ jobs:
         - |
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
-          region = "us-central1"
-          zone = "us-central1-a"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat stability-pool/name)"
-          env_dns_domain = "$(cat stability-pool/name).cf-for-k8s.relint.rocks"
-          dns_zone_name = "cf-for-k8s-relint-rocks"
+          env_dns_domain = "$(cat stability-pool/name).((ci_k8s_root_domain))"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
           EOT
 
   - put: terraform
@@ -1449,7 +1445,8 @@ jobs:
     - get: cf-for-k8s-gke-terraform-templates
 
   - task: delete-cf
-    input_mapping: {pool-lock: stability-pool}
+    input_mapping:
+      pool-lock: stability-pool
     config:
       <<: *common-task-config
       inputs:
@@ -1483,12 +1480,12 @@ jobs:
         - |
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
-          region = "us-central1"
-          zone = "us-central1-a"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat stability-pool/name)"
-          env_dns_domain = "$(cat stability-pool/name).cf-for-k8s.relint.rocks"
-          dns_zone_name = "cf-for-k8s-relint-rocks"
+          env_dns_domain = "$(cat stability-pool/name).((ci_k8s_root_domain))"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
           EOT
 
   - put: terraform
@@ -1533,12 +1530,12 @@ jobs:
           echo "long-lived-sli" > tf-vars/env-name.txt
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
-          region = "us-central1"
-          zone = "us-central1-a"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat tf-vars/env-name.txt)"
-          env_dns_domain = "$(cat tf-vars/env-name.txt).cf-for-k8s.relint.rocks"
-          dns_zone_name = "cf-for-k8s-relint-rocks"
+          env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
           EOT
 
   - put: terraform
@@ -1584,12 +1581,12 @@ jobs:
           echo "long-lived-sli" > tf-vars/env-name.txt
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
-          region = "us-central1"
-          zone = "us-central1-a"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat tf-vars/env-name.txt)"
-          env_dns_domain = "$(cat tf-vars/env-name.txt).cf-for-k8s.relint.rocks"
-          dns_zone_name = "cf-for-k8s-relint-rocks"
+          env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
           EOT
 
   - put: terraform

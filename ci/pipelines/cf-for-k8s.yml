@@ -22,7 +22,7 @@ groups:
   - fail-prs-to-cf-for-k8s-master
   - pass-prs-to-cf-for-k8s-develop
   - run-unit-tests-on-pr
-  - run-tests-on-cf-for-k8s-pr
+  - validate-cf-for-k8s-pr
   - test-vendir-sync-on-cf-for-k8s-pr
 - name: docker-images
   jobs:
@@ -1025,19 +1025,21 @@ jobs:
         context: check-vendir-sync
 
 
-- name: run-tests-on-cf-for-k8s-pr
+- name: validate-cf-for-k8s-pr
+  serial: true
   public: true
   plan:
   - in_parallel:
-    - get: runtime-ci
     - get: cf-for-k8s-pr-all-branches
       params:
         integration_tool: rebase
       trigger: true
       version: every
       passed:
-        - run-unit-tests-on-pr
-        - test-vendir-sync-on-cf-for-k8s-pr
+      - run-unit-tests-on-pr
+      - test-vendir-sync-on-cf-for-k8s-pr
+    - get: cf-for-k8s-gke-terraform-templates
+    - get: runtime-ci
 
   - put: cf-for-k8s-pr-all-branches
     params:
@@ -1045,130 +1047,138 @@ jobs:
       status: pending
       context: tests
 
+  - task: create-tf-vars-file
+    config:
+      <<: *common-task-config
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          echo "pr-validation" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat tf-vars/env-name.txt)"
+          env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
+          EOT
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
   - do:
-    - put: validation-pool
-      params: {acquire: true}
+    - task: install-cf
+      config:
+        <<: *common-task-config
+        inputs:
+        - name: cf-for-k8s-pr-all-branches
+        - name: terraform
+        - name: tf-vars
+        outputs:
+        - name: env-metadata
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            cluster_name=$(cat tf-vars/env-name.txt)
+            export KUBECONFIG=kube-config.yml
+            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+            gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+            gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
 
-    - do:
-      - task: delete-cf
-        input_mapping: {pool-lock: validation-pool}
-        config:
-          <<: *common-task-config
-          inputs:
-          - name: pool-lock
-          run:
-            path: /bin/bash
-            args:
-            - -ec
-            - |
-              cluster_name=$(cat pool-lock/name)
-              export KUBECONFIG=kube-config.yml
-              echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-              gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-              gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+            DNS_DOMAIN="${cluster_name}.((ci_k8s_root_domain))"
+            cf-for-k8s-pr-all-branches/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
-              kapp delete -a cf --yes
+            echo "Generating install values..."
+            cf-for-k8s-pr-all-branches/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+            echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
 
-      - task: install-cf
-        input_mapping: {pool-lock: validation-pool}
-        config:
-          <<: *common-task-config
-          inputs:
-          - name: cf-for-k8s-pr-all-branches
-          - name: pool-lock
-          outputs:
-          - name: env-metadata
-          params:
-            DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
-            DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
-          run:
-            path: /bin/bash
-            args:
-            - -ec
-            - |
-              export KUBECONFIG=kube-config.yml
-              cluster_name=$(cat pool-lock/name)
-              echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-              gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-              gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+            echo "Installing CF..."
+            kapp deploy -a cf -f <(ytt -f cf-for-k8s-pr-all-branches/config -f cf-install-values.yml) -y
 
-              export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
-              cf-for-k8s-pr-all-branches/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
+            bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+            echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
-              echo "Generating install values..."
-              cf-for-k8s-pr-all-branches/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+    - task: run-smoke-test
+      config:
+        <<: *common-test-config
+        inputs:
+        - name: cf-for-k8s-pr-all-branches
+        - name: env-metadata
+        run:
+          path: /bin/sh
+          args:
+          - -ec
+          - |
+            DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
+            export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
+            export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
+            export SMOKE_TEST_USERNAME=admin
+            export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
+            export SMOKE_TEST_SKIP_SSL=true
+            cf-for-k8s-pr-all-branches/hack/run-smoke-tests.sh
 
-              echo "Installing CF..."
-              kapp deploy -a cf -f <(ytt -f cf-for-k8s-pr-all-branches/config -f cf-install-values.yml) -y
+    on_failure:
+      do:
+      - task: write-pr-check-failure-comment
+        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+        input_mapping:
+          pull-request: cf-for-k8s-pr-all-branches
 
-              echo "Configuring DNS..."
-              cf-for-k8s-pr-all-branches/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
-
-              bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
-              echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
-
-      - task: run-smoke-test
-        config:
-          <<: *common-test-config
-          inputs:
-          - name: cf-for-k8s-pr-all-branches
-          - name: env-metadata
-          run:
-            path: /bin/sh
-            args:
-            - -ec
-            - |
-              DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
-              export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
-              export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
-              export SMOKE_TEST_USERNAME=admin
-              export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
-              export SMOKE_TEST_SKIP_SSL=true
-              cf-for-k8s-pr-all-branches/hack/run-smoke-tests.sh
-
-      - task: delete-cf
-        input_mapping: {pool-lock: validation-pool}
-        config:
-          <<: *common-task-config
-          inputs:
-          - name: pool-lock
-          run:
-            path: /bin/bash
-            args:
-            - -ec
-            - |
-              cluster_name=$(cat pool-lock/name)
-              export KUBECONFIG=kube-config.yml
-              echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-              gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-              gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
-
-              kapp delete -a cf --yes
-
-      on_failure:
-        do:
-        - task: write-pr-check-failure-comment
-          file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
-          input_mapping:
-            pull-request: cf-for-k8s-pr-all-branches
-
-        - put: cf-for-k8s-pr-all-branches
-          params:
-            path: cf-for-k8s-pr-all-branches
-            status: failure
-            context: tests
-            comment_file: pull-request-comment/comment
-
-      on_success:
-        put: cf-for-k8s-pr-all-branches
+      - put: cf-for-k8s-pr-all-branches
         params:
           path: cf-for-k8s-pr-all-branches
-          status: success
+          status: failure
           context: tests
+          comment_file: pull-request-comment/comment
+
+    on_success:
+      put: cf-for-k8s-pr-all-branches
+      params:
+        path: cf-for-k8s-pr-all-branches
+        status: success
+        context: tests
 
     ensure:
-      put: validation-pool
-      params: {release: validation-pool}
+      do:
+      - task: delete-cf
+        config:
+          <<: *common-task-config
+          inputs:
+          - name: tf-vars
+          run:
+            path: /bin/bash
+            args:
+            - -ec
+            - |
+              cluster_name=$(cat tf-vars/env-name.txt)
+              export KUBECONFIG=kube-config.yml
+              echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+              gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
+              gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+
+              kapp delete -a cf --yes
+
+      - put: terraform
+        params:
+          terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+          env_name_file: tf-vars/env-name.txt
+          action: destroy
+          var_files: [ tf-vars/input.tfvars ]
+        get_params:
+          action: destroy
 
 - name: build-cf-for-k8s-ci-image
   public: true

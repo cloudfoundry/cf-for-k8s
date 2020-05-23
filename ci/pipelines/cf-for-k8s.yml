@@ -9,7 +9,6 @@ groups:
   - validate-cf-for-k8s-oldest
   - validate-cf-for-k8s-newest
   - promote-master-deliver-stories
-  - release-validation-pool-manual
 - name: stability-checks-and-slis
   jobs:
   - stability-test-cf-for-k8s
@@ -232,14 +231,22 @@ resources:
     paths:
     - pkg/website/templates/install.sh
 
-# semaphore for the Kubernetes cluster (ci-test-cluster in GKE); it is shared between this pipeline and the CF for K8s PR test pipeline
-- name: validation-pool
+- name: ready-pool
   type: pool
   icon: pool
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
     branch: master
-    pool: cf-for-k8s
+    pool: k8s-dev/ready
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
+- name: destroy-pool
+  type: pool
+  icon: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: master
+    pool: k8s-dev/destroy
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
 
 - name: stability-pool
@@ -372,30 +379,13 @@ jobs:
     - test-vendir-sync-on-cf-for-k8s
     - run-unit-tests
     trigger: true
-  - put: validation-pool
+
+  - put: ready-pool
     params: {acquire: true}
 
-  - task: delete-cf
-    input_mapping: {pool-lock: validation-pool}
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: pool-lock
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          cluster_name=$(cat pool-lock/name)
-          export KUBECONFIG=kube-config.yml
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
-
-          kapp delete -a cf --yes
-
   - task: install-cf
-    input_mapping: {pool-lock: validation-pool}
+    input_mapping:
+      pool-lock: ready-pool
     config:
       <<: *common-task-config
       inputs:
@@ -403,9 +393,6 @@ jobs:
       - name: pool-lock
       outputs:
       - name: env-metadata
-      params:
-        DNS_ROOT_DOMAIN: ((ci_k8s_root_domain))
-        DNS_ZONE_NAME: ((ci_k8s_dns_zone_name))
       run:
         path: /bin/bash
         args:
@@ -417,17 +404,15 @@ jobs:
           gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
           gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
 
-          export DNS_DOMAIN="${cluster_name}.${DNS_ROOT_DOMAIN}"
+          DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
           cf-for-k8s-develop/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
           echo "Generating install values..."
           cf-for-k8s-develop/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
 
           echo "Installing CF..."
           kapp deploy -a cf -f <(ytt -f cf-for-k8s-develop/config -f cf-install-values.yml) -y
-
-          echo "Configuring DNS..."
-          cf-for-k8s-develop/hack/update-gcp-dns.sh "${DNS_DOMAIN}" "${DNS_ZONE_NAME}"
 
           bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
@@ -452,7 +437,8 @@ jobs:
           cf-for-k8s-develop/hack/run-smoke-tests.sh
 
   - task: delete-cf
-    input_mapping: {pool-lock: validation-pool}
+    input_mapping:
+      pool-lock: ready-pool
     config:
       <<: *common-task-config
       inputs:
@@ -470,8 +456,13 @@ jobs:
 
           kapp delete -a cf --yes
 
-  - put: validation-pool
-    params: {release: validation-pool}
+  - put: destroy-pool
+    params:
+      add: ready-pool
+
+  - put: ready-pool
+    params:
+      remove: ready-pool
 
 - name: validate-cf-for-k8s-oldest
   plan:
@@ -674,15 +665,6 @@ jobs:
     params:
       repos:
         - cf-for-k8s-develop
-
-- name: release-validation-pool-manual
-  public: true
-  plan:
-  - get: validation-pool
-  ensure:
-    try:
-      put: validation-pool
-      params: {release: validation-pool}
 
 - name: stability-test-cf-for-k8s
   serial: true

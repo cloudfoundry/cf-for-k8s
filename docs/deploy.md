@@ -166,6 +166,13 @@ This project is in it's early stages of development and hence there are features
    kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].ip}'
    ```
 
+   OR in certain environments, the external ip may be surfaced as a hostname instead. In that case use:
+
+   ```console
+   kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].hostname}'
+   ```
+
+
    > If you used a single DNS record for both `system_domain` and `app_domains`, then have it resolve to the Ingress Gateway's external IP
 
       e.g.

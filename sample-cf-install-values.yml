@@ -32,10 +32,10 @@ capi:
 #! - all of the certs should have KeyUsage that includes server and client authentication
 
 #! certificate, private key, and certificate authority used to identify the CF installation (i.e. the ingress gateway).
-#! - should be valid for *.system.cf.example.com, and *.cf-system.svc.cluster.local
+#! - should be valid for *.system.cf.example.com
 system_certificate:
-  crt: &crt ingress_gateway_certificate
-  key: &key ingress_gateway_private_key
+  crt: ingress_gateway_certificate
+  key: ingress_gateway_private_key
   ca: ingress_gateway_certificate_ca
 
 #! certificate, private key, and certificate authority used to identify the CF installation (i.e. the ingress gateway).
@@ -45,6 +45,13 @@ workloads_certificate:
   crt: workload_certificate
   key: workload_private_key
   ca: workload_certificate_ca
+
+#! certificate, private key, and certificate authority used internally within the CF installation (i.e. cf-system.svc.cluster.local).
+#! - should be valid for *.cf-system.svc.cluster.local
+internal_certificate:
+  crt: &crt internal_certificate
+  key: &key internal_private_key
+  ca: internal_certificate_ca
 
 #! Log Cache CA certificate and private key
 #! - the common name needs to be log-cache-ca
@@ -96,10 +103,6 @@ uaa:
     password: uaadb_password
   #! The secret used for the UAA admin client.
   admin_client_secret: uaaadminclientsecret
-  certificate:
-    #! This certificate should be valid for uaa.cf-system.svc.cluster.local
-    crt: *crt
-    key: *key
   #! JWT policy configuration
   jwt_policy:
     #! This private key should NOT be base64 encoded
@@ -114,22 +117,8 @@ uaa:
       key: login_service_provider_key
       certificate: login_service_provider_certificate
 
-doppler:
-  tls:
-    #! Certificate and private key for doppler to support TLS communication
-    #! - this certificate should be valid for doppler.cf-system.svc.cluster.local
-    crt: *crt
-    key: *key
-
-eirini:
-  tls:
-    #! Certificate and private key for eirini to support TLS communication
-    #! - this certificate should be valid for eirini.cf-system.svc.cluster.local
-    crt: *crt
-    key: *key
-
 #! To push apps from source code, you need to configure the `app_registry` block
-#! Example below is for docker hub. For other registry examples, see below. 
+#! Example below is for docker hub. For other registry examples, see below.
 
 app_registry:
    hostname: https://index.docker.io/v1/

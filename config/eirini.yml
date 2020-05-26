@@ -14,9 +14,9 @@ metadata:
   name: eirini-internal-tls-certs
   namespace: #@ data.values.system_namespace
 data:
-  tls.crt: #@ data.values.eirini.tls.crt
-  tls.key: #@ data.values.eirini.tls.key
-  tls.ca: #@ data.values.system_certificate.ca
+  tls.crt: #@ data.values.internal_certificate.crt
+  tls.key: #@ data.values.internal_certificate.key
+  tls.ca: #@ data.values.internal_certificate.ca
 
 #! Allow app traffic from the istio-ingressgateway
 ---

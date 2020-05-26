@@ -246,5 +246,5 @@ metadata:
   namespace: #@ data.values.system_namespace
 type: Opaque
 data:
-  uaa.key: #@ data.values.uaa.certificate.key
-  uaa.crt: #@ data.values.uaa.certificate.crt
+  uaa.key: #@ data.values.internal_certificate.key
+  uaa.crt: #@ data.values.internal_certificate.crt

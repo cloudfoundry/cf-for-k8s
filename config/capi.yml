@@ -55,9 +55,9 @@ eirini:
 
 apiServer:
   opi:
-    client_cert: #@ data.values.eirini.tls.crt
-    client_key: #@ data.values.eirini.tls.key
-    ca: #@ data.values.system_certificate.ca
+    client_cert: #@ data.values.internal_certificate.crt
+    client_key: #@ data.values.internal_certificate.key
+    ca: #@ data.values.internal_certificate.ca
 
 metric_proxy:
   ca:

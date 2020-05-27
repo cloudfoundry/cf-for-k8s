@@ -28,6 +28,13 @@ uaa:
 
 Please note to the **different spelling** of `postgres`  and `postgresql` for capi and uaa.
 
+
+## Limitations
+
+The traffic to an external database will not be encrypted. This will be changed in the near future.
+
+## Setup
+
 As prerequisite, you need to execute the following steps to configure your postgres installation for cf-for-k8s:
 
 1. Set the environment variables

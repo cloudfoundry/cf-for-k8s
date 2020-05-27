@@ -528,15 +528,6 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
 
-    - task: ensure-api-healthy
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-        cf-for-k8s-ci: cf-for-k8s-develop-ci
-      file: cf-for-k8s-develop-ci/ci/tasks/ensure-api-healthy-on-kind/task.yml
-      params:
-        GCP_KEY: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
@@ -616,15 +607,6 @@ jobs:
         cf-for-k8s: cf-for-k8s-develop
         cf-for-k8s-ci: cf-for-k8s-develop-ci
       file: cf-for-k8s-develop-ci/ci/tasks/install-cf-on-kind/task.yml
-      params:
-        GCP_KEY: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-    - task: ensure-api-healthy
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-        cf-for-k8s-ci: cf-for-k8s-develop-ci
-      file: cf-for-k8s-develop-ci/ci/tasks/ensure-api-healthy-on-kind/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))

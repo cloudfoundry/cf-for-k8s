@@ -47,7 +47,7 @@ directories:
   path: build/minio/_vendir
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry-incubator/eirini-release/releases/24924434
+      url: https://api.github.com/repos/cloudfoundry-incubator/eirini-release/releases/26469608
     path: .
   path: build/eirini/_vendir
 - contents:

@@ -3,4 +3,4 @@ appVersion: 0.3.0
 description: A Helm chart for Cloud Foundry/Eirini
 icon: https://raw.githubusercontent.com/cloudfoundry-incubator/eirini-release/develop/assets/images/eirini-icon.png
 name: eirini
-version: 1.5.0
+version: 1.6.0

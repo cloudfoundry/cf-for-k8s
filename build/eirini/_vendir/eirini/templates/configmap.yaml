@@ -54,7 +54,7 @@ data:
       tls_port: 8085
       disk_limit_mb: {{ .Values.opi.disk_limit_mb }}
       application_service_account: eirini
-      application_privileged_service_account: eirini-privileged
+      allow_run_image_as_root: false
   routing.yml: |
     app_namespace: {{ .Values.opi.namespace }}
     nats_ip: "{{ .Values.opi.routing.nats.serviceName }}.{{ .Release.Namespace }}.svc.cluster.local"

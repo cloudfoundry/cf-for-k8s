@@ -12,6 +12,7 @@ rules:
   verbs:
   - create
   - delete
+  - list
 - apiGroups:
   - apps
   resources:

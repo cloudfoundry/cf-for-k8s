@@ -3,3 +3,4 @@
 **/.terraform/
 **/*.tfvars
 tmp
+.idea

@@ -33,7 +33,7 @@ variable "node_count" {
 
 variable "node_machine_type" {
   type = string
-  default = "n1-standard-4"
+  default = "n1-standard-2"
 }
 
 variable "release_channel" {

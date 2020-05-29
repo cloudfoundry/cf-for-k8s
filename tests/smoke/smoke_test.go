@@ -2,7 +2,6 @@ package smoke_test
 
 import (
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -85,48 +84,7 @@ var _ = Describe("Smoke Tests", func() {
 			Eventually(session).Should(Exit(0))
 		}
 
-		It("creates a routable app pod in Kubernetes from a docker image-based app", func() {
-			// Enable Docker Feature Flag
-			Eventually(cf.Cf("enable-feature-flag", "diego_docker")).Should(Exit(0))
-
-			appName = generator.PrefixedRandomName(NamePrefix, "app")
-
-			By("pushing an app and checking that the CF CLI command succeeds")
-			cfPush := cf.Cf("push", appName, "-o", "cloudfoundry/diego-docker-app", "--no-route")
-			Eventually(cfPush).Should(Exit(0))
-			mapRoute(appName)
-
-			By("querying the app")
-			var resp *http.Response
-
-			Eventually(func() int {
-				var err error
-				resp, err = http.Get(fmt.Sprintf("https://%s.%s/env", appName, appsDomain))
-				Expect(err).NotTo(HaveOccurred())
-				return resp.StatusCode
-			}, 2*time.Minute, 30*time.Second).Should(Equal(200))
-
-			body, err := ioutil.ReadAll(resp.Body)
-			Expect(err).NotTo(HaveOccurred())
-
-			var appResponse struct {
-				VcapServices string `json:"VCAP_SERVICES"`
-			}
-
-			err = json.Unmarshal(body, &appResponse)
-			Expect(err).NotTo(HaveOccurred())
-			Expect(appResponse.VcapServices).NotTo(BeEmpty())
-
-			By("verifying that the application's logs are available.")
-			Eventually(func() string {
-				cfLogs := cf.Cf("logs", appName, "--recent")
-				return string(cfLogs.Wait().Out.Contents())
-			}, 2*time.Minute, 2*time.Second).Should(ContainSubstring("Hello World from index"))
-		})
-
 		It("creates a routable app pod in Kubernetes from a source-based app", func() {
-			// Disable Docker Feature Flag
-			Eventually(cf.Cf("disable-feature-flag", "diego_docker")).Should(Exit(0))
 
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 

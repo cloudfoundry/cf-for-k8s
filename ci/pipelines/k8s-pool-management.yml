@@ -428,7 +428,7 @@ jobs:
             echo -e "${blue}Rounding up claimed environments...${nc}"
 
             pushd "${pool_dir}/claimed" > /dev/null
-              claimed_files="$(git log --reverse --name-only --pretty=format: --after="7 days ago" -- * | sort | uniq | xargs)"
+              claimed_files="$(git log --reverse --name-only --pretty=format: -- * | sort -u | xargs)"
 
               output="${blue}\n* ENV *\t* CLAIMED BY *\t* CLAIMED ON *\t* CLAIMED SINCE *\t* STORY *\n"
 

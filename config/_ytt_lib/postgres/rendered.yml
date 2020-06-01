@@ -58,9 +58,10 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Type: preresolved
-          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-postgres@sha256:e7dd977c4de19a3848c16843f7cd724ad44141433c2460fc1297bab8b70e414c
-        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-postgres@sha256:e7dd977c4de19a3848c16843f7cd724ad44141433c2460fc1297bab8b70e414c
+        - Tag: 11.7.0-debian-10-r77
+          Type: resolved
+          URL: docker.io/bitnami/postgresql:11.7.0-debian-10-r77
+        URL: index.docker.io/bitnami/postgresql@sha256:9762d9a80b90a5efe299d4848057ac5c45fb384570b36f60aad38fe2b1704bd6
   labels:
     app: postgresql
     chart: postgresql-8.9.0
@@ -104,7 +105,7 @@ spec:
               name: cf-db-admin-secret
         - name: POSTGRESQL_ENABLE_LDAP
           value: "no"
-        image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-postgres@sha256:e7dd977c4de19a3848c16843f7cd724ad44141433c2460fc1297bab8b70e414c
+        image: index.docker.io/bitnami/postgresql@sha256:9762d9a80b90a5efe299d4848057ac5c45fb384570b36f60aad38fe2b1704bd6
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:

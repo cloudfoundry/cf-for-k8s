@@ -220,7 +220,7 @@ This project is in it's early stages of development and hence there are features
 
    name: test-node-app
    path: /Users/pivotal/workspace/cf-for-k8s/tests/smoke/assets/test-node-app
-   routes: test-node-app.<cf-domain>  
+   routes: test-node-app.<cf-domain>
 
    Creating app test-node-app...
    Mapping routes...
@@ -250,10 +250,11 @@ This project is in it's early stages of development and hence there are features
 
    </br>
 
-1. Validate the app is reachable
+1. Validate the app is reachable over **https**
 
    ```console
-   curl http://test-node-app.<cf-domain>/env
+   # for self-signed certs, use -k to allow insecure server connections when using SSL
+   curl -k https://test-node-app.<cf-domain>
    ```
 
    ```console

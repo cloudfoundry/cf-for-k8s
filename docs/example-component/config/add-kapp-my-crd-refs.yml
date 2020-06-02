@@ -1,0 +1,27 @@
+---
+apiVersion: kapp.k14s.io/v1alpha1
+kind: Config
+
+#! Configure kapp to look for secret and configmap references in our crd
+#! when updating versioned resources. If kapp versions your secrets or configmaps
+#! without adding this configuration, the crd will refer to a nonexistent secret
+#! or configmap.
+
+templateRules:
+- resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: v1, kind: Secret}
+  affectedResources:
+    objectReferences:
+    - path: []
+      resourceMatchers:
+      - apiVersionKindMatcher: {apiVersion: v1alpha1, kind: MyCRD}
+      nameKey: my-example-secret-ref
+
+- resourceMatchers:
+  - apiVersionKindMatcher: {apiVersion: v1, kind: ConfigMap}
+  affectedResources:
+    objectReferences:
+    - path: [spec]
+      resourceMatchers:
+      - apiVersionKindMatcher: {apiVersion: v1alpha1, kind: MyCRD}
+      nameKey: my-example-nested-configmap-ref

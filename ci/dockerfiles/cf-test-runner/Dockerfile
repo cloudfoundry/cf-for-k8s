@@ -1,7 +1,7 @@
 FROM ubuntu:bionic
 
 RUN apt-get update && \
-    apt-get install -y git gcc wget
+    apt-get install -y git gcc wget curl
 
 RUN export GO_TAR=go1.13.8.linux-amd64.tar.gz && \
     wget https://dl.google.com/go/${GO_TAR} && \

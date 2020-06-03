@@ -35,7 +35,7 @@ To deploy cf-for-k8s as is, the cluster should:
 
 - be running Kubernetes version within range 1.14.x to 1.18.x
 - have a minimum of 5 nodes
-- have a minimum of 2 CPU, 7.5GB memory per node
+- have a minimum of 4 CPU, 15GB memory per node
 - support `LoadBalancer` services
 - support `metrics-server`
   - Most IaaSes come with `metrics-server`, but if yours does not come with it or if you're using `kind`, then you may want to run something like 

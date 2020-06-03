@@ -20,8 +20,7 @@ See the requirements in [Deploying CF for K8s](deploy.md#required-tools).
 
 In addition to the Kubernetes version requirement in [Deploying CF for K8s](deploy.md#kubernetes-cluster-requirements), the cluster should:
 
-- have a minimum of 1 node
-- have a minimum of 7 CPU, 14GB memory if using 1 node
+- have a minimum of 6 CPU, 6GB memory if using 1 node
   - commonly configured via Docker Desktop > Preferences > Resources
 - have a running metrics-server (this is an important consideration for **Kind** or **kubeadm** clusters. You can see one way to install it in the [Kind deploy instructions](#steps-to-deploy-on-kind))
 

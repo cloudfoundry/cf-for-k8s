@@ -1343,6 +1343,7 @@ jobs:
   - get: cf-for-k8s-latest-release
   - get: cf-for-k8s-master
     trigger: true
+  - get: cf-for-k8s-develop-ci
 
   - put: ready-pool
     params: {acquire: true}
@@ -1381,6 +1382,12 @@ jobs:
           bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
           cp "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml" env-metadata
+          cp cf-install-values.yml env-metadata/original-cf-install-values.yml
+
+  - task: push-test-app
+    file: cf-for-k8s-develop-ci/ci/tasks/push-test-app/task.yml
+    params:
+      APP_NAME: jp-node-app
 
   - task: install-cf-master
     input_mapping:
@@ -1408,31 +1415,18 @@ jobs:
           echo "Copying bosh vars store from latest release install"
           mkdir -p "/tmp/${cluster_name}.k8s-dev.relint.rocks"
           cp env-metadata/cf-vars.yaml "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml"
-          echo "Generating install values..."
-          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-          echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
+          echo "Using install values from the fresh install..."
 
           echo "Installing CF..."
-          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f env-metadata/original-cf-install-values.yml) -y
 
-  - task: run-smoke-test
-    config:
-      <<: *common-test-config
-      inputs:
-      - name: cf-for-k8s-master
-      - name: env-metadata
-      run:
-        path: /bin/sh
-        args:
-        - -ec
-        - |
-          DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
-          export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
-          export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
-          export SMOKE_TEST_USERNAME=admin
-          export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
-          export SMOKE_TEST_SKIP_SSL=true
-          cf-for-k8s-master/hack/run-smoke-tests.sh
+  - in_parallel:
+    - task: run-smoke-tests
+      file: cf-for-k8s-develop-ci/ci/tasks/run-smoke-tests/task.yml
+    - task: verify-existing-app
+      file: cf-for-k8s-develop-ci/ci/tasks/verify-existing-app/task.yml
+      params:
+        APP_NAME: jp-node-app
 
   - task: delete-cf
     input_mapping:

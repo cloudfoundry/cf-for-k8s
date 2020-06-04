@@ -6,7 +6,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: istio-ingressgateway-certs
+  name: cf-system-cert
   namespace: istio-system
   annotations:
     kapp.k14s.io/change-rule.istio-ingressgateway: "upsert before upserting istio.io/ingressgateway"

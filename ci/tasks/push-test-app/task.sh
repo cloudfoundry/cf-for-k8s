@@ -9,4 +9,4 @@ cf target -o org
 cf create-space space
 cf target -o org -s space
 
-cf push ${APP_NAME} -p cf-for-k8s-latest-release/tests/smoke/assets/test-node-app
+cf push ${APP_NAME} -p cf-for-k8s-repo/tests/smoke/assets/test-node-app

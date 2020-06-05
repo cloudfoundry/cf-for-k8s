@@ -13,6 +13,7 @@ inputs:
 
 params:
   APP_NAME:
+  VERIFY_EXISTING_APP:
 
 run:
   path: cf-for-k8s-develop-ci/ci/tasks/push-test-app/task.sh

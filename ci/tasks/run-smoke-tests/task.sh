@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euc
+set -eu
 
 DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
 export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euc
+set -eu
 
 DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
 cf api api.${DNS_DOMAIN} --skip-ssl-validation

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -exu
+
+echo "WARNING: The hack scripts are intended for development of cf-for-k8s.
+They are not officially supported product bits.  Their interface and behavior
+may change at any time without notice." 1>&2
+
+CLUSTER_NAME=$1
+DESIRED_VERSION=$2
+NODE_POOL_NAME="${3:-default-pool}"
+
+export CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
+timeout=$(gcloud config list --format=json | jq -r .builds.timeout)
+# Allow 10 hours before timing out
+gcloud config set builds/timeout 36000 
+
+gcloud container clusters upgrade $CLUSTER_NAME \
+  --cluster-version=$DESIRED_VERSION \
+  --master \
+  --zone=us-central1-c
+
+gcloud container node-pools update $NODE_POOL_NAME \
+  --max-surge-upgrade=2 \
+  --max-unavailable-upgrade=0 \
+  --cluster=$CLUSTER_NAME \
+  --zone=us-central1-c
+
+gcloud container clusters upgrade $CLUSTER_NAME \
+  --cluster-version=$DESIRED_VERSION \
+  --node-pool=$NODE_POOL_NAME \
+  --zone=us-central1-c
+
+if [[ "$timeout" == "null" ]] ; then
+  gcloud config unset builds/timeout
+fi
+
+./hack/run-smoke-tests.sh

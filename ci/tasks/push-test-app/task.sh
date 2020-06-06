@@ -5,7 +5,7 @@ DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
 
 if ${VERIFY_EXISTING_APP}; then
     echo "Verify availability of existing app: ${APP_NAME}"
-    curl -k --retry 6 ${APP_NAME}.apps.${DNS_DOMAIN}
+    curl -k --retry 6 --retry-connrefused ${APP_NAME}.apps.${DNS_DOMAIN}
     echo "Confirmed that existing app is still available"
 fi
 

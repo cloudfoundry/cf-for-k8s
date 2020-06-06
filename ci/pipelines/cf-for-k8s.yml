@@ -1424,6 +1424,8 @@ jobs:
       params:
         APP_NAME: jp-node-app
         VERIFY_EXISTING_APP: true
+      input_mapping:
+        cf-for-k8s-repo: cf-for-k8s-master
 
   - task: delete-cf
     input_mapping:
@@ -1558,6 +1560,8 @@ jobs:
       params:
         APP_NAME: jp-node-app
         VERIFY_EXISTING_APP: true
+      input_mapping:
+        cf-for-k8s-repo: cf-for-k8s-master
 
   - task: delete-cf
     input_mapping:

@@ -13,6 +13,8 @@ directories:
     - config/*
     - config/crd/**/*
     - config/istio-generated/**/*
+    - config/istio-config/**/*
+    - config/istio/generated/**/*
     - config/routecontroller/**/*
   - path: github.com/cloudfoundry/capi-k8s-release
     git:

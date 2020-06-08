@@ -8,15 +8,14 @@ directories:
   - path: github.com/cloudfoundry/cf-k8s-networking
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: 1b5e17f00a6c1500eb988187cba1ce171ff58f34
+      ref: v0.0.6
     includePaths:
     - config/*
-    - cfroutesync/crds/**/*
-    - config/cfroutesync/**/*
     - config/crd/**/*
     - config/istio-generated/**/*
     - config/istio-config/**/*
     - config/istio/generated/**/*
+    - config/routecontroller/**/*
   - path: github.com/cloudfoundry/capi-k8s-release
     git:
       url: https://github.com/cloudfoundry/capi-k8s-release

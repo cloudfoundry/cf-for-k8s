@@ -418,8 +418,15 @@ jobs:
           cf-for-k8s-develop/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
           echo "Generating install values..."
-          cf-for-k8s-develop/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-          echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
+          cf-for-k8s-develop/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" > cf-install-values.yml
+          cat <<EOT >> cf-install-values.yml
+          app_registry:
+             hostname: https://index.docker.io/v1/
+             repository: ((cf_for_k8s_private_dockerhub.username))
+             username: ((cf_for_k8s_private_dockerhub.username))
+             password: ((cf_for_k8s_private_dockerhub.password))
+          istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)
+          EOT
 
           echo "Installing CF..."
           kapp deploy -a cf -f <(ytt -f cf-for-k8s-develop/config -f cf-install-values.yml) -y
@@ -1068,8 +1075,15 @@ jobs:
             cf-for-k8s-pr-all-branches/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
             echo "Generating install values..."
-            cf-for-k8s-pr-all-branches/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-            echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
+            cf-for-k8s-pr-all-branches/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" > cf-install-values.yml
+            cat <<EOT >> cf-install-values.yml
+            app_registry:
+               hostname: https://index.docker.io/v1/
+               repository: ((cf_for_k8s_private_dockerhub.username))
+               username: ((cf_for_k8s_private_dockerhub.username))
+               password: ((cf_for_k8s_private_dockerhub.password))
+            istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)
+            EOT
 
             echo "Installing CF..."
             kapp deploy -a cf -f <(ytt -f cf-for-k8s-pr-all-branches/config -f cf-install-values.yml) -y

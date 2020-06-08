@@ -23,7 +23,7 @@ spec:
       protocol: HTTPS
     tls:
       mode: SIMPLE
-      credentialName: istio-ingressgateway-certs
+      credentialName: cf-system-cert
   #@ non_system_domain_app_domains = [d for d in app_domains if d != system_domain]
   #@ if/end len(non_system_domain_app_domains) > 0:
   - hosts:

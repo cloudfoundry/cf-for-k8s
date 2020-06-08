@@ -1,5 +1,6 @@
 #@data/values
 ---
+
 system_namespace: cf-system
 workloads_namespace: cf-workloads
 staging_namespace: cf-workloads-staging
@@ -59,12 +60,16 @@ internal_certificate:
 
 capi:
   blobstore:
+    provider: AWS
     package_directory_key: cc-packages
     droplet_directory_key: cc-droplets
     resource_directory_key: cc-resources
     buildpack_directory_key: cc-buildpacks
-    region: "''"
+    region: ~
     endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
+    google_project: project-id
+    google_client_email: client-email
+    google_json_key_string: "{}"
   database:
     #! or mysql2, as needed
     adapter: postgres

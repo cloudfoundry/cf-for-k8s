@@ -66,14 +66,18 @@ apiServer:
       -----END RSA PRIVATE KEY-----
 app_domains: []
 blobstore:
+  provider: AWS
   access_key_id: AKIAIOSFODNN7EXAMPLE
   buildpack_directory_key: cc-buildpacks
   droplet_directory_key: cc-droplets
   endpoint: http://capi-blobstore-minio.default:9000
   package_directory_key: cc-packages
-  region: ""
+  region: ~
   resource_directory_key: cc-resources
   secret_access_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+  google_project: project-id
+  google_client_email: client-email
+  google_json_key_string: "{}"
 ccdb:
   adapter: postgres
   database: cloud_controller

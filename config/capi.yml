@@ -32,6 +32,7 @@ app_domains:
 - #@ domain
 
 blobstore:
+  provider: #@ data.values.capi.blobstore.provider
   endpoint: #@ data.values.capi.blobstore.endpoint
   region: #@ data.values.capi.blobstore.region
   access_key_id: #@ data.values.cf_blobstore.access_key
@@ -40,7 +41,9 @@ blobstore:
   droplet_directory_key: #@ data.values.capi.blobstore.droplet_directory_key
   resource_directory_key: #@ data.values.capi.blobstore.resource_directory_key
   buildpack_directory_key: #@ data.values.capi.blobstore.buildpack_directory_key
-
+  google_project: #@ data.values.capi.blobstore.google_project
+  google_client_email: #@ data.values.capi.blobstore.google_client_email
+  google_json_key_string: #@ data.values.capi.blobstore.google_json_key_string
 ccdb:
   adapter: #@ data.values.capi.database.adapter
   host: #@ capi_host()

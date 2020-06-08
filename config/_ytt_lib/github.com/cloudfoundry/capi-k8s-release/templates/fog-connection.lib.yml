@@ -1,0 +1,22 @@
+#@ load("@ytt:data","data")
+#@ load("@ytt:assert","assert")
+
+#@ def fog_connection():
+#@ if data.values.blobstore.provider == "AWS":
+provider: #@ data.values.blobstore.provider
+endpoint: #@ data.values.blobstore.endpoint
+aws_access_key_id: #@ data.values.blobstore.access_key_id
+aws_secret_access_key: #@ data.values.blobstore.secret_access_key
+aws_signature_version: '2'
+region: #@ data.values.blobstore.region if data.values.blobstore.region else ""
+path_style: true
+#@ elif data.values.blobstore.provider == "Google":
+provider: #@ data.values.blobstore.provider
+google_project: #@ data.values.blobstore.google_project
+google_client_email: #@ data.values.blobstore.google_client_email
+google_json_key_string: #@ data.values.blobstore.google_json_key_string
+#@ else:
+  #@ assert.fail("blobstore provider must be AWS or Google.")
+#@ end
+
+#@ end

@@ -1,4 +1,7 @@
 #@ load("@ytt:data","data")
+#@ load("@ytt:yaml","yaml")
+#@ load("fog-connection.lib.yml","fog_connection")
+
 #@ def ccng_config():
 ---
 local_route: 0.0.0.0
@@ -172,14 +175,7 @@ default_quota_definition: default
 resource_pool:
   resource_directory_key: #@ data.values.blobstore.resource_directory_key
   blobstore_type: fog
-  fog_connection:
-    provider: AWS
-    endpoint: #@ data.values.blobstore.endpoint
-    aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_secret_access_key: #@ data.values.blobstore.secret_access_key
-    aws_signature_version: '2'
-    region: #@ data.values.blobstore.region
-    path_style: true
+  fog_connection: #@ fog_connection()
   minimum_size: 65536
   maximum_size: 536870912
 
@@ -193,14 +189,7 @@ resource_pool:
 packages:
   app_package_directory_key: #@ data.values.blobstore.package_directory_key
   blobstore_type: fog
-  fog_connection:
-    provider: AWS
-    endpoint: #@ data.values.blobstore.endpoint
-    aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_secret_access_key: #@ data.values.blobstore.secret_access_key
-    aws_signature_version: '2'
-    region: #@ data.values.blobstore.region
-    path_style: true
+  fog_connection: #@ fog_connection()
   max_valid_packages_stored: 5
   max_package_size: 1073741824
 
@@ -214,14 +203,7 @@ packages:
 droplets:
   droplet_directory_key: #@ data.values.blobstore.droplet_directory_key
   blobstore_type: fog
-  fog_connection:
-    provider: AWS
-    endpoint: #@ data.values.blobstore.endpoint
-    aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_secret_access_key: #@ data.values.blobstore.secret_access_key
-    aws_signature_version: '2'
-    region: #@ data.values.blobstore.region
-    path_style: true
+  fog_connection: #@ fog_connection()
 
   cdn:
     uri:
@@ -234,14 +216,7 @@ droplets:
 buildpacks:
   buildpack_directory_key: #@ data.values.blobstore.buildpack_directory_key
   blobstore_type: fog
-  fog_connection:
-    provider: AWS
-    endpoint: #@ data.values.blobstore.endpoint
-    aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_secret_access_key: #@ data.values.blobstore.secret_access_key
-    aws_signature_version: '2'
-    region: #@ data.values.blobstore.region
-    path_style: true
+  fog_connection: #@ fog_connection()
 
   cdn:
     uri:

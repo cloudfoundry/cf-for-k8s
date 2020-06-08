@@ -41,12 +41,12 @@ metadata:
 #@ kind_stateful_set = overlay.subset({"kind":"StatefulSet"})
 #@ kind_daemon_set = overlay.subset({"kind":"DaemonSet"})
 #@ kind_job = overlay.subset({"kind":"Job"})
-#@ is_pod = overlay.or_op(kind_deployment, kind_replica_set, kind_stateful_set, kind_daemon_set, kind_job)
+#@ contains_pod = overlay.or_op(kind_deployment, kind_replica_set, kind_stateful_set, kind_daemon_set, kind_job)
 
 #@ namespaced = lambda idx,old,new: "namespace" in old["metadata"]
 #@ not_inside_istio_ns = overlay.not_op(overlay.subset({"metadata":{"namespace":"istio-system"}}))
 
-#@overlay/match by=overlay.and_op(is_pod, namespaced, not_inside_istio_ns), expects="1+"
+#@overlay/match by=overlay.and_op(contains_pod, namespaced, not_inside_istio_ns), expects="1+"
 ---
 metadata:
   #@overlay/match missing_ok=True

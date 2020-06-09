@@ -84,7 +84,7 @@ This project is in it's early stages of development and hence there are features
    >  **NOTE:** The script requires the [BOSH CLI](https://bosh.io/docs/cli-v2-install/#install) in installed on your machine. The BOSH CLI is an handy tool to generate self signed certs and passwords.
 
    ```console
-   ./hack/generate-values.sh -d <cf-domain> > /tmp/cf-values.yml
+   ./hack/generate-values.sh -d <cf-domain> > ./tmp/cf-values.yml
    ```
 
    Replace `<cf-domain>` with _your_ registered DNS domain name for your CF installation.
@@ -94,7 +94,7 @@ This project is in it's early stages of development and hence there are features
    1. Clone file `sample-cf-install-values.yml` from this directory as a starting point.
 
       ```console
-      cp sample-cf-install-values.yml /tmp/cf-values.yml
+      cp sample-cf-install-values.yml ./tmp/cf-values.yml
       ```
 
    1. Open the file and change the `system_domain` and `app_domain` to your desired domain address.
@@ -140,14 +140,14 @@ This project is in it's early stages of development and hence there are features
 
       i. Render the final K8s template to raw K8s configuration
       ```console
-      ytt -f config -f /tmp/cf-values.yml > /tmp/cf-for-k8s-rendered.yml
+      ytt -f config -f ./tmp/cf-values.yml > ./tmp/cf-for-k8s-rendered.yml
       ```
       > cf-for-k8s uses [ytt](https://github.com/k14s/ytt) to create and maintain reusable YAML templates. You can visit the ytt [playground](https://get-ytt.io/) to learn more about it's templating features. 
       > In the above command, `ytt` can take a folder e.g. `config` or file via `-f`. See all options by running `ytt help`.
     
       ii. Install using `kapp` and pass the above K8s configuration file
       ```console
-      kapp deploy -a cf -f /tmp/cf-for-k8s-rendered.yml -y
+      kapp deploy -a cf -f ./tmp/cf-for-k8s-rendered.yml -y
       ```
       > cf-for-k8s uses [kapp](https://github.com/k14s/kapp) to manage it's lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit untill all resources are installed and their status is running. See all options by running `kapp help`.
 
@@ -193,7 +193,7 @@ This project is in it's early stages of development and hence there are features
 
    Replace `<cf-domain>` with your desired domain address.
 
-1. Login using the admin credentials for key `cf_admin_password` in `/tmp/cf-values.yml`
+1. Login using the admin credentials for key `cf_admin_password` in `./tmp/cf-values.yml`
 
    ```console
    cf auth admin <cf-values.yml.cf-admin_password>

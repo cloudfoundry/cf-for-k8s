@@ -16,3 +16,17 @@ spec:
       app: minio
   mtls:
     mode: PERMISSIVE
+---
+#! apiServer fails to validate certs provided by istio endpoints.
+#! traffic from apiServer to kpack-webhook is TLS even without istio
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: "kpack-webhook-allow-plaintext"
+  namespace: "kpack"
+spec:
+  selector:
+    matchLabels:
+      app: webhook
+  mtls:
+    mode: PERMISSIVE

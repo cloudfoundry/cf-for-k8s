@@ -20,6 +20,13 @@ resources:
     paths:
       - ci/**
 
+- name: kpack-release
+  type: github-release
+  source:
+    owner: pivotal
+    repository: kpack
+    access_token: ((cf_deployment_release_bot_access_token))
+
 - name: eirini-release
   type: github-release
   source:
@@ -54,6 +61,121 @@ x-config: &common-task-config
       repository: relintdockerhubpushbot/cf-for-k8s-ci
 
 jobs:
+- name: bump-kpack
+  public: true
+
+  plan:
+    - in_parallel:
+        - get: cf-for-k8s-ci
+        - get: cf-for-k8s-develop
+        - get: kpack-release
+          trigger: true
+        - put: ready-pool
+          params: {acquire: true}
+
+    - task: bump-release-onto-develop
+      file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+      input_mapping:
+       release: kpack-release
+      params:
+        VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+        REPO_NAME: kpack
+
+    - task: run-unit-tests
+      file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
+      input_mapping:
+        cf-for-k8s-repo: cf-for-k8s-bump
+
+    - task: fresh-install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s-repo: cf-for-k8s-bump
+        pool-lock: ready-pool
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s-repo: cf-for-k8s-bump
+
+    - task: delete-cf
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      input_mapping:
+        pool-lock: ready-pool
+
+    - task: first-install-cf-develop
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s-repo: cf-for-k8s-develop
+        pool-lock: ready-pool
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+
+    - task: push-test-app
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      input_mapping:
+        cf-for-k8s-repo: cf-for-k8s-develop
+      params:
+        APP_NAME: my-node-app
+
+    - task: upgrade-cf-with-component-bump
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s-repo: cf-for-k8s-bump
+        pool-lock: ready-pool
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        UPGRADE: true
+
+    - in_parallel:
+        - task: run-smoke-tests
+          file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+          input_mapping:
+            cf-for-k8s-repo: cf-for-k8s-bump
+        - task: verify-existing-app
+          file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+          input_mapping:
+            cf-for-k8s-repo: cf-for-k8s-bump
+          params:
+            APP_NAME: my-node-app
+            VERIFY_EXISTING_APP: true
+
+    # bring back after #173235596 is resolved in cf-for-k8s
+    # - task: delete-cf
+    #   file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+    #   params:
+    #     GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+    #     GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    #     GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+    #   input_mapping:
+    #     pool-lock: ready-pool
+
+    - put: cf-for-k8s-develop
+      params:
+        repository: cf-for-k8s-bump
+        rebase: true
+
+  ensure:
+    do:
+      - put: destroy-pool
+        params:
+          add: ready-pool
+
+      - put: ready-pool
+        params:
+          remove: ready-pool
+
 - name: bump-eirini
   public: true
 

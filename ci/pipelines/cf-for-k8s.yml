@@ -1095,7 +1095,7 @@ jobs:
           - |
             source cf-for-k8s-ci/ci/helpers/gke.sh
             cluster_name=$(cat tf-vars/env-name.txt)
-            gcloud_auth "${cluster_name}
+            gcloud_auth "${cluster_name}"
 
             DNS_DOMAIN="${cluster_name}.((ci_k8s_root_domain))"
             cf-for-k8s-pr-all-branches/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
@@ -1405,7 +1405,7 @@ jobs:
         - |
           source cf-for-k8s-ci/ci/helpers/gke.sh
           cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}
+          gcloud_auth "${cluster_name}"
 
           DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
 
@@ -1449,7 +1449,7 @@ jobs:
         - |
           source cf-for-k8s-ci/ci/helpers/gke.sh
           cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}
+          gcloud_auth "${cluster_name}"
 
           DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
           cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
@@ -1497,7 +1497,7 @@ jobs:
         - |
           source cf-for-k8s-ci/ci/helpers/gke.sh
           cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}
+          gcloud_auth "${cluster_name}"
 
           kapp delete -a cf --yes
 
@@ -1543,7 +1543,7 @@ jobs:
         - |
           source cf-for-k8s-ci/ci/helpers/gke.sh
           cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}
+          gcloud_auth "${cluster_name}"
 
           DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
 
@@ -1589,7 +1589,7 @@ jobs:
         - |
           source cf-for-k8s-ci/ci/helpers/gke.sh
           cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}
+          gcloud_auth "${cluster_name}"
 
           DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
           cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
@@ -1641,7 +1641,7 @@ jobs:
         - |
           source cf-for-k8s-ci/ci/helpers/gke.sh
           cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}
+          gcloud_auth "${cluster_name}"
 
           kapp delete -a cf --yes
 
@@ -1764,7 +1764,7 @@ jobs:
         - |
           source cf-for-k8s-ci/ci/helpers/gke.sh
           cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}
+          gcloud_auth "${cluster_name}"
 
           kapp delete -a cf --yes
 

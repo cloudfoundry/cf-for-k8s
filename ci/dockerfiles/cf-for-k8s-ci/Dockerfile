@@ -34,3 +34,5 @@ ENV GO111MODULE=on
 
 # https://github.com/onsi/ginkgo/releases
 RUN go get -u github.com/onsi/ginkgo/ginkgo@v1.11.0
+
+RUN go get -u github.com/cloudfoundry/uptimer

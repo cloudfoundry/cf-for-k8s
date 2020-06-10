@@ -1384,41 +1384,14 @@ jobs:
     params: {acquire: true}
 
   - task: install-cf-latest-release
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       pool-lock: ready-pool
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: cf-for-k8s-latest-release
-      - name: cf-for-k8s-ci
-      - name: pool-lock
-      outputs:
-      - name: env-metadata
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          source cf-for-k8s-ci/ci/helpers/gke.sh
-          cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}"
-
-          DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
-
-          echo "Generating install values..."
-          cf-for-k8s-latest-release/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-          echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
-
-          echo "Installing CF..."
-          kapp deploy -a cf -f <(ytt -f cf-for-k8s-latest-release/config -f cf-install-values.yml) -y
-
-          bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
-          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
-          cp "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml" env-metadata
+      cf-for-k8s-repo: cf-for-k8s-latest-release
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
@@ -1429,41 +1402,16 @@ jobs:
       cf-for-k8s-repo: cf-for-k8s-latest-release
 
   - task: install-cf-master
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       pool-lock: ready-pool
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: cf-for-k8s-master
-      - name: cf-for-k8s-ci
-      - name: pool-lock
-      - name: env-metadata
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          source cf-for-k8s-ci/ci/helpers/gke.sh
-          cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}"
-
-          DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
-          cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
-
-          echo "Copying bosh vars store from latest release install"
-          mkdir -p "/tmp/${cluster_name}.k8s-dev.relint.rocks"
-          cp env-metadata/cf-vars.yaml "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml"
-
-          echo "Generating install values using the same cf-vars file from fresh install..."
-          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-          echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
-
-          echo "Installing CF..."
-          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+      cf-for-k8s-repo: cf-for-k8s-master
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPGRADE: true
+      UPTIMER: true
 
   - in_parallel:
     - task: run-smoke-tests
@@ -1478,28 +1426,29 @@ jobs:
       input_mapping:
         cf-for-k8s-repo: cf-for-k8s-master
 
-  - task: delete-cf
-    input_mapping:
-      pool-lock: ready-pool
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: cf-for-k8s-ci
-      - name: pool-lock
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          source cf-for-k8s-ci/ci/helpers/gke.sh
-          cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}"
-
-          kapp delete -a cf --yes
+# bring back after #173235596 is resolved in cf-for-k8s
+#  - task: delete-cf
+#    input_mapping:
+#      pool-lock: ready-pool
+#    config:
+#      <<: *common-task-config
+#      inputs:
+#      - name: cf-for-k8s-ci
+#      - name: pool-lock
+#      params:
+#        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+#        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+#        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+#      run:
+#        path: /bin/bash
+#        args:
+#        - -ec
+#        - |
+#          source cf-for-k8s-ci/ci/helpers/gke.sh
+#          cluster_name="$(cat pool-lock/name)"
+#          gcloud_auth "${cluster_name}"
+#
+#          kapp delete -a cf --yes
 
   - put: destroy-pool
     params:

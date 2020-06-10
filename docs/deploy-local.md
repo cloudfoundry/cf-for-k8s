@@ -49,7 +49,7 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
    - Include the [remove-resource-requirements.yml](../config-optional/remove-resource-requirements.yml),
      [remove-ingressgateway-service.yml](../config-optional/remove-ingressgateway-service.yml),
-     [add-metrics-server-components-v0.3.6.yml](../config-optional/add-metrics-server-components-v0.3.6.yml) and
+     [add-metrics-server-components.yml](../config-optional/add-metrics-server-components.yml) and
      [patch-metrics-server.yml](../config-optional/patch-metrics-server.yml)
      overlay files in the set of templates to be deployed. This can be achieved by
      using the following commands:

@@ -101,18 +101,9 @@ var _ = Describe("Configs", func() {
 
 			configDirectory := filepath.Join(filepath.Dir(filepath.Dir(currentDirectory)), "config-optional")
 
-			configs := []string{}
-			filepath.Walk(configDirectory, func(path string, info os.FileInfo, err error) error {
-
-				basename := info.Name()
-
-				if strings.Contains(basename, "patch-metrics-server") || strings.Contains(basename, "add-metrics-server-components") {
-					configs = append(configs, path)
-					return nil
-				}
-
-				return nil
-			})
+			configPath := filepath.Join(configDirectory, "patch-metrics-server.yml")
+			requiredConfigPath := filepath.Join(configDirectory, "add-metrics-server-components.yml")
+			configs := []string{configPath, requiredConfigPath}
 
 			for _, config := range configs {
 				fmt.Printf("Test file %s\n", config)

@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+inputs:
+  - name: cf-for-k8s-ci
+  - name: cf-for-k8s-develop
+  - name: eirini-release
+
+outputs:
+  - name: cf-for-k8s-bump
+
+params:
+  VENDIR_GITHUB_API_TOKEN:
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/bump-eirini/task.sh

@@ -8,7 +8,7 @@ image_resource:
 
 inputs:
 - name: cf-for-k8s-repo
-- name: cf-for-k8s-develop-ci
+- name: cf-for-k8s-ci
 - name: env-metadata
 
 params:
@@ -16,4 +16,4 @@ params:
   VERIFY_EXISTING_APP:
 
 run:
-  path: cf-for-k8s-develop-ci/ci/tasks/push-test-app/task.sh
+  path: cf-for-k8s-ci/ci/tasks/push-test-app/task.sh

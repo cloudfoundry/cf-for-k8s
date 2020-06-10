@@ -67,7 +67,7 @@ resources:
     branch: develop
     uri: https://github.com/cloudfoundry/cf-for-k8s.git
 
-- name: cf-for-k8s-develop-ci
+- name: cf-for-k8s-ci
   type: git
   icon: github-box
   source:
@@ -342,12 +342,11 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-develop
       trigger: true
-    - get: cf-for-k8s-develop-ci
+    - get: cf-for-k8s-ci
 
   - task: run-unit-tests
-    file: cf-for-k8s-develop-ci/ci/tasks/run-unit-tests/task.yml
+    file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
     input_mapping:
-      cf-for-k8s-ci: cf-for-k8s-develop-ci
       cf-for-k8s-repo: cf-for-k8s-develop
 
 - name: branch-freshness
@@ -369,12 +368,12 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-develop
       trigger: true
-    - get: cf-for-k8s-develop-ci
+    - get: cf-for-k8s-ci
 
   - task: check-vendir-sync
-    file: cf-for-k8s-develop-ci/ci/tasks/check-vendir-sync/task.yml
+    file: cf-for-k8s-ci/ci/tasks/check-vendir-sync/task.yml
     input_mapping:
-      ci-tasks: cf-for-k8s-develop-ci
+      ci-tasks: cf-for-k8s-ci
       cf-for-k8s-repo: cf-for-k8s-develop
     params:
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
@@ -489,7 +488,7 @@ jobs:
       - test-vendir-sync-on-cf-for-k8s
       - run-unit-tests
       trigger: true
-    - get: cf-for-k8s-develop-ci
+    - get: cf-for-k8s-ci
     - get: cf-for-k8s-kind-gcp-terraform-templates
 
   - task: create-tf-vars-file
@@ -529,8 +528,7 @@ jobs:
       attempts: 5
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-        cf-for-k8s-ci: cf-for-k8s-develop-ci
-      file: cf-for-k8s-develop-ci/ci/tasks/create-kind-cluster/task.yml
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -539,8 +537,7 @@ jobs:
     - task: install-cf
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-        cf-for-k8s-ci: cf-for-k8s-develop-ci
-      file: cf-for-k8s-develop-ci/ci/tasks/install-cf-on-kind/task.yml
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -548,8 +545,7 @@ jobs:
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-        cf-for-k8s-ci: cf-for-k8s-develop-ci
-      file: cf-for-k8s-develop-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -572,7 +568,7 @@ jobs:
       - test-vendir-sync-on-cf-for-k8s
       - run-unit-tests
       trigger: true
-    - get: cf-for-k8s-develop-ci
+    - get: cf-for-k8s-ci
     - get: cf-for-k8s-kind-gcp-terraform-templates
 
   - task: create-tf-vars-file
@@ -612,8 +608,7 @@ jobs:
       attempts: 5
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-        cf-for-k8s-ci: cf-for-k8s-develop-ci
-      file: cf-for-k8s-develop-ci/ci/tasks/create-kind-cluster/task.yml
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -622,8 +617,7 @@ jobs:
     - task: install-cf
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-        cf-for-k8s-ci: cf-for-k8s-develop-ci
-      file: cf-for-k8s-develop-ci/ci/tasks/install-cf-on-kind/task.yml
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -631,8 +625,7 @@ jobs:
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-        cf-for-k8s-ci: cf-for-k8s-develop-ci
-      file: cf-for-k8s-develop-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -908,7 +901,7 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
-    - get: cf-for-k8s-develop-ci
+    - get: cf-for-k8s-ci
     - get: cf-for-k8s-pr-all-branches
       version: every
     - get: runtime-ci
@@ -920,9 +913,8 @@ jobs:
       context: run-unit-tests
 
   - task: run-unit-tests
-    file: cf-for-k8s-develop-ci/ci/tasks/run-unit-tests/task.yml
+    file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
     input_mapping:
-      cf-for-k8s-ci: cf-for-k8s-develop-ci
       cf-for-k8s-repo: cf-for-k8s-pr-all-branches-and-forks
 
     on_failure:
@@ -957,7 +949,7 @@ jobs:
         integration_tool: rebase
       trigger: true
       version: every
-    - get: cf-for-k8s-develop-ci
+    - get: cf-for-k8s-ci
     - get: cf-for-k8s-pr-all-branches
       version: every
 
@@ -968,9 +960,9 @@ jobs:
       context: check-vendir-sync
 
   - task: check-vendir-sync
-    file: cf-for-k8s-develop-ci/ci/tasks/check-vendir-sync/task.yml
+    file: cf-for-k8s-ci/ci/tasks/check-vendir-sync/task.yml
     input_mapping:
-      ci-tasks: cf-for-k8s-develop-ci
+      ci-tasks: cf-for-k8s-ci
       cf-for-k8s-repo: cf-for-k8s-pr-all-branches-and-forks
     params:
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
@@ -1349,7 +1341,7 @@ jobs:
   - get: cf-for-k8s-latest-release
   - get: cf-for-k8s-master
     trigger: true
-  - get: cf-for-k8s-develop-ci
+  - get: cf-for-k8s-ci
 
   - put: ready-pool
     params: {acquire: true}
@@ -1389,7 +1381,7 @@ jobs:
           cp "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml" env-metadata
 
   - task: push-test-app
-    file: cf-for-k8s-develop-ci/ci/tasks/push-test-app/task.yml
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     params:
       APP_NAME: jp-node-app
       VERIFY_EXISTING_APP: false
@@ -1432,9 +1424,11 @@ jobs:
 
   - in_parallel:
     - task: run-smoke-tests
-      file: cf-for-k8s-develop-ci/ci/tasks/run-smoke-tests/task.yml
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s-repo: cf-for-k8s-master
     - task: verify-existing-app
-      file: cf-for-k8s-develop-ci/ci/tasks/push-test-app/task.yml
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       params:
         APP_NAME: jp-node-app
         VERIFY_EXISTING_APP: true
@@ -1474,7 +1468,7 @@ jobs:
   public: true
   plan:
   - get: cf-for-k8s-master
-  - get: cf-for-k8s-develop-ci
+  - get: cf-for-k8s-ci
   - get: weekday-pm
     trigger: true
 
@@ -1516,7 +1510,7 @@ jobs:
           grep -E "db_admin_password|capi_db_password|uaa_db_password|blobstore_secret_key" "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml" > env-metadata/cf-vars.yaml
 
   - task: push-test-app
-    file: cf-for-k8s-develop-ci/ci/tasks/push-test-app/task.yml
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     params:
       APP_NAME: jp-node-app
       VERIFY_EXISTING_APP: false
@@ -1565,12 +1559,11 @@ jobs:
 
   - in_parallel:
     - task: run-smoke-tests
-      file: cf-for-k8s-develop-ci/ci/tasks/run-smoke-tests/task.yml
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
-        cf-for-k8s-master: cf-for-k8s-master
-        cf-for-k8s-develop-ci: cf-for-k8s-develop-ci
+        cf-for-k8s-repo: cf-for-k8s-master
     - task: verify-existing-app
-      file: cf-for-k8s-develop-ci/ci/tasks/push-test-app/task.yml
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       params:
         APP_NAME: jp-node-app
         VERIFY_EXISTING_APP: true

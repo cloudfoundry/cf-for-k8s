@@ -1,0 +1,26 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+inputs:
+  - name: cf-for-k8s-ci
+  - name: cf-for-k8s-repo
+  - name: pool-lock
+  - name: env-metadata
+    optional: true
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON:
+  GCP_PROJECT_NAME:
+  GCP_PROJECT_ZONE:
+  UPGRADE: false
+
+outputs:
+  - name: env-metadata
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.sh

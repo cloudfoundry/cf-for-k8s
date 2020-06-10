@@ -8,4 +8,4 @@ export SMOKE_TEST_USERNAME=admin
 export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
 export SMOKE_TEST_SKIP_SSL=true
 
-cf-for-k8s-master/hack/run-smoke-tests.sh
+cf-for-k8s-repo/hack/run-smoke-tests.sh

@@ -1,0 +1,22 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+inputs:
+  - name: cf-for-k8s-ci
+  - name: pool-lock
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON:
+  GCP_PROJECT_NAME:
+  GCP_PROJECT_ZONE:
+
+outputs:
+  - name: env-metadata
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/delete-cf/task.sh

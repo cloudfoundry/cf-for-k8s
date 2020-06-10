@@ -36,3 +36,12 @@ ENV GO111MODULE=on
 RUN go get -u github.com/onsi/ginkgo/ginkgo@v1.11.0
 
 RUN go get -u github.com/cloudfoundry/uptimer
+
+# https://github.com/cloudfoundry/cli/releases
+WORKDIR /tmp
+RUN \
+  wget -O "cf-tar" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=6.50.0" && \
+  tar xzvf cf-tar -C /usr/local/bin && \
+  chmod +x /usr/local/bin/cf
+
+RUN rm -rf /tmp/*

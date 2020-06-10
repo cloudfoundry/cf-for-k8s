@@ -40,11 +40,11 @@ while [[ $# -gt 0 ]]; do
     shift
     ;;
   -g=* | --gcr-service-account-json=*)
-    GCP_SERVICE_ACCOUNT_JSON="${i#*=}"
+    GCP_SERVICE_ACCOUNT_JSON_FILE="${i#*=}"
     shift
     ;;
   -g | --gcr-service-account-json)
-    GCP_SERVICE_ACCOUNT_JSON="${2}"
+    GCP_SERVICE_ACCOUNT_JSON_FILE="${2}"
     shift
     shift
     ;;
@@ -71,9 +71,9 @@ if [[ -z ${DOMAIN:=} ]]; then
   exit 1
 fi
 
-if [[ -n ${GCP_SERVICE_ACCOUNT_JSON:=} ]]; then
-  if [[ ! -r ${GCP_SERVICE_ACCOUNT_JSON} ]]; then
-    echo "Error: Unable to read GCP service account JSON from file: ${GCP_SERVICE_ACCOUNT_JSON}" >&2
+if [[ -n ${GCP_SERVICE_ACCOUNT_JSON_FILE:=} ]]; then
+  if [[ ! -r ${GCP_SERVICE_ACCOUNT_JSON_FILE} ]]; then
+    echo "Error: Unable to read GCP service account JSON from file: ${GCP_SERVICE_ACCOUNT_JSON_FILE}" >&2
     exit 1
   fi
 fi
@@ -286,21 +286,15 @@ $(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/private_key
 $(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/certificate | sed -e 's#^#        #')
 EOF
 
-if [[ -n "${GCP_SERVICE_ACCOUNT_JSON:=}" ]]; then
-  hostname="gcr.io"
-  username="_json_key"
-  encoded_password=$(kubectl create secret docker-registry registry-credentials \
-    --docker-server=${hostname} --docker-username=${username} \
-    --docker-password="$(cat ${GCP_SERVICE_ACCOUNT_JSON})" \
-    --dry-run -o json | jq .data.\".dockerconfigjson\" -r)
+if [[ -n "${GCP_SERVICE_ACCOUNT_JSON_FILE:=}" ]]; then
   cat <<EOF
 
 app_registry:
   hostname: gcr.io
-  repository: gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON} --path=/project_id )/cf-workloads
+  repository: gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON_FILE} --path=/project_id )/cf-workloads
   username: _json_key
   password: |
-$(cat ${GCP_SERVICE_ACCOUNT_JSON} | sed -e 's/^/    /')
+$(cat ${GCP_SERVICE_ACCOUNT_JSON_FILE} | sed -e 's/^/    /')
 EOF
 
 fi

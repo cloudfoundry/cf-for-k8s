@@ -2,7 +2,8 @@
 
 source cf-for-k8s-ci/ci/helpers/gke.sh
 
-gcloud_auth "pool-lock/name"
+cluster_name="$(cat pool-lock/name)"
+gcloud_auth "${cluster_name}"
 
 DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
 

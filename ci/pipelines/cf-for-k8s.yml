@@ -399,6 +399,7 @@ jobs:
       <<: *common-task-config
       inputs:
       - name: cf-for-k8s-develop
+      - name: cf-for-k8s-ci
       - name: pool-lock
       outputs:
       - name: env-metadata
@@ -407,11 +408,10 @@ jobs:
         args:
         - -ec
         - |
-          export KUBECONFIG=kube-config.yml
-          cluster_name=$(cat pool-lock/name)
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+
+          cluster_name="$(cat pool-lock/name)"
+          gcloud_auth "${cluster_name}"
 
           DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
           cf-for-k8s-develop/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
@@ -458,17 +458,17 @@ jobs:
     config:
       <<: *common-task-config
       inputs:
+      - name: cf-for-k8s-ci
       - name: pool-lock
       run:
         path: /bin/bash
         args:
         - -ec
         - |
-          cluster_name=$(cat pool-lock/name)
-          export KUBECONFIG=kube-config.yml
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+
+          cluster_name="$(cat pool-lock/name)"
+          gcloud_auth "${cluster_name}"
 
           kapp delete -a cf --yes
 
@@ -677,17 +677,17 @@ jobs:
       config:
         <<: *common-task-config
         inputs:
+        - name: cf-for-k8s-ci
         - name: pool-lock
         run:
           path: /bin/bash
           args:
           - -ec
           - |
-            cluster_name=$(cat pool-lock/name)
-            export KUBECONFIG=kube-config.yml
-            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-            gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-            gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+            source cf-for-k8s-ci/ci/helpers/gke.sh
+
+            cluster_name="$(cat pool-lock/name)"
+            gcloud_auth "${cluster_name}"
 
             kapp delete -a cf --yes
 
@@ -698,6 +698,7 @@ jobs:
         <<: *common-task-config
         inputs:
         - name: cf-for-k8s-master
+        - name: cf-for-k8s-ci
         - name: pool-lock
         outputs:
         - name: env-metadata
@@ -706,11 +707,10 @@ jobs:
           args:
           - -ec
           - |
-            export KUBECONFIG=kube-config.yml
-            cluster_name=$(cat pool-lock/name)
-            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-            gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-            gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+            source cf-for-k8s-ci/ci/helpers/gke.sh
+
+            cluster_name="$(cat pool-lock/name)"
+            gcloud_auth "${cluster_name}"
 
             export DNS_DOMAIN="${cluster_name}.((ci_k8s_root_domain))"
             cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
@@ -750,17 +750,17 @@ jobs:
       config:
         <<: *common-task-config
         inputs:
+        - name: cf-for-k8s-ci
         - name: pool-lock
         run:
           path: /bin/bash
           args:
           - -ec
           - |
-            cluster_name=$(cat pool-lock/name)
-            export KUBECONFIG=kube-config.yml
-            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-            gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-            gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+            source cf-for-k8s-ci/ci/helpers/gke.sh
+
+            cluster_name="$(cat pool-lock/name)"
+            gcloud_auth "${cluster_name}"
 
             kapp delete -a cf --yes
 
@@ -813,16 +813,17 @@ jobs:
   - task: delete-cf
     config:
       <<: *common-task-config
+      inputs:
+      - name: cf-for-k8s-ci
+      params:
+        CLUSTER_NAME: long-lived-sli
       run:
         path: /bin/bash
         args:
         - -ec
         - |
-          cluster_name="long-lived-sli"
-          export KUBECONFIG=kube-config.yml
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          gcloud_auth "${CLUSTER_NAME}"
 
           kapp delete -a cf --yes
 
@@ -836,22 +837,22 @@ jobs:
       <<: *common-task-config
       inputs:
       - name: cf-for-k8s-master
+      - name: cf-for-k8s-ci
       - name: terraform
       outputs:
       - name: env-metadata
+      params:
+        CLUSTER_NAME: long-lived-sli
       run:
         path: /bin/bash
         args:
         - -ec
         - |
-          export KUBECONFIG=kube-config.yml
-          cluster_name="long-lived-sli"
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          gcloud_auth "${CLUSTER_NAME}"
 
-          export DNS_DOMAIN="${cluster_name}.((ci_k8s_root_domain))"
-          cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
+          export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
+          cf-for-k8s-master/hack/confirm-network-policy.sh "${CLUSTER_NAME}" '((ci_k8s_gcp_project_zone))'
 
           echo "Generating install values..."
           cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
@@ -1048,6 +1049,7 @@ jobs:
         <<: *common-task-config
         inputs:
         - name: cf-for-k8s-pr-all-branches
+        - name: cf-for-k8s-ci
         - name: terraform
         - name: tf-vars
         outputs:
@@ -1057,11 +1059,9 @@ jobs:
           args:
           - -ec
           - |
+            source cf-for-k8s-ci/ci/helpers/gke.sh
             cluster_name=$(cat tf-vars/env-name.txt)
-            export KUBECONFIG=kube-config.yml
-            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-            gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-            gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+            gcloud_auth "${cluster_name}
 
             DNS_DOMAIN="${cluster_name}.((ci_k8s_root_domain))"
             cf-for-k8s-pr-all-branches/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
@@ -1129,17 +1129,16 @@ jobs:
         config:
           <<: *common-task-config
           inputs:
+          - name: cf-for-k8s-ci
           - name: tf-vars
           run:
             path: /bin/bash
             args:
             - -ec
             - |
+              source cf-for-k8s-ci/ci/helpers/gke.sh
               cluster_name=$(cat tf-vars/env-name.txt)
-              export KUBECONFIG=kube-config.yml
-              echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-              gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-              gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+              gcloud_auth "${cluster_name}"
 
               kapp delete -a cf --yes
 
@@ -1353,6 +1352,7 @@ jobs:
       <<: *common-task-config
       inputs:
       - name: cf-for-k8s-latest-release
+      - name: cf-for-k8s-ci
       - name: pool-lock
       outputs:
       - name: env-metadata
@@ -1361,11 +1361,9 @@ jobs:
         args:
         - -ec
         - |
-          export KUBECONFIG=kube-config.yml
-          cluster_name=$(cat pool-lock/name)
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          cluster_name="$(cat pool-lock/name)"
+          gcloud_auth "${cluster_name}
 
           DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
 
@@ -1395,6 +1393,7 @@ jobs:
       <<: *common-task-config
       inputs:
       - name: cf-for-k8s-master
+      - name: cf-for-k8s-ci
       - name: pool-lock
       - name: env-metadata
       run:
@@ -1402,11 +1401,9 @@ jobs:
         args:
         - -ec
         - |
-          export KUBECONFIG=kube-config.yml
-          cluster_name=$(cat pool-lock/name)
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          cluster_name="$(cat pool-lock/name)"
+          gcloud_auth "${cluster_name}
 
           DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
           cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
@@ -1441,17 +1438,16 @@ jobs:
     config:
       <<: *common-task-config
       inputs:
+      - name: cf-for-k8s-ci
       - name: pool-lock
       run:
         path: /bin/bash
         args:
         - -ec
         - |
-          cluster_name=$(cat pool-lock/name)
-          export KUBECONFIG=kube-config.yml
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          cluster_name="$(cat pool-lock/name)"
+          gcloud_auth "${cluster_name}
 
           kapp delete -a cf --yes
 
@@ -1482,6 +1478,7 @@ jobs:
       <<: *common-task-config
       inputs:
       - name: cf-for-k8s-master
+      - name: cf-for-k8s-ci
       - name: pool-lock
       outputs:
       - name: env-metadata
@@ -1490,11 +1487,9 @@ jobs:
         args:
         - -ec
         - |
-          export KUBECONFIG=kube-config.yml
-          cluster_name=$(cat pool-lock/name)
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          cluster_name="$(cat pool-lock/name)"
+          gcloud_auth "${cluster_name}
 
           DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
 
@@ -1524,6 +1519,7 @@ jobs:
       <<: *common-task-config
       inputs:
       - name: cf-for-k8s-master
+      - name: cf-for-k8s-ci
       - name: pool-lock
       - name: env-metadata
       outputs:
@@ -1533,11 +1529,9 @@ jobs:
         args:
         - -ec
         - |
-          export KUBECONFIG=kube-config.yml
-          cluster_name=$(cat pool-lock/name)
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          cluster_name="$(cat pool-lock/name)"
+          gcloud_auth "${cluster_name}
 
           DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
           cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
@@ -1576,17 +1570,16 @@ jobs:
     config:
       <<: *common-task-config
       inputs:
+      - name: cf-for-k8s-ci
       - name: pool-lock
       run:
         path: /bin/bash
         args:
         - -ec
         - |
-          cluster_name=$(cat pool-lock/name)
-          export KUBECONFIG=kube-config.yml
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          cluster_name="$(cat pool-lock/name)"
+          gcloud_auth "${cluster_name}
 
           kapp delete -a cf --yes
 
@@ -1696,17 +1689,16 @@ jobs:
     config:
       <<: *common-task-config
       inputs:
+      - name: cf-for-k8s-ci
       - name: pool-lock
       run:
         path: /bin/bash
         args:
         - -ec
         - |
-          cluster_name=$(cat pool-lock/name)
-          export KUBECONFIG=kube-config.yml
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "${cluster_name}" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          cluster_name="$(cat pool-lock/name)"
+          gcloud_auth "${cluster_name}
 
           kapp delete -a cf --yes
 
@@ -1800,15 +1792,17 @@ jobs:
   - task: delete-cf
     config:
       <<: *common-task-config
+      inputs:
+      - name: cf-for-k8s-ci
+      params:
+        CLUSTER_NAME: long-lived-sli
       run:
         path: /bin/bash
         args:
         - -ec
         - |
-          export KUBECONFIG=kube-config.yml
-          echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-          gcloud auth activate-service-account --key-file=gcp-service-account.json --project='((ci_k8s_gcp_project_name))' >/dev/null 2>&1
-          gcloud container clusters get-credentials "long-lived-sli" --zone '((ci_k8s_gcp_project_zone))' >/dev/null 2>&1
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          gcloud_auth "${CLUSTER_NAME}"
 
           kapp delete -a cf --yes
 

@@ -46,7 +46,7 @@ directories:
       tag: v0.0.8
       disableAutoChecksumValidation: true
     includePaths:
-    - release-0.0.8.yaml
+    - release-*.yaml
 # the components in this section below are handled by their corresponding build scripts
 # the manual param tells vendir to not override/touch the contents of these config/_ytt_lib/<eirini|minio|postgres> directories
   - path: eirini

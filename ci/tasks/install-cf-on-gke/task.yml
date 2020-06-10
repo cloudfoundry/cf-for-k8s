@@ -18,6 +18,7 @@ params:
   GCP_PROJECT_NAME:
   GCP_PROJECT_ZONE:
   UPGRADE: false
+  UPTIMER: false
 
 outputs:
   - name: env-metadata

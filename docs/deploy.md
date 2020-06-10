@@ -144,7 +144,8 @@ This project is in it's early stages of development and hence there are features
       ```
       > cf-for-k8s uses [ytt](https://github.com/k14s/ytt) to create and maintain reusable YAML templates. You can visit the ytt [playground](https://get-ytt.io/) to learn more about it's templating features. 
       > In the above command, `ytt` can take a folder e.g. `config` or file via `-f`. See all options by running `ytt help`.
-    
+      > If your cluster enforces [Pod Security Policies](https://kubernetes.io/docs/concepts/policy/pod-security-policy/) add `-f ./config-optional/pod-security-policy` to the above command.
+
       ii. Install using `kapp` and pass the above K8s configuration file
       ```console
       kapp deploy -a cf -f ./tmp/cf-for-k8s-rendered.yml -y

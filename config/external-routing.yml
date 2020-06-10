@@ -47,3 +47,16 @@ spec:
   #@overlay/match missing_ok=True
   loadBalancerIP: #@ data.values.istio_static_ip
 #@ end
+
+#! This will allow istio ingress service to create an nlb with static ips
+#@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "istio-ingressgateway"}})
+---
+#@ if data.values.istio_aws_nlb_eip_allocations:
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    service.beta.kubernetes.io/aws-load-balancer-eip-allocations: #@ data.values.istio_aws_nlb_eip_allocations
+    #@overlay/match missing_ok=True
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+#@ end

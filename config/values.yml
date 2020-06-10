@@ -25,6 +25,10 @@ cf_db:
 #! reserved static ip for istio LoadBalancer
 istio_static_ip: ""
 
+#! use nlb with static ip reservations on AWS
+#! comma separated list of `eipalloc-XXX,eipalloc-YYY`
+istio_aws_nlb_eip_allocations: ""
+
 images:
   capi: ""
   nginx: ""

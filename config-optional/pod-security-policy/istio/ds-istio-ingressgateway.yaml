@@ -1,0 +1,61 @@
+#! istio ingress gateway daemonset needs to use hostports 80,443
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: istio-ingressgateway
+spec:
+  allowedCapabilities: []
+  privileged: false
+  allowPrivilegeEscalation: false
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  runAsUser:
+    rule: RunAsAny
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  hostNetwork: true
+  hostPorts:
+  - min: 80
+    max: 80
+  - min: 443
+    max: 443
+  volumes:
+  - emptyDir
+  - secret
+  - configMap
+  - downwardAPI
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: istio-ingressgateway
+  namespace: istio-system
+roleRef:
+  kind: Role
+  name: istio-ingressgateway
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: istio-ingressgateway-service-account
+    namespace: istio-system
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: istio-ingressgateway
+  namespace: istio-system
+rules:
+  - apiGroups: ["extensions"]
+    resources: ["podsecuritypolicies"]
+    verbs: ["use"]
+    resourceNames:
+      - istio-ingressgateway

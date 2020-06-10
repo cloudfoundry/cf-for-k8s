@@ -1,0 +1,32 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+
+#@overlay/match by=overlay.subset({"kind": "PodSecurityPolicy", "metadata":{"name": "eirini"}})
+---
+spec:
+  #@overlay/match missing_ok=True
+  allowedCapabilities:
+  - 'NET_ADMIN'
+  - 'NET_RAW'
+  runAsUser:
+    #@overlay/match missing_ok=True
+    rule: RunAsAny
+  seLinux:
+    #@overlay/match missing_ok=True
+    rule: RunAsAny
+---
+
+#@overlay/match by=overlay.subset({"kind": "PodSecurityPolicy", "metadata":{"name": "cf-workloads-app-psp"}})
+---
+spec:
+  #@overlay/match missing_ok=True
+  allowedCapabilities:
+  - 'NET_ADMIN'
+  - 'NET_RAW'
+  runAsUser:
+    #@overlay/match missing_ok=True
+    rule: RunAsAny
+  seLinux:
+    #@overlay/match missing_ok=True
+    rule: RunAsAny

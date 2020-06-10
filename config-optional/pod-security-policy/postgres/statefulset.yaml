@@ -1,0 +1,11 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
+
+#@overlay/match by=overlay.subset({"kind": "StatefulSet", "metadata":{"namespace": "cf-db", "name": "cf-db-postgresql"}})
+---
+spec:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      serviceAccountName: cf-db-postgresql

@@ -38,12 +38,7 @@ To deploy cf-for-k8s as is, the cluster should:
 - have a minimum of 4 CPU, 15GB memory per node
 - support `LoadBalancer` services
 - support `metrics-server`
-  - Most IaaSes come with `metrics-server`, but if yours does not come with it or if you're using `kind`, then you may want to run something like 
-  
-  ```console
-    kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml
-  ```
-
+  - Most IaaSes come with `metrics-server`, but if yours does not come with it or if you're using `kind`, you will need to include `config-optional/add-metrics-server-components-v0.3.6.yml` when you render the K8s template.
 - defines a default StorageClass
   - requires [additional config on vSphere](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/storageclass.html), for example
 
@@ -143,9 +138,9 @@ This project is in it's early stages of development and hence there are features
       ```console
       ytt -f config -f ${TMP_DIR}/cf-values.yml > ${TMP_DIR}/cf-for-k8s-rendered.yml
       ```
-      > cf-for-k8s uses [ytt](https://github.com/k14s/ytt) to create and maintain reusable YAML templates. You can visit the ytt [playground](https://get-ytt.io/) to learn more about it's templating features. 
+      > cf-for-k8s uses [ytt](https://github.com/k14s/ytt) to create and maintain reusable YAML templates. You can visit the ytt [playground](https://get-ytt.io/) to learn more about it's templating features.
       > In the above command, `ytt` can take a folder e.g. `config` or file via `-f`. See all options by running `ytt help`.
-    
+
       ii. Install using `kapp` and pass the above K8s configuration file
       ```console
       kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
@@ -153,7 +148,7 @@ This project is in it's early stages of development and hence there are features
       > cf-for-k8s uses [kapp](https://github.com/k14s/kapp) to manage it's lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit untill all resources are installed and their status is running. See all options by running `kapp help`.
 
    Once you run the command, it should take about 10 minutes depending on your cluster bandwidth, size. `kapp` will provide updates on pending resource creations in the cluster and will wait until all resources are created and running. Here is a sample snippet from `kapp` output:
-   
+
    ```console
    4:08:19PM: ---- waiting on 1 changes [0/1 done] ----
    4:08:19PM: ok: reconcile serviceaccount/cc-kpack-registry-service-account (v1) namespace: cf-workloads-staging

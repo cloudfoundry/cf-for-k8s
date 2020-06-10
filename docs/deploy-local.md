@@ -22,7 +22,6 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
 - have a minimum of 6 CPU, 6GB memory if using 1 node
   - commonly configured via Docker Desktop > Preferences > Resources
-- have a running metrics-server (this is an important consideration for **Kind** or **kubeadm** clusters. You can see one way to install it in the [Kind deploy instructions](#steps-to-deploy-on-kind))
 
 ## Considerations
 
@@ -48,19 +47,18 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
 1. Follow the instructions in [Deploying CF for K8s](deploy.md).
 
-   - Include the [remove-resource-requirements.yml](../config-optional/remove-resource-requirements.yml) and
-     [remove-ingressgateway-service.yml](../config-optional/remove-ingressgateway-service.yml)
+   - Include the [remove-resource-requirements.yml](../config-optional/remove-resource-requirements.yml),
+     [remove-ingressgateway-service.yml](../config-optional/remove-ingressgateway-service.yml),
+     [add-metrics-server-components-v0.3.6.yml](../config-optional/add-metrics-server-components-v0.3.6.yml) and
+     [patch-metrics-server.yml](../config-optional/patch-metrics-server.yml)
      overlay files in the set of templates to be deployed. This can be achieved by
      using the following commands:
 
      ```console
      TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
-     ytt -f config -f config-optional/remove-resource-requirements.yml -f config-optional/remove-ingressgateway-service.yml -f <cf_install_values_path> > ${TMP_DIR}/cf-for-k8s-rendered.yml
+     ytt -f config -f config-optional/remove-resource-requirements.yml -f config-optional/remove-ingressgateway-service.yml -f config-optional/add-metrics-server-components.yml -f config-optional/patch-metrics-server.yml -f <cf_install_values_path> > ${TMP_DIR}/cf-for-k8s-rendered.yml
      kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
      ```
-
-1. Make sure you've installed a metrics-server.
-   - this may be as simple as running something like `kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml`
 
 1. Once the `kapp deploy` succeeds, you should be able to run `cf api api.vcap.me --skip-ssl-validation`, etc
 
@@ -70,6 +68,12 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
    ```console
    minikube start --cpus=4 --memory=8g --kubernetes-version=1.16.8 --driver=docker
+   ```
+
+1. Enable metrics-server.
+
+   ```console
+   minikube addons enable metrics-server
    ```
 
 1. Obtain minikube IP.

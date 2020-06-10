@@ -59,7 +59,7 @@ var _ = Describe("Configs", func() {
 	})
 	Describe("Check optional configs", func() {
 
-		It("should load each optional config file", func() {
+		It("should load each independent optional config file", func() {
 			currentDirectory, err := os.Getwd()
 			Expect(err).ToNot(HaveOccurred())
 
@@ -72,6 +72,11 @@ var _ = Describe("Configs", func() {
 				if !strings.HasSuffix(basename, ".yml") {
 					return nil
 				}
+
+				if strings.Contains(basename, "patch-metrics-server") {
+					return nil
+				}
+
 				fmt.Printf("Test file %s\n", basename)
 				finalArgs := append(args, "-f", path)
 				command := exec.Command("ytt", finalArgs...)
@@ -88,6 +93,41 @@ var _ = Describe("Configs", func() {
 				return nil
 			})
 			Expect(count).To(BeNumerically(">=", 1))
+		})
+
+		It("should load patch-metrics-server config with add-metrics-server-components config", func() {
+			currentDirectory, err := os.Getwd()
+			Expect(err).ToNot(HaveOccurred())
+
+			configDirectory := filepath.Join(filepath.Dir(filepath.Dir(currentDirectory)), "config-optional")
+
+			configs := []string{}
+			filepath.Walk(configDirectory, func(path string, info os.FileInfo, err error) error {
+
+				basename := info.Name()
+
+				if strings.Contains(basename, "patch-metrics-server") || strings.Contains(basename, "add-metrics-server-components") {
+					configs = append(configs, path)
+					return nil
+				}
+
+				return nil
+			})
+
+			for _, config := range configs {
+				fmt.Printf("Test file %s\n", config)
+				args = append(args, "-f", config)
+			}
+			command := exec.Command("ytt", args...)
+
+			session, err := Start(command, ioutil.Discard, GinkgoWriter)
+			Expect(err).NotTo(HaveOccurred())
+			session.Wait(10 * time.Second)
+			Eventually(session).Should(Exit(0),
+				fmt.Sprintf("ytt failed on %+v with output %s", configs, session.Err.Contents()))
+			newHash := md5.Sum(session.Out.Contents())
+			Expect(newHash).NotTo(Equal(baseHash), fmt.Sprintf("optional files %+v had no effect", configs))
+
 		})
 	})
 	When("validating with kubeval", func() {

@@ -26,7 +26,11 @@ RUN export GO_TAR=go1.13.8.linux-amd64.tar.gz && \
     wget https://dl.google.com/go/${GO_TAR} && \
     tar -C /usr/local -xzf ${GO_TAR}
 
-ENV PATH=$PATH:/usr/local/go/bin:/root/go/bin
+ENV GOPATH /go
+ENV PATH=$PATH:/go/bin:/usr/local/go/bin
+
+RUN go get -u github.com/cloudfoundry/uptimer
+
 # https://github.com/golang/go/issues/28065
 ENV CGO_ENABLED=0
 # https://golang.org/doc/go1.13#modules
@@ -34,8 +38,6 @@ ENV GO111MODULE=on
 
 # https://github.com/onsi/ginkgo/releases
 RUN go get -u github.com/onsi/ginkgo/ginkgo@v1.11.0
-
-RUN go get -u github.com/cloudfoundry/uptimer
 
 # https://github.com/cloudfoundry/cli/releases
 WORKDIR /tmp

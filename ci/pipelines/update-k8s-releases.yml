@@ -152,15 +152,14 @@ jobs:
             APP_NAME: my-node-app
             VERIFY_EXISTING_APP: true
 
-    # bring back after #173235596 is resolved in cf-for-k8s
-    # - task: delete-cf
-    #   file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-    #   params:
-    #     GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-    #     GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-    #     GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-    #   input_mapping:
-    #     pool-lock: ready-pool
+    - task: delete-cf
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      input_mapping:
+        pool-lock: ready-pool
 
     - put: cf-for-k8s-develop
       params:
@@ -264,15 +263,14 @@ jobs:
             APP_NAME: my-node-app
             VERIFY_EXISTING_APP: true
 
-    # bring back after #173235596 is resolved in cf-for-k8s
-    # - task: delete-cf
-    #   file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-    #   params:
-    #     GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-    #     GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-    #     GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-    #   input_mapping:
-    #     pool-lock: ready-pool
+    - task: delete-cf
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      input_mapping:
+        pool-lock: ready-pool
 
     - put: cf-for-k8s-develop
       params:

@@ -27,7 +27,6 @@ groups:
 - name: docker-images
   jobs:
   - build-cf-for-k8s-ci-image
-  - build-cf-test-runner-image
   - build-cf-for-k8s-azure-image
 - name: infrastructure
   jobs:
@@ -96,16 +95,6 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
       - ci/dockerfiles/cf-for-k8s-azure/Dockerfile
-
-- name: cf-test-runner-dockerfile
-  type: git
-  icon: github-box
-  source:
-    branch: develop
-    uri: git@github.com:cloudfoundry/cf-for-k8s
-    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
-    paths:
-      - ci/dockerfiles/cf-test-runner/Dockerfile
 
 - name: cf-for-k8s-master
   type: git
@@ -214,15 +203,6 @@ resources:
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
 
-- name: cf-test-runner-image
-  type: docker-image
-  icon: docker
-  source:
-    repository: relintdockerhubpushbot/cf-test-runner
-    username: ((dockerhub.username))
-    password: ((dockerhub.password))
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
-
 - name: cf-for-k8s-azure-image
   type: docker-image
   icon: docker
@@ -326,14 +306,6 @@ x-config: &common-task-config
     type: docker-image
     source:
       repository: relintdockerhubpushbot/cf-for-k8s-ci
-
-# Extract common platform and image_resource details so task configs can be more concise
-test-runner-config: &common-test-config
-  platform: linux
-  image_resource:
-    type: docker-image
-    source:
-      repository: relintdockerhubpushbot/cf-test-runner
 
 jobs:
 - name: run-unit-tests
@@ -440,7 +412,7 @@ jobs:
 
   - task: run-smoke-test
     config:
-      <<: *common-test-config
+      <<: *common-task-config
       inputs:
       - name: cf-for-k8s-develop
       - name: env-metadata
@@ -745,7 +717,7 @@ jobs:
 
     - task: run-smoke-test
       config:
-        <<: *common-test-config
+        <<: *common-task-config
         inputs:
         - name: cf-for-k8s-master
         - name: env-metadata
@@ -804,7 +776,7 @@ jobs:
 
   - task: run-smoke-test
     config:
-      <<: *common-test-config
+      <<: *common-task-config
       inputs:
       - name: cf-for-k8s-master
       params:
@@ -1119,7 +1091,7 @@ jobs:
 
     - task: run-smoke-test
       config:
-        <<: *common-test-config
+        <<: *common-task-config
         inputs:
         - name: cf-for-k8s-pr-all-branches
         - name: env-metadata
@@ -1205,22 +1177,6 @@ jobs:
     - put: cf-for-k8s-ci-image
       params:
         build: cf-for-k8s-ci-dockerfile/ci/dockerfiles/cf-for-k8s-ci/
-        push: true
-
-- name: build-cf-test-runner-image
-  public: true
-  plan:
-  - timeout: 4h
-    do:
-    - in_parallel:
-      - get: weekly
-        trigger: true
-      - get: cf-test-runner-dockerfile
-        trigger: true
-
-    - put: cf-test-runner-image
-      params:
-        build: cf-test-runner-dockerfile/ci/dockerfiles/cf-test-runner/
         push: true
 
 - name: build-cf-for-k8s-azure-image
@@ -1325,7 +1281,7 @@ jobs:
 
       - task: run-smoke-test
         config:
-          <<: *common-test-config
+          <<: *common-task-config
           inputs:
           - name: cf-for-k8s-master
           - name: env-metadata

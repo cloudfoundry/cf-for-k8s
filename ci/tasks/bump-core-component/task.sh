@@ -7,17 +7,16 @@ pushd cf-for-k8s-develop > /dev/null
   
   CURR_TAG=$(echo $CURR_TAG_LINE | awk '{print $2}')
 
-  if [[ "${CURR_TAG}" == "${TAG}" ]]; then
+  if [[ "${CURR_TAG}" != "${TAG}" ]]; then
+    vendir sync
+
+    git config user.email "cf-release-integration@pivotal.io"
+    git config user.name "relint-ci"
+    git add .
+    git commit -m "Bump ${REPO_NAME} to ${TAG}"
+  else
     echo "Tag ${CURR_TAG} has not changed. No update needed."
-    exit 0
   fi
-
-  vendir sync
-
-  git config user.email "cf-release-integration@pivotal.io"
-  git config user.name "relint-ci"
-  git add .
-  git commit -m "Bump ${REPO_NAME} to ${TAG}"
 
 popd > /dev/null
 

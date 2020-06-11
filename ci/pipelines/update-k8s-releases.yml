@@ -26,6 +26,7 @@ resources:
     owner: pivotal
     repository: kpack
     access_token: ((cf_deployment_release_bot_access_token))
+    pre_release: true
 
 - name: eirini-release
   type: github-release

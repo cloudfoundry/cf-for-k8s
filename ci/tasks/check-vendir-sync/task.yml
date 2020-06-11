@@ -12,7 +12,7 @@ inputs:
 
 params:
   VENDIR_GITHUB_API_TOKEN:
-  REPO_DIR:
+  REPO_DIR: cf-for-k8s
 
 run:
-  path: ci-tasks/ci/tasks/check-vendir-sync/task
+  path: ci-tasks/ci/tasks/check-vendir-sync/task.sh

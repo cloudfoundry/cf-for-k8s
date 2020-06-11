@@ -47,11 +47,11 @@ if [[ "${UPGRADE}" == "true" ]]; then
 else
   echo "Generating install values..."
 fi
-cf-for-k8s-repo/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-values.yml
+cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-values.yml
 echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-values.yml
 
 echo "Installing CF..."
-ytt -f cf-for-k8s-repo/config -f cf-values.yml > /tmp/manifest.yml
+ytt -f cf-for-k8s/config -f cf-values.yml > /tmp/manifest.yml
 password=$(bosh interpolate --path /cf_admin_password cf-values.yml)
 if [[ "${UPTIMER}" == "true" ]]; then
   echo "Running with uptimer"

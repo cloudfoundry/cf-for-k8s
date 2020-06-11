@@ -85,12 +85,12 @@ jobs:
     - task: run-unit-tests
       file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-bump
+        cf-for-k8s: cf-for-k8s-bump
 
     - task: fresh-install-cf
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-bump
+        cf-for-k8s: cf-for-k8s-bump
         pool-lock: ready-pool
       params:
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
@@ -100,7 +100,7 @@ jobs:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-bump
+        cf-for-k8s: cf-for-k8s-bump
 
     - task: delete-cf
       file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
@@ -114,7 +114,7 @@ jobs:
     - task: first-install-cf-develop
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-develop
+        cf-for-k8s: cf-for-k8s-develop
         pool-lock: ready-pool
       params:
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
@@ -124,14 +124,14 @@ jobs:
     - task: push-test-app
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-develop
+        cf-for-k8s: cf-for-k8s-develop
       params:
         APP_NAME: my-node-app
 
     - task: upgrade-cf-with-component-bump
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-bump
+        cf-for-k8s: cf-for-k8s-bump
         pool-lock: ready-pool
       params:
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
@@ -143,11 +143,11 @@ jobs:
         - task: run-smoke-tests
           file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
           input_mapping:
-            cf-for-k8s-repo: cf-for-k8s-bump
+            cf-for-k8s: cf-for-k8s-bump
         - task: verify-existing-app
           file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
           input_mapping:
-            cf-for-k8s-repo: cf-for-k8s-bump
+            cf-for-k8s: cf-for-k8s-bump
           params:
             APP_NAME: my-node-app
             VERIFY_EXISTING_APP: true
@@ -196,12 +196,12 @@ jobs:
     - task: run-unit-tests
       file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-bump
+        cf-for-k8s: cf-for-k8s-bump
 
     - task: fresh-install-cf
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-bump
+        cf-for-k8s: cf-for-k8s-bump
         pool-lock: ready-pool
       params:
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
@@ -211,7 +211,7 @@ jobs:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-bump
+        cf-for-k8s: cf-for-k8s-bump
 
     - task: delete-cf
       file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
@@ -225,7 +225,7 @@ jobs:
     - task: first-install-cf-develop
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-develop
+        cf-for-k8s: cf-for-k8s-develop
         pool-lock: ready-pool
       params:
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
@@ -235,14 +235,14 @@ jobs:
     - task: push-test-app
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-develop
+        cf-for-k8s: cf-for-k8s-develop
       params:
         APP_NAME: my-node-app
 
     - task: upgrade-cf-with-eirini-bump
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
-        cf-for-k8s-repo: cf-for-k8s-bump
+        cf-for-k8s: cf-for-k8s-bump
         pool-lock: ready-pool
       params:
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
@@ -254,11 +254,11 @@ jobs:
         - task: run-smoke-tests
           file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
           input_mapping:
-            cf-for-k8s-repo: cf-for-k8s-bump
+            cf-for-k8s: cf-for-k8s-bump
         - task: verify-existing-app
           file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
           input_mapping:
-            cf-for-k8s-repo: cf-for-k8s-bump
+            cf-for-k8s: cf-for-k8s-bump
           params:
             APP_NAME: my-node-app
             VERIFY_EXISTING_APP: true

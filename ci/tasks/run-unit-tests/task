@@ -1,5 +1,5 @@
 #!/bin/bash
 set -eux
 
-cd "cf-for-k8s-repo/tests/configs"
+cd "cf-for-k8s/tests/configs"
 ginkgo -r -v .

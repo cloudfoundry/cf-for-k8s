@@ -8,7 +8,7 @@ image_resource:
 
 inputs:
 - name: cf-for-k8s-ci
-- name: cf-for-k8s-repo
+- name: cf-for-k8s
 
 run:
   path: cf-for-k8s-ci/ci/tasks/run-unit-tests/task

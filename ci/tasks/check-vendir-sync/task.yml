@@ -8,7 +8,7 @@ image_resource:
 
 inputs:
 - name: ci-tasks
-- name: cf-for-k8s-repo
+- name: cf-for-k8s
 
 params:
   VENDIR_GITHUB_API_TOKEN:

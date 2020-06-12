@@ -428,6 +428,14 @@ jobs:
           export SMOKE_TEST_SKIP_SSL=true
           cf-for-k8s-develop/hack/run-smoke-tests.sh
 
+  - task: push-test-app
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    params:
+      APP_NAME: lingering-node-app
+      VERIFY_EXISTING_APP: false
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+
   - task: delete-cf
     input_mapping:
       pool-lock: ready-pool
@@ -1105,6 +1113,14 @@ jobs:
             export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
             export SMOKE_TEST_SKIP_SSL=true
             cf-for-k8s-pr-all-branches/hack/run-smoke-tests.sh
+
+    - task: push-test-app
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      params:
+        APP_NAME: lingering-node-app
+        VERIFY_EXISTING_APP: false
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches
 
     on_failure:
       do:

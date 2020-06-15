@@ -1511,7 +1511,6 @@ jobs:
           gcloud_auth "${cluster_name}"
 
           DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
-          cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
           echo "Copying bosh vars store from latest release install"
           mkdir -p "/tmp/${cluster_name}.k8s-dev.relint.rocks"
@@ -1520,6 +1519,9 @@ jobs:
           echo "Generating a new install values file..."
           echo "NOTE: the values we're currently not rotating are:"
           cut -d ":" -f1 env-metadata/cf-vars.yaml
+          echo "(we're also not testing rotating our app_registry credentials)"
+          echo ""
+
           cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
           echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
 

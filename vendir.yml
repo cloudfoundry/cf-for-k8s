@@ -8,11 +8,10 @@ directories:
   - path: github.com/cloudfoundry/cf-k8s-networking
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: v0.0.6
+      ref: v0.2.0
     includePaths:
     - config/*
     - config/crd/**/*
-    - config/istio-generated/**/*
     - config/istio-config/**/*
     - config/istio/generated/**/*
     - config/routecontroller/**/*

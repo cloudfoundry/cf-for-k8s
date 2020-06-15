@@ -1,4 +1,5 @@
 # Setup ingress certs with Lets Encrypt
+The following instructions will setup ingress certs with Lets Encrypt. You have the option of setting up certs before install or update an existing install with the new certs.
 
 ## Objective
 At the end of this setup, you and your users will be able to access CF CLI and CF APPs over HTTPS.
@@ -69,18 +70,36 @@ openssl base64 -in /tmp/certbot/cfg/live/$APPS_DOMAIN/privkey.pem | tr -d '\n' >
 ```
 
 ### Update cf-values yaml
-The following instructions assume you have created `cf-install-values.yml`.
+The following instructions assume you have created `cf-install-values.yml`. Please ensure to copy the file contents into the variables as is.
 
-1. Update system certifiate values
-    1. Update `system_certificate.crt` with contents from `/tmp/sys-fullchain.pem`.
-    1. Update `system_certificate.key`  with contents from `/tmp/sys-privkey.pem`.
-    1. Update `system_certificate.ca` with empty strings `""`.
-1. Update apps certificate values
-    1. Update `workloads_certificate.crt` with contents from `/tmp/apps-fullchain.pem`.
-    1. Update `workloads_certificate.key` with contents from `/tmp/apps-privkey.pem`.
-    1. Update `workloads_certificate.ca` with empty strings `""`.
+1. **Update system certificate values**
+
+    Lookup `system_certificate` in `cf-install-values.yml`. You should config variables `crt`, `key` and `ca`. Follow the instructions below,
+    ```yaml
+    system_certificate:
+      crt: <replace this with the contents of the file /tmp/sys-fullchain.pem>
+      key: <replace this with the contents of the file /tmp/sys-privkey.pem>
+      ca: "" #! replace whatever old value with empty string
+    ```
+    Your final output for `system_certificate` will look something like
+    ```yaml
+    system_certificate:
+      crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZhakNDQkZLZ0F3SUJBZ0lTQ....
+      key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2...
+      ca: ""
+    ```
+
+1. **Update apps certificate values**
+
+   The `workloads_certificate` has sub-keys `crt`, `key`, `ca` under it.
+   ```yaml
+   workloads_certificate:
+      crt: <replace this with the contents of the file /tmp/apps-fullchain.pem>
+      key: <replace this with the contents of the file /tmp/apps-privkey.pem>
+      ca: "" #! replace whatever old value with empty string
+   ```
+
 1. Follow the instructions from deploy doc to generate the final deploy yml using `ytt` and `kapp` to deploy cf-for-k8s to your cluster.
-1. Create two DNS `A` record entries for `$APPS_DOMAIN` and `$SYS_DOMAIN` and point them to the ingress loadbalancer (see the deploy instructiosn on how to fetch the loadbalancer IP from the cluster).
 
 ### Verify TLS
 
@@ -88,12 +107,11 @@ The following instructions assume you have created `cf-install-values.yml`.
 ```console
 cf api https://api.$SYS_DOMAIN
 ```
-Follow instructions in deploy doc to create orgs/spaces and push an app
+Follow instructions in deploy doc to setup your org/spaces and cf push an app (if you haven't already).
 
 2. Verify app domain certs by running `curl -vvv` or verify the cert in a browser
 
 ```console
 curl -vvv  https://$APP_NAME.$APPS_DOMAIN
+# output should show `SSL certificate verify ok`
 ```
-
-

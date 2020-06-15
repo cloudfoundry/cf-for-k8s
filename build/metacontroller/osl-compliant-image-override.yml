@@ -1,7 +1,0 @@
-apiVersion: kbld.k14s.io/v1alpha1
-kind: Config
-minimumRequiredVersion: 0.22.0
-overrides:
-  - image: metacontroller/metacontroller:v0.4.0
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-metacontroller@sha256:731da6e0c4d544e0529126d74b32ccbf7d334db96d60745163d72b1334d93fe3
-    preresolved: true

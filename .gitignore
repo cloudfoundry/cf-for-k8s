@@ -2,5 +2,6 @@
 **/*.tfstate.backup
 **/.terraform/
 **/*.tfvars
+tmp
 
 .idea

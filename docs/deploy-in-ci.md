@@ -11,14 +11,15 @@ The following scripts are designed to be executable in a CI system, as well as l
 - Generate all required configuration settings for a given domain:
 
   ```console
-  ./hack/generate-values.sh --cf-domain <cf-domain> --gcr-service-account-json <path-to-kpack-gcr-service-account-json> > cf-install-values.yml
+  TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
+  ./hack/generate-values.sh --cf-domain <cf-domain> --gcr-service-account-json <path-to-kpack-gcr-service-account-json> > ${TMP_DIR}/cf-install-values.yml
   ```
 
 - Install CF for K8s to your target K8s cluster.
 
   ```console
-  ytt -f config -f <path-to-cf-install-values-yaml> > ./tmp/cf-for-k8s-rendered.yml
-  kapp deploy -a cf -f ./tmp/cf-for-k8s-rendered.yml -y
+  ytt -f config -f ${TMP_DIR}/cf-install-values.yml > ${TMP_DIR}/cf-for-k8s-rendered.yml
+  kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
   ```
 
 - Update the wildcard entry for the given domain with the correct load-balancer IP address (if you are using Google Cloud DNS).

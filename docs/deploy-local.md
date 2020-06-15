@@ -54,8 +54,9 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
      using the following commands:
 
      ```console
-     ytt -f config -f config-optional/remove-resource-requirements.yml -f config-optional/remove-ingressgateway-service.yml -f <cf_install_values_path> > ./tmp/cf-for-k8s-rendered.yml
-     kapp deploy -a cf -f ./tmp/cf-for-k8s-rendered.yml -y
+     TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
+     ytt -f config -f config-optional/remove-resource-requirements.yml -f config-optional/remove-ingressgateway-service.yml -f <cf_install_values_path> > ${TMP_DIR}/cf-for-k8s-rendered.yml
+     kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
      ```
 
 1. Make sure you've installed a metrics-server.
@@ -98,8 +99,9 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
      using the following commands:
 
      ```console
-     ytt -f config -f config-optional/remove-resource-requirements.yml -f <cf_install_values_path> > ./tmp/cf-for-k8s-rendered.yml
-     kapp deploy -a cf -f ./tmp/cf-for-k8s-rendered.yml -y
+     TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
+     ytt -f config -f config-optional/remove-resource-requirements.yml -f <cf_install_values_path> > ${TMP_DIR}/cf-for-k8s-rendered.yml
+     kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
      ```
 
 1. You will be able to target your CF CLI to point to the new CF instance

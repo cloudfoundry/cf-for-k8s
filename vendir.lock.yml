@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: increase routecontroller resync_interval time...
-      sha: a7e5484bcc075e71d68101225c1fd492833ca8d6
+      commitTitle: Update routecontroller image digest to sha256:ed4b3e351a31313ebf974439e4fb43210281a02f0a9125cb8ea880c572385b5f
+      sha: 4153bbdbaf3e8d3d681a84a112f3c9cc10129ff3
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: images.yml updated by CI...

@@ -407,9 +407,6 @@ jobs:
       - kpack-validate-on-newest-k8s-version
       - kpack-validate-upgrade
       trigger: true
-    - put: pool-lock
-      resource: ready-pool
-      params: {acquire: true}
 
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
@@ -722,9 +719,6 @@ jobs:
       - eirini-validate-on-newest-k8s-version
       - eirini-validate-upgrade
       trigger: true
-    - put: pool-lock
-      resource: ready-pool
-      params: {acquire: true}
 
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-eirini/task.yml

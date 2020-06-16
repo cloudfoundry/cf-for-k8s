@@ -2,8 +2,15 @@
 
 TAG=$(cat release/tag)
 pushd cf-for-k8s-develop > /dev/null
-  CURR_TAG_LINE=$(grep -A 20 "path: .*${REPO_NAME}" vendir.yml | grep tag | head -n1 | awk '{$1=$1;print}')
-  sed "s/${CURR_TAG_LINE}/tag: ${TAG}/g" vendir.yml > /tmp/vendir.yml && mv /tmp/vendir.yml vendir.yml
+  if [[ ${REPO_NAME} == "uaa" ]] || [[ ${REPO_NAME} == "cf-k8s-networking" ]]; then
+    # we believe we need the component teams to include the necessary files in their release assets
+    # before we can switch to using a githubRelease in vendir.yml
+    vendir_key="ref"
+  else
+    vendir_key="tag"
+  fi
+  CURR_TAG_LINE=$(grep -A 20 "path: .*${REPO_NAME}" vendir.yml | grep ${vendir_key} | head -n1 | awk '{$1=$1;print}')
+  sed "s/${CURR_TAG_LINE}/${vendir_key}: ${TAG}/g" vendir.yml > /tmp/vendir.yml && mv /tmp/vendir.yml vendir.yml
   
   CURR_TAG=$(echo $CURR_TAG_LINE | awk '{print $2}')
 

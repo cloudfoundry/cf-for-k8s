@@ -23,9 +23,6 @@ cfroutesync:
 #@ networking = library.get("github.com/cloudfoundry/cf-k8s-networking")
 --- #@ template.replace(networking.with_data_values(networking_values()).eval())
 
-#@ metacontroller = library.get("metacontroller")
---- #@ template.replace(metacontroller.eval())
-
 #! Istio Configurations
 
 #@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name": "istio-system"}})

@@ -28,16 +28,8 @@ directories:
   - manual: {}
     path: minio
   - manual: {}
-    path: metacontroller
-  - manual: {}
     path: postgres
   path: config/_ytt_lib
-- contents:
-  - git:
-      commitTitle: Update install manifest to v0.4.0.
-      sha: eacb75b4d562e3fb158eb2147a6768407ab374d4
-    path: .
-  path: build/metacontroller/_vendir
 - contents:
   - git:
       commitTitle: '[stable/minio]: add serviceAccountName in create-bucket-job to

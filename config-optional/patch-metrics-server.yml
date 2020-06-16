@@ -1,0 +1,21 @@
+#@ load("@ytt:overlay", "overlay")
+
+#! Patch metrics-server to work in Kind
+#! https://github.com/kubernetes-sigs/kind/issues/398#issuecomment-621143252
+#! https://github.com/kubernetes-sigs/metrics-server/issues/131#issuecomment-618671827
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"metrics-server", "namespace":"kube-system"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name"
+        - name: metrics-server
+          #@overlay/replace
+          args:
+            - --cert-dir=/tmp
+            - --secure-port=4443
+            - --kubelet-insecure-tls
+            - --kubelet-preferred-address-types=InternalIP
+

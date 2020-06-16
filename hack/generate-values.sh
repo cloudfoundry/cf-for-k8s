@@ -19,6 +19,7 @@ flags:
 
   -s, --silence-hack-warning
       (optional) Omit hack script warning message.
+
 EOF
   exit 1
 }
@@ -61,7 +62,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -z ${SILENCE_HACK_WARNING:=} ]]; then
-  echo "WARNING: The hack scripts are intended for development of cf-for-k8s. 
+  echo "WARNING: The hack scripts are intended for development of cf-for-k8s.
   They are not officially supported product bits.  Their interface and behavior
   may change at any time without notice." 1>&2
 fi

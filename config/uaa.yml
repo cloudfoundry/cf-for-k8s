@@ -16,10 +16,11 @@
 #@ end
 
 #@ def database_query_params(scheme):
+#@   useSSL=len(data.values.uaa.database.ca_cert) > 0
 #@   if scheme == "postgresql":
-#@     return "?sslmode=disable"
+#@     return "?sslmode=verify-full&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory" if useSSL else "?sslmode=disable"
 #@   elif scheme == "mysql":
-#@     return "?useSSL=false"
+#@     return "?useSSL=true" if useSSL else "?useSSL=false"
 #@   end
 #@   return ""
 #@ end
@@ -42,6 +43,11 @@ database:
   scheme: #@ data.values.uaa.database.adapter
   username: #@ data.values.uaa.database.user
   password: #@ data.values.uaa.database.password
+
+#@ if/end len(data.values.uaa.database.ca_cert) > 0:
+#@overlay/replace
+ca_certs:
+  -  #@ data.values.uaa.database.ca_cert
 
 namespace: #@ data.values.system_namespace
 

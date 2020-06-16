@@ -10,6 +10,10 @@ readiness_port:
   deployment_updater: 4445
   clock: 4446
 
+fluent:
+  host: "fluentd-forwarder-ingress"
+  port: 24224
+
 internal_service_hostname: #@ "capi.{}.svc.cluster.local".format(data.values.system_namespace)
 
 pid_filename: /cloud_controller_ng/cloud_controller_ng.pid

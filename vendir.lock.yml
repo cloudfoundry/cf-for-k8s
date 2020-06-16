@@ -17,8 +17,8 @@ directories:
       sha: 63ec659248536d203a399acba04e307e1825c9e2
     path: github.com/cloudfoundry/metric-proxy
   - git:
-      commitTitle: 'Merge pull request #1262 from cloudfoundry/dependabot/go_modules/k8s/k8s.io/api-0.18.1'
-      sha: 211c15994f39fde797a66c2dfd7e15dcad65924c
+      commitTitle: Update UAA image reference in k8s deployment template to 74.21.0
+      sha: 75573ec216e1c00ace24466ab2146be62ed4c964
     path: github.com/cloudfoundry/uaa
   - githubRelease:
       url: https://api.github.com/repos/pivotal/kpack/releases/27343776

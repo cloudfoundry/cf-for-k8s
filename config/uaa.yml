@@ -15,15 +15,31 @@
 #@   end
 #@ end
 
+#@ def database_query_params(scheme):
+#@   if scheme == "postgresql":
+#@     return "?sslmode=disable"
+#@   elif scheme == "mysql":
+#@     return "?useSSL=false"
+#@   end
+#@   return ""
+#@ end
+
+#@ def uaa_db_jdbc_url():
+#@   return "jdbc:{}://{}:{}/{}{}".format(
+#@     data.values.uaa.database.adapter,
+#@     uaa_db_host(),
+#@     data.values.uaa.database.port,
+#@     data.values.uaa.database.name,
+#@     database_query_params(data.values.uaa.database.adapter))
+#@ end
+
 #@ def uaa_values():
 admin:
   client_secret: #@ data.values.uaa.admin_client_secret
 
 database:
+  url: #@ uaa_db_jdbc_url()
   scheme: #@ data.values.uaa.database.adapter
-  address: #@ uaa_db_host()
-  port: #@ data.values.uaa.database.port
-  name: #@ data.values.uaa.database.name
   username: #@ data.values.uaa.database.user
   password: #@ data.values.uaa.database.password
 
@@ -171,7 +187,8 @@ uaa:
 #@ end
 
 #@ uaa = library.get("github.com/cloudfoundry/uaa")
---- #@ template.replace(uaa.with_data_values(uaa_values()).eval())
+---
+  #@ template.replace(uaa.with_data_values(uaa_values()).eval())
 
 #! overlay CF-specific UAA configuration given there is no equivalent data values.
 #@overlay/match by=overlay.subset({"kind":"ConfigMap", "metadata":{"name":"uaa-config"}})

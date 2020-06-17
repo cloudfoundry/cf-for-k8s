@@ -7,17 +7,6 @@
 #@ def networking_values():
 systemNamespace: #@ data.values.system_namespace
 workloadsNamespace: #@ data.values.workloads_namespace
-
-cfroutesync:
-  #@ if/end data.values.images.cfroutesync:
-  image: #@ data.values.images.cfroutesync
-
-  ccCA: #@ base64.decode(data.values.internal_certificate.ca)
-  ccBaseURL: #@ "http://capi." + data.values.system_namespace + ".svc.cluster.local"
-  uaaCA: #@ base64.decode(data.values.internal_certificate.ca)
-  uaaBaseURL: #@ "http://uaa." + data.values.system_namespace + ".svc.cluster.local:8080"
-  clientName: "cf-k8s-networking"
-  clientSecret: #@ data.values.uaa.admin_client_secret
 #@ end
 
 #@ networking = library.get("github.com/cloudfoundry/cf-k8s-networking")

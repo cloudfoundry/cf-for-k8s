@@ -28,7 +28,6 @@ istio_static_ip: ""
 images:
   capi: ""
   nginx: ""
-  cfroutesync: ""
 
 system_certificate:
   #! Base64-encoded certificate for the wildcard

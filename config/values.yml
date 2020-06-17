@@ -88,6 +88,8 @@ uaa:
     #! DB user password in plain text
     password: ""
     name: uaa
+    #! Plain text ca certificate for tls
+    ca_cert: ""
 
   jwt_policy:
     key_id: "default_jwt_policy_key"

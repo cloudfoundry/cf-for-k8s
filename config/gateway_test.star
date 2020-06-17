@@ -20,9 +20,9 @@ def test_gateway_when_app_domain_does_not_equal_system_domain():
   # We expect two https-based entries in the servers list: one for the system domain, and a different one for the app domain
   assert_equals(2, len(https_servers))
 
-  # We expect the host field of both servers to be restricted by namespace
+  # We expect the workloads namespace to be defined separate from the system domain, so that it uses the workloads certificate
   assert_equals(1, len(https_servers[0]["hosts"]))
-  assert_equals("sys-namespace/*.sys-domain.com", https_servers[0]["hosts"][0])
+  assert_equals("*/*.sys-domain.com", https_servers[0]["hosts"][0])
   assert_equals(1, len(https_servers[1]["hosts"]))
   assert_equals("work-namespace/*.app-domain.com", https_servers[1]["hosts"][0])
 end

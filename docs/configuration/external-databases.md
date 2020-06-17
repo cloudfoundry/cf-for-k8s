@@ -23,6 +23,7 @@ uaa:
     user: <user>
     password: <password>
     name: <database>
+    ca_cert: <ca certificate for tls>
 ```
 
 
@@ -32,6 +33,8 @@ Please note to the **different spelling** of `postgres`  and `postgresql` for ca
 ## Limitations
 
 The traffic to an external database will not be encrypted. This will be changed in the near future.
+
+In case of uaa, tls can be enabled by providing `ca_cert`.
 
 ## Setup
 
@@ -45,10 +48,10 @@ As prerequisite, you need to execute the following steps to configure your postg
     export PGHOST=<host where postres is running>
     ```
 
-2. Run the following script. It will 
+2. Run the following script. It will
    * create one database each for Cloud Controller and UAA
    * create one user each for Cloud Controller and UAA
-   * activate the `citext` extension for each of these databases 
+   * activate the `citext` extension for each of these databases
 
     ```bash
     VALUES_JSON=$(yaml2json "$VALUES_FILE")
@@ -132,4 +135,4 @@ In the following section, an external database is created using the bitnami post
     ytt -f config -f /tmp/cf-values.yml -f db-values.yaml > /tmp/cf-for-k8s-rendered.yml
     ```
 
-    ii. Install using `kapp` 
+    ii. Install using `kapp`

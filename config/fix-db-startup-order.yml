@@ -1,5 +1,8 @@
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@ load("postgres.star", "cfdb_enabled")
 
+#@ if cfdb_enabled():
 #@overlay/match by=overlay.subset({"kind": "StatefulSet", "metadata":{"name": "cf-db-postgresql"}})
 ---
 metadata:
@@ -39,3 +42,4 @@ metadata:
   annotations:
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-rule.cf-db-postgresql: "upsert after upserting cf-for-k8s.cloudfoundry.org/cf-db-postgresql"
+#@ end

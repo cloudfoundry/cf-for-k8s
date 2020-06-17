@@ -8,10 +8,8 @@
 #@ def uaa_db_host():
 #@   if len(data.values.uaa.database.host) > 0:
 #@     return data.values.uaa.database.host
-#@   elif data.values.cf_db.enabled == True:
-#@     return "cf-db-postgresql.cf-db.svc.cluster.local"
 #@   else:
-#@     assert.fail("When cf_db.enabled is false, expected a uaa.database.host to be provided, but was not.")
+#@     return "cf-db-postgresql.cf-db.svc.cluster.local"
 #@   end
 #@ end
 

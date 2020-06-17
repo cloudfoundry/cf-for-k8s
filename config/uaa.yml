@@ -132,6 +132,24 @@ oauth:
       authorities: cloud_controller.write,cloud_controller.update_build_state
       authorized-grant-types: client_credentials
       secret: #@ data.values.uaa.admin_client_secret
+  #@overlay/match missing_ok=True
+  user:
+    authorities:
+      - openid
+      - scim.me
+      - cloud_controller.read
+      - cloud_controller.write
+      - cloud_controller_service_permissions.read
+      - password.write
+      - uaa.user
+      - approvals.me
+      - oauth.approvals
+      - notification_preferences.read
+      - notification_preferences.write
+      - profile
+      - roles
+      - user_attributes
+      - uaa.offline_token
 
 issuer:
   uri: #@ "https://uaa." + data.values.system_domain

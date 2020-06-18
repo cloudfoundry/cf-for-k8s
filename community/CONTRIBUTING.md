@@ -46,9 +46,9 @@ To submit a proposed change:
 When ready, if you have not already done so, sign a contributor license agreements and submit the PR. The PR checks will validate your changes on a fresh cluster and run unit tests. If there are failures, check out the individual checks to debug the issue and don't hesitate to ping the members in #cf-for-k8s slack channel for help.
 
 ### Getting started with contribution
-If you're looking to get started today, you can explore the [Good first issue](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22) labelled issues in cf-for-k8s repository. 
+If you're looking to get started today, you can explore the [good first issue](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22) labelled issues in cf-for-k8s repository. 
 
-If you're looking to take on more, you can expplore the [Help wanted](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+wanted%22) labelled issues to get started.
+If you're looking to take on more, you can expplore the [help wanted](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+wanted%22) labelled issues to get started.
 
 You can create [issues](https://github.com/cloudfoundry/cf-for-k8s/issues) to report bugs or submit feature requests. The approporate templates will guide you to fill the key pieces of information.
 
@@ -63,3 +63,9 @@ In order to contribute a feature to cf-for-k8s you'll need to go through the fol
 - Submit PRs to the respective project repository with your code changes. Include relevant documentation changes and tests in your PR.
 
 > Note that we prefer bite-sized PRs instead of giant monster PRs. It's therefore preferable if you can introduce large features in smaller reviewable changes that build on top of one another.
+
+## Have a question or feedback, reach out to us
+You can reach out to us via the following channels
+
+- Slack [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) channel in Cloud Foundry workspace, ping `#release-integration @interrupt`.
+- Slack [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) in Cloud Foundry workspace, ping `@interrupt`.

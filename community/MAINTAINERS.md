@@ -1,6 +1,6 @@
 # cf-for-k8s Maintainers
 
-[GOVERNANCE.md](GOVERNANCE.md) describes governance guidelines and maintainer responsibilities.
+[GOVERNANCE](GOVERNANCE.md) doc describes governance guidelines and maintainer responsibilities.
 
 ## Maintainers
 _in alphabetical order_
@@ -15,3 +15,9 @@ _in alphabetical order_
 | Josheph Polermo | [jpalermo](https://github.com/jpalermo) | [VMware](https://www.github.com/vmware/) |
 | Lisa Burns | [lisamburns](https://github.com/lisamburns) | [VMware](https://www.github.com/vmware/) |
 | Paul Warren | [paulcwarren](https://github.com/paulcwarren) | [VMware](https://www.github.com/vmware/) |
+
+## Have a question or feedback, reach out to us
+You can reach out to us via the following channels
+
+- Slack [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) channel in Cloud Foundry workspace, ping `#release-integration @interrupt`.
+- Slack [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) in Cloud Foundry workspace, ping `@interrupt`.

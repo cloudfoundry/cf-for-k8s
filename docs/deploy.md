@@ -11,8 +11,7 @@
   - [Option B - Create the install values by hand](#option-b---create-the-install-values-by-hand)
 - [Validate the deployment](#validate-the-deployment)
 - [Delete the cf-for-k8s deployment](#delete-the-cf-for-k8s-deployment)
-
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+- [Additional Resources](#additional-resources)
 
 ## Prerequisites
 
@@ -266,3 +265,9 @@ You can delete the cf-for-k8s deployment by running the following command.
    # Assuming that you ran `kapp deploy -a cf...`
    kapp delete -a cf
    ```
+
+## Additional resources
+Use the following resources to enable additional features in cf-for-k8s.
+
+- [Setup ingress certs with letsencrypt](docs/configuration/setup-ingress-certs-with-letsencrypt.md)
+- [Setup static loadbalancer IP](docs/configuration/setup-static-loabalancer-ip.md)

@@ -1,5 +1,8 @@
 # Setup ingress certs with Lets Encrypt
 
+## Objective
+At the end of this setup, you and your users will be able to access CF CLI and CF APPs over HTTPS.
+
 ## Prerequisites
 
 - `certbot` cli
@@ -66,7 +69,7 @@ openssl base64 -in /tmp/certbot/cfg/live/$APPS_DOMAIN/privkey.pem | tr -d '\n' >
 ```
 
 ### Update cf-values yaml
-The following instructions assume you have created `cf-install-values.yml`. Please ensure to copy the values as is.
+The following instructions assume you have created `cf-install-values.yml`.
 
 1. Update system certifiate values
     1. Update `system_certificate.crt` with contents from `/tmp/sys-fullchain.pem`.

@@ -1,28 +1,44 @@
 
-:exclamation::exclamation::exclamation: This is a highly experimental project to deploy the new CF Kubernetes-centric components on Kubernetes. It is **not** meant for use in production and is subject to change in the future. :exclamation::exclamation::exclamation:
-
 # Cloud Foundry for Kubernetes
+Cloud Foundry is an open source cloud platform as a service (PaaS) on which developers can build, deploy, run and scale applications. Cloud Foundry for Kubernetes (cf-for-k8s) is a Kubernetes native artifact to deploy Cloud Foundry on a Kubernetes cluster. 
 
-- Slack: [#cf-for-k8s in Cloud Foundry slack](https://cloudfoundry.slack.com/archives/CH9LF6V1P), ping `#release-integration @interrupt`
-- [Docs](docs/README.md) about installing, development, etc.
-- CI: https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s
-- Tracker: https://www.pivotaltracker.com/n/projects/1382120
+For more information on what Cloud Foundry is and how it can help developers build cloud native applications and platform operators to manage those apps at scale, please visit [cloudfoundry.org](https://cloudfoundry.org) and [docs.cloudfoundry.org](https://docs.cloudfoundry.org/)
 
-### <a name='purpose'></a> Purpose
+## Getting Started
+See [Deploying CF for K8s](docs/deploy.md) to get your Cloud Foundry up and running on a Kubernetes cluster for development and testing purposes.
 
-Cloud Foundry for Kubernetes (CF for K8s) is a deployment artifact for deploying the Cloud Foundry Application Runtime on Kubernetes. 
+## Contributing
+Please read [CONTRIBUTING.md](community/CONTRIBUTING.md) for details on the process for submitting pull requests to us.
 
-- Kubernetes native
-  - CF for K8s is built from the ground up to leverage Kubernetes native features 
-- Built on top of Kubernetes ecosystem projects
-  - CF for K8s builds on top of well known enterprise ready projects like [Istio](https://github.com/istio/istio), [envoy](https://github.com/envoyproxy/envoy), [fluentd](https://www.fluentd.org/) and [kpack](https://github.com/pivotal/kpack)
+### Awesome First PR Opportunities
+If you're looking to get started today, you can explore the [good first issue](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22) labelled issues in cf-for-k8s repository. 
 
-### <a name='deploy'>Deploying CF for K8s</a>
+## Built with
+cf-for-k8s is built on top of well known Kubernetes projects like,
+- [istio](https://github.com/istio/istio)
+- [envoy](https://github.com/envoyproxy/envoy) 
+- [fluentd](https://www.fluentd.org/)
+- [kpack](https://github.com/pivotal/kpack)
+- [paketo buildpacks](https://paketo.io)
 
-See [Deploying CF for K8s](docs/deploy.md).
+## Versioning
 
-### <a name='for-contributors'>For Contributors</a>
-See [Contributing](docs/contributing.md)
+We use [SemVer](https://semver.org/) for versioning. For the versions available, see the [releases](https://github.com/cloudfoundry/cf-for-k8s/releases) on this repository.
 
-### <a name='knownissues'></a> Known Issues
-This is an experimental project, and there are many features missing. For a list of the known issues, take a look at the [GitHub issues tagged 'known-issue'](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aissue+is%3Aopen+label%3Aknown-issue).
+- TODO: provide documentation for explaining our semantic versioning
+
+## Maintainers
+
+See the list of [MAINTAINERS](community/MAINTAINERS.md) and their contact info.
+
+## License
+
+This project is licensed under the APACHE LICENSE-2.0 - see the [LICENSE.md](LICENSE) file for details.
+
+## CI Pipelines
+
+This project includes a test suite that makes use of Concourse pipelines, which can be found [here](https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s).
+
+## Have a question or feedback, reach out to us
+
+We are very active in slack channel [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) in the Cloud Foundry workspace. Please hit us up with any questions you may have or to share your experience with the cf-for-k8s community. To request a fast reponse during Pacific business hours, begin your message with `#release-integration @interrupt`

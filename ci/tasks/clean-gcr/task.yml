@@ -15,4 +15,4 @@ params:
   GCR_REPO_NAME:
 
 run:
-  path: cf-for-k8s-ci/ci/tasks/clean-registry/task.sh
+  path: cf-for-k8s-ci/ci/tasks/clean-gcr/task.sh

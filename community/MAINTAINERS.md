@@ -17,7 +17,4 @@ _in alphabetical order_
 | Paul Warren | [paulcwarren](https://github.com/paulcwarren) | [VMware](https://www.github.com/vmware/) |
 
 ## Have a question or feedback, reach out to us
-You can reach out to us via the following channels
-
-- Slack [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) channel in Cloud Foundry workspace, ping `#release-integration @interrupt`.
-- Slack [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) in Cloud Foundry workspace, ping `@interrupt`.
+We are very active in slack channel [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) channel in Cloud Foundry workspace. You can ping `#release-integration @interrupt` us with any questions you may have or share your experience with the cf-for-k8s community.

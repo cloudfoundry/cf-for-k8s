@@ -181,9 +181,3 @@ keys:
 Where:
 - the first YAML document is a "template" into which `kbld` will rewrite the image reference.
 - the remaining YAML documents are configuration for `kbld`, itself.
-
-## Have a question or feedback, reach out to us
-You can reach out to us via the following channels
-
-- Slack [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) channel in Cloud Foundry workspace, ping `#release-integration @interrupt`.
-- Slack [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) in Cloud Foundry workspace, ping `@interrupt`.

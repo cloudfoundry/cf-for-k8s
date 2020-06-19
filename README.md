@@ -1,11 +1,11 @@
 
 # Cloud Foundry for Kubernetes
-Cloud Foundry is an open source cloud platform as a service (PaaS) on which developers can build, deploy, run and scale applications. Cloud Foundry for Kubernetes (cf-for-k8s) is Kubernetes native artifact to deploy the Cloud Foundry on a Kubernetes cluster. 
+Cloud Foundry is an open source cloud platform as a service (PaaS) on which developers can build, deploy, run and scale applications. Cloud Foundry for Kubernetes (cf-for-k8s) is a Kubernetes native artifact to deploy Cloud Foundry on a Kubernetes cluster. 
 
-For more information on what is Cloud Foundry and how it can help developers build cloud native applications and platform operators to manage those apps at scale, please visit [cloudfoundry.org](https://cloudfoundry.org) and [docs.cloudfoundry.org](https://docs.cloudfoundry.org/)
+For more information on what is Cloud Foundry is and how it can help developers build cloud native applications and platform operators to manage those apps at scale, please visit [cloudfoundry.org](https://cloudfoundry.org) and [docs.cloudfoundry.org](https://docs.cloudfoundry.org/)
 
 # Getting Started
-See [Deploying CF for K8s](docs/deploy.md) to get your project up and running on a cluster for development and testing purposes.
+See [Deploying CF for K8s](docs/deploy.md) to get your Cloud Foundry up and running on a cluster for development and testing purposes.
 
 # Contributing
 Please read [CONTRIBUTING.md](community/CONTRIBUTING.md) for details on the process for submitting pull requests to us.
@@ -30,8 +30,8 @@ See the list of [MAINTAINERS](community/MAINTAINERS.md) and their contact info.
 # License
 This project is licensed under the APACHE LICENSE-2.0 - see the [LICENSE.md](LICENSE) file for details.
 
-# Have a question or feedback, reach out to us
-You can reach out to us via the following channels
+# CI Pipelines
+This project includes a test suite that makes use of Concourse pipelines, which can be found [here](https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s).
 
-- Slack [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) channel in Cloud Foundry workspace, ping `#release-integration @interrupt`.
-- Slack [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) in Cloud Foundry workspace, ping `@interrupt`.
+# Have a question or feedback, reach out to us
+We are very active in slack channel [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) channel in Cloud Foundry workspace. You can ping `#release-integration @interrupt` us with any questions you may have or share your experience with the cf-for-k8s community.

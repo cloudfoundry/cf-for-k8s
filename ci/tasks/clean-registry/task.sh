@@ -1,10 +1,7 @@
 #!/bin/bash -eu
 
-source cf-for-k8s-ci/ci/helpers/gke.sh
-
-set +e
-gcloud_auth
-set -e
+echo ${GCP_SERVICE_ACCOUNT_JSON} > gcp-service-account.json
+gcloud auth activate-service-account --key-file=gcp-service-account.json --project=${GCP_PROJECT_NAME} >/dev/null 2>&1
 
 IMAGES=$(gcloud container images list --repository ${GCR_REPO_NAME} | grep -v NAME)
 

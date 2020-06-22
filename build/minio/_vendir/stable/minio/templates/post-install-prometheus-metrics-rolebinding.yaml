@@ -16,5 +16,5 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: {{ $fullName }}-update-prometheus-secret
-    namespace: {{ .Release.Namespace | quote }}
+    namespace: {{ .Release.Namespace }}
 {{- end -}}

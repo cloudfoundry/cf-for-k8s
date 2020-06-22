@@ -1,12 +1,13 @@
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: cf-blobstore-minio-update-prometheus-secret
   labels:
     app: minio-update-prometheus-secret
     chart: minio-5.0.30
-    release: cf-blobstore
     heritage: Helm
+    release: cf-blobstore
+  name: cf-blobstore-minio-update-prometheus-secret
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -15,28 +16,20 @@ metadata:
   namespace: cf-blobstore
 ---
 apiVersion: v1
-kind: Secret
-metadata:
-  name: cf-blobstore-minio
-  labels:
-    app: minio
-    chart: minio-5.0.30
-    release: cf-blobstore
-    heritage: Helm
-type: Opaque
 data:
   accesskey: null
   secretkey: null
----
-apiVersion: v1
-kind: ConfigMap
+kind: Secret
 metadata:
-  name: cf-blobstore-minio
   labels:
     app: minio
     chart: minio-5.0.30
-    release: cf-blobstore
     heritage: Helm
+    release: cf-blobstore
+  name: cf-blobstore-minio
+type: Opaque
+---
+apiVersion: v1
 data:
   initialize: |-
     #!/bin/sh
@@ -116,16 +109,24 @@ data:
     # Try connecting to Minio instance
     scheme=http
     connectToMinio $scheme
+kind: ConfigMap
+metadata:
+  labels:
+    app: minio
+    chart: minio-5.0.30
+    heritage: Helm
+    release: cf-blobstore
+  name: cf-blobstore-minio
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: cf-blobstore-minio
   labels:
     app: minio
     chart: minio-5.0.30
-    release: cf-blobstore
     heritage: Helm
+    release: cf-blobstore
+  name: cf-blobstore-minio
 spec:
   accessModes:
   - ReadWriteOnce
@@ -136,15 +137,17 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: cf-blobstore-minio-update-prometheus-secret
   labels:
     app: minio-update-prometheus-secret
     chart: minio-5.0.30
-    release: cf-blobstore
     heritage: Helm
+    release: cf-blobstore
+  name: cf-blobstore-minio-update-prometheus-secret
 rules:
 - apiGroups:
   - ""
+  resourceNames:
+  - cf-blobstore-minio-prometheus
   resources:
   - secrets
   verbs:
@@ -152,8 +155,6 @@ rules:
   - create
   - update
   - patch
-  resourceNames:
-  - cf-blobstore-minio-prometheus
 - apiGroups:
   - ""
   resources:
@@ -162,22 +163,22 @@ rules:
   - create
 - apiGroups:
   - monitoring.coreos.com
+  resourceNames:
+  - cf-blobstore-minio
   resources:
   - servicemonitors
   verbs:
   - get
-  resourceNames:
-  - cf-blobstore-minio
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: cf-blobstore-minio-update-prometheus-secret
   labels:
     app: minio-update-prometheus-secret
     chart: minio-5.0.30
-    release: cf-blobstore
     heritage: Helm
+    release: cf-blobstore
+  name: cf-blobstore-minio-update-prometheus-secret
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -190,14 +191,13 @@ subjects:
 apiVersion: v1
 kind: Service
 metadata:
-  name: cf-blobstore-minio
   labels:
     app: minio
     chart: minio-5.0.30
-    release: cf-blobstore
     heritage: Helm
+    release: cf-blobstore
+  name: cf-blobstore-minio
 spec:
-  type: ClusterIP
   ports:
   - name: http
     port: 9000
@@ -206,90 +206,98 @@ spec:
   selector:
     app: minio
     release: cf-blobstore
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cf-blobstore-minio
+  annotations:
+    kbld.k14s.io/images: |
+      - Metas:
+        - Tag: RELEASE.2020-06-14T18-32-17Z
+          Type: resolved
+          URL: minio/minio:RELEASE.2020-06-14T18-32-17Z
+        URL: index.docker.io/minio/minio@sha256:35d654988af3b5761162d5ce06243c1517ec34beeae271c8b5983b5082968858
   labels:
     app: minio
     chart: minio-5.0.30
-    release: cf-blobstore
     heritage: Helm
+    release: cf-blobstore
+  name: cf-blobstore-minio
 spec:
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 100%
-      maxUnavailable: 1
   selector:
     matchLabels:
       app: minio
       release: cf-blobstore
+  strategy:
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
-      name: cf-blobstore-minio
+      annotations:
+        checksum/config: 6f2dbe8a0c3f59cb8d9e7051cd9370791c2df5ec3cbe0bad179295559a282d2f
+        checksum/secrets: debfe7f1d286d311ff318bdae05da710f2c6b260e296564745e6e261a630dccb
       labels:
         app: minio
         release: cf-blobstore
-      annotations:
-        checksum/secrets: debfe7f1d286d311ff318bdae05da710f2c6b260e296564745e6e261a630dccb
-        checksum/config: 6f2dbe8a0c3f59cb8d9e7051cd9370791c2df5ec3cbe0bad179295559a282d2f
+      name: cf-blobstore-minio
     spec:
-      serviceAccountName: cf-blobstore-minio
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
       containers:
-      - name: minio
-        image: minio/minio:RELEASE.2020-06-14T18-32-17Z
-        imagePullPolicy: IfNotPresent
-        command:
+      - command:
         - /bin/sh
         - -ce
         - /usr/bin/docker-entrypoint.sh minio -S /etc/minio/certs/ server /export
-        volumeMounts:
-        - name: export
-          mountPath: /export
-        ports:
-        - name: http
-          containerPort: 9000
         env:
         - name: MINIO_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: cf-blobstore-minio
               key: accesskey
+              name: cf-blobstore-minio
         - name: MINIO_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: cf-blobstore-minio
               key: secretkey
+              name: cf-blobstore-minio
         - name: MINIO_API_READY_DEADLINE
           value: 5s
+        image: index.docker.io/minio/minio@sha256:35d654988af3b5761162d5ce06243c1517ec34beeae271c8b5983b5082968858
+        imagePullPolicy: IfNotPresent
         livenessProbe:
+          failureThreshold: 1
           httpGet:
             path: /minio/health/live
             port: http
             scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 5
-          timeoutSeconds: 1
           successThreshold: 1
-          failureThreshold: 1
+          timeoutSeconds: 1
+        name: minio
+        ports:
+        - containerPort: 9000
+          name: http
         readinessProbe:
+          failureThreshold: 3
           httpGet:
             path: /minio/health/ready
             port: http
           initialDelaySeconds: 30
           periodSeconds: 5
-          timeoutSeconds: 6
           successThreshold: 1
-          failureThreshold: 3
+          timeoutSeconds: 6
         resources:
           requests:
             memory: 4Gi
+        volumeMounts:
+        - mountPath: /export
+          name: export
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsUser: 1000
+      serviceAccountName: cf-blobstore-minio
       volumes:
       - name: export
         persistentVolumeClaim:

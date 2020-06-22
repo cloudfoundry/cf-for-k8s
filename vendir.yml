@@ -67,7 +67,7 @@ directories:
   - path: .
     git:
       url: https://github.com/helm/charts
-      ref: f8d1e522df1e4841e7a4a1a46d59bce9a9bad904 # version: 5.0.22
+      ref: 921eb8a969fb9d7b7b7d13904f740c76748ec2c9 # version: 5.0.30
     includePaths:
     - stable/minio/**/*
 

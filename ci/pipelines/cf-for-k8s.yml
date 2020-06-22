@@ -36,6 +36,7 @@ groups:
   - remove-stability-cluster-lock
   - create-long-lived-sli-cluster
   - destroy-long-lived-sli-cluster
+  - clean-registry
 
 resource_types:
 - name: pull-request
@@ -145,6 +146,15 @@ resources:
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     start: 6:00 PM
     stop: 7:00 PM
+    location: America/Los_Angeles
+
+- name: friday-evening
+  type: time
+  icon: clock-outline
+  source:
+    start: 5:00 PM
+    stop: 7:00 PM
+    days: [Friday]
     location: America/Los_Angeles
 
 - name: every-20-minutes
@@ -1817,3 +1827,16 @@ jobs:
       var_files: [ tf-vars/input.tfvars ]
     get_params:
       action: destroy
+
+- name: clean-registry
+  plan:
+  - get: cf-for-k8s-ci
+  - get: friday-evening
+    trigger: true
+
+  - task: clean-gcr
+    file: cf-for-k8s-ci/ci/tasks/clean-gcr/task.yml
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCR_REPO_NAME: gcr.io/((ci_k8s_gcp_project_name))/cf-workloads

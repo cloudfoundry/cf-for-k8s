@@ -6,7 +6,7 @@ kind: ConfigMap
 metadata:
   labels:
     app: postgresql
-    chart: postgresql-8.9.0
+    chart: postgresql-8.10.6
     heritage: Helm
     release: cf-db
   name: cf-db-postgresql-init-scripts
@@ -16,7 +16,7 @@ kind: Service
 metadata:
   labels:
     app: postgresql
-    chart: postgresql-8.9.0
+    chart: postgresql-8.10.6
     heritage: Helm
     release: cf-db
   name: cf-db-postgresql-headless
@@ -37,7 +37,7 @@ metadata:
   annotations: null
   labels:
     app: postgresql
-    chart: postgresql-8.9.0
+    chart: postgresql-8.10.6
     heritage: Helm
     release: cf-db
   name: cf-db-postgresql
@@ -58,13 +58,13 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: 11.7.0-debian-10-r77
+        - Tag: 11.8.0-debian-10-r33
           Type: resolved
-          URL: docker.io/bitnami/postgresql:11.7.0-debian-10-r77
-        URL: index.docker.io/bitnami/postgresql@sha256:9762d9a80b90a5efe299d4848057ac5c45fb384570b36f60aad38fe2b1704bd6
+          URL: docker.io/bitnami/postgresql:11.8.0-debian-10-r33
+        URL: index.docker.io/bitnami/postgresql@sha256:0f76a419cfd9996036e3a53672f50cf69ed7699f1241cbf8e20af17bbbdf0683
   labels:
     app: postgresql
-    chart: postgresql-8.9.0
+    chart: postgresql-8.10.6
     heritage: Helm
     release: cf-db
   name: cf-db-postgresql
@@ -80,7 +80,7 @@ spec:
     metadata:
       labels:
         app: postgresql
-        chart: postgresql-8.9.0
+        chart: postgresql-8.10.6
         heritage: Helm
         release: cf-db
         role: master
@@ -105,7 +105,7 @@ spec:
               name: cf-db-admin-secret
         - name: POSTGRESQL_ENABLE_LDAP
           value: "no"
-        image: index.docker.io/bitnami/postgresql@sha256:9762d9a80b90a5efe299d4848057ac5c45fb384570b36f60aad38fe2b1704bd6
+        image: index.docker.io/bitnami/postgresql@sha256:0f76a419cfd9996036e3a53672f50cf69ed7699f1241cbf8e20af17bbbdf0683
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:

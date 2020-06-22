@@ -43,9 +43,8 @@ directories:
   path: build/eirini/_vendir
 - contents:
   - git:
-      commitTitle: '[bitnami/postgresql] Add option to add annotations to all generated
-        resources (#2368)...'
-      sha: 1765929fa8cf37819309ff975ebf0a8dfcf7824d
+      commitTitle: '[bitnami/postgresql] Release 8.10.6 updating components versions...'
+      sha: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe
     path: .
   path: build/postgres/_vendir
 kind: LockConfig

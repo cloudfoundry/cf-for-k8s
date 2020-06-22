@@ -85,6 +85,6 @@ directories:
   - path: .
     git:
       url: https://github.com/bitnami/charts
-      ref: 1765929fa8cf37819309ff975ebf0a8dfcf7824d # version: 8.9.0
+      ref: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe # version: 8.10.6
     includePaths:
     - bitnami/postgresql/**/*

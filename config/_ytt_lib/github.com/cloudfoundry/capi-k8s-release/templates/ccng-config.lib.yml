@@ -81,7 +81,7 @@ directories:
 logging:
   file: /dev/stdout
   syslog: vcap.cloud_controller_ng
-  level: "info"
+  level: "debug"
   max_retries: 1
 
 logcache:
@@ -101,6 +101,9 @@ logcache_tls:
   #@ end
   subject_name: metric-proxy
 
+loggregator:
+  router: 127.0.0.1:3457
+  internal_url: #@ "https://log-api.{}.svc.cluster.local:8081".format(data.values.system_namespace)
 log_stream:
   url: #@ "https://log-stream.{}".format(data.values.system_domain)
 
@@ -119,14 +122,11 @@ db: &db
   pool_timeout: 10
   log_level: "debug2"
   log_db_queries: false
+  ssl_verify_hostname: false
   read_timeout: 3600
   connection_validation_timeout: 3600
-  #@ if data.values.ccdb.ca_cert:
-  ca_cert_path: "/config/database/certs/ca.crt"
-  ssl_verify_hostname: true
-  #@ else:
-  ssl_verify_hostname: false
-  #@ end
+  #! TODO: secure db connection?
+  #! ca_cert_path: "/dev/null"
 
 telemetry_log_path: "/dev/null"
 log_cache:

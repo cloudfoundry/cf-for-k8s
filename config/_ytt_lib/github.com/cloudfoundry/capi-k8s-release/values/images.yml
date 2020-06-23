@@ -1,10 +1,10 @@
 #@data/values
 ---
 images:
-  capi_kpack_watcher: cloudfoundry/capi-kpack-watcher@sha256:1d1ab7acf9b2829f42613ecea4ab6714090e3b41360d2ad9a0a8c88d00c3392a
-  ccng: cloudfoundry/cloud-controller-ng@sha256:8a60a0f122b992ca2b2ad1d52e70758cc5e58259ba62913bc12bca39787280f9
+  capi_kpack_watcher: cloudfoundry/capi-kpack-watcher@sha256:b7ef61b9966df01e9d1af96506dd92907e87b520c53e0174c3fa0207bf173412
+  ccng: cloudfoundry/cloud-controller-ng@sha256:c0a2498d4e170e1070a8b5f8dfed51d5076beb88f33556f5b42a25df47ecb980
   cf_autodetect_builder: cloudfoundry/cnb:0.0.94-bionic@sha256:5b03a853e636b78c44e475bbc514e2b7b140cc41cca8ab907e9753431ae8c0b0
   nginx: cloudfoundry/capi-nginx@sha256:abfa8900163892fae1ebdaffbe3619ef821b769646d51279278bff4334b3d8bc
-  statsd_exporter: oratos/statsd_exporter:v0.15.0@sha256:10a64dc4ad0a3e3fe88372f0481dea5c02595c38d168617836a99a649d3ac407
+  statsd_exporter: prom/statsd-exporter:v0.15.0@sha256:e3174186628b401e4a441b78513ba06e957644267332436be0c77dd7af9bdddc
 kbld:
   destination: null

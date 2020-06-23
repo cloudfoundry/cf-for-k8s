@@ -26,6 +26,11 @@ variable "dns_zone_name" {
   type = string
 }
 
+variable "network_name" {
+  type = string
+  default = "default"
+}
+
 variable "node_count" {
   type = number
   default = 5

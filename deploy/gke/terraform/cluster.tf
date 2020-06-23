@@ -4,8 +4,7 @@ resource "google_container_cluster" "primary" {
   location           = var.zone
   initial_node_count = var.node_count
 
-  network = google_compute_network.primary.self_link
-  subnetwork = google_compute_subnetwork.primary.self_link
+  network = var.network_name
 
   release_channel {
     channel = var.release_channel

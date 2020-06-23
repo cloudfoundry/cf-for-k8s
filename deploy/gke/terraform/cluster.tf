@@ -4,6 +4,9 @@ resource "google_container_cluster" "primary" {
   location           = var.zone
   initial_node_count = var.node_count
 
+  network = google_compute_network.primary.self_link
+  subnetwork = google_compute_subnetwork.primary.self_link
+
   release_channel {
     channel = var.release_channel
   }
@@ -30,8 +33,6 @@ resource "google_container_cluster" "primary" {
       disabled = false
     }
   }
-
-  network = google_compute_network.primary.self_link
 
   network_policy {
     enabled = true

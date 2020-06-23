@@ -53,7 +53,7 @@ var _ = Describe("Configs", func() {
 		command = exec.Command("ytt", args...)
 		session, err := Start(command, outfile, GinkgoWriter)
 		Expect(err).NotTo(HaveOccurred())
-		Eventually(session, 10*time.Second).Should(Exit(0),
+		Eventually(session, 20*time.Second).Should(Exit(0),
 			fmt.Sprintf("ytt failed on base with output %s", session.Err.Contents()))
 		baseHash = md5.Sum(session.Out.Contents())
 	})

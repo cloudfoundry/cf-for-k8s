@@ -31,6 +31,8 @@ resource "google_container_cluster" "primary" {
     }
   }
 
+  network = google_compute_network.primary.self_link
+
   network_policy {
     enabled = true
   }

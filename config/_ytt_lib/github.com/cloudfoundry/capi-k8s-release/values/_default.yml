@@ -81,6 +81,7 @@ ccdb:
   password: cloud_controller
   port: 5432
   user: cloud_controller
+  ca_cert: null
 eirini:
   serverCerts:
     secretName: null

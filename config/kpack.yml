@@ -41,7 +41,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name:  cc-kpack-registry-auth-docker-secret
-  namespace: kpack
+  namespace: cf-workloads-staging
 type: kubernetes.io/dockerconfigjson
 data:
   #@ registry_auth = base64.encode("{}:{}".format(data.values.app_registry.username, data.values.app_registry.password))

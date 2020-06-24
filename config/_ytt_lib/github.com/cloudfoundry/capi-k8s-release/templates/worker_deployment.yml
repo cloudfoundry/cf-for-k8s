@@ -34,7 +34,10 @@ spec:
           #@ if/end data.values.eirini.serverCerts.secretName:
           - name: eirini-certs
             mountPath: /config/eirini/certs
-      serviceAccountName: cc-worker-service-account
+          #@ if/end data.values.ccdb.ca_cert:
+          - name: database-ca-cert
+            mountPath: /config/database/certs
+      serviceAccountName: cf-api-worker-service-account
       volumes:
       - name: cloud-controller-ng-yaml
         configMap:
@@ -43,4 +46,8 @@ spec:
       - name: eirini-certs
         secret:
           secretName: #@ data.values.eirini.serverCerts.secretName
+      #@ if/end data.values.ccdb.ca_cert:
+      - name: database-ca-cert
+        secret:
+          secretName: database-ca-cert
 

@@ -132,7 +132,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 500Gi
+      storage: 10Gi
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -289,7 +289,8 @@ spec:
           timeoutSeconds: 6
         resources:
           requests:
-            memory: 4Gi
+            cpu: 250m
+            memory: 256Mi
         volumeMounts:
         - mountPath: /export
           name: export

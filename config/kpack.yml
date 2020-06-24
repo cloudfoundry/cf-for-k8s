@@ -1,4 +1,8 @@
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:json", "json")
 #@ load("@ytt:library", "library")
+#@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 
 #@ kpack = library.get("github.com/pivotal/kpack")
@@ -30,3 +34,22 @@ spec:
   peers:
   - mtls:
       mode: PERMISSIVE
+
+---
+#! add dockerconfigjson version of secret to use as imagePullSecret
+apiVersion: v1
+kind: Secret
+metadata:
+  name:  cc-kpack-registry-auth-docker-secret
+  namespace: kpack
+type: kubernetes.io/dockerconfigjson
+data:
+  #@ registry_auth = base64.encode("{}:{}".format(data.values.app_registry.username, data.values.app_registry.password))
+  #@ registry_creds = {"username": data.values.app_registry.username, "password": data.values.app_registry.password, "auth": registry_auth}
+  .dockerconfigjson: #@ base64.encode(json.encode({"auths": {data.values.app_registry.hostname: registry_creds}}))
+
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount", "metadata":{"name": "cc-kpack-registry-service-account"}})
+---
+#@overlay/match missing_ok=True
+imagePullSecret:
+- name: cc-kpack-registry-auth-docker-secret

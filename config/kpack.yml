@@ -51,5 +51,5 @@ data:
 #@overlay/match by=overlay.subset({"kind": "ServiceAccount", "metadata":{"name": "cc-kpack-registry-service-account"}})
 ---
 #@overlay/match missing_ok=True
-imagePullSecret:
+imagePullSecrets:
 - name: cc-kpack-registry-auth-docker-secret

@@ -75,3 +75,9 @@ resource "google_project_iam_member" "node_service_member_iam_monitoring_metric_
   role = "roles/monitoring.metricWriter"
   member = "serviceAccount:${google_service_account.node_service_account.email}"
 }
+
+resource "google_project_iam_member" "node_service_member_iam_storage_object_viewer" {
+  project = var.project
+  role = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.node_service_account.email}"
+}

@@ -31,6 +31,11 @@ variable "network_name" {
   default = "default"
 }
 
+variable "subnet_name" {
+  type = string
+  default = "default"
+}
+
 variable "node_count" {
   type = number
   default = 5

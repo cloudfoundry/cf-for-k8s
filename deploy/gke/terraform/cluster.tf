@@ -5,6 +5,7 @@ resource "google_container_cluster" "primary" {
   initial_node_count = var.node_count
 
   network = var.network_name
+  subnetwork = var.subnet_name
 
   release_channel {
     channel = var.release_channel

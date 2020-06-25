@@ -7,6 +7,8 @@ metadata:
   name: cf-buildpack-store
 spec:
   sources:
+  - image: gcr.io/paketo-community/ruby@sha256:5d95274fc0468f34d29ff2fd115634206fa6beaa3d8ecb2e0d8f06b42f37a777
+  - image: gcr.io/paketo-community/python@sha256:c152763e3bc606f72cb7d8c513abe2fcf6ee2d8650b1e3a2884a0b7966404300
   - image: "gcr.io/paketo-buildpacks/builder@sha256:d89cb0170bb37b1905d008cab8845b5442a773afdc89d964ace8acd5561439c9"
 
 ---
@@ -33,6 +35,10 @@ spec:
   stack: cflinuxfs3-stack
   store: cf-buildpack-store
   order:
+  - group:
+    - id: paketo-community/ruby
+  - group:
+    - id: paketo-community/python
   - group:
     - id: paketo-buildpacks/java
   - group:

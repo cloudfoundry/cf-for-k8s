@@ -19,7 +19,7 @@ resource_types:
 resources:
 - name: cf-for-k8s-develop-ci
   type: git
-  icon: github-box
+  icon: github
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/cf-for-k8s

@@ -52,7 +52,7 @@ resource_types:
 resources:
 - name: cf-for-k8s-develop
   type: git
-  icon: github-box
+  icon: github
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/cf-for-k8s
@@ -62,14 +62,14 @@ resources:
 
 - name: cf-for-k8s-all-branches
   type: git
-  icon: github-box
+  icon: github
   source:
     branch: develop
     uri: https://github.com/cloudfoundry/cf-for-k8s.git
 
 - name: cf-for-k8s-ci
   type: git
-  icon: github-box
+  icon: github
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/cf-for-k8s
@@ -79,7 +79,7 @@ resources:
 
 - name: cf-for-k8s-ci-dockerfile
   type: git
-  icon: github-box
+  icon: github
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/cf-for-k8s
@@ -89,7 +89,7 @@ resources:
 
 - name: cf-for-k8s-azure-dockerfile
   type: git
-  icon: github-box
+  icon: github
   source:
     branch: develop
     uri: git@github.com:cloudfoundry/cf-for-k8s
@@ -99,7 +99,7 @@ resources:
 
 - name: cf-for-k8s-master
   type: git
-  icon: github-box
+  icon: github
   source:
     branch: master
     uri: git@github.com:cloudfoundry/cf-for-k8s
@@ -107,7 +107,7 @@ resources:
 
 - name: cf-for-k8s-latest-release
   type: git
-  icon: github-box
+  icon: github
   source:
     tag_filter: v*
     branch: master
@@ -116,7 +116,7 @@ resources:
 
 - name: cf-for-k8s-master-push
   type: git
-  icon: github-box
+  icon: github
   source:
     branch: master
     uri: git@github.com:cloudfoundry/cf-for-k8s
@@ -165,7 +165,7 @@ resources:
 
 - name: runtime-ci
   type: git
-  icon: github-box
+  icon: github
   source:
     branch: master
     uri: https://github.com/cloudfoundry/runtime-ci.git
@@ -173,7 +173,7 @@ resources:
 
 - name: cf-for-k8s-pr-all-branches-and-forks
   type: pull-request
-  icon: github-box
+  icon: github
   source:
     access_token: ((github_status_bot_repo_access_token))
     repository: cloudfoundry/cf-for-k8s
@@ -181,7 +181,7 @@ resources:
 
 - name: cf-for-k8s-pr-master
   type: pull-request
-  icon: github-box
+  icon: github
   source:
     access_token: ((github_status_bot_repo_access_token))
     repository: cloudfoundry/cf-for-k8s
@@ -190,7 +190,7 @@ resources:
 
 - name: cf-for-k8s-pr-develop
   type: pull-request
-  icon: github-box
+  icon: github
   source:
     access_token: ((github_status_bot_repo_access_token))
     repository: cloudfoundry/cf-for-k8s
@@ -217,7 +217,7 @@ resources:
 
 - name: k14s-io
   type: git
-  icon: github-box
+  icon: github
   source:
     branch: master
     uri: https://github.com/k14s/k14s.io.git

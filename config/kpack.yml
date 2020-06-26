@@ -37,19 +37,22 @@ spec:
 
 ---
 #! add dockerconfigjson version of secret to use as imagePullSecret
-apiVersion: v1
-kind: Secret
+#@overlay/match by=overlay.subset({"kind": "Secret", "metadata":{"name": "cc-kpack-registry-auth-secret"}})
+---
 metadata:
-  name:  cc-kpack-registry-auth-docker-secret
-  namespace: cf-workloads-staging
+  annotations:
+    #@overlay/remove
+    build.pivotal.io/docker:
 type: kubernetes.io/dockerconfigjson
+#@overlay/match missing_ok=True
 data:
   #@ registry_auth = base64.encode("{}:{}".format(data.values.app_registry.username, data.values.app_registry.password))
   #@ registry_creds = {"username": data.values.app_registry.username, "password": data.values.app_registry.password, "auth": registry_auth}
   .dockerconfigjson: #@ base64.encode(json.encode({"auths": {data.values.app_registry.hostname: registry_creds}}))
-
+#@overlay/remove
+stringData:
 #@overlay/match by=overlay.subset({"kind": "ServiceAccount", "metadata":{"name": "cc-kpack-registry-service-account"}})
 ---
 #@overlay/match missing_ok=True
 imagePullSecrets:
-- name: cc-kpack-registry-auth-docker-secret
+- name: cc-kpack-registry-auth-secret

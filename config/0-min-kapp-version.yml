@@ -4,4 +4,4 @@ kind: Config
 metadata:
   name: kapp-version
 
-minimumRequiredVersion: 0.26.0
+minimumRequiredVersion: 0.29.0

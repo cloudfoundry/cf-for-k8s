@@ -25,6 +25,11 @@ groups:
   - kpack-validate-on-oldest-k8s-version
   - kpack-validate-upgrade
   - kpack-push-to-develop
+  - metric-proxy-run-unit-tests
+  - metric-proxy-validate-on-newest-k8s-version
+  - metric-proxy-validate-on-oldest-k8s-version
+  - metric-proxy-validate-upgrade
+  - metric-proxy-push-to-develop
   - uaa-run-unit-tests
   - uaa-validate-on-newest-k8s-version
   - uaa-validate-on-oldest-k8s-version
@@ -58,6 +63,13 @@ groups:
   - kpack-validate-on-oldest-k8s-version
   - kpack-validate-upgrade
   - kpack-push-to-develop
+- name: metric-proxy
+  jobs:
+  - metric-proxy-run-unit-tests
+  - metric-proxy-validate-on-newest-k8s-version
+  - metric-proxy-validate-on-oldest-k8s-version
+  - metric-proxy-validate-upgrade
+  - metric-proxy-push-to-develop
 - name: uaa
   jobs:
   - uaa-run-unit-tests
@@ -131,6 +143,13 @@ resources:
     repository: kpack
     access_token: ((cf_deployment_release_bot_access_token))
     pre_release: true
+- name: metric-proxy
+  type: git
+  icon: github
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/metric-proxy
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 - name: uaa
   type: github-release
   icon: github
@@ -1393,6 +1412,314 @@ jobs:
       REPO_NAME: kpack
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
       VENDIR_GITHUB_RELEASE: true
+  - put: cf-for-k8s-develop
+    params:
+      repository: cf-for-k8s-bump
+      rebase: true
+- name: metric-proxy-run-unit-tests
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - get: metric-proxy
+    - get: weekday-pm
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: metric-proxy
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: false
+      REPO_NAME: metric-proxy
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: false
+  - task: run-unit-tests
+    file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-bump
+- name: metric-proxy-validate-on-oldest-k8s-version
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - metric-proxy-run-unit-tests
+    - get: metric-proxy
+      passed:
+      - metric-proxy-run-unit-tests
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: metric-proxy
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: false
+      REPO_NAME: metric-proxy
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: false
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          machine_type = "n1-standard-8"
+          EOT
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files:
+      - tf-vars/input.tfvars
+  - do:
+    - task: create-kind-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: oldest_version
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    ensure:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files:
+        - tf-vars/input.tfvars
+      get_params:
+        action: destroy
+- name: metric-proxy-validate-on-newest-k8s-version
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - metric-proxy-run-unit-tests
+    - get: metric-proxy
+      passed:
+      - metric-proxy-run-unit-tests
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: metric-proxy
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: false
+      REPO_NAME: metric-proxy
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: false
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          machine_type = "n1-standard-8"
+          EOT
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files:
+      - tf-vars/input.tfvars
+  - do:
+    - task: create-kind-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: newest_version
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    ensure:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files:
+        - tf-vars/input.tfvars
+      get_params:
+        action: destroy
+- name: metric-proxy-validate-upgrade
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - metric-proxy-run-unit-tests
+    - get: metric-proxy
+      passed:
+      - metric-proxy-run-unit-tests
+      trigger: true
+    - put: pool-lock
+      resource: ready-pool
+      params:
+        acquire: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: metric-proxy
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: false
+      REPO_NAME: metric-proxy
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: false
+  - task: first-install-cf-develop
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+      pool-lock: pool-lock
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+  - task: push-test-app
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+    params:
+      APP_NAME: my-node-app
+  - task: upgrade-cf-with-component-bump
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-bump
+      pool-lock: pool-lock
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPGRADE: true
+  - in_parallel:
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+    - task: verify-existing-app
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      params:
+        APP_NAME: my-node-app
+        VERIFY_EXISTING_APP: true
+  - task: delete-cf
+    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+    input_mapping:
+      pool-lock: pool-lock
+  on_success:
+    do:
+    - put: destroy-pool
+      params:
+        add: pool-lock
+    - put: ready-pool
+      params:
+        remove: pool-lock
+- name: metric-proxy-push-to-develop
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - metric-proxy-validate-on-oldest-k8s-version
+      - metric-proxy-validate-on-newest-k8s-version
+      - metric-proxy-validate-upgrade
+    - get: metric-proxy
+      passed:
+      - metric-proxy-validate-on-oldest-k8s-version
+      - metric-proxy-validate-on-newest-k8s-version
+      - metric-proxy-validate-upgrade
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: metric-proxy
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: false
+      REPO_NAME: metric-proxy
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: false
   - put: cf-for-k8s-develop
     params:
       repository: cf-for-k8s-bump

@@ -13,8 +13,8 @@ directories:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288
     path: github.com/cloudfoundry/cf-k8s-logging/config
   - git:
-      commitTitle: Remove enable_metrics_server value...
-      sha: a987a51e3f1a9cea53784141fde2520feb07e260
+      commitTitle: save hack credentials to vault...
+      sha: 6b2d05e6348b7620645ec3f12cfb24a40d006b00
     path: github.com/cloudfoundry/metric-proxy
   - git:
       commitTitle: Update UAA image reference in k8s deployment template to 74.21.0

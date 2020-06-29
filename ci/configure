@@ -1,0 +1,26 @@
+#!/bin/bash -eu
+
+export PROJECT_DIR="$(cd $(dirname $0)/.. && pwd)"
+
+function main() {
+  local PIPELINES=(cf-for-k8s k8s-pool-management update-k8s-releases)
+  local PIPELINE=${1?"Valid input ${PIPELINES[@]}"}
+
+  if [[ -r "${PROJECT_DIR}/ci/templates/${PIPELINE}.yml" ]]; then
+    cat > "${PROJECT_DIR}/ci/pipelines/${PIPELINE}.yml" <<EOF
+## ======================================================================
+## GENERATED FILE. DO NOT EDIT
+## ======================================================================
+
+EOF
+
+    ytt template \
+      -f "${PROJECT_DIR}/ci/templates/${PIPELINE}.yml" \
+      -f "${PROJECT_DIR}/ci/inputs/${PIPELINE}.yml" \
+      >> "${PROJECT_DIR}/ci/pipelines/${PIPELINE}.yml"
+  fi
+
+  fly -t relint-ci sp -p "${PIPELINE}" -c "${PROJECT_DIR}/ci/pipelines/${PIPELINE}.yml"
+}
+
+main "$@"

@@ -1,4 +1,7 @@
----
+## ======================================================================
+## GENERATED FILE. DO NOT EDIT
+## ======================================================================
+
 groups:
 - name: all
   jobs:
@@ -12,6 +15,11 @@ groups:
   - cf-k8s-logging-validate-on-oldest-k8s-version
   - cf-k8s-logging-validate-upgrade
   - cf-k8s-logging-push-to-develop
+  - eirini-release-run-unit-tests
+  - eirini-release-validate-on-newest-k8s-version
+  - eirini-release-validate-on-oldest-k8s-version
+  - eirini-release-validate-upgrade
+  - eirini-release-push-to-develop
   - kpack-run-unit-tests
   - kpack-validate-on-newest-k8s-version
   - kpack-validate-on-oldest-k8s-version
@@ -22,18 +30,13 @@ groups:
   - uaa-validate-on-oldest-k8s-version
   - uaa-validate-upgrade
   - uaa-push-to-develop
-  - eirini-run-unit-tests
-  - eirini-validate-on-newest-k8s-version
-  - eirini-validate-on-oldest-k8s-version
-  - eirini-validate-upgrade
-  - eirini-push-to-develop
 - name: capi-k8s-release
   jobs:
-    - capi-k8s-release-run-unit-tests
-    - capi-k8s-release-validate-on-newest-k8s-version
-    - capi-k8s-release-validate-on-oldest-k8s-version
-    - capi-k8s-release-validate-upgrade
-    - capi-k8s-release-push-to-develop
+  - capi-k8s-release-run-unit-tests
+  - capi-k8s-release-validate-on-newest-k8s-version
+  - capi-k8s-release-validate-on-oldest-k8s-version
+  - capi-k8s-release-validate-upgrade
+  - capi-k8s-release-push-to-develop
 - name: cf-k8s-logging
   jobs:
   - cf-k8s-logging-run-unit-tests
@@ -41,6 +44,13 @@ groups:
   - cf-k8s-logging-validate-on-oldest-k8s-version
   - cf-k8s-logging-validate-upgrade
   - cf-k8s-logging-push-to-develop
+- name: eirini-release
+  jobs:
+  - eirini-release-run-unit-tests
+  - eirini-release-validate-on-newest-k8s-version
+  - eirini-release-validate-on-oldest-k8s-version
+  - eirini-release-validate-upgrade
+  - eirini-release-push-to-develop
 - name: kpack
   jobs:
   - kpack-run-unit-tests
@@ -55,20 +65,11 @@ groups:
   - uaa-validate-on-oldest-k8s-version
   - uaa-validate-upgrade
   - uaa-push-to-develop
-- name: eirini
-  jobs:
-  - eirini-run-unit-tests
-  - eirini-validate-on-newest-k8s-version
-  - eirini-validate-on-oldest-k8s-version
-  - eirini-validate-upgrade
-  - eirini-push-to-develop
-
 resource_types:
 - name: terraform
   type: docker-image
   source:
     repository: ljfranklin/terraform-resource
-
 resources:
 - name: cf-for-k8s-develop
   type: git
@@ -78,8 +79,7 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
     ignore_paths:
-      - ci/**
-
+    - ci/**
 - name: cf-for-k8s-ci
   type: git
   icon: github
@@ -88,8 +88,20 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
-      - ci/**
-
+    - ci/**
+- name: weekday-pm
+  type: time
+  icon: clock-outline
+  source:
+    days:
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    start: 6:00 PM
+    stop: 7:00 PM
+    location: America/Los_Angeles
 - name: capi-k8s-release
   type: git
   icon: github
@@ -97,45 +109,35 @@ resources:
     branch: master
     uri: git@github.com:cloudfoundry/capi-k8s-release
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
-
-- name: weekday-pm
-  type: time
-  icon: clock-outline
-  source:
-    days: [Monday, Tuesday, Wednesday, Thursday, Friday]
-    start: 6:00 PM
-    stop: 7:00 PM
-    location: America/Los_Angeles
-
-- name: cf-k8s-logging-release
+- name: cf-k8s-logging
   type: github-release
+  icon: github
   source:
     owner: cloudfoundry
     repository: cf-k8s-logging
     access_token: ((cf_deployment_release_bot_access_token))
-
-- name: kpack-release
+- name: eirini-release
   type: github-release
+  icon: github
+  source:
+    owner: cloudfoundry-incubator
+    repository: eirini-release
+    access_token: ((cf_deployment_release_bot_access_token))
+- name: kpack
+  type: github-release
+  icon: github
   source:
     owner: pivotal
     repository: kpack
     access_token: ((cf_deployment_release_bot_access_token))
     pre_release: true
-
-- name: uaa-release
+- name: uaa
   type: github-release
+  icon: github
   source:
     owner: cloudfoundry
     repository: uaa
     access_token: ((cf_deployment_release_bot_access_token))
-
-- name: eirini-release
-  type: github-release
-  source:
-    owner: cloudfoundry-incubator
-    repository: eirini-release
-    access_token: ((cf_deployment_release_bot_access_token))
-
 - name: terraform
   type: terraform
   source:
@@ -143,7 +145,6 @@ resources:
     backend_config:
       bucket: relint-k8s-cluster-state
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
-
 - name: ready-pool
   type: pool
   icon: pool
@@ -152,7 +153,6 @@ resources:
     branch: master
     pool: k8s-dev/ready
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
-
 - name: destroy-pool
   type: pool
   icon: pool
@@ -161,384 +161,65 @@ resources:
     branch: master
     pool: k8s-dev/destroy
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
-
-# Extract common platform and image_resource details so task configs can be more concise
-x-config: &common-task-config
+x-config:
   platform: linux
   image_resource:
     type: docker-image
     source:
       repository: relintdockerhubpushbot/cf-for-k8s-ci
-
 jobs:
 - name: capi-k8s-release-run-unit-tests
   public: true
   plan:
-    - in_parallel:
-        - get: cf-for-k8s-ci
-        - get: cf-for-k8s-develop
-        - get: capi-k8s-release
-        - get: weekday-pm
-          trigger: true
-
-    - task: bump-release-onto-develop
-      file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
-      input_mapping:
-        release: capi-k8s-release
-      params:
-        VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-        REPO_NAME: capi-k8s-release
-
-    - task: run-unit-tests
-      file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-bump
-
-- name: capi-k8s-release-validate-on-oldest-k8s-version
-  public: true
-  plan:
-    - in_parallel:
-        - get: cf-for-k8s-ci
-        - get: cf-for-k8s-develop
-          passed:
-            - capi-k8s-release-run-unit-tests
-        - get: capi-k8s-release
-          passed:
-            - capi-k8s-release-run-unit-tests
-          trigger: true
-
-    #TODO reduce duplication of this bump release task
-    - task: bump-release-onto-develop
-      file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
-      input_mapping:
-        release: capi-k8s-release
-      params:
-        VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-        REPO_NAME: capi-k8s-release
-
-    - task: create-tf-vars-file
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
-        outputs:
-          - name: tf-vars
-        params:
-          SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-        run:
-          path: /bin/bash
-          args:
-            - -ec
-            - |
-              env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-              echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
-              cat <<EOT > tf-vars/input.tfvars
-              project = "((ci_k8s_gcp_project_name))"
-              region = "((ci_k8s_gcp_project_region))"
-              zone = "((ci_k8s_gcp_project_zone))"
-              service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-              machine_type = "n1-standard-8"
-              EOT
-
-    - put: terraform
-      params:
-        terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
-        env_name_file: tf-vars/env-name.txt
-        delete_on_failure: true
-        var_files: [tf-vars/input.tfvars]
-
-    - do:
-        - task: create-kind-cluster
-          attempts: 5
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-develop
-          file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-            VERSION_SELECTOR: oldest_version
-
-        - task: install-cf
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-bump
-          file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-        - task: run-smoke-tests
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-bump
-          file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-      ensure:
-        put: terraform
-        params:
-          terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
-          env_name_file: tf-vars/env-name.txt
-          action: destroy
-          var_files: [tf-vars/input.tfvars]
-        get_params:
-          action: destroy
-
-- name: capi-k8s-release-validate-on-newest-k8s-version
-  public: true
-  plan:
-    - in_parallel:
-        - get: cf-for-k8s-ci
-        - get: cf-for-k8s-develop
-          passed:
-            - capi-k8s-release-run-unit-tests
-        - get: capi-k8s-release
-          passed:
-            - capi-k8s-release-run-unit-tests
-          trigger: true
-
-    - task: bump-release-onto-develop
-      file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
-      input_mapping:
-        release: capi-k8s-release
-      params:
-        VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-        REPO_NAME: capi-k8s-release
-
-    - task: create-tf-vars-file
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
-        outputs:
-          - name: tf-vars
-        params:
-          SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-        run:
-          path: /bin/bash
-          args:
-            - -ec
-            - |
-              env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-              echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
-              cat <<EOT > tf-vars/input.tfvars
-              project = "((ci_k8s_gcp_project_name))"
-              region = "((ci_k8s_gcp_project_region))"
-              zone = "((ci_k8s_gcp_project_zone))"
-              service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-              machine_type = "n1-standard-8"
-              EOT
-
-    - put: terraform
-      params:
-        terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
-        env_name_file: tf-vars/env-name.txt
-        delete_on_failure: true
-        var_files: [tf-vars/input.tfvars]
-
-    - do:
-        - task: create-kind-cluster
-          attempts: 5
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-develop
-          file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-            VERSION_SELECTOR: newest_version
-
-        - task: install-cf
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-bump
-          file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-        - task: run-smoke-tests
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-bump
-          file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-      ensure:
-        put: terraform
-        params:
-          terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
-          env_name_file: tf-vars/env-name.txt
-          action: destroy
-          var_files: [tf-vars/input.tfvars]
-        get_params:
-          action: destroy
-
-- name: capi-k8s-release-validate-upgrade
-  public: true
-  plan:
-    - in_parallel:
-        - get: cf-for-k8s-ci
-        - get: cf-for-k8s-develop
-          passed:
-            - capi-k8s-release-run-unit-tests
-        - get: capi-k8s-release
-          passed:
-            - capi-k8s-release-run-unit-tests
-          trigger: true
-        - put: pool-lock
-          resource: ready-pool
-          params: {acquire: true}
-
-    - task: bump-release-onto-develop
-      file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
-      input_mapping:
-        release: capi-k8s-release
-      params:
-        VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-        REPO_NAME: capi-k8s-release
-
-    - task: first-install-cf-develop
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-        pool-lock: pool-lock
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-
-    - task: push-test-app
-      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-      params:
-        APP_NAME: my-node-app
-
-    - task: upgrade-cf-with-component-bump
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-bump
-        pool-lock: pool-lock
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        UPGRADE: true
-
-    - in_parallel:
-        - task: run-smoke-tests
-          file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-bump
-        - task: verify-existing-app
-          file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-bump
-          params:
-            APP_NAME: my-node-app
-            VERIFY_EXISTING_APP: true
-
-    - task: delete-cf
-      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      input_mapping:
-        pool-lock: pool-lock
-
-  on_success:
-    do:
-      - put: destroy-pool
-        params:
-          add: pool-lock
-
-      - put: ready-pool
-        params:
-          remove: pool-lock
-
-- name: capi-k8s-release-push-to-develop
-  public: true
-  plan:
-    - in_parallel:
-        - get: cf-for-k8s-ci
-        - get: cf-for-k8s-develop
-          passed:
-            - capi-k8s-release-validate-on-oldest-k8s-version
-            - capi-k8s-release-validate-on-newest-k8s-version
-            - capi-k8s-release-validate-upgrade
-        - get: capi-k8s-release
-          passed:
-            - capi-k8s-release-validate-on-oldest-k8s-version
-            - capi-k8s-release-validate-on-newest-k8s-version
-            - capi-k8s-release-validate-upgrade
-          trigger: true
-
-    - task: bump-release-onto-develop
-      file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
-      input_mapping:
-        release: capi-k8s-release
-      params:
-        VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-        REPO_NAME: capi-k8s-release
-
-    - put: cf-for-k8s-develop
-      params:
-        repository: cf-for-k8s-bump
-        rebase: true
-
-- name: cf-k8s-logging-run-unit-tests
-  public: true
-  plan:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
-    - get: cf-k8s-logging-release
+    - get: capi-k8s-release
+    - get: weekday-pm
       trigger: true
-
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: cf-k8s-logging-release
+      release: capi-k8s-release
     params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: false
+      REPO_NAME: capi-k8s-release
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      REPO_NAME: cf-k8s-logging
-
+      VENDIR_GITHUB_RELEASE: false
   - task: run-unit-tests
     file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-bump
-
-- name: cf-k8s-logging-validate-on-oldest-k8s-version
+- name: capi-k8s-release-validate-on-oldest-k8s-version
   public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
       passed:
-      - cf-k8s-logging-run-unit-tests
-    - get: cf-k8s-logging-release
+      - capi-k8s-release-run-unit-tests
+    - get: capi-k8s-release
       passed:
-      - cf-k8s-logging-run-unit-tests
+      - capi-k8s-release-run-unit-tests
       trigger: true
-
-  #TODO reduce duplication of this bump release task
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: cf-k8s-logging-release
+      release: capi-k8s-release
     params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: false
+      REPO_NAME: capi-k8s-release
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      REPO_NAME: cf-k8s-logging
-
+      VENDIR_GITHUB_RELEASE: false
   - task: create-tf-vars-file
     config:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
       outputs:
       - name: tf-vars
       params:
@@ -557,14 +238,13 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           machine_type = "n1-standard-8"
           EOT
-
   - put: terraform
     params:
       terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
       delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
-
+      var_files:
+      - tf-vars/input.tfvars
   - do:
     - task: create-kind-cluster
       attempts: 5
@@ -575,7 +255,6 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: oldest_version
-
     - task: install-cf
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -583,7 +262,6 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -591,44 +269,45 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     ensure:
       put: terraform
       params:
         terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
         action: destroy
-        var_files: [tf-vars/input.tfvars]
+        var_files:
+        - tf-vars/input.tfvars
       get_params:
         action: destroy
-
-- name: cf-k8s-logging-validate-on-newest-k8s-version
+- name: capi-k8s-release-validate-on-newest-k8s-version
   public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
       passed:
-      - cf-k8s-logging-run-unit-tests
-    - get: cf-k8s-logging-release
+      - capi-k8s-release-run-unit-tests
+    - get: capi-k8s-release
       passed:
-      - cf-k8s-logging-run-unit-tests
+      - capi-k8s-release-run-unit-tests
       trigger: true
-
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: cf-k8s-logging-release
+      release: capi-k8s-release
     params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: false
+      REPO_NAME: capi-k8s-release
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      REPO_NAME: cf-k8s-logging
-
+      VENDIR_GITHUB_RELEASE: false
   - task: create-tf-vars-file
     config:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
       outputs:
       - name: tf-vars
       params:
@@ -647,14 +326,13 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           machine_type = "n1-standard-8"
           EOT
-
   - put: terraform
     params:
       terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
       delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
-
+      var_files:
+      - tf-vars/input.tfvars
   - do:
     - task: create-kind-cluster
       attempts: 5
@@ -665,7 +343,6 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: newest_version
-
     - task: install-cf
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -673,7 +350,6 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -681,41 +357,42 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     ensure:
       put: terraform
       params:
         terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
         action: destroy
-        var_files: [tf-vars/input.tfvars]
+        var_files:
+        - tf-vars/input.tfvars
       get_params:
         action: destroy
-
-- name: cf-k8s-logging-validate-upgrade
+- name: capi-k8s-release-validate-upgrade
   public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
       passed:
-      - cf-k8s-logging-run-unit-tests
-    - get: cf-k8s-logging-release
+      - capi-k8s-release-run-unit-tests
+    - get: capi-k8s-release
       passed:
-      - cf-k8s-logging-run-unit-tests
+      - capi-k8s-release-run-unit-tests
       trigger: true
     - put: pool-lock
       resource: ready-pool
-      params: {acquire: true}
-
+      params:
+        acquire: true
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: cf-k8s-logging-release
+      release: capi-k8s-release
     params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: false
+      REPO_NAME: capi-k8s-release
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      REPO_NAME: cf-k8s-logging
-
+      VENDIR_GITHUB_RELEASE: false
   - task: first-install-cf-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
@@ -725,14 +402,12 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
     params:
       APP_NAME: my-node-app
-
   - task: upgrade-cf-with-component-bump
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
@@ -743,7 +418,6 @@ jobs:
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
       UPGRADE: true
-
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
@@ -756,7 +430,6 @@ jobs:
       params:
         APP_NAME: my-node-app
         VERIFY_EXISTING_APP: true
-
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     params:
@@ -765,17 +438,321 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
     input_mapping:
       pool-lock: pool-lock
-
   on_success:
     do:
-      - put: destroy-pool
-        params:
-          add: pool-lock
-
-      - put: ready-pool
-        params:
-          remove: pool-lock
-
+    - put: destroy-pool
+      params:
+        add: pool-lock
+    - put: ready-pool
+      params:
+        remove: pool-lock
+- name: capi-k8s-release-push-to-develop
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - capi-k8s-release-validate-on-oldest-k8s-version
+      - capi-k8s-release-validate-on-newest-k8s-version
+      - capi-k8s-release-validate-upgrade
+    - get: capi-k8s-release
+      passed:
+      - capi-k8s-release-validate-on-oldest-k8s-version
+      - capi-k8s-release-validate-on-newest-k8s-version
+      - capi-k8s-release-validate-upgrade
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: capi-k8s-release
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: false
+      REPO_NAME: capi-k8s-release
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: false
+  - put: cf-for-k8s-develop
+    params:
+      repository: cf-for-k8s-bump
+      rebase: true
+- name: cf-k8s-logging-run-unit-tests
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - get: cf-k8s-logging
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: cf-k8s-logging
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
+      REPO_NAME: cf-k8s-logging
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
+  - task: run-unit-tests
+    file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-bump
+- name: cf-k8s-logging-validate-on-oldest-k8s-version
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - cf-k8s-logging-run-unit-tests
+    - get: cf-k8s-logging
+      passed:
+      - cf-k8s-logging-run-unit-tests
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: cf-k8s-logging
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
+      REPO_NAME: cf-k8s-logging
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          machine_type = "n1-standard-8"
+          EOT
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files:
+      - tf-vars/input.tfvars
+  - do:
+    - task: create-kind-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: oldest_version
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    ensure:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files:
+        - tf-vars/input.tfvars
+      get_params:
+        action: destroy
+- name: cf-k8s-logging-validate-on-newest-k8s-version
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - cf-k8s-logging-run-unit-tests
+    - get: cf-k8s-logging
+      passed:
+      - cf-k8s-logging-run-unit-tests
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: cf-k8s-logging
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
+      REPO_NAME: cf-k8s-logging
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          machine_type = "n1-standard-8"
+          EOT
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files:
+      - tf-vars/input.tfvars
+  - do:
+    - task: create-kind-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: newest_version
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    ensure:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files:
+        - tf-vars/input.tfvars
+      get_params:
+        action: destroy
+- name: cf-k8s-logging-validate-upgrade
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - cf-k8s-logging-run-unit-tests
+    - get: cf-k8s-logging
+      passed:
+      - cf-k8s-logging-run-unit-tests
+      trigger: true
+    - put: pool-lock
+      resource: ready-pool
+      params:
+        acquire: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: cf-k8s-logging
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
+      REPO_NAME: cf-k8s-logging
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
+  - task: first-install-cf-develop
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+      pool-lock: pool-lock
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+  - task: push-test-app
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+    params:
+      APP_NAME: my-node-app
+  - task: upgrade-cf-with-component-bump
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-bump
+      pool-lock: pool-lock
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPGRADE: true
+  - in_parallel:
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+    - task: verify-existing-app
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      params:
+        APP_NAME: my-node-app
+        VERIFY_EXISTING_APP: true
+  - task: delete-cf
+    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+    input_mapping:
+      pool-lock: pool-lock
+  on_success:
+    do:
+    - put: destroy-pool
+      params:
+        add: pool-lock
+    - put: ready-pool
+      params:
+        remove: pool-lock
 - name: cf-k8s-logging-push-to-develop
   public: true
   plan:
@@ -786,76 +763,77 @@ jobs:
       - cf-k8s-logging-validate-on-oldest-k8s-version
       - cf-k8s-logging-validate-on-newest-k8s-version
       - cf-k8s-logging-validate-upgrade
-    - get: cf-k8s-logging-release
+    - get: cf-k8s-logging
       passed:
       - cf-k8s-logging-validate-on-oldest-k8s-version
       - cf-k8s-logging-validate-on-newest-k8s-version
       - cf-k8s-logging-validate-upgrade
       trigger: true
-
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: cf-k8s-logging-release
+      release: cf-k8s-logging
     params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
       REPO_NAME: cf-k8s-logging
-
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
   - put: cf-for-k8s-develop
     params:
       repository: cf-for-k8s-bump
       rebase: true
-
-- name: kpack-run-unit-tests
+- name: eirini-release-run-unit-tests
   public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
-    - get: kpack-release
+    - get: eirini-release
       trigger: true
-
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: kpack-release
+      release: eirini-release
     params:
+      BUILD_DIR: build/eirini
+      GITHUB_RELEASE: true
+      REPO_NAME: eirini
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      REPO_NAME: kpack
-
+      VENDIR_GITHUB_RELEASE: true
   - task: run-unit-tests
     file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-bump
-
-- name: kpack-validate-on-oldest-k8s-version
+- name: eirini-release-validate-on-oldest-k8s-version
   public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
       passed:
-      - kpack-run-unit-tests
-    - get: kpack-release
+      - eirini-release-run-unit-tests
+    - get: eirini-release
       passed:
-      - kpack-run-unit-tests
+      - eirini-release-run-unit-tests
       trigger: true
-
-  #TODO reduce duplication of this bump release task
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: kpack-release
+      release: eirini-release
     params:
+      BUILD_DIR: build/eirini
+      GITHUB_RELEASE: true
+      REPO_NAME: eirini
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      REPO_NAME: kpack
-
+      VENDIR_GITHUB_RELEASE: true
   - task: create-tf-vars-file
     config:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
       outputs:
       - name: tf-vars
       params:
@@ -874,14 +852,13 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           machine_type = "n1-standard-8"
           EOT
-
   - put: terraform
     params:
       terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
       delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
-
+      var_files:
+      - tf-vars/input.tfvars
   - do:
     - task: create-kind-cluster
       attempts: 5
@@ -892,7 +869,6 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: oldest_version
-
     - task: install-cf
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -900,7 +876,6 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -908,44 +883,45 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     ensure:
       put: terraform
       params:
         terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
         action: destroy
-        var_files: [tf-vars/input.tfvars]
+        var_files:
+        - tf-vars/input.tfvars
       get_params:
         action: destroy
-
-- name: kpack-validate-on-newest-k8s-version
+- name: eirini-release-validate-on-newest-k8s-version
   public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
       passed:
-      - kpack-run-unit-tests
-    - get: kpack-release
+      - eirini-release-run-unit-tests
+    - get: eirini-release
       passed:
-      - kpack-run-unit-tests
+      - eirini-release-run-unit-tests
       trigger: true
-
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: kpack-release
+      release: eirini-release
     params:
+      BUILD_DIR: build/eirini
+      GITHUB_RELEASE: true
+      REPO_NAME: eirini
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      REPO_NAME: kpack
-
+      VENDIR_GITHUB_RELEASE: true
   - task: create-tf-vars-file
     config:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
       outputs:
       - name: tf-vars
       params:
@@ -964,14 +940,13 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           machine_type = "n1-standard-8"
           EOT
-
   - put: terraform
     params:
       terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
       delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
-
+      var_files:
+      - tf-vars/input.tfvars
   - do:
     - task: create-kind-cluster
       attempts: 5
@@ -982,7 +957,6 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: newest_version
-
     - task: install-cf
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -990,7 +964,6 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -998,41 +971,42 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     ensure:
       put: terraform
       params:
         terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
         action: destroy
-        var_files: [tf-vars/input.tfvars]
+        var_files:
+        - tf-vars/input.tfvars
       get_params:
         action: destroy
-
-- name: kpack-validate-upgrade
+- name: eirini-release-validate-upgrade
   public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
       passed:
-      - kpack-run-unit-tests
-    - get: kpack-release
+      - eirini-release-run-unit-tests
+    - get: eirini-release
       passed:
-      - kpack-run-unit-tests
+      - eirini-release-run-unit-tests
       trigger: true
     - put: pool-lock
       resource: ready-pool
-      params: {acquire: true}
-
+      params:
+        acquire: true
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: kpack-release
+      release: eirini-release
     params:
+      BUILD_DIR: build/eirini
+      GITHUB_RELEASE: true
+      REPO_NAME: eirini
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      REPO_NAME: kpack
-
+      VENDIR_GITHUB_RELEASE: true
   - task: first-install-cf-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
@@ -1042,14 +1016,12 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
     params:
       APP_NAME: my-node-app
-
   - task: upgrade-cf-with-component-bump
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
@@ -1060,7 +1032,6 @@ jobs:
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
       UPGRADE: true
-
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
@@ -1073,7 +1044,6 @@ jobs:
       params:
         APP_NAME: my-node-app
         VERIFY_EXISTING_APP: true
-
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     params:
@@ -1082,17 +1052,321 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
     input_mapping:
       pool-lock: pool-lock
-
   on_success:
     do:
-      - put: destroy-pool
-        params:
-          add: pool-lock
-
-      - put: ready-pool
-        params:
-          remove: pool-lock
-
+    - put: destroy-pool
+      params:
+        add: pool-lock
+    - put: ready-pool
+      params:
+        remove: pool-lock
+- name: eirini-release-push-to-develop
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - eirini-release-validate-on-oldest-k8s-version
+      - eirini-release-validate-on-newest-k8s-version
+      - eirini-release-validate-upgrade
+    - get: eirini-release
+      passed:
+      - eirini-release-validate-on-oldest-k8s-version
+      - eirini-release-validate-on-newest-k8s-version
+      - eirini-release-validate-upgrade
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: eirini-release
+    params:
+      BUILD_DIR: build/eirini
+      GITHUB_RELEASE: true
+      REPO_NAME: eirini
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
+  - put: cf-for-k8s-develop
+    params:
+      repository: cf-for-k8s-bump
+      rebase: true
+- name: kpack-run-unit-tests
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - get: kpack
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: kpack
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
+      REPO_NAME: kpack
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
+  - task: run-unit-tests
+    file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-bump
+- name: kpack-validate-on-oldest-k8s-version
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - kpack-run-unit-tests
+    - get: kpack
+      passed:
+      - kpack-run-unit-tests
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: kpack
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
+      REPO_NAME: kpack
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          machine_type = "n1-standard-8"
+          EOT
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files:
+      - tf-vars/input.tfvars
+  - do:
+    - task: create-kind-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: oldest_version
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    ensure:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files:
+        - tf-vars/input.tfvars
+      get_params:
+        action: destroy
+- name: kpack-validate-on-newest-k8s-version
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - kpack-run-unit-tests
+    - get: kpack
+      passed:
+      - kpack-run-unit-tests
+      trigger: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: kpack
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
+      REPO_NAME: kpack
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          machine_type = "n1-standard-8"
+          EOT
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files:
+      - tf-vars/input.tfvars
+  - do:
+    - task: create-kind-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: newest_version
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    ensure:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files:
+        - tf-vars/input.tfvars
+      get_params:
+        action: destroy
+- name: kpack-validate-upgrade
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+      passed:
+      - kpack-run-unit-tests
+    - get: kpack
+      passed:
+      - kpack-run-unit-tests
+      trigger: true
+    - put: pool-lock
+      resource: ready-pool
+      params:
+        acquire: true
+  - task: bump-release-onto-develop
+    file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
+    input_mapping:
+      release: kpack
+    params:
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
+      REPO_NAME: kpack
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
+  - task: first-install-cf-develop
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+      pool-lock: pool-lock
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+  - task: push-test-app
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+    params:
+      APP_NAME: my-node-app
+  - task: upgrade-cf-with-component-bump
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-bump
+      pool-lock: pool-lock
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPGRADE: true
+  - in_parallel:
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+    - task: verify-existing-app
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bump
+      params:
+        APP_NAME: my-node-app
+        VERIFY_EXISTING_APP: true
+  - task: delete-cf
+    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+    input_mapping:
+      pool-lock: pool-lock
+  on_success:
+    do:
+    - put: destroy-pool
+      params:
+        add: pool-lock
+    - put: ready-pool
+      params:
+        remove: pool-lock
 - name: kpack-push-to-develop
   public: true
   plan:
@@ -1103,48 +1377,48 @@ jobs:
       - kpack-validate-on-oldest-k8s-version
       - kpack-validate-on-newest-k8s-version
       - kpack-validate-upgrade
-    - get: kpack-release
+    - get: kpack
       passed:
       - kpack-validate-on-oldest-k8s-version
       - kpack-validate-on-newest-k8s-version
       - kpack-validate-upgrade
       trigger: true
-
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: kpack-release
+      release: kpack
     params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
       REPO_NAME: kpack
-
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: true
   - put: cf-for-k8s-develop
     params:
       repository: cf-for-k8s-bump
       rebase: true
-
 - name: uaa-run-unit-tests
   public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
-    - get: uaa-release
+    - get: uaa
       trigger: true
-
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: uaa-release
+      release: uaa
     params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
       REPO_NAME: uaa
-
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: false
   - task: run-unit-tests
     file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-bump
-
 - name: uaa-validate-on-oldest-k8s-version
   public: true
   plan:
@@ -1153,26 +1427,27 @@ jobs:
     - get: cf-for-k8s-develop
       passed:
       - uaa-run-unit-tests
-    - get: uaa-release
+    - get: uaa
       passed:
       - uaa-run-unit-tests
       trigger: true
-
-  #TODO reduce duplication of this bump release task
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: uaa-release
+      release: uaa
     params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
       REPO_NAME: uaa
-
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: false
   - task: create-tf-vars-file
     config:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
       outputs:
       - name: tf-vars
       params:
@@ -1191,14 +1466,13 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           machine_type = "n1-standard-8"
           EOT
-
   - put: terraform
     params:
       terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
       delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
-
+      var_files:
+      - tf-vars/input.tfvars
   - do:
     - task: create-kind-cluster
       attempts: 5
@@ -1209,7 +1483,6 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: oldest_version
-
     - task: install-cf
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -1217,7 +1490,6 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -1225,17 +1497,16 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     ensure:
       put: terraform
       params:
         terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
         action: destroy
-        var_files: [tf-vars/input.tfvars]
+        var_files:
+        - tf-vars/input.tfvars
       get_params:
         action: destroy
-
 - name: uaa-validate-on-newest-k8s-version
   public: true
   plan:
@@ -1244,25 +1515,27 @@ jobs:
     - get: cf-for-k8s-develop
       passed:
       - uaa-run-unit-tests
-    - get: uaa-release
+    - get: uaa
       passed:
       - uaa-run-unit-tests
       trigger: true
-
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: uaa-release
+      release: uaa
     params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
       REPO_NAME: uaa
-
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: false
   - task: create-tf-vars-file
     config:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
       outputs:
       - name: tf-vars
       params:
@@ -1281,14 +1554,13 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           machine_type = "n1-standard-8"
           EOT
-
   - put: terraform
     params:
       terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
       delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
-
+      var_files:
+      - tf-vars/input.tfvars
   - do:
     - task: create-kind-cluster
       attempts: 5
@@ -1299,7 +1571,6 @@ jobs:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: newest_version
-
     - task: install-cf
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -1307,7 +1578,6 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     - task: run-smoke-tests
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
@@ -1315,17 +1585,16 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
     ensure:
       put: terraform
       params:
         terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
         action: destroy
-        var_files: [tf-vars/input.tfvars]
+        var_files:
+        - tf-vars/input.tfvars
       get_params:
         action: destroy
-
 - name: uaa-validate-upgrade
   public: true
   plan:
@@ -1334,22 +1603,24 @@ jobs:
     - get: cf-for-k8s-develop
       passed:
       - uaa-run-unit-tests
-    - get: uaa-release
+    - get: uaa
       passed:
       - uaa-run-unit-tests
       trigger: true
     - put: pool-lock
       resource: ready-pool
-      params: {acquire: true}
-
+      params:
+        acquire: true
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: uaa-release
+      release: uaa
     params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
       REPO_NAME: uaa
-
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      VENDIR_GITHUB_RELEASE: false
   - task: first-install-cf-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
@@ -1359,14 +1630,12 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
     params:
       APP_NAME: my-node-app
-
   - task: upgrade-cf-with-component-bump
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
@@ -1377,7 +1646,6 @@ jobs:
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
       UPGRADE: true
-
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
@@ -1390,7 +1658,6 @@ jobs:
       params:
         APP_NAME: my-node-app
         VERIFY_EXISTING_APP: true
-
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     params:
@@ -1399,17 +1666,14 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
     input_mapping:
       pool-lock: pool-lock
-
   on_success:
     do:
-      - put: destroy-pool
-        params:
-          add: pool-lock
-
-      - put: ready-pool
-        params:
-          remove: pool-lock
-
+    - put: destroy-pool
+      params:
+        add: pool-lock
+    - put: ready-pool
+      params:
+        remove: pool-lock
 - name: uaa-push-to-develop
   public: true
   plan:
@@ -1420,332 +1684,22 @@ jobs:
       - uaa-validate-on-oldest-k8s-version
       - uaa-validate-on-newest-k8s-version
       - uaa-validate-upgrade
-    - get: uaa-release
+    - get: uaa
       passed:
       - uaa-validate-on-oldest-k8s-version
       - uaa-validate-on-newest-k8s-version
       - uaa-validate-upgrade
       trigger: true
-
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
     input_mapping:
-      release: uaa-release
+      release: uaa
     params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+      BUILD_DIR: ""
+      GITHUB_RELEASE: true
       REPO_NAME: uaa
-
-  - put: cf-for-k8s-develop
-    params:
-      repository: cf-for-k8s-bump
-      rebase: true
-
-- name: eirini-run-unit-tests
-  public: true
-  plan:
-  - in_parallel:
-    - get: cf-for-k8s-ci
-    - get: cf-for-k8s-develop
-    - get: eirini-release
-      trigger: true
-
-  - task: bump-release-onto-develop
-    file: cf-for-k8s-ci/ci/tasks/bump-eirini/task.yml
-    input_mapping:
-      release: eirini-release
-    params:
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-
-  - task: run-unit-tests
-    file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-bump
-
-- name: eirini-validate-on-oldest-k8s-version
-  public: true
-  plan:
-  - in_parallel:
-    - get: cf-for-k8s-ci
-    - get: cf-for-k8s-develop
-      passed:
-      - eirini-run-unit-tests
-    - get: eirini-release
-      passed:
-      - eirini-run-unit-tests
-      trigger: true
-
-  - task: bump-release-onto-develop
-    file: cf-for-k8s-ci/ci/tasks/bump-eirini/task.yml
-    input_mapping:
-      release: eirini-release
-    params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-
-  - task: create-tf-vars-file
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
-      outputs:
-      - name: tf-vars
-      params:
-        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
-          cat <<EOT > tf-vars/input.tfvars
-          project = "((ci_k8s_gcp_project_name))"
-          region = "((ci_k8s_gcp_project_region))"
-          zone = "((ci_k8s_gcp_project_zone))"
-          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-          machine_type = "n1-standard-8"
-          EOT
-
-  - put: terraform
-    params:
-      terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
-      env_name_file: tf-vars/env-name.txt
-      delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
-
-  - do:
-    - task: create-kind-cluster
-      attempts: 5
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
-      params:
-        GCP_KEY: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        VERSION_SELECTOR: oldest_version
-
-    - task: install-cf
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-bump
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
-      params:
-        GCP_KEY: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-    - task: run-smoke-tests
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-bump
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
-      params:
-        GCP_KEY: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-    ensure:
-      put: terraform
-      params:
-        terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
-        env_name_file: tf-vars/env-name.txt
-        action: destroy
-        var_files: [tf-vars/input.tfvars]
-      get_params:
-        action: destroy
-
-- name: eirini-validate-on-newest-k8s-version
-  public: true
-  plan:
-  - in_parallel:
-    - get: cf-for-k8s-ci
-    - get: cf-for-k8s-develop
-      passed:
-      - eirini-run-unit-tests
-    - get: eirini-release
-      passed:
-      - eirini-run-unit-tests
-      trigger: true
-
-  - task: bump-release-onto-develop
-    file: cf-for-k8s-ci/ci/tasks/bump-eirini/task.yml
-    input_mapping:
-      release: eirini-release
-    params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-
-  - task: create-tf-vars-file
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
-      outputs:
-      - name: tf-vars
-      params:
-        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
-          cat <<EOT > tf-vars/input.tfvars
-          project = "((ci_k8s_gcp_project_name))"
-          region = "((ci_k8s_gcp_project_region))"
-          zone = "((ci_k8s_gcp_project_zone))"
-          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-          machine_type = "n1-standard-8"
-          EOT
-
-  - put: terraform
-    params:
-      terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
-      env_name_file: tf-vars/env-name.txt
-      delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
-
-  - do:
-    - task: create-kind-cluster
-      attempts: 5
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
-      params:
-        GCP_KEY: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        VERSION_SELECTOR: newest_version
-
-    - task: install-cf
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-bump
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
-      params:
-        GCP_KEY: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-    - task: run-smoke-tests
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-bump
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
-      params:
-        GCP_KEY: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-    ensure:
-      put: terraform
-      params:
-        terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
-        env_name_file: tf-vars/env-name.txt
-        action: destroy
-        var_files: [tf-vars/input.tfvars]
-      get_params:
-        action: destroy
-
-- name: eirini-validate-upgrade
-  public: true
-  plan:
-  - in_parallel:
-    - get: cf-for-k8s-ci
-    - get: cf-for-k8s-develop
-      passed:
-      - eirini-run-unit-tests
-    - get: eirini-release
-      passed:
-      - eirini-run-unit-tests
-      trigger: true
-    - put: pool-lock
-      resource: ready-pool
-      params: {acquire: true}
-
-  - task: bump-release-onto-develop
-    file: cf-for-k8s-ci/ci/tasks/bump-eirini/task.yml
-    input_mapping:
-      release: eirini-release
-    params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-
-  - task: first-install-cf-develop
-    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
-      pool-lock: pool-lock
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-
-  - task: push-test-app
-    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      APP_NAME: my-node-app
-
-  - task: upgrade-cf-with-component-bump
-    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-bump
-      pool-lock: pool-lock
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      UPGRADE: true
-
-  - in_parallel:
-    - task: run-smoke-tests
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-bump
-    - task: verify-existing-app
-      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-bump
-      params:
-        APP_NAME: my-node-app
-        VERIFY_EXISTING_APP: true
-
-  - task: delete-cf
-    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-    input_mapping:
-      pool-lock: pool-lock
-
-  on_success:
-    do:
-      - put: destroy-pool
-        params:
-          add: pool-lock
-
-      - put: ready-pool
-        params:
-          remove: pool-lock
-
-- name: eirini-push-to-develop
-  public: true
-  plan:
-  - in_parallel:
-    - get: cf-for-k8s-ci
-    - get: cf-for-k8s-develop
-      passed:
-      - eirini-validate-on-oldest-k8s-version
-      - eirini-validate-on-newest-k8s-version
-      - eirini-validate-upgrade
-    - get: eirini-release
-      passed:
-      - eirini-validate-on-oldest-k8s-version
-      - eirini-validate-on-newest-k8s-version
-      - eirini-validate-upgrade
-      trigger: true
-
-  - task: bump-release-onto-develop
-    file: cf-for-k8s-ci/ci/tasks/bump-eirini/task.yml
-    input_mapping:
-      release: eirini-release
-    params:
-      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-
+      VENDIR_GITHUB_RELEASE: false
   - put: cf-for-k8s-develop
     params:
       repository: cf-for-k8s-bump

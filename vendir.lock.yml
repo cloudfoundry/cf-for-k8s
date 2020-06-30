@@ -7,7 +7,7 @@ directories:
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
       commitTitle: images.yml updated by CI...
-      sha: 5fb4c89475b347fce449068e9f260732a0e43d74
+      sha: c8013ee3965d0dcdc4318aafe1fe6f9fa309380d
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288

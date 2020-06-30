@@ -23,7 +23,7 @@ cat <<EOF > /tmp/uptimer-config.json
     },
     "allowed_failures": {
         "app_pushability": 100,
-        "http_availability": 100,
+        "http_availability": 0,
         "recent_logs": 100,
         "streaming_logs": 100,
         "app_syslog_availability": 100

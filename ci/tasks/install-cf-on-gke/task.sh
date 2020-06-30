@@ -1,5 +1,11 @@
 #!/bin/bash -eu
 
+echo "Installation Configuration"
+echo "=========================="
+echo "External Registry: ${USE_EXTERNAL_APP_REGISTRY}"
+echo "Upgrade: ${UPGRADE}"
+echo "Uptimer: ${UPTIMER}"
+
 source cf-for-k8s-ci/ci/helpers/gke.sh
 source cf-for-k8s-ci/ci/helpers/uptimer-config.sh
 
@@ -16,7 +22,20 @@ if [[ "${UPGRADE}" == "true" ]]; then
 else
   echo "Generating install values..."
 fi
-cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-values.yml
+
+if [[ "${USE_EXTERNAL_APP_REGISTRY}" == "true" ]]; then
+  cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" > cf-values.yml
+cat <<EOT >> cf-install-values.yml
+app_registry:
+   hostname: ${APP_REGISTRY_HOSTNAME}
+   repository: ${APP_REGISTRY_REPOSITORY}
+   username: ${APP_REGISTRY_USERNAME}
+   password: ${APP_REGISTRY_PASSWORD}
+EOT
+else
+  cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-values.yml
+fi
+
 echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-values.yml
 
 echo "Installing CF..."

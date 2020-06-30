@@ -1,6 +1,7 @@
 #!/bin/bash
-set -eou pipefail
+set -eu
 
+# Don't -o pipefail for this part
 env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
 
 echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt

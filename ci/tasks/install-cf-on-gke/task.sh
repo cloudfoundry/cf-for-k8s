@@ -5,6 +5,7 @@ echo "=========================="
 echo "External Registry: ${USE_EXTERNAL_APP_REGISTRY}"
 echo "Upgrade: ${UPGRADE}"
 echo "Uptimer: ${UPTIMER}"
+echo -e "\n"
 
 source cf-for-k8s-ci/ci/helpers/gke.sh
 source cf-for-k8s-ci/ci/helpers/uptimer-config.sh

@@ -20,7 +20,6 @@ cf_blobstore:
 #! control optional deployment of a database for CF
 cf_db:
   admin_password: ""
-  enabled: true
 
 #! reserved static ip for istio LoadBalancer
 istio_static_ip: ""

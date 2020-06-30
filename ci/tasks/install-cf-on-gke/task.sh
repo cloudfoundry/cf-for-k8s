@@ -26,7 +26,7 @@ fi
 
 if [[ "${USE_EXTERNAL_APP_REGISTRY}" == "true" ]]; then
   cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" > cf-values.yml
-cat <<EOT >> cf-install-values.yml
+cat <<EOT >> cf-values.yml
 app_registry:
    hostname: ${APP_REGISTRY_HOSTNAME}
    repository: ${APP_REGISTRY_REPOSITORY}

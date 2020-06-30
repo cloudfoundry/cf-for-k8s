@@ -22,7 +22,9 @@ groups:
   - fail-prs-to-cf-for-k8s-master
   - pass-prs-to-cf-for-k8s-develop
   - run-unit-tests-on-pr
-  - validate-cf-for-k8s-pr
+  - validate-pr-on-gke
+  - validate-pr-on-newest-k8s-kind
+  - validate-pr-on-oldest-k8s-kind
   - test-vendir-sync-on-cf-for-k8s-pr
 - name: docker-images
   jobs:
@@ -998,7 +1000,7 @@ jobs:
         context: check-vendir-sync
 
 
-- name: validate-cf-for-k8s-pr
+- name: validate-pr-on-gke
   serial: true
   public: true
   plan:
@@ -1036,7 +1038,7 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
       USE_EXTERNAL_APP_REGISTRY: true
       APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-      APP_REGISTRY_REPOSITORY:  ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_REPOSITORY: ((cf_for_k8s_private_dockerhub.username))
       APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
 
@@ -1061,7 +1063,7 @@ jobs:
       UPTIMER: true
       USE_EXTERNAL_APP_REGISTRY: true
       APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-      APP_REGISTRY_REPOSITORY:  ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_REPOSITORY: ((cf_for_k8s_private_dockerhub.username))
       APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
 
@@ -1131,6 +1133,130 @@ jobs:
       - put: ready-pool
         params:
           remove: ready-pool
+
+- name: validate-pr-on-newest-k8s-kind
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-pr-all-branches-and-forks
+      passed:
+      - validate-pr-on-gke
+      trigger: true
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-kind-gcp-terraform-templates
+
+  - task: create-tf-vars-file
+    file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
+  - do:
+    - task: create-kind-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: newest_version
+
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    ensure:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy
+
+- name: validate-pr-on-oldest-k8s-kind
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-pr-all-branches-and-forks
+      passed:
+      - validate-pr-on-gke
+      trigger: true
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-kind-gcp-terraform-templates
+
+  - task: create-tf-vars-file
+    file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
+  - do:
+    - task: create-kind-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: oldest_version
+
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    ensure:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy
 
 - name: build-cf-for-k8s-ci-image
   public: true
@@ -1553,33 +1679,17 @@ jobs:
   plan:
   - in_parallel:
     - get: stability-pool
-      passed: [ add-stability-cluster-lock ]
+      passed: [add-stability-cluster-lock]
       trigger: true
     - get: cf-for-k8s-gke-terraform-templates
 
   - task: create-tf-vars-file
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: stability-pool
-      outputs:
-      - name: tf-vars
-      params:
-        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          cat <<EOT > tf-vars/input.tfvars
-          project = "((ci_k8s_gcp_project_name))"
-          region = "((ci_k8s_gcp_project_region))"
-          zone = "((ci_k8s_gcp_project_zone))"
-          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-          env_name = "$(cat stability-pool/name)"
-          env_dns_domain = "$(cat stability-pool/name).((ci_k8s_root_domain))"
-          dns_zone_name = "((ci_k8s_dns_zone_name))"
-          EOT
+    file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
 
   - put: terraform
     params:
@@ -1646,28 +1756,12 @@ jobs:
           kapp delete -a cf --yes
 
   - task: create-tf-vars-file
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: stability-pool
-      outputs:
-      - name: tf-vars
-      params:
-        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          cat <<EOT > tf-vars/input.tfvars
-          project = "((ci_k8s_gcp_project_name))"
-          region = "((ci_k8s_gcp_project_region))"
-          zone = "((ci_k8s_gcp_project_zone))"
-          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-          env_name = "$(cat stability-pool/name)"
-          env_dns_domain = "$(cat stability-pool/name).((ci_k8s_root_domain))"
-          dns_zone_name = "((ci_k8s_dns_zone_name))"
-          EOT
+    file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
 
   - put: terraform
     params:

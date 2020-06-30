@@ -6,6 +6,9 @@ image_resource:
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-ci
 
+inputs:
+  - name: cf-for-k8s-ci
+
 outputs:
   - name: tf-vars
 

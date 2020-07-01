@@ -16,10 +16,14 @@ gcloud_auth "${cluster_name}"
 DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
 
 if [[ "${UPGRADE}" == "true" ]]; then
-  echo "Copying bosh vars store from latest release install"
+  echo "Copying bosh vars store from latest install"
   mkdir -p "/tmp/${cluster_name}.k8s-dev.relint.rocks"
   cp env-metadata/cf-vars.yaml "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml"
-  echo "Generating install values using cf-vars from fresh install..."
+  echo "NOTE: the values we're currently not rotating are:"
+  cut -d ":" -f1 env-metadata/cf-vars.yaml
+  echo "(we're also not testing rotating our app_registry credentials)"
+  echo ""
+  echo "Generating install values with cf-vars..."
 else
   echo "Generating install values..."
 fi

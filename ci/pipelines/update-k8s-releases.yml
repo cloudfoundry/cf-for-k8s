@@ -437,6 +437,7 @@ jobs:
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
       UPGRADE: true
+      UPTIMER: true
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
@@ -743,6 +744,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPTIMER: true
       UPGRADE: true
   - in_parallel:
     - task: run-smoke-tests
@@ -1050,6 +1052,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPTIMER: true
       UPGRADE: true
   - in_parallel:
     - task: run-smoke-tests
@@ -1357,6 +1360,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPTIMER: true
       UPGRADE: true
   - in_parallel:
     - task: run-smoke-tests
@@ -1665,6 +1669,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPTIMER: true
       UPGRADE: true
   - in_parallel:
     - task: run-smoke-tests
@@ -1972,6 +1977,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPTIMER: true
       UPGRADE: true
   - in_parallel:
     - task: run-smoke-tests

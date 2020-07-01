@@ -27,6 +27,7 @@ params:
 
 outputs:
   - name: env-metadata
+  - name: uptimer-result
 
 run:
   path: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.sh

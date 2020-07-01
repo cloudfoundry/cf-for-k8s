@@ -49,7 +49,8 @@ password=$(bosh interpolate --path /cf_admin_password cf-values.yml)
 if [[ "${UPTIMER}" == "true" ]]; then
   echo "Running with uptimer"
   write_uptimer_deploy_config
-  uptimer -configFile /tmp/uptimer-config.json
+  mkdir -p uptimer-result
+  uptimer -configFile /tmp/uptimer-config.json -resultFile uptimer-result/result.json
 else
   kapp deploy -a cf -f /tmp/manifest.yml -y
 fi

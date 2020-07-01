@@ -20,7 +20,7 @@ if [[ "${UPGRADE}" == "true" ]]; then
   mkdir -p "/tmp/${cluster_name}.k8s-dev.relint.rocks"
   cp env-metadata/cf-vars.yaml "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml"
   echo "NOTE: the values we're currently not rotating are:"
-  cut -d ":" -f1 env-metadata/cf-vars.yaml
+  cat env-metadata/cf-vars.yml | yq -r 'keys'
   echo "(we're also not testing rotating our app_registry credentials)"
   echo ""
   echo "Generating install values with cf-vars..."

@@ -54,13 +54,12 @@ As prerequisite, you need to execute the following steps to configure your postg
    * activate the `citext` extension for each of these databases
 
     ```bash
-    VALUES_JSON=$(yaml2json "$VALUES_FILE")
-    CCDB_USERNAME=$(jq -r '.capi.database.user' <<< "$VALUES_JSON")
-    CCDB_PASSWORD=$(jq -r '.capi.database.password' <<< "$VALUES_JSON")
-    CCDB_NAME=$(jq -r '.capi.database.name' <<< "$VALUES_JSON")
-    UAADB_USERNAME=$(jq -r '.uaa.database.user' <<< "$VALUES_JSON")
-    UAADB_PASSWORD=$(jq -r '.uaa.database.password' <<< "$VALUES_JSON")
-    UAADB_NAME=$(jq -r '.uaa.database.name' <<< "$VALUES_JSON")
+    CCDB_USERNAME=$(yq -r '.capi.database.user' "$VALUES_FILE")
+    CCDB_PASSWORD=$(yq -r '.capi.database.password' "$VALUES_FILE")
+    CCDB_NAME=$(yq -r '.capi.database.name' "$VALUES_FILE")
+    UAADB_USERNAME=$(yq -r '.uaa.database.user' "$VALUES_FILE")
+    UAADB_PASSWORD=$(yq -r '.uaa.database.password' "$VALUES_FILE")
+    UAADB_NAME=$(yq -r '.uaa.database.name' "$VALUES_FILE")
     cat > /tmp/setup_db.sql <<EOT
     CREATE DATABASE ${CCDB_NAME};
     CREATE ROLE ${CCDB_USERNAME} LOGIN PASSWORD '${CCDB_PASSWORD}';
@@ -92,7 +91,7 @@ In the following section, an external database is created using the bitnami post
     capi:
       database:
         adapter: postgres
-        host: postgres-postgresql.default.svc.cluster.local
+        host: postgresql.default.svc.cluster.local
         port: 5432
         user: capi_user
         password: capi_password
@@ -101,7 +100,7 @@ In the following section, an external database is created using the bitnami post
     uaa:
       database:
         adapter: postgresql
-        host: postgres-postgresql.default.svc.cluster.local
+        host: postgresql.default.svc.cluster.local
         port: 5432
         user: uaa_user
         password: uaa_password

@@ -1601,7 +1601,7 @@ jobs:
 
           bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
-          grep -E "db_admin_password|capi_db_password|uaa_db_password|blobstore_secret_key" "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml" > env-metadata/cf-vars.yaml
+          grep -E "db_admin_password|capi_db_password|uaa_db_password|blobstore_secret_key|cf_admin_password" "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml" > env-metadata/cf-vars.yaml
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
@@ -1612,50 +1612,16 @@ jobs:
       cf-for-k8s: cf-for-k8s-master
 
   - task: upgrade-cf-new-values
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
+      cf-for-k8s: cf-for-k8s-master
       pool-lock: ready-pool
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: cf-for-k8s-master
-      - name: cf-for-k8s-ci
-      - name: pool-lock
-      - name: env-metadata
-      outputs:
-      - name: env-metadata
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          source cf-for-k8s-ci/ci/helpers/gke.sh
-          cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}"
-
-          DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
-
-          echo "Copying bosh vars store from latest release install"
-          mkdir -p "/tmp/${cluster_name}.k8s-dev.relint.rocks"
-          cp env-metadata/cf-vars.yaml "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml"
-
-          echo "Generating a new install values file..."
-          echo "NOTE: the values we're currently not rotating are:"
-          cut -d ":" -f1 env-metadata/cf-vars.yaml
-          echo "(we're also not testing rotating our app_registry credentials)"
-          echo ""
-
-          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-          echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
-
-          echo "Installing CF..."
-          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
-
-          bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
-
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPGRADE: true
+      UPTIMER: true
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml

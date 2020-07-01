@@ -73,7 +73,7 @@ resources:
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     location: America/Los_Angeles
 
-- name: friday-afternoon
+- name: tues-fri-afternoon
   type: time
   icon: clock-outline
   source:
@@ -350,7 +350,7 @@ jobs:
 
 - name: post-to-slack
   plan:
-  - get: friday-afternoon
+  - get: tues-fri-afternoon
     trigger: true
   - get: pool-repo
   - task: generate-list-of-claimed-envs

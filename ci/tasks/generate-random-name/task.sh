@@ -7,11 +7,11 @@ adjective_list="abnormal addictive adventurous ambitious analytical annoying app
     condescending confident considerate consoling corpselike crabby crackling cranky credible
     creepy desecrating disreputable enthusiastic exasperating exceptionable horrendous
     hypercritical impossible impractical indiscreet inexperienced manipulative objectionable
-    respectful sophisticated straightforward superstitious unimaginative vulnerable warmhearted"
+    respectful sophisticated straightforward superstitious unimaginative vulnerable warmhearted wingdang"
 
 noun_list="anaconda antelope baloney banjo bathrobe bathtub belief brainchild bunny carver
     charger chicken clouds cookie corpse crafter crocodile crusher demon dinosaurs exorcism fangs
-    farmer flower haunting hotdog hunter jellybean kicker knowledge lasagna lizard lumberjack
+    farmer flower foobrizzle haunting hotdog hunter jellybean kicker knowledge lasagna lizard lumberjack
     manic memory mimicker mobster mouth oatmeal onionskin organization preacher pumpkin puppy
     quilt refrigerator roarer scorpion shaker shower sidewalk skulls snails snakes spacesuit
     spike squirrel suitcase sweatshirt sweatsuit swisher swordfish tiger trains turtle umbrella

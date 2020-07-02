@@ -71,6 +71,9 @@ As prerequisite, you need to execute the following steps to configure your postg
     psql -U postgres -d "${UAADB_NAME}" -c "CREATE EXTENSION citext"
     ```
 
+## Installation of an internal database
+
+If both, capi and uaa, are configured to use an external database, no internal database will be deployed.
 
 ## Example
 

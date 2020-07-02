@@ -1025,7 +1025,7 @@ jobs:
     params:
       path: cf-for-k8s-pr-all-branches-and-forks
       status: pending
-      context: tests
+      context: upgrade-check-uptime
 
   - task: install-cf-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml

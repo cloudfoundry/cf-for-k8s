@@ -3,4 +3,4 @@
 
 load("@ytt:version", "version")
 
-version.require_at_least("0.26.0")
+version.require_at_least("0.28.0")

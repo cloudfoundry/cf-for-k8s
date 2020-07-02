@@ -60,6 +60,11 @@ Currently, we have tested the following two container registries:
 ## <a name='knownissues'></a> Known Issues
 This project is in it's early stages of development and hence there are features missing. For a list of the known issues, take a look at the [GitHub issues tagged 'known-issue'](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aissue+is%3Aopen+label%3Aknown-issue).
 
+
+### Requirements to use an external database
+
+cf-for-k8s can be configured to [use an external database](configuration/external-databases.md).
+
 ## Steps to deploy
 
 1. Clone and initialize this git repository:

@@ -42,3 +42,4 @@ This project includes a test suite that makes use of Concourse pipelines, which 
 ## Have a question or feedback, reach out to us
 
 We are very active in slack channel [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) in the Cloud Foundry workspace. Please hit us up with any questions you may have or to share your experience with the cf-for-k8s community. To request a fast reponse during Pacific business hours, begin your message with `#release-integration @interrupt`
+testing

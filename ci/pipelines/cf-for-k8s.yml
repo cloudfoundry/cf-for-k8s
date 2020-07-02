@@ -1091,7 +1091,7 @@ jobs:
         params:
           path: cf-for-k8s-pr-all-branches-and-forks
           status: failure
-          context: tests
+          context: upgrade-check-uptime
           comment_file: pull-request-comment/comment
 
     on_success:
@@ -1099,7 +1099,7 @@ jobs:
       params:
         path: cf-for-k8s-pr-all-branches-and-forks
         status: success
-        context: tests
+        context: upgrade-check-uptime
 
     ensure:
       do:

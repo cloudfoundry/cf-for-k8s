@@ -6,7 +6,8 @@ image_resource:
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-ci
 
-inputs: []
+inputs:
+  - name: cf-for-k8s-ci
 
 params: {}
 

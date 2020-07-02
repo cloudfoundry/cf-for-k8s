@@ -46,6 +46,7 @@ ccdb:
   user: #@ data.values.capi.database.user
   password: #@ data.values.capi.database.password
   database: #@ data.values.capi.database.name
+  ca_cert: #@ data.values.capi.database.ca_cert
 
 eirini:
   serverCerts:

@@ -72,6 +72,8 @@ capi:
     #! DB user password in plain text
     password: ""
     name: cloud_controller
+    #! Plain text ca certificate if tls should be used
+    ca_cert: ""
 
 uaa:
   #! client secret for uaa admin client in plain text

@@ -355,6 +355,7 @@ perm:
 
 max_labels_per_resource: 50
 max_annotations_per_resource: 200
+custom_metric_tag_prefix_list: ["metric.tag.cloudfoundry.org"]
 
 default_app_lifecycle: kpack
 

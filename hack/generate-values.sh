@@ -113,6 +113,7 @@ variables:
     common_name: "*.${DOMAIN}"
     alternative_names:
     - "*.login.${DOMAIN}"
+    - "*.${DOMAIN}"
     - "*.uaa.${DOMAIN}"
     extended_key_usage:
     - server_auth

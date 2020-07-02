@@ -6,11 +6,11 @@ image_resource:
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-ci
 
-inputs: {}
+inputs: []
 
 params: {}
 
-outputs: {}
+outputs: []
 
 run:
   path: cf-for-k8s-ci/ci/tasks/fail/task.sh

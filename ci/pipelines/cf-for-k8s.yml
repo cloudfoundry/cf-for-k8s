@@ -412,6 +412,7 @@ jobs:
           kapp deploy -a cf -f <(ytt -f cf-for-k8s-develop/config -f cf-install-values.yml) -y
 
           bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+          bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
   - task: run-smoke-test
@@ -430,7 +431,8 @@ jobs:
           export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
           export SMOKE_TEST_USERNAME=admin
           export SMOKE_TEST_PASSWORD=$(cat env-metadata/cf-admin-password.txt)
-          export SMOKE_TEST_SKIP_SSL=true
+          cp env-metadata/default_ca.ca /etc/ssl/certs/
+          export SMOKE_TEST_SKIP_SSL=false
           cf-for-k8s-develop/hack/run-smoke-tests.sh
 
   - task: push-test-app

@@ -316,8 +316,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas: null
-        URL: index.docker.io/eirini/opi@sha256:c8bf721839e7828a4591fba8463f885912006007b58949eb9cd23acd775fe8e0
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:d3eaaab9681a9a7611d3e92b9bd2cc2f3c12f31d883d7470826639fe8b0fc289
+        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:d3eaaab9681a9a7611d3e92b9bd2cc2f3c12f31d883d7470826639fe8b0fc289
   name: eirini
   namespace: cf-system
 spec:
@@ -331,7 +333,7 @@ spec:
         name: eirini
     spec:
       containers:
-      - image: index.docker.io/eirini/opi@sha256:c8bf721839e7828a4591fba8463f885912006007b58949eb9cd23acd775fe8e0
+      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:d3eaaab9681a9a7611d3e92b9bd2cc2f3c12f31d883d7470826639fe8b0fc289
         imagePullPolicy: Always
         name: opi
         ports:

@@ -5,3 +5,6 @@ overrides:
   - image: eirini/opi@sha256:2e0b84c5fcb1e6e5cdb07a70210f2e462aa52119f7a330660a7444a938deefbb 
     newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:ae65599f53c6f91ca634257dbdbf9f46e662c4d107c9201c7c13d4834eedcb31
     preresolved: true
+  - image: eirini/opi@sha256:c8bf721839e7828a4591fba8463f885912006007b58949eb9cd23acd775fe8e0
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:d3eaaab9681a9a7611d3e92b9bd2cc2f3c12f31d883d7470826639fe8b0fc289
+    preresolved: true

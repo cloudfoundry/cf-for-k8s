@@ -19,7 +19,7 @@ directories:
   - path: github.com/cloudfoundry/capi-k8s-release
     git:
       url: https://github.com/cloudfoundry/capi-k8s-release
-      ref: 252ea59adb74e465b084dcc06c80ef14699be769
+      ref: 467c4730d743418f9737f9ddce3942d3a9e4d945
     includePaths:
     - templates/**/*
     - values/**/*

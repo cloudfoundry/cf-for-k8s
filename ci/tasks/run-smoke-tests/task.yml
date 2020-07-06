@@ -11,5 +11,8 @@ inputs:
 - name: cf-for-k8s-ci
 - name: env-metadata
 
+params:
+  SMOKE_TEST_SKIP_SSL: true
+
 run:
   path: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.sh

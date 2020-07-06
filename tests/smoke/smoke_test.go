@@ -43,10 +43,11 @@ var _ = Describe("Smoke Tests", func() {
 
 			apiArguments := []string{"api", apiEndpoint}
 			skip_ssl, _ := os.LookupEnv("SMOKE_TEST_SKIP_SSL")
-			if skip_ssl == "true" {
+			skip_ssl_bool := skip_ssl == "true"
+			if skip_ssl_bool {
 				apiArguments = append(apiArguments, "--skip-ssl-validation")
-				http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 			}
+			http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: skip_ssl_bool}
 
 			// Target CF and auth
 			cfAPI := cf.Cf(apiArguments...)

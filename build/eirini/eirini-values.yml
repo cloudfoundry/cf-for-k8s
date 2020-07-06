@@ -20,6 +20,21 @@ opi:
       secretName: "eirini-internal-tls-certs"
       caPath: "tls.ca"
 
+  tasks:
+    tls:
+      taskReporter:
+        secretName: "eirini-internal-tls-certs"
+        keyPath: "tls.key"
+        certPath: "tls.crt"
+        caPath: "tls.ca"
+
+  lrpController:
+    tls:
+      secretName: "eirini-internal-tls-certs"
+      keyPath: "tls.key"
+      certPath: "tls.crt"
+      caPath: "tls.ca"
+
   events:
     enable: false
 

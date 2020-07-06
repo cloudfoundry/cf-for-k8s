@@ -402,7 +402,7 @@ jobs:
           cat <<EOT >> cf-install-values.yml
           app_registry:
              hostname: https://index.docker.io/v1/
-             repository: ((cf_for_k8s_private_dockerhub.username))
+             repository_prefix: ((cf_for_k8s_private_dockerhub.username))
              username: ((cf_for_k8s_private_dockerhub.username))
              password: ((cf_for_k8s_private_dockerhub.password))
           istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)
@@ -1016,7 +1016,7 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
       USE_EXTERNAL_APP_REGISTRY: true
       APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-      APP_REGISTRY_REPOSITORY: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
       APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
 
@@ -1041,7 +1041,7 @@ jobs:
       UPTIMER: true
       USE_EXTERNAL_APP_REGISTRY: true
       APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-      APP_REGISTRY_REPOSITORY: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
       APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
 

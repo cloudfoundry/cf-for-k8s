@@ -90,7 +90,7 @@ kpack:
   registry:
     hostname: ""
     password: ""
-    repository: ""
+    repository_prefix: ""
     username: ""
 metric_proxy:
   ca:

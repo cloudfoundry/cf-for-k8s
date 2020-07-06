@@ -35,7 +35,7 @@ metadata:
   name: cf-default-builder
   namespace: #@ data.values.staging_namespace
 spec:
-  tag: #@ "{}/cf-default-builder".format(data.values.app_registry.repository)
+  tag: #@ "{}/cf-default-builder".format(data.values.app_registry.repository_prefix)
   serviceAccount: cc-kpack-registry-service-account
   stack: cflinuxfs3-stack
   store: cf-buildpack-store

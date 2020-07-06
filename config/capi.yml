@@ -76,7 +76,7 @@ uaa:
 kpack:
   registry:
     hostname: #@ data.values.app_registry.hostname
-    repository: #@ data.values.app_registry.repository
+    repository_prefix: #@ data.values.app_registry.repository_prefix
     username: #@ data.values.app_registry.username
     password: #@ data.values.app_registry.password
 #@ end

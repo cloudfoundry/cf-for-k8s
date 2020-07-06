@@ -123,14 +123,14 @@ uaa:
 app_registry:
    hostname: https://index.docker.io/v1/
    #! often times this is just your `docker_user`
-   repository: <docker_hub_repository>
+   repository_prefix: <docker_hub_repository>
    username: <docker_user>
    password: <docker_password>
 
 #! example below is for a Google container registry. Make sure to remove other registry blocks if you intend to use GCR
 #! app_registry:
 #!  hostname: gcr.io
-#!  repository: <gcr.io/gcp_project_id/cf-workloads>
+#!  repository_prefix: <gcr.io/gcp_project_id/cf-workloads>
 #!  username: _json_key
 #!  password: |
 #!    contents_of_service_account_json
@@ -138,6 +138,6 @@ app_registry:
 #! example below is for a Azure container registry. Make sure to remove other registry blocks if you intend to use ACR
 #! app_registry:
 #!  hostname: <registry-name>.azurecr.io
-#!  repository: <registry-name>.azurecr.io
+#!  repository_prefix: <registry-name>.azurecr.io
 #!  username: <username>
 #!  password: <password>

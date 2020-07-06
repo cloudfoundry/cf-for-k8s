@@ -113,7 +113,7 @@ cf-for-k8s can be configured to [use an external database](configuration/externa
 
       app_registry:
          hostname: https://index.docker.io/v1/
-         repository: "<my_username>"
+         repository_prefix: "<my_username>"
          username: "<my_username>"
          password: "<my_password>"
 
@@ -127,7 +127,7 @@ cf-for-k8s can be configured to [use an external database](configuration/externa
       ```yml
       app_registry:
          hostname: gcr.io
-         repository: gcr.io/<gcp_project_id>/cf-workloads
+         repository_prefix: gcr.io/<gcp_project_id>/cf-workloads
          username: _json_key
          password: |
          <contents_of_service_account_json>

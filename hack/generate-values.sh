@@ -293,7 +293,7 @@ if [[ -n "${GCP_SERVICE_ACCOUNT_JSON_FILE:=}" ]]; then
 
 app_registry:
   hostname: gcr.io
-  repository: gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON_FILE} --path=/project_id )/cf-workloads
+  repository_prefix: gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON_FILE} --path=/project_id )/cf-workloads
   username: _json_key
   password: |
 $(cat ${GCP_SERVICE_ACCOUNT_JSON_FILE} | sed -e 's/^/    /')

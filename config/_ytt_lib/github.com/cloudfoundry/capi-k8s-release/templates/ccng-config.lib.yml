@@ -369,7 +369,7 @@ kubernetes:
   kpack:
     builder_namespace: #@ data.values.staging_namespace
     registry_service_account_name: cc-kpack-registry-service-account
-    registry_tag_base: #@ data.values.kpack.registry.repository
+    registry_tag_base: #@ data.values.kpack.registry.repository_prefix
 
 #! worker property
 perform_blob_cleanup: true

@@ -47,7 +47,7 @@ main() {
 
     registry_host="$(yq -r .app_registry.hostname ${values_file})"
     username="$(yq -r .app_registry.username ${values_file})"
-    repo="$(yq -r .app_registry.repository ${values_file})"
+    repo="$(yq -r .app_registry.repository_prefix ${values_file})"
     docker_tag="${repo}/cfk8s-test-delete-me"
 
     if [[ $registry_host = "https://index.docker.io/v1/" ]]; then

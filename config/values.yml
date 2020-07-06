@@ -134,7 +134,7 @@ log_cache_syslog:
 
 app_registry:
   hostname: ""
-  repository: ""
+  repository_prefix: ""
   username: ""
   password: ""
 

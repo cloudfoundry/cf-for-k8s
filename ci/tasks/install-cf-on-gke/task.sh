@@ -33,7 +33,7 @@ if [[ "${USE_EXTERNAL_APP_REGISTRY}" == "true" ]]; then
 cat <<EOT >> cf-values.yml
 app_registry:
    hostname: ${APP_REGISTRY_HOSTNAME}
-   repository: ${APP_REGISTRY_REPOSITORY}
+   repository_prefix: ${APP_REGISTRY_REPOSITORY_PREFIX}
    username: ${APP_REGISTRY_USERNAME}
    password: ${APP_REGISTRY_PASSWORD}
 EOT

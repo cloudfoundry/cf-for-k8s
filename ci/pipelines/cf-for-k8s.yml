@@ -1047,6 +1047,8 @@ jobs:
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      params:
+        SMOKE_TEST_SKIP_SSL: false
       input_mapping:
         cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
     - task: verify-existing-app
@@ -1480,6 +1482,8 @@ jobs:
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-master
+      params:
+        SMOKE_TEST_SKIP_SSL: false
     - task: verify-existing-app
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       params:
@@ -1592,6 +1596,8 @@ jobs:
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-master
+      params:
+        SMOKE_TEST_SKIP_SSL: false
     - task: verify-existing-app
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       params:

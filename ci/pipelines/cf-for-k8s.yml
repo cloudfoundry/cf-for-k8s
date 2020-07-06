@@ -416,7 +416,7 @@ jobs:
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
   - task: run-smoke-test
-    file: cf-for-k8s-ci/tasks/run-smoke-tests/task.yml
+    file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
     params:
       SMOKE_TEST_SKIP_SSL: false
     input_mapping:
@@ -717,7 +717,7 @@ jobs:
             echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
     - task: run-smoke-test
-      file: cf-for-k8s-ci/tasks/run-smoke-tests/task.yml
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       params:
         SMOKE_TEST_SKIP_SSL: false
       input_mapping:
@@ -1400,7 +1400,7 @@ jobs:
               echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
     - task: run-smoke-test
-      file: cf-for-k8s-ci/tasks/run-smoke-tests/task.yml
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       params:
         SMOKE_TEST_SKIP_SSL: false
       input_mapping:

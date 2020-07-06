@@ -57,4 +57,5 @@ fi
 
 echo ${password} > env-metadata/cf-admin-password.txt
 echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
+bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
 cp "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml" env-metadata

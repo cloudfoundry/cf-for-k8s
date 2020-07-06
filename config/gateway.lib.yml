@@ -16,7 +16,7 @@ spec:
       number: 80
       protocol: HTTP
   - hosts:
-    - #@ ('' if system_domain in app_domains else system_namespace + '/') + '*.' + system_domain
+    - #@ ('' if system_domain in app_domains else '*/') + '*.' + system_domain
     port:
       name: https-system
       number: 443

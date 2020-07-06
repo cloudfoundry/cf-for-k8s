@@ -90,7 +90,7 @@ var _ = Describe("Smoke Tests", func() {
 
 			By("pushing an app and checking that the CF CLI command succeeds")
 			cfPush := cf.Cf("push", appName, "-p", "assets/test-node-app", "--no-route")
-			Eventually(cfPush).Should(Exit(0))
+			Eventually(cfPush, 10*time.Minute).Should(Exit(0))
 			mapRoute(appName)
 
 			By("querying the app")

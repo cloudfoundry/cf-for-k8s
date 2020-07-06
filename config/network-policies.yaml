@@ -249,6 +249,12 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-kpack-watcher
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
   egress:
   - {}
 ---

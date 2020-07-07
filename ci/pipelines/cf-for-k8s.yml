@@ -1456,7 +1456,7 @@ jobs:
       input_mapping:
         cf-for-k8s: cf-for-k8s-master
       params:
-        SMOKE_TEST_SKIP_SSL: false
+        SMOKE_TEST_SKIP_SSL: true
     - task: verify-existing-app
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       params:

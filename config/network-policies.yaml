@@ -107,64 +107,55 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-kube-system
+  name: allow-dns-egress
   namespace: #@ data.values.system_namespace
 spec:
   podSelector: {}
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: kube-system
   egress:
   - to:
-    - namespaceSelector:
-        matchLabels:
-          name: kube-system
+    - ports:
+      - protocol: UDP
+        port: 53
+      - protocol: TCP
+        port: 53
+      namespaceSelector: {}
   policyTypes:
-  - Ingress
   - Egress
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-kube-system
+  name: allow-dns-egress
   namespace: cf-db
 spec:
   podSelector: {}
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: kube-system
   egress:
   - to:
-    - namespaceSelector:
-        matchLabels:
-          name: kube-system
+    - ports:
+      - protocol: UDP
+        port: 53
+      - protocol: TCP
+        port: 53
+      namespaceSelector: {}
   policyTypes:
-  - Ingress
   - Egress
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-kube-system
+  name: allow-dns-egress
   namespace: cf-blobstore
 spec:
   podSelector: {}
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: kube-system
   egress:
   - to:
-    - namespaceSelector:
-        matchLabels:
-          name: kube-system
+    - ports:
+      - protocol: UDP
+        port: 53
+      - protocol: TCP
+        port: 53
+      namespaceSelector: {}
   policyTypes:
-  - Ingress
   - Egress
 ---
 kind: NetworkPolicy

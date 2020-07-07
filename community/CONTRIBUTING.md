@@ -40,7 +40,16 @@ To submit a proposed change:
 - Add new test cases as applicable. In the case of a bug fix, the tests should fail without your code changes. For new features try to cover as many variants as reasonably possible.
 - Update the docs as applicable.
 
-When ready, if you have not already done so, sign a contributor license agreements and submit the PR. The PR checks will run unit tests and validate your changes with a `kapp deploy` and a run of `smoketests`. If there are failures, check out the individual checks to debug the issue and don't hesitate to ping the members in #cf-for-k8s slack channel for help.
+When ready, if you have not already done so, sign a contributor license agreement and submit the PR. The PR checks will run unit tests and validate your changes by upgrading from head of develop to your PR, monitoring application uptime whilst doing so.   Finally, it will run `smoketests`.  If there are failures, take a look at the PRs checks, specifically those that failed, and the pipeline output to try and ascertain what went wrong.
+
+Categories of failure might include:
+- deployment; kapp deploy fails whilst upgrading to your PR.  Typified by errors in the kapp logs.  Investigate to determine if the failure was due to changes that broke deployment assumptions.
+- uptime; one or more app uptime checks failed during upgrade.  Uptimer results on the PR will include a FAILED Http Availability report.  Change in your PR may have affected the availability of running apps.  Maintaining app
+availability during upgrades is a project goal and we cannot allow PRs that can't achieve this.
+- smoke tests; one or more smoke tests failed.  Typically, a failure to push or curl an app.
+- flake; it happens!  If you cannot pinpoint the failure to one of the above categories then it might have been a flake.  We monitor the pipelines and will usually re-trigger them if we believe this to be the case.
+
+Don't hesitate to ping the members in #cf-for-k8s slack channel for help.
 
 ### Getting started with contribution
 

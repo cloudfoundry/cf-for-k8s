@@ -53,6 +53,12 @@ spec:
     - max: 65535
       min: 1
     rule: MustRunAs
+  volumes:
+  - configMap
+  - emptyDir
+  - projected
+  - secret
+  - downwardAPI
 ---
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
@@ -91,141 +97,16 @@ spec:
   - secret
   - downwardAPI
 ---
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
-    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
-  name: eirini-lrp-controller
-spec:
-  allowPrivilegeEscalation: false
-  fsGroup:
-    ranges:
-    - max: 65535
-      min: 1
-    rule: MustRunAs
-  hostIPC: false
-  hostNetwork: false
-  hostPID: false
-  privileged: false
-  readOnlyRootFilesystem: false
-  requiredDropCapabilities:
-  - ALL
-  runAsUser:
-    rule: MustRunAsNonRoot
-  seLinux:
-    rule: RunAsAny
-  supplementalGroups:
-    ranges:
-    - max: 65535
-      min: 1
-    rule: MustRunAs
-  volumes:
-  - configMap
-  - secret
----
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default,runtime/default
-    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
-  name: cf-workloads-staging-psp
-spec:
-  allowPrivilegeEscalation: false
-  fsGroup:
-    ranges:
-    - max: 65535
-      min: 1
-    rule: MustRunAs
-  hostIPC: false
-  hostNetwork: false
-  hostPID: false
-  privileged: false
-  readOnlyRootFilesystem: false
-  requiredDropCapabilities:
-  - ALL
-  runAsUser:
-    rule: RunAsAny
-  seLinux:
-    rule: RunAsAny
-  supplementalGroups:
-    ranges:
-    - max: 65535
-      min: 1
-    rule: MustRunAs
-  volumes:
-  - configMap
-  - emptyDir
-  - projected
-  - secret
-  - downwardAPI
----
-apiVersion: policy/v1beta1
-kind: PodSecurityPolicy
-metadata:
-  annotations:
-    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
-    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
-  name: eirini-task-reporter
-spec:
-  allowPrivilegeEscalation: false
-  fsGroup:
-    ranges:
-    - max: 65535
-      min: 1
-    rule: MustRunAs
-  hostIPC: false
-  hostNetwork: false
-  hostPID: false
-  privileged: false
-  readOnlyRootFilesystem: false
-  requiredDropCapabilities:
-  - ALL
-  runAsUser:
-    rule: MustRunAsNonRoot
-  seLinux:
-    rule: RunAsAny
-  supplementalGroups:
-    ranges:
-    - max: 65535
-      min: 1
-    rule: MustRunAs
-  volumes:
-  - configMap
-  - secret
-  - projected
----
 apiVersion: v1
-automountServiceAccountToken: false
 kind: ServiceAccount
 metadata:
   name: eirini
   namespace: cf-workloads
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: lrp-controller
-  namespace: cf-system
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: opi
-  namespace: cf-system
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: eirini-staging
-  namespace: cf-workloads
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: eirini-task-reporter
   namespace: cf-system
 ---
 apiVersion: v1
@@ -236,12 +117,6 @@ data:
     cc_cert_path: "/etc/eirini/secrets/cc.crt"
     cc_key_path: "/etc/eirini/secrets/cc.key"
     cc_ca_path: "/etc/eirini/secrets/cc.ca"
-  lrp-controller.yml: |
-    app_namespace: cf-workloads
-    eirini_uri: "https://eirini-opi.cf-system.svc.cluster.local:8085"
-    eirini_cert_path: "/etc/eirini/secrets/eirini-client.crt"
-    eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
-    ca_path: "/etc/eirini/secrets/eirini-client.ca"
   metrics.yml: |
     app_namespace: cf-workloads
     loggregator_address: "doppler-doppler.cf-system.svc.cluster.local:8082"
@@ -254,9 +129,9 @@ data:
       registry_address: "registry.not-used:443"
       registry_secret_name: app-registry-credentials
       eirini_address: "https://eirini-opi.cf-system.svc.cluster.local:8085"
-      downloader_image: eirini/recipe-downloader@sha256:96eea8a7c7cb53b54678d7f26ab0c1897b1b699297c4b75d64a93b4833048554
-      executor_image: eirini/recipe-executor@sha256:c073e375d891259d91dd63148ac8e880098d9f298304954318818a197d1163b3
-      uploader_image: eirini/recipe-uploader@sha256:af3d57790d3e6fbcc719e64dd553a2b410b2f7036bc1903aac339ce96144d8dc
+      downloader_image: eirini/recipe-downloader@sha256:394326cadab00cc31f73a6cccd679c9d0183e31f5123f1045ecf7ebb1dd60920
+      executor_image: eirini/recipe-executor@sha256:11cc93ae21ac68512e1f7d0f8b59b012b68eb7b109ce057855dc2fdbf5c49ce5
+      uploader_image: eirini/recipe-uploader@sha256:a73c13656f2a85ac3cb220b3d96e6ca5e2037a436a45980a4a9c7214a503fcae
 
       cc_uploader_secret_name: secrets-2.16.4-2
       cc_uploader_cert_path: cc-server-crt
@@ -279,10 +154,7 @@ data:
       tls_port: 8085
       disk_limit_mb: 2048
       application_service_account: eirini
-      staging_service_account: eirini-staging
       allow_run_image_as_root: false
-      unsafe_allow_automount_service_account_token: false
-      serve_plaintext: false
   routing.yml: |
     app_namespace: cf-workloads
     nats_ip: "nats-nats.cf-system.svc.cluster.local"
@@ -292,192 +164,31 @@ data:
     eirini_cert_path: "/etc/eirini/secrets/eirini-client.crt"
     eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
     ca_path: "/etc/eirini/secrets/eirini-client.ca"
-  task-reporter.yml: |
-    app_namespace: cf-workloads
-    cc_cert_path: "/etc/eirini/secrets/cc.crt"
-    cc_key_path: "/etc/eirini/secrets/cc.key"
-    ca_path: "/etc/eirini/secrets/cc.ca"
 kind: ConfigMap
 metadata:
   name: eirini
   namespace: cf-system
 ---
-apiVersion: apiextensions.k8s.io/v1
-kind: CustomResourceDefinition
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
 metadata:
-  name: lrps.eirini.cloudfoundry.org
-spec:
-  group: eirini.cloudfoundry.org
-  names:
-    kind: LRP
-    plural: lrps
-    shortNames:
-    - lrp
-    singular: lrp
-  scope: Namespaced
-  versions:
-  - name: v1
-    schema:
-      openAPIV3Schema:
-        properties:
-          spec:
-            properties:
-              appGUID:
-                type: string
-              appName:
-                type: string
-              cpuWeight:
-                format: uint8
-                type: integer
-              diskMB:
-                format: int64
-                type: integer
-              egressRules:
-                items:
-                  type: string
-                type: array
-              environment:
-                additionalProperties:
-                  type: string
-                type: object
-              guid:
-                type: string
-              healthCheckHTTPEndpoint:
-                type: string
-              healthCheckTimeoutMs:
-                format: uint32
-                type: integer
-              healthCheckType:
-                type: string
-              instances:
-                type: integer
-              lastUpdated:
-                type: string
-              lifecycle:
-                maxProperties: 1
-                properties:
-                  buildpack:
-                    properties:
-                      dropletGUID:
-                        type: string
-                      dropletHash:
-                        type: string
-                      startCommand:
-                        type: string
-                    type: object
-                  docker:
-                    properties:
-                      command:
-                        items:
-                          type: string
-                        type: array
-                      image:
-                        type: string
-                      registryPassword:
-                        format: password
-                        type: string
-                      registryUsername:
-                        type: string
-                    type: object
-                type: object
-              memoryMB:
-                format: int64
-                type: integer
-              orgGUID:
-                type: string
-              orgName:
-                type: string
-              placementTags:
-                items:
-                  type: string
-                type: array
-              ports:
-                items:
-                  format: int32
-                  type: integer
-                type: array
-              processGUID:
-                type: string
-              processType:
-                type: string
-              routes:
-                additionalProperties:
-                  items:
-                    properties:
-                      hostname:
-                        type: string
-                      port:
-                        type: integer
-                    type: object
-                  type: array
-                type: object
-              spaceGUID:
-                type: string
-              spaceName:
-                type: string
-              startTimeoutMs:
-                format: uint32
-                type: integer
-              userDefinedAnnotations:
-                additionalProperties:
-                  type: string
-                type: object
-              version:
-                type: string
-              volumeMounts:
-                items:
-                  properties:
-                    mountDir:
-                      type: string
-                    volumeID:
-                      type: string
-                  type: object
-                type: array
-            type: object
-          status:
-            properties:
-              instances:
-                items:
-                  properties:
-                    crashCount:
-                      format: uint64
-                      type: integer
-                    crashTimestamp:
-                      format: uint64
-                      type: integer
-                    exitReason:
-                      type: string
-                    exitStatus:
-                      format: uint32
-                      type: integer
-                    index:
-                      format: uint32
-                      type: integer
-                    since:
-                      format: uint64
-                      type: integer
-                    state:
-                      default: Pending
-                      enum:
-                      - Pending
-                      - Running
-                      - Failed
-                      type: string
-                  type: object
-                type: array
-              replicas:
-                type: integer
-            type: object
-        type: object
-    served: true
-    storage: true
-    subresources:
-      status: {}
+  name: cf-workloads-app-role
+  namespace: cf-workloads
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - cf-workloads-app-psp
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
-  name: eirini-cluster-role
+  name: eirini-role
+  namespace: cf-workloads
 rules:
 - apiGroups:
   - batch
@@ -525,60 +236,6 @@ rules:
   - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: lrp-controller-cluster-role
-rules:
-- apiGroups:
-  - eirini.cloudfoundry.org
-  resources:
-  - lrps
-  verbs:
-  - watch
-  - list
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: eirini-cluster-rolebinding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: eirini-cluster-role
-subjects:
-- kind: ServiceAccount
-  name: opi
-  namespace: cf-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: lrp-controller-cluster-rolebinding
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: lrp-controller-cluster-role
-subjects:
-- kind: ServiceAccount
-  name: lrp-controller
-  namespace: cf-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: cf-workloads-app-role
-  namespace: cf-workloads
-rules:
-- apiGroups:
-  - policy
-  resourceNames:
-  - cf-workloads-app-psp
-  resources:
-  - podsecuritypolicies
-  verbs:
-  - use
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: eirini-role
@@ -588,72 +245,6 @@ rules:
   - policy
   resourceNames:
   - eirini
-  resources:
-  - podsecuritypolicies
-  verbs:
-  - use
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: lrp-controller-role
-  namespace: cf-system
-rules:
-- apiGroups:
-  - policy
-  resourceNames:
-  - eirini-lrp-controller
-  resources:
-  - podsecuritypolicies
-  verbs:
-  - use
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: cf-workloads-staging-role
-  namespace: cf-workloads
-rules:
-- apiGroups:
-  - policy
-  resourceNames:
-  - cf-workloads-staging-psp
-  resources:
-  - podsecuritypolicies
-  verbs:
-  - use
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: eirini-task-reporter
-  namespace: cf-workloads
-rules:
-- apiGroups:
-  - batch
-  resources:
-  - jobs
-  verbs:
-  - delete
-  - list
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  verbs:
-  - watch
-  - list
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: eirini-task-reporter-psp
-  namespace: cf-system
-rules:
-- apiGroups:
-  - policy
-  resourceNames:
-  - eirini-task-reporter
   resources:
   - podsecuritypolicies
   verbs:
@@ -677,6 +268,20 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: eirini-rolebinding
+  namespace: cf-workloads
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: eirini-role
+subjects:
+- kind: ServiceAccount
+  name: opi
+  namespace: cf-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: eirini-rolebinding
   namespace: cf-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -691,62 +296,6 @@ subjects:
   namespace: cf-system
 - kind: ServiceAccount
   name: eirini-secret-smuggler
-  namespace: cf-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: lrp-controller-rolebinding
-  namespace: cf-system
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: lrp-controller-role
-subjects:
-- kind: ServiceAccount
-  name: lrp-controller
-  namespace: cf-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: cf-workloads-staging-rolebinding
-  namespace: cf-workloads
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: cf-workloads-staging-role
-subjects:
-- kind: ServiceAccount
-  name: eirini-staging
-  namespace: cf-workloads
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: eirini-task-reporter
-  namespace: cf-workloads
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: eirini-task-reporter
-subjects:
-- kind: ServiceAccount
-  name: eirini-task-reporter
-  namespace: cf-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: eirini-task-reporter-psp
-  namespace: cf-system
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: eirini-task-reporter-psp
-subjects:
-- kind: ServiceAccount
-  name: eirini-task-reporter
   namespace: cf-system
 ---
 apiVersion: v1
@@ -767,8 +316,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas: null
-        URL: index.docker.io/eirini/opi@sha256:c20c981034cfb5ffd2532ad568d4f53929a79777961d75b49231bd4c6e8adb2f
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:d3eaaab9681a9a7611d3e92b9bd2cc2f3c12f31d883d7470826639fe8b0fc289
+        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:d3eaaab9681a9a7611d3e92b9bd2cc2f3c12f31d883d7470826639fe8b0fc289
   name: eirini
   namespace: cf-system
 spec:
@@ -782,7 +333,7 @@ spec:
         name: eirini
     spec:
       containers:
-      - image: index.docker.io/eirini/opi@sha256:c20c981034cfb5ffd2532ad568d4f53929a79777961d75b49231bd4c6e8adb2f
+      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:d3eaaab9681a9a7611d3e92b9bd2cc2f3c12f31d883d7470826639fe8b0fc289
         imagePullPolicy: Always
         name: opi
         ports:
@@ -835,109 +386,3 @@ spec:
               - key: tls.ca
                 path: eirini.ca
               name: eirini-internal-tls-certs
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  annotations:
-    kbld.k14s.io/images: |
-      - Metas: null
-        URL: index.docker.io/eirini/lrp-controller@sha256:bd04fa2678ba363630687d1bb7ac17577a7e921b0eafd5b3fc11448e54407d3f
-  name: eirini-lrp-controller
-  namespace: cf-system
-spec:
-  selector:
-    matchLabels:
-      name: eirini-lrp-controller
-  template:
-    metadata:
-      labels:
-        name: eirini-lrp-controller
-    spec:
-      containers:
-      - image: index.docker.io/eirini/lrp-controller@sha256:bd04fa2678ba363630687d1bb7ac17577a7e921b0eafd5b3fc11448e54407d3f
-        imagePullPolicy: Always
-        name: lrp-controller
-        resources:
-          requests:
-            cpu: 15m
-            memory: 15Mi
-        volumeMounts:
-        - mountPath: /etc/eirini/config
-          name: config-map-volume
-        - mountPath: /etc/eirini/secrets
-          name: cf-secrets
-      dnsPolicy: ClusterFirst
-      securityContext:
-        runAsNonRoot: true
-      serviceAccountName: lrp-controller
-      volumes:
-      - configMap:
-          items:
-          - key: lrp-controller.yml
-            path: lrp-controller.yml
-          name: eirini
-        name: config-map-volume
-      - name: cf-secrets
-        secret:
-          items:
-          - key: tls.crt
-            path: eirini-client.crt
-          - key: tls.key
-            path: eirini-client.key
-          - key: tls.ca
-            path: eirini-client.ca
-          secretName: eirini-internal-tls-certs
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  annotations:
-    kbld.k14s.io/images: |
-      - Metas: null
-        URL: index.docker.io/eirini/task-reporter@sha256:b0a87d30edf8e92a83d23fea21d036c68a6873839c8c4593d0651763bd31446c
-  name: eirini-task-reporter
-  namespace: cf-system
-spec:
-  selector:
-    matchLabels:
-      name: eirini-task-reporter
-  template:
-    metadata:
-      labels:
-        name: eirini-task-reporter
-    spec:
-      containers:
-      - image: index.docker.io/eirini/task-reporter@sha256:b0a87d30edf8e92a83d23fea21d036c68a6873839c8c4593d0651763bd31446c
-        imagePullPolicy: Always
-        name: task-reporter
-        resources:
-          requests:
-            cpu: 15m
-            memory: 15Mi
-        volumeMounts:
-        - mountPath: /etc/eirini/config
-          name: config-map-volume
-        - mountPath: /etc/eirini/secrets
-          name: cf-secrets
-      dnsPolicy: ClusterFirst
-      securityContext:
-        runAsNonRoot: true
-      serviceAccountName: eirini-task-reporter
-      volumes:
-      - configMap:
-          items:
-          - key: task-reporter.yml
-            path: task-reporter.yml
-          name: eirini
-        name: config-map-volume
-      - name: cf-secrets
-        secret:
-          items:
-          - key: tls.crt
-            path: cc.crt
-          - key: tls.key
-            path: cc.key
-          - key: tls.ca
-            path: cc.ca
-          secretName: eirini-internal-tls-certs

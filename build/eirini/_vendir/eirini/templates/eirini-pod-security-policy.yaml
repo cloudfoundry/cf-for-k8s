@@ -1,8 +1,9 @@
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
-  name: eirini-cluster-role
+  name: eirini-role
+  namespace: {{ .Values.opi.namespace }}
 rules:
 - apiGroups:
   - batch
@@ -51,12 +52,13 @@ rules:
 ---
 # Bind to the default service account
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
-  name: eirini-cluster-rolebinding
+  name: eirini-rolebinding
+  namespace: {{ .Values.opi.namespace }}
 roleRef:
-  kind: ClusterRole
-  name: eirini-cluster-role
+  kind: Role
+  name: eirini-role
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount

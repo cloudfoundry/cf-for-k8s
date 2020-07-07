@@ -4,7 +4,6 @@ kind: ServiceAccount
 metadata:
   name: eirini
   namespace: {{ .Values.opi.namespace }}
-automountServiceAccountToken: false
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -47,6 +46,12 @@ spec:
   allowPrivilegeEscalation: false
   requiredDropCapabilities:
     - ALL
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
   hostNetwork: false
   hostIPC: false
   hostPID: false

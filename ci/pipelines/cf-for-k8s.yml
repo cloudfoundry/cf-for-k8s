@@ -1326,6 +1326,7 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-master
+    - get: cf-for-k8s-ci
     - get: weekday-am
       trigger: true
     - get: cf-for-k8s-aks-terraform-templates

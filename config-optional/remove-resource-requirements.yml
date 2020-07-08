@@ -28,7 +28,7 @@ spec:
   template:
     spec:
       containers:
-      #@overlay/match by=overlay.all,expects="1+"
+      #@overlay/match by=overlay.subset({"name":"uaa"}),expects="1+"
       -
         #@overlay/remove
         livenessProbe: {}

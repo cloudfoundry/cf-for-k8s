@@ -1,72 +1,40 @@
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: lrp-controller
+  namespace: {{ .Release.Namespace }}
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: eirini-cluster-role
+  name: lrp-controller-cluster-role
 rules:
 - apiGroups:
-  - batch
+  - eirini.cloudfoundry.org
   resources:
-  - jobs
+  - lrps
   verbs:
-  - create
-  - delete
+  - watch
   - list
-- apiGroups:
-  - apps
-  resources:
-  - statefulsets
-  verbs:
-  - create
-  - update
-  - delete
-  - list
-- apiGroups:
-  - ""
-  resources:
-  - events
-  verbs:
-  - list
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  verbs:
-  - list
-  - delete
-- apiGroups:
-  - policy
-  resources:
-  - poddisruptionbudgets
-  verbs:
-  - create
-  - delete
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - create
-  - delete
 ---
-# Bind to the default service account
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: eirini-cluster-rolebinding
+  name: lrp-controller-cluster-rolebinding
 roleRef:
   kind: ClusterRole
-  name: eirini-cluster-role
+  name: lrp-controller-cluster-role
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: opi
+  name: lrp-controller
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: eirini-role
+  name: lrp-controller-role
   namespace: {{ .Release.Namespace }}
 rules:
 - apiGroups:
@@ -76,32 +44,26 @@ rules:
   verbs:
   - use
   resourceNames:
-  - eirini
+  - eirini-lrp-controller
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: eirini-rolebinding
+  name: lrp-controller-rolebinding
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: Role
-  name: eirini-role
+  name: lrp-controller-role
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: opi
-  namespace: {{ .Release.Namespace }}
-- kind: ServiceAccount
-  name: eirini-rootfs-patcher
-  namespace: {{ .Release.Namespace }}
-- kind: ServiceAccount
-  name: eirini-secret-smuggler
+  name: lrp-controller
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: eirini
+  name: eirini-lrp-controller
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'runtime/default'
     seccomp.security.alpha.kubernetes.io/defaultProfileName:  'runtime/default'
@@ -112,10 +74,7 @@ spec:
     - ALL
   volumes:
     - 'configMap'
-    - 'emptyDir'
-    - 'projected'
     - 'secret'
-    - 'downwardAPI'
   hostNetwork: false
   hostIPC: false
   hostPID: false

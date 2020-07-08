@@ -1,0 +1,55 @@
+{{- if .Values.opi.lrpController.enable }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eirini-lrp-controller
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      name: eirini-lrp-controller
+  template:
+    metadata:
+      labels:
+        name: eirini-lrp-controller
+    spec:
+      dnsPolicy: ClusterFirst
+      serviceAccountName: lrp-controller
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: lrp-controller
+        {{- if .Values.opi.lrp_controller_image }}
+        image: {{ .Values.opi.lrp_controller_image }}:{{ .Values.opi.lrp_controller_image_tag }}
+        {{- else }}
+        image: eirini/lrp-controller@{{ .Files.Get "versions/lrp-controller" }}
+        {{- end }}
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 15m
+            memory: 15Mi
+        volumeMounts:
+        - name: config-map-volume
+          mountPath: /etc/eirini/config
+        - name: cf-secrets
+          mountPath: /etc/eirini/secrets
+      volumes:
+        - name: config-map-volume
+          configMap:
+            name: "eirini"
+            items:
+            - key: lrp-controller.yml
+              path: lrp-controller.yml
+        - name: cf-secrets
+          secret:
+            secretName: "{{ .Values.opi.lrpController.tls.secretName }}"
+            items:
+            - key: "{{ .Values.opi.lrpController.tls.certPath }}"
+              path: eirini-client.crt
+            - key: "{{ .Values.opi.lrpController.tls.keyPath }}"
+              path: eirini-client.key
+            - key: "{{ .Values.opi.lrpController.tls.caPath }}"
+              path: eirini-client.ca
+{{- end }}

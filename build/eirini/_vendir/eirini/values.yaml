@@ -10,6 +10,10 @@ opi:
   disk_limit_mb: 2048
   namespace: eirini
   version: 0.0.0
+  serviceName: "eirini-opi"
+
+  unsafe_allow_automount_service_account_token: false
+  serve_plaintext: false
 
   cc_api:
     serviceName: "api"
@@ -99,6 +103,23 @@ opi:
         certPath: "eirini-client-crt"
         keyPath: "eirini-client-crt-key"
         caPath: "internal-ca-cert"
+
+  tasks:
+    enable: true
+    tls:
+      taskReporter:
+        secretName: "secrets-2.16.4-2"
+        keyPath: "cc-server-crt-key"
+        certPath: "cc-server-crt"
+        caPath: "internal-ca-cert"
+
+  lrpController:
+    enable: true
+    tls:
+      secretName: "secrets-2.16.4-2"
+      certPath: "eirini-client-crt"
+      keyPath: "eirini-client-crt-key"
+      caPath: "internal-ca-cert"
 
   kubecf:
     enable: false

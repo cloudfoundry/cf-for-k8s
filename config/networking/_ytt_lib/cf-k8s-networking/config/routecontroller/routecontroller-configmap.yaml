@@ -10,3 +10,4 @@ metadata:
     kapp.k14s.io/num-versions: "2"
 data:
   ISTIO_GATEWAY_NAME: cf-system/istio-ingressgateway
+  RESYNC_INTERVAL: "900"

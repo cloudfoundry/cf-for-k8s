@@ -17,6 +17,11 @@ resources:
 tomcat:
   accessLoggingEnabled: "y"
 
+#! Statsd Deployment Values
+images:
+  statsd_exporter: oratos/statsd_exporter:v0.15.0@sha256:10a64dc4ad0a3e3fe88372f0481dea5c02595c38d168617836a99a649d3ac407
+
+
 #! UAA Application Values
 database:
   scheme: ~
@@ -43,3 +48,5 @@ admin:
 #! ca_certs should be an array of PEM-encoded certs
 #! These will be added to the UAA's truststore
 ca_certs: []
+
+automountServiceAccountToken: false

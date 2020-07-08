@@ -20,6 +20,10 @@ spec:
   replicas: 1
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9102'
+        prometheus.io/path: '/metrics'
       labels:
         app: uaa-deployment
     spec: #! pod spec
@@ -154,6 +158,14 @@ spec:
           httpGet:
             path: /healthz
             port: http-uaa
+      - name: statsd-exporter
+        image: #@ data.values.images.statsd_exporter
+        imagePullPolicy: Always
+        args: ["--statsd.listen-udp=:8125"]
+        ports:
+        - name: "metrics-uaa"
+          containerPort: 9102
+          protocol: "TCP"
       volumes:
       - name: uaa-config
         configMap:

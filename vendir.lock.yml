@@ -6,8 +6,8 @@ directories:
       sha: 4153bbdbaf3e8d3d681a84a112f3c9cc10129ff3
     path: github.com/cloudfoundry/cf-k8s-networking
   - git:
-      commitTitle: 'Merge pull request #50 from Birdrock/master...'
-      sha: 8d1cae7f6190edd8861cfb6d19bd3aaa1f748487
+      commitTitle: images.yml updated by CI...
+      sha: 9f5c2f133aef514c52bd42527ae3f1cf694dbc51
     path: github.com/cloudfoundry/capi-k8s-release
   - githubRelease:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288

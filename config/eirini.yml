@@ -2,7 +2,9 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:json", "json")
 #@ load("@ytt:library", "library")
+#@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
+#@ load("@ytt:yaml", "yaml")
 
 #@ eirini = library.get("eirini")
 --- #@ template.replace(eirini.eval())
@@ -52,3 +54,18 @@ data:
   #@ docker_auth = base64.encode("{}:{}".format(data.values.app_registry.username, data.values.app_registry.password))
   #@ docker_creds = {"username": data.values.app_registry.username, "password": data.values.app_registry.password, "auth": docker_auth}
   .dockerconfigjson: #@ base64.encode(json.encode({"auths": {data.values.app_registry.hostname: docker_creds}}))
+
+#@ def apply_encoded_overlay(left, right):
+#@    decoded_left = yaml.decode(left)
+#@    decoded_right = yaml.decode(right)
+#@    return yaml.encode(overlay.apply(decoded_left, decoded_right))
+#@ end
+
+#! Use http/port 80 for eirini-capi communications and let istio do the encryption
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"eirini"}})
+#@yaml/text-templated-strings
+---
+data:
+  #@overlay/replace via=apply_encoded_overlay
+  events.yml: |
+    cc_internal_api: "http://capi.(@= data.values.system_namespace@).svc.cluster.local:80"

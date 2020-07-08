@@ -4,6 +4,9 @@ opi:
   ingress_endpoint: not-used
   registry_secret_name: app-registry-credentials
 
+  cc_api:
+    serviceName: capi
+
   tls:
     opiCapiClient:
       secretName: "eirini-internal-tls-certs"
@@ -20,6 +23,16 @@ opi:
       secretName: "eirini-internal-tls-certs"
       caPath: "tls.ca"
 
+  events:
+    enable: true
+    tls:
+      capiClient:
+        secretName: "eirini-internal-tls-certs"
+        keyPath: "tls.key"
+        certPath: "tls.crt"
+      capi:
+        secretName: "eirini-internal-tls-certs"
+        caPath: "tls.ca"
   tasks:
     tls:
       taskReporter:
@@ -34,9 +47,6 @@ opi:
       keyPath: "tls.key"
       certPath: "tls.crt"
       caPath: "tls.ca"
-
-  events:
-    enable: false
 
   logs:
     enable: false

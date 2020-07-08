@@ -97,6 +97,41 @@ metadata:
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
     seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+  name: eirini-events
+spec:
+  allowPrivilegeEscalation: false
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  hostIPC: false
+  hostNetwork: false
+  hostPID: false
+  privileged: false
+  readOnlyRootFilesystem: false
+  requiredDropCapabilities:
+  - ALL
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  volumes:
+  - configMap
+  - secret
+  - projected
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
   name: eirini-lrp-controller
 spec:
   allowPrivilegeEscalation: false
@@ -207,6 +242,12 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: eirini-events
+  namespace: cf-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   name: lrp-controller
   namespace: cf-system
 ---
@@ -232,7 +273,7 @@ apiVersion: v1
 data:
   events.yml: |
     app_namespace: cf-workloads
-    cc_internal_api: "https://api.cf-system.svc.cluster.local:9023"
+    cc_internal_api: "https://capi.cf-system.svc.cluster.local:9023"
     cc_cert_path: "/etc/eirini/secrets/cc.crt"
     cc_key_path: "/etc/eirini/secrets/cc.key"
     cc_ca_path: "/etc/eirini/secrets/cc.ca"
@@ -596,6 +637,41 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
+  name: eirini-events
+  namespace: cf-workloads
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: eirini-events-psp
+  namespace: cf-system
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - eirini-events
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
   name: lrp-controller-role
   namespace: cf-system
 rules:
@@ -698,6 +774,34 @@ subjects:
   namespace: cf-system
 - kind: ServiceAccount
   name: eirini-secret-smuggler
+  namespace: cf-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: eirini-events
+  namespace: cf-workloads
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: eirini-events
+subjects:
+- kind: ServiceAccount
+  name: eirini-events
+  namespace: cf-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: eirini-events-psp
+  namespace: cf-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: eirini-events-psp
+subjects:
+- kind: ServiceAccount
+  name: eirini-events
   namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -841,6 +945,64 @@ spec:
               items:
               - key: tls.ca
                 path: eirini.ca
+              name: eirini-internal-tls-certs
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      - Metas: null
+        URL: index.docker.io/eirini/event-reporter@sha256:bb7ca3ad19a3dadb8e42adf0d1eea477b4fc8d28b63ceb245b72505cd1f99a14
+  name: eirini-events
+  namespace: cf-system
+spec:
+  selector:
+    matchLabels:
+      name: eirini-events
+  template:
+    metadata:
+      labels:
+        name: eirini-events
+    spec:
+      containers:
+      - image: index.docker.io/eirini/event-reporter@sha256:bb7ca3ad19a3dadb8e42adf0d1eea477b4fc8d28b63ceb245b72505cd1f99a14
+        imagePullPolicy: Always
+        name: event-reporter
+        resources:
+          requests:
+            cpu: 15m
+            memory: 15Mi
+        volumeMounts:
+        - mountPath: /etc/eirini/config
+          name: config-map-volume
+        - mountPath: /etc/eirini/secrets
+          name: cf-secrets
+      dnsPolicy: ClusterFirst
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: eirini-events
+      volumes:
+      - configMap:
+          items:
+          - key: events.yml
+            path: events.yml
+          name: eirini
+        name: config-map-volume
+      - name: cf-secrets
+        projected:
+          sources:
+          - secret:
+              items:
+              - key: tls.crt
+                path: cc.crt
+              - key: tls.key
+                path: cc.key
+              name: eirini-internal-tls-certs
+          - secret:
+              items:
+              - key: tls.ca
+                path: cc.ca
               name: eirini-internal-tls-certs
 ---
 apiVersion: apps/v1

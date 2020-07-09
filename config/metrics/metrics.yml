@@ -5,17 +5,6 @@
 #@ def metrics_values():
 system_domain: #@ data.values.system_domain
 system_namespace: #@ data.values.system_namespace
-
-#@overlay/match missing_ok=True
-metric_proxy:
-  ca:
-    secret_name: "metric-proxy-ca"
-    crt: #@ data.values.metric_proxy.ca.crt
-    key: #@ data.values.metric_proxy.ca.key
-  cert:
-    secret_name: "metric-proxy-cert"
-    crt: #@ data.values.metric_proxy.cert.crt
-    key: #@ data.values.metric_proxy.cert.key
 #@ end
 
 #@ metrics = library.get("metric-proxy")

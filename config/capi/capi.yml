@@ -52,12 +52,6 @@ apiServer:
     client_key: #@ data.values.internal_certificate.key
     ca: #@ data.values.internal_certificate.ca
 
-metric_proxy:
-  ca:
-    secret_name: #@ data.values.metric_proxy.ca.secret_name
-  cert:
-    secret_name: #@ data.values.metric_proxy.cert.secret_name
-
 uaa:
   serverCerts:
     secretName: uaa-certs

@@ -21,7 +21,7 @@ export PATH=/tmp/kind/bin:/tmp/kind/go/bin:$PATH
 CF_VALUES=/tmp/cf-install-values.yml
 CF_RENDERED=/tmp/cf-rendered.yml
 cd /tmp/kind/cf-for-k8s
-ytt -f config -f config-optional/remove-ingressgateway-service.yml -f config-optional/remove-resource-requirements.yml -f config-optional/add-metrics-server-components.yml -f config-optional/patch-metrics-server.yml -f \$CF_VALUES > \$CF_RENDERED
+ytt -f config -f config-optional/ingressgateway-service-nodeport.yml -f config-optional/remove-resource-requirements.yml -f config-optional/add-metrics-server-components.yml -f config-optional/patch-metrics-server.yml -f \$CF_VALUES > \$CF_RENDERED
 
 kapp deploy -f \$CF_RENDERED -a cf -y
 EOT

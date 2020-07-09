@@ -3,7 +3,7 @@
 releases:
 - name: capi-k8s-release
   github_release: false
-  github_branch: master
+  github_branch: ci-passed
   github_uri: git@github.com:cloudfoundry/capi-k8s-release
   vendir_github_release: false
   build_dir: ""

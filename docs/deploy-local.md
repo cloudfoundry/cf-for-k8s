@@ -48,7 +48,7 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 1. Follow the instructions in [Deploying CF for K8s](deploy.md).
 
    - Include the [remove-resource-requirements.yml](../config-optional/remove-resource-requirements.yml),
-     [remove-ingressgateway-service.yml](../config-optional/remove-ingressgateway-service.yml),
+     [ingressgateway-service-nodeport.yml](../config-optional/ingressgateway-service-nodeport.yml),
      [add-metrics-server-components.yml](../config-optional/add-metrics-server-components.yml) and
      [patch-metrics-server.yml](../config-optional/patch-metrics-server.yml)
      overlay files in the set of templates to be deployed. This can be achieved by
@@ -56,7 +56,7 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
      ```console
      TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
-     ytt -f config -f config-optional/remove-resource-requirements.yml -f config-optional/remove-ingressgateway-service.yml -f config-optional/add-metrics-server-components.yml -f config-optional/patch-metrics-server.yml -f <cf_install_values_path> > ${TMP_DIR}/cf-for-k8s-rendered.yml
+     ytt -f config -f config-optional/remove-resource-requirements.yml -f config-optional/ingressgateway-service-nodeport.yml -f config-optional/add-metrics-server-components.yml -f config-optional/patch-metrics-server.yml -f <cf_install_values_path> > ${TMP_DIR}/cf-for-k8s-rendered.yml
      kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
      ```
 

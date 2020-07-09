@@ -29,7 +29,7 @@ kind delete cluster
 kind create cluster --config=deploy/kind/cluster.yml
 CF_VALUES=/tmp/cf-values.yml
 CF_RENDERED=/tmp/cf-rendered.yml
-ytt -f config -f config-optional/remove-ingressgateway-service.yml -f config-optional/remove-resource-requirements.yml -f config-optional/add-metrics-server-components.yml -f config-optional/patch-metrics-server.yml -f $CF_VALUES > $CF_RENDERED
+ytt -f config -f config-optional/ingressgateway-service-nodeport.yml -f config-optional/remove-resource-requirements.yml -f config-optional/add-metrics-server-components.yml -f config-optional/patch-metrics-server.yml -f $CF_VALUES > $CF_RENDERED
 kapp deploy -f $CF_RENDERED -a cf -y
 retry 7 cf api api.vcap.me --skip-ssl-validation
 SMOKE_TEST_API_ENDPOINT="https://api.vcap.me" SMOKE_TEST_APPS_DOMAIN=vcap.me SMOKE_TEST_USERNAME=admin SMOKE_TEST_PASSWORD=$(grep cf_admin_pass $CF_VALUES | cut -d" " -f2) SMOKE_TEST_SKIP_SSL=true ./hack/run-smoke-tests.sh

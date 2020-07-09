@@ -1118,9 +1118,11 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
-      passed:
-      - validate-pr-on-gke
       trigger: true
+      version: every
+      passed:
+      - run-unit-tests-on-pr
+      - test-vendir-sync-on-cf-for-k8s-pr
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-kind-gcp-terraform-templates
     - get: runtime-ci
@@ -1202,9 +1204,11 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
-      passed:
-      - validate-pr-on-gke
       trigger: true
+      version: every
+      passed:
+      - run-unit-tests-on-pr
+      - test-vendir-sync-on-cf-for-k8s-pr
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-kind-gcp-terraform-templates
     - get: runtime-ci

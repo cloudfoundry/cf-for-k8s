@@ -878,8 +878,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas: null
-        URL: index.docker.io/eirini/opi@sha256:a3401808281efabef9468aca1c5ad19bc9cf4fca3f0cfc5463f4605fcc88e674
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-opi@sha256:81e633cfd80a1a4c50c1de517effc86812addf9663199b509c4c34f00244992a
+        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-opi@sha256:81e633cfd80a1a4c50c1de517effc86812addf9663199b509c4c34f00244992a
   name: eirini
   namespace: cf-system
 spec:
@@ -893,7 +895,7 @@ spec:
         name: eirini
     spec:
       containers:
-      - image: index.docker.io/eirini/opi@sha256:a3401808281efabef9468aca1c5ad19bc9cf4fca3f0cfc5463f4605fcc88e674
+      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-opi@sha256:81e633cfd80a1a4c50c1de517effc86812addf9663199b509c4c34f00244992a
         imagePullPolicy: Always
         name: opi
         ports:
@@ -952,8 +954,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas: null
-        URL: index.docker.io/eirini/event-reporter@sha256:bb7ca3ad19a3dadb8e42adf0d1eea477b4fc8d28b63ceb245b72505cd1f99a14
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:07d41555acb8581f998c871243ebd0388e09cbdea09e0c0c5091dea17636a59d
+        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:07d41555acb8581f998c871243ebd0388e09cbdea09e0c0c5091dea17636a59d
   name: eirini-events
   namespace: cf-system
 spec:
@@ -966,7 +970,7 @@ spec:
         name: eirini-events
     spec:
       containers:
-      - image: index.docker.io/eirini/event-reporter@sha256:bb7ca3ad19a3dadb8e42adf0d1eea477b4fc8d28b63ceb245b72505cd1f99a14
+      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:07d41555acb8581f998c871243ebd0388e09cbdea09e0c0c5091dea17636a59d
         imagePullPolicy: Always
         name: event-reporter
         resources:
@@ -1010,8 +1014,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas: null
-        URL: index.docker.io/eirini/lrp-controller@sha256:902f4384043ccb8e30507d5c53fc1903e59aa33ac10c20c643b4ce6f641f40d1
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-lrp-controller@sha256:a6b7dfce5a56dcaa428fd21e5a58929765cf0a07d9dfc4c253ec6f3c8dbfedc2
+        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-lrp-controller@sha256:a6b7dfce5a56dcaa428fd21e5a58929765cf0a07d9dfc4c253ec6f3c8dbfedc2
   name: eirini-lrp-controller
   namespace: cf-system
 spec:
@@ -1024,7 +1030,7 @@ spec:
         name: eirini-lrp-controller
     spec:
       containers:
-      - image: index.docker.io/eirini/lrp-controller@sha256:902f4384043ccb8e30507d5c53fc1903e59aa33ac10c20c643b4ce6f641f40d1
+      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-lrp-controller@sha256:a6b7dfce5a56dcaa428fd21e5a58929765cf0a07d9dfc4c253ec6f3c8dbfedc2
         imagePullPolicy: Always
         name: lrp-controller
         resources:
@@ -1063,8 +1069,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas: null
-        URL: index.docker.io/eirini/task-reporter@sha256:ba9657e661a0b5df9a5b7e4a28a4d3d27c67b312071e5f063103864c135bc766
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter@sha256:5bb2d1f9cce88ee39ba5b957caba24bca411095a9437e5b53d54aa5b3f4cc33b
+        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter@sha256:5bb2d1f9cce88ee39ba5b957caba24bca411095a9437e5b53d54aa5b3f4cc33b
   name: eirini-task-reporter
   namespace: cf-system
 spec:
@@ -1077,7 +1085,7 @@ spec:
         name: eirini-task-reporter
     spec:
       containers:
-      - image: index.docker.io/eirini/task-reporter@sha256:ba9657e661a0b5df9a5b7e4a28a4d3d27c67b312071e5f063103864c135bc766
+      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter@sha256:5bb2d1f9cce88ee39ba5b957caba24bca411095a9437e5b53d54aa5b3f4cc33b
         imagePullPolicy: Always
         name: task-reporter
         resources:

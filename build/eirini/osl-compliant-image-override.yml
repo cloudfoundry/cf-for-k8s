@@ -2,9 +2,15 @@ apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.22.0
 overrides:
-  - image: eirini/opi@sha256:2e0b84c5fcb1e6e5cdb07a70210f2e462aa52119f7a330660a7444a938deefbb 
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:ae65599f53c6f91ca634257dbdbf9f46e662c4d107c9201c7c13d4834eedcb31
+  - image: eirini/opi@sha256:a3401808281efabef9468aca1c5ad19bc9cf4fca3f0cfc5463f4605fcc88e674
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-opi@sha256:81e633cfd80a1a4c50c1de517effc86812addf9663199b509c4c34f00244992a
     preresolved: true
-  - image: eirini/opi@sha256:c8bf721839e7828a4591fba8463f885912006007b58949eb9cd23acd775fe8e0
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini@sha256:d3eaaab9681a9a7611d3e92b9bd2cc2f3c12f31d883d7470826639fe8b0fc289
+  - image: eirini/event-reporter@sha256:bb7ca3ad19a3dadb8e42adf0d1eea477b4fc8d28b63ceb245b72505cd1f99a14
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:07d41555acb8581f998c871243ebd0388e09cbdea09e0c0c5091dea17636a59d
+    preresolved: true
+  - image: eirini/lrp-controller@sha256:902f4384043ccb8e30507d5c53fc1903e59aa33ac10c20c643b4ce6f641f40d1
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-lrp-controller@sha256:a6b7dfce5a56dcaa428fd21e5a58929765cf0a07d9dfc4c253ec6f3c8dbfedc2
+    preresolved: true
+  - image: eirini/task-reporter@sha256:ba9657e661a0b5df9a5b7e4a28a4d3d27c67b312071e5f063103864c135bc766
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter@sha256:5bb2d1f9cce88ee39ba5b957caba24bca411095a9437e5b53d54aa5b3f4cc33b
     preresolved: true

@@ -311,7 +311,20 @@ x-config: &common-task-config
     type: docker-image
     source:
       repository: relintdockerhubpushbot/cf-for-k8s-ci
+shared_functions:
+  - on_failure: &on_failure_uptime_pr_comment
+      do:
+      - task: write-pr-check-failure-comment
+        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+        input_mapping:
+          pull-request: cf-for-k8s-pr-all-branches-and-forks
 
+      - put: cf-for-k8s-pr-all-branches-and-forks
+        params:
+          path: cf-for-k8s-pr-all-branches-and-forks
+          status: failure
+          context: upgrade-check-uptime
+          comment_file: pull-request-comment/comment
 jobs:
 - name: run-unit-tests
   public: true
@@ -1030,6 +1043,7 @@ jobs:
 
   - task: upgrade-to-pr
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    on_failure: *on_failure_uptime_pr_comment
     input_mapping:
       pool-lock: ready-pool
       cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
@@ -1047,12 +1061,14 @@ jobs:
 
   - in_parallel:
     - task: run-smoke-tests
+      on_failure: *on_failure_uptime_pr_comment
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       params:
         SMOKE_TEST_SKIP_SSL: false
       input_mapping:
         cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
     - task: verify-existing-app
+      on_failure: *on_failure_uptime_pr_comment
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       params:
         APP_NAME: jp-node-app
@@ -1060,59 +1076,45 @@ jobs:
       input_mapping:
         cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
 
-    on_failure:
-      do:
-      - task: write-pr-check-failure-comment
-        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
-        input_mapping:
-          pull-request: cf-for-k8s-pr-all-branches-and-forks
+  on_success:
+    put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: success
+      context: upgrade-check-uptime
 
-      - put: cf-for-k8s-pr-all-branches-and-forks
+  ensure:
+    do:
+    - task: delete-cf
+      input_mapping:
+        pool-lock: ready-pool
+      config:
+        <<: *common-task-config
+        inputs:
+        - name: cf-for-k8s-ci
+        - name: pool-lock
         params:
-          path: cf-for-k8s-pr-all-branches-and-forks
-          status: failure
-          context: upgrade-check-uptime
-          comment_file: pull-request-comment/comment
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            source cf-for-k8s-ci/ci/helpers/gke.sh
+            cluster_name="$(cat pool-lock/name)"
+            gcloud_auth "${cluster_name}"
 
-    on_success:
-      put: cf-for-k8s-pr-all-branches-and-forks
+            kapp delete -a cf --yes
+
+    - put: destroy-pool
       params:
-        path: cf-for-k8s-pr-all-branches-and-forks
-        status: success
-        context: upgrade-check-uptime
+        add: ready-pool
 
-    ensure:
-      do:
-      - task: delete-cf
-        input_mapping:
-          pool-lock: ready-pool
-        config:
-          <<: *common-task-config
-          inputs:
-          - name: cf-for-k8s-ci
-          - name: pool-lock
-          params:
-            GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-            GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-          run:
-            path: /bin/bash
-            args:
-            - -ec
-            - |
-              source cf-for-k8s-ci/ci/helpers/gke.sh
-              cluster_name="$(cat pool-lock/name)"
-              gcloud_auth "${cluster_name}"
-
-              kapp delete -a cf --yes
-
-      - put: destroy-pool
-        params:
-          add: ready-pool
-
-      - put: ready-pool
-        params:
-          remove: ready-pool
+    - put: ready-pool
+      params:
+        remove: ready-pool
 
 - name: validate-pr-on-newest-k8s-kind
   plan:

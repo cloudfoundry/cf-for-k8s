@@ -16,8 +16,13 @@ cf target -o org
 cf create-space space
 cf target -o org -s space
 
+app_path=cf-for-k8s/tests/smoke/assets/test-node-app
+if [[ -d application ]]; then
+  app_path=application
+fi
+
 echo "Pushing ${APP_NAME}"
-cf push ${APP_NAME} -p cf-for-k8s/tests/smoke/assets/test-node-app
+cf push ${APP_NAME} -p $app_path
 
 echo "Verify availability of ${APP_NAME}"
 curl -k https://${APP_NAME}.apps.${DNS_DOMAIN}

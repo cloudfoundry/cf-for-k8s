@@ -5,6 +5,8 @@
 #@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
 
+delete-me: #@ assert.fail("testing-pr")
+
 #@ def capi_host():
 #@   if len(data.values.capi.database.host) > 0:
 #@     return data.values.capi.database.host

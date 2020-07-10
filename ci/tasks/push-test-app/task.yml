@@ -10,6 +10,8 @@ inputs:
 - name: cf-for-k8s
 - name: cf-for-k8s-ci
 - name: env-metadata
+- name: application
+  optional: true
 
 params:
   APP_NAME:

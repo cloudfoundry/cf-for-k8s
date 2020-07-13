@@ -1034,6 +1034,7 @@ jobs:
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
 
   - task: push-test-app
+    attempts: 3
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     params:
       APP_NAME: jp-node-app

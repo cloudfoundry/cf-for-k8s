@@ -12,7 +12,7 @@ CF for Kubernetes has a goal for all network communication by System Components 
 
 Policies can be added by creating a new `NetworkPolicy` resource that selects on a set of `Pods` within a namespace. A namespace starts out allowing all ingress/egress traffic for all `Pods`, but as soon as a `Pod` is selected by _at least one_ `NetworkPolicy` it will deny all traffic that is not explicitly defined. `NetworkPolicies` act as additive allow rules so to open up communication for `Pods` you will need to create new `NetworkPolicy` resources.
 
-Here's an example. The following rule will deny all `ingress` traffic in the `cf-system` namespace:
+For example, `NetworkPolicies` similar to the following rule are already applied in cf-for-k8s and denies all `ingress` and `egress` traffic in the `cf-system` namespace:
 
 ```yaml
 ---
@@ -25,9 +25,46 @@ spec:
   podSelector: {}
   policyTypes:
   - Ingress
+  - Egress
 ```
 
-Let's say you are introducing a new component that needs to talk to UAA internally. You see that there is an existing `NetworkPolicy` that selects on UAA with a set of `ingress` rules defined.
+
+Let's say you are introducing a new component that needs to talk to UAA internally. You need to create `NetworkPolicy` selecting UAA pods with `ingress` rules to allow traffic from your component, by either [creating]("#creating-a-new-networkpolicy") an ingress policy or [updating the existing]("#updating-an-existing-networkpolicy") ingress policy. Then, [you need to create an egress `NetworkPolicy`](#creating-an-egress-networkpolicy-for-your-component) selecting your component pods with `egress` rules to allow traffic to UAA.
+
+
+#### Creating a new NetworkPolicy
+The simplest way to create an allow rule for ingress to UAA from your component
+is to add a create a new `NetworkPolicy` resource. Network policy rules are
+additive so this rule will be applied _in addition_ to the existing to rule.
+
+So if you are adding a new component that wants to talk to UAA, include a
+`NetworkPolicy` similar to this with your installation YAML:
+
+```
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: uaa-ingress-from-my-new-component
+  namespace: cf-system
+spec:
+  policyTypes:
+  - Ingress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: uaa
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: my-new-component
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+```
+
+#### Updating an Existing NetworkPolicy
+If you are adding a new core component and think the policy should be part of UAA's default `NetworkPolicy`, you can update the existing policy that looks similar to this:
 
 ```yaml
 ---
@@ -73,7 +110,7 @@ spec:
   - {}
 ```
 
-To configure the UAA `Pod` to allow ingress traffic from your new component, you would add an additional element to the `from` array. Something like this:
+You just need to add an additional element to the `from` array. Something like this:
 
 ```
 - podSelector:
@@ -88,6 +125,33 @@ This configures the UAA `NetworkPolicy` to allow ingress traffic from any `Pod` 
 
 Once you've tested it and everything works, make a PR to update the `NetworkPolicy` in `config/network-policies.yaml`!
 
+#### Creating an Egress NetworkPolicy for your component
+Whether you created a new ingress `NetworkPolicy` for UAA or updated the
+existing list of ingress rules, you will still need to create a `NetworkPolicy`
+for your own component that allows it to egress to UAA.
+
+```
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: my-new-component
+  namespace: cf-system
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: my-new-component
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: uaa
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+```
 ### Namespaces and Network Policies
 `NetworkPolicies` apply to `Pods` within a **single namespace**.
 

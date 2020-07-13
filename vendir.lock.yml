@@ -13,8 +13,8 @@ directories:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288
     path: github.com/cloudfoundry/cf-k8s-logging/config
   - git:
-      commitTitle: always use latest GKE version with hack script...
-      sha: a6de26a1be2613a20dbd0b3a6fa9844ba62a6154
+      commitTitle: Remove duplicated property
+      sha: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
     path: github.com/cloudfoundry/metric-proxy
   - git:
       commitTitle: Update UAA image reference in k8s deployment template to 74.22.0

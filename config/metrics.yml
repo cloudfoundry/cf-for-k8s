@@ -6,6 +6,7 @@
 system_domain: #@ data.values.system_domain
 system_namespace: #@ data.values.system_namespace
 
+#@overlay/match missing_ok=True
 metric_proxy:
   ca:
     secret_name: "metric-proxy-ca"

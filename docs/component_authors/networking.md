@@ -40,7 +40,7 @@ additive so this rule will be applied _in addition_ to the existing to rule.
 So if you are adding a new component that wants to talk to UAA, include a
 `NetworkPolicy` similar to this with your installation YAML:
 
-```
+```yaml
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -112,7 +112,7 @@ spec:
 
 You just need to add an additional element to the `from` array. Something like this:
 
-```
+```yaml
 - podSelector:
     matchLabels:
       app.kubernetes.io/name: my-new-component
@@ -130,7 +130,7 @@ Whether you created a new ingress `NetworkPolicy` for UAA or updated the
 existing list of ingress rules, you will still need to create a `NetworkPolicy`
 for your own component that allows it to egress to UAA.
 
-```
+```yaml
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -177,10 +177,8 @@ Then add in the appropriate `allow` rules through additional `NetworkPolicies`.
 ## Istio Sidecar Injection
 
 ### Namespaces and Istio Sidecar Injection
-CF for Kubernetes uses Istio's [automatic mTLS](https://istio.io/latest/docs/tasks/security/authentication/authn-policy/#auto-mutual-tls) with a `STRICT` authentication policy. This means that all `Pods` that have an Istio sidecar will require any `Pods` that communicate with them to also have an Istio sidecar and use mutual TLS to secure traffic. Traffic that doesn't use mTLS or traffic that does not come from an Istio sidecar will be rejected and the connection will fail.
+CF for Kubernetes uses Istio's [automatic mTLS](https://istio.io/latest/docs/tasks/security/authentication/authn-policy/#auto-mutual-tls) with a `STRICT` authentication policy. This means that all `Pods` that have an Istio sidecar will require incoming traffic to use mutual TLS.
 
 When you create a new namespace, in order to take advantage of all of Istio's features, and communicate with other `Pods` that Istio sidecars, your namespace must have an `istio-injection=enabled` label to turn on automatic [Sidecar Injection](https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/). This makes it so the pods in your namespace will contain an [Istio sidecar proxy](https://istio.io/latest/docs/reference/config/networking/sidecar/) running alongside them. In CF for Kubernetes, Istio sidecar injection is added automatically by a `ytt` [overlay](https://github.com/cloudfoundry/cf-for-k8s/blob/master/config/networking.yml#L63).
 
 To confirm your namespace has automatic sidecar injection enabled, you can describe your namespace with `kubectl get namespace <namespace_name> -L istio-injection` and see that Istio Injection is set to "enabled".
-
-If for some reason, sidecar injection is not enabled automatically in your namespace, you can manually add it by adding the following label to your namespace `kubectl label namespace <namespace_name> istio-injection=enabled`.

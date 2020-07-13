@@ -408,6 +408,24 @@ spec:
       podSelector:
         matchLabels:
           app.kubernetes.io/name: cf-api-server
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-worker
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-deployment-updater
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-clock
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1

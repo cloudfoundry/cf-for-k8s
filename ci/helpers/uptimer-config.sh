@@ -1,6 +1,7 @@
 #!/bin/bash
 
 function write_uptimer_deploy_config {
+password="$1"
 cat <<EOF > /tmp/uptimer-config.json
  {
     "while": [

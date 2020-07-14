@@ -10,6 +10,9 @@ inputs:
   - name: cf-for-k8s-ci
   - name: cf-for-k8s
   - name: pool-lock
+    optional: true
+  - name: tf-vars
+    optional: true
   - name: env-metadata
     optional: true
 

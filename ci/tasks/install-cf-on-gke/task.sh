@@ -10,15 +10,28 @@ echo -e "\n"
 source cf-for-k8s-ci/ci/helpers/gke.sh
 source cf-for-k8s-ci/ci/helpers/uptimer-config.sh
 
-cluster_name="$(cat pool-lock/name)"
-gcloud_auth "${cluster_name}"
+if [[ -d pool-lock ]]; then
+  if [[ -d tf-vars ]]; then
+    echo "You may not specify both pool-lock and tf-vars"
+    exit 1
+  fi
+  cluster_name="$(cat pool-lock/name)"
+  istio_static_ip="$(jq -r '.lb_static_ip' pool-lock/metadata)"
+elif [[ -d tf-vars ]]; then
+  cluster_name="$(cat tf-vars/env-name.txt)"
+  istio_static_ip="$(jq -r '.lb_static_ip' terraform/metadata)"
+else
+  echo "You must provide either pool-lock or tf-vars"
+  exit 1
+fi
 
+gcloud_auth "${cluster_name}"
 DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
 
 if [[ "${UPGRADE}" == "true" ]]; then
   echo "Copying bosh vars store from latest install"
-  mkdir -p "/tmp/${cluster_name}.k8s-dev.relint.rocks"
-  cp env-metadata/cf-vars.yaml "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml"
+  mkdir -p "/tmp/${DNS_DOMAIN}"
+  cp env-metadata/cf-vars.yaml "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
   echo "NOTE: the values we're currently not rotating are:"
   cat env-metadata/cf-vars.yaml | yq -r 'keys'
   echo "(we're also not testing rotating our app_registry credentials)"
@@ -41,21 +54,22 @@ else
   cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-values.yml
 fi
 
-echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-values.yml
+echo "istio_static_ip: ${istio_static_ip}" >> cf-values.yml
+password="$(bosh interpolate --path /cf_admin_password cf-values.yml)"
 
 echo "Installing CF..."
-ytt -f cf-for-k8s/config -f cf-values.yml > /tmp/manifest.yml
-password=$(bosh interpolate --path /cf_admin_password cf-values.yml)
+rendered_yaml="/tmp/rendered.yml"
+ytt -f cf-for-k8s/config -f cf-values.yml > ${rendered_yaml}
 if [[ "${UPTIMER}" == "true" ]]; then
   echo "Running with uptimer"
-  write_uptimer_deploy_config
+  write_uptimer_deploy_config "${password}"
   mkdir -p uptimer-result
   uptimer -configFile /tmp/uptimer-config.json -resultFile uptimer-result/result.json
 else
-  kapp deploy -a cf -f /tmp/manifest.yml -y
+  kapp deploy -a cf -f ${rendered_yaml} -y
 fi
 
 echo ${password} > env-metadata/cf-admin-password.txt
 echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
-cp "/tmp/${cluster_name}.k8s-dev.relint.rocks/cf-vars.yaml" env-metadata
+cp "/tmp/${DNS_DOMAIN}/cf-vars.yaml" env-metadata

@@ -22,6 +22,7 @@ var _ = Describe("UAA", func() {
 		templateFiles = []string{
 			pathToFile("config/uaa"),
 			pathToFile("config/namespaces.star"),
+			pathToFile("config/quarks-secret/quarks-secret.star"),
 		}
 
 		valueFiles = []string{
@@ -96,6 +97,23 @@ var _ = Describe("UAA", func() {
 					),
 				))
 			})
+		})
+	})
+
+	Context("when using quarks secrets", func() {
+		BeforeEach(func() {
+			data = map[string]interface{}{}
+			data["quarks_secret.enable"] = true
+		})
+
+		It("should render quarks secrets for uaa client secrets", func() {
+
+			Expect(ctx).To(ProduceYAML(
+				And(
+					Not(WithSecret("uaa-admin-client-credentials", "cf-system")),
+					WithQuarksSecret("uaa-admin-client-credentials", "cf-system"),
+				),
+			))
 		})
 	})
 })

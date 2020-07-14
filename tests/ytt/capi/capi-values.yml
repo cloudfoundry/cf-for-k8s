@@ -7,6 +7,9 @@ app_domains: [""]
 cf_admin_password: ""
 
 capi:
+  cc_username_lookup_client_secret:
+  cf_api_controllers_client_secret:
+  cf_api_backup_metadata_generator_client_secret:
   database:
     adapter: ""
     encryption_key: ""
@@ -17,6 +20,9 @@ capi:
     name: ""
     ca_cert: ""
   log_level: ""
+
+quarks_secret:
+  enable:
 
 app_registry:
   hostname: ""

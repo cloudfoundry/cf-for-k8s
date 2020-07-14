@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "quarks-secret.fullname" . }}
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: quarks-secret
+  template:
+    metadata:
+      labels:
+        name: quarks-secret
+    spec:
+      serviceAccountName: {{ template "quarks-secret.serviceAccountName" . }}
+      containers:
+        - name: quarks-secret
+          image: "{{ .Values.image.org }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+          - containerPort: 60000
+            name: metrics
+          command:
+          - quarks-secret
+          imagePullPolicy: {{ .Values.global.image.pullPolicy | quote }}
+          env:
+            - name: APPLY_CRD
+              value: "{{ .Values.applyCRD }}"
+            - name: LOG_LEVEL
+              value: "{{ .Values.logLevel }}"
+            - name: MAX_WORKERS
+              value: "{{ .Values.maxWorkers }}"
+            - name: CTX_TIMEOUT
+              value: "{{ .Values.global.contextTimeout }}"
+            - name: MELTDOWN_DURATION
+              value: "{{ .Values.global.meltdownDuration }}"
+            - name: MELTDOWN_REQUEUE_AFTER
+              value: "{{ .Values.global.meltdownRequeueAfter }}"
+            - name: MONITORED_ID
+              value: {{ template "quarks-secret.monitoredID" . }}
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: OPERATOR_NAME
+              value: "quarks-secret"

@@ -1,0 +1,16 @@
+apiVersion: v1
+name: quarks-secret
+version: x.x.x
+appVersion: x.x.x
+description: A Helm chart for quarks-secret, a k8s operator to create secrets
+home: https://github.com/cloudfoundry-incubator/quarks-secret
+icon: https://cloudfoundry-incubator.github.io/quarks-helm/logo.png
+keywords:
+- quarks
+- secret
+- rotation
+sources:
+- https://github.com/cloudfoundry-incubator/quarks-secret
+maintainers:
+- name: project-quarks
+  email: project-quarks@googlegroups.com

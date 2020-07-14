@@ -48,6 +48,8 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 1. Follow the instructions in [Deploying CF for K8s](deploy.md).
 
    - Include the [remove-resource-requirements.yml](../config-optional/remove-resource-requirements.yml),
+     [enable-automount-service-account-token.yml](../config-optional/enable-automount-service-account-token.yml),
+     [first-party-jwt-istio.yml](../config-optional/first-party-jwt-istio.yml),
      [ingressgateway-service-nodeport.yml](../config-optional/ingressgateway-service-nodeport.yml),
      [add-metrics-server-components.yml](../config-optional/add-metrics-server-components.yml) and
      [patch-metrics-server.yml](../config-optional/patch-metrics-server.yml)
@@ -56,7 +58,14 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
      ```console
      TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
-     ytt -f config -f config-optional/remove-resource-requirements.yml -f config-optional/ingressgateway-service-nodeport.yml -f config-optional/add-metrics-server-components.yml -f config-optional/patch-metrics-server.yml -f <cf_install_values_path> > ${TMP_DIR}/cf-for-k8s-rendered.yml
+     ytt -f config \
+       -f config-optional/remove-resource-requirements.yml \
+       -f config-optional/enable-automount-service-account-token.yml \
+       -f config-optional/first-party-jwt-istio.yml \
+       -f config-optional/ingressgateway-service-nodeport.yml \
+       -f config-optional/add-metrics-server-components.yml \
+       -f config-optional/patch-metrics-server.yml \
+       -f <cf_install_values_path> > ${TMP_DIR}/cf-for-k8s-rendered.yml
      kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
      ```
 

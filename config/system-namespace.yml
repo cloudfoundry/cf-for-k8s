@@ -1,5 +1,5 @@
 #@ load("/namespaces.star", "system_namespace")
-
+#@ load("/quarks-secret/quarks-secret.star", "quarks_secret_enabled")
 ---
 apiVersion: v1
 kind: Namespace
@@ -7,3 +7,6 @@ metadata:
   name: #@ system_namespace()
   labels:
     cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    #@ if quarks_secret_enabled():
+    quarks.cloudfoundry.org/monitored: cf-quarks-secret
+    #@ end

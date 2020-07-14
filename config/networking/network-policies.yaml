@@ -3,6 +3,7 @@
 #@ load("/minio/minio.star", "minio_enabled")
 #@ load("/namespaces.star", "system_namespace", "workloads_staging_namespace")
 #@ load("/postgres/postgres.star", "cfdb_enabled")
+#@ load("/quarks-secret/quarks-secret.star", "quarks_secret_enabled")
 
 #@ def database_egress():
 to:
@@ -487,6 +488,25 @@ spec:
       podSelector:
         matchLabels:
           app.kubernetes.io/name: cf-api-clock
+#@ end
+#@ if quarks_secret_enabled():
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: quarks
+  namespace: #@ system_namespace()
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      name: quarks-secret
+  ingress:
+  - {}
+  egress:
+  - {}
 #@ end
 ---
 kind: NetworkPolicy

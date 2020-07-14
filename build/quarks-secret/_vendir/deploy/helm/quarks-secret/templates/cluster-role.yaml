@@ -1,0 +1,105 @@
+{{- if .Values.global.rbac.create }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: {{ template "quarks-secret.fullname" . }}
+rules:
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  verbs:
+  - approve
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - signers
+  resourceNames:
+  - kubernetes.io/legacy-unknown
+  verbs:
+  - approve
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests/approval
+  verbs:
+  - create
+  - update
+
+{{- if .Values.applyCRD }}
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - create
+  - get
+  - update
+{{- end }}
+
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+  - update
+
+- apiGroups:
+  - quarks.cloudfoundry.org
+  resources:
+  - quarkssecrets
+  verbs:
+  - delete
+  - get
+  - list
+  - update
+  - watch
+
+- apiGroups:
+  - quarks.cloudfoundry.org
+  resources:
+  - quarkssecrets/status
+  verbs:
+  - update
+{{- end }}

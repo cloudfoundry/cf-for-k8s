@@ -18,8 +18,13 @@ if [[ -d pool-lock ]]; then
   cluster_name="$(cat pool-lock/name)"
   istio_static_ip="$(jq -r '.lb_static_ip' pool-lock/metadata)"
 elif [[ -d tf-vars ]]; then
-  cluster_name="$(cat tf-vars/env-name.txt)"
-  istio_static_ip="$(jq -r '.lb_static_ip' terraform/metadata)"
+  if [[ -d terraform ]]; then
+    cluster_name="$(cat tf-vars/env-name.txt)"
+    istio_static_ip="$(jq -r '.lb_static_ip' terraform/metadata)"
+  else
+    echo "You must provide both tf-vars and terraform inputs together"
+    exit 1
+  fi
 else
   echo "You must provide either pool-lock or tf-vars"
   exit 1

@@ -13,6 +13,8 @@ inputs:
     optional: true
   - name: tf-vars
     optional: true
+  - name: terraform
+    optional: true
   - name: env-metadata
     optional: true
 

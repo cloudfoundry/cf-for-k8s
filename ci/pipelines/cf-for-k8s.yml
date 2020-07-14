@@ -993,7 +993,7 @@ jobs:
 
 
 - name: validate-pr-on-gke
-  serial: true
+  max_in_flight: 3
   public: true
   plan:
   - in_parallel:

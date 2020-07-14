@@ -54,7 +54,10 @@ directories:
     includePaths:
     - release-*.yaml
 # the components in this section below are handled by their corresponding build scripts
-# the manual param tells vendir to not override/touch the contents of these directories
+# the manual param tells vendir to not override/touch the contents of these config/_ytt_lib/<eirini|minio|postgres> directories
+  - path: quarks-secret
+    manual: {}
+
 - path: config/eirini/_ytt_lib
   contents:
   - path: eirini
@@ -102,3 +105,12 @@ directories:
       ref: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe # version: 8.10.6
     includePaths:
     - bitnami/postgresql/**/*
+
+- path: build/quarks-secret/_vendir
+  contents:
+  - path: .
+    git:
+      url: https://github.com/cloudfoundry-incubator/quarks-secret
+      ref: 5a31fccb204770d0cf851080389e6a25555f9e98 # version: TBD
+    includePaths:
+    - deploy/helm/quarks-secret/**/*

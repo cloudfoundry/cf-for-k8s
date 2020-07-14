@@ -1,0 +1,165 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cf-quarks-secret
+  namespace: cf-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: cf-quarks-secret
+rules:
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests
+  verbs:
+  - approve
+  - create
+  - delete
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - certificates.k8s.io
+  resourceNames:
+  - kubernetes.io/legacy-unknown
+  resources:
+  - signers
+  verbs:
+  - approve
+- apiGroups:
+  - certificates.k8s.io
+  resources:
+  - certificatesigningrequests/approval
+  verbs:
+  - create
+  - update
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - create
+  - get
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+  - update
+- apiGroups:
+  - quarks.cloudfoundry.org
+  resources:
+  - quarkssecrets
+  verbs:
+  - delete
+  - get
+  - list
+  - update
+  - watch
+- apiGroups:
+  - quarks.cloudfoundry.org
+  resources:
+  - quarkssecrets/status
+  verbs:
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: cf-quarks-secret
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cf-quarks-secret
+subjects:
+- kind: ServiceAccount
+  name: cf-quarks-secret
+  namespace: cf-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      - Metas:
+        - Tag: latest
+          Type: resolved
+          URL: us.gcr.io/cf-security-credhub-main/quarks-secret:latest
+        URL: us.gcr.io/cf-security-credhub-main/quarks-secret@sha256:15c623339d4a21b56fc655588dcca88229a37b552d6add89f4d5134753326788
+  name: cf-quarks-secret
+  namespace: cf-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: quarks-secret
+  template:
+    metadata:
+      labels:
+        name: quarks-secret
+    spec:
+      containers:
+      - command:
+        - quarks-secret
+        env:
+        - name: APPLY_CRD
+          value: "true"
+        - name: LOG_LEVEL
+          value: debug
+        - name: MAX_WORKERS
+          value: "1"
+        - name: CTX_TIMEOUT
+          value: "30"
+        - name: MELTDOWN_DURATION
+          value: "60"
+        - name: MELTDOWN_REQUEUE_AFTER
+          value: "30"
+        - name: MONITORED_ID
+          value: cf
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: OPERATOR_NAME
+          value: quarks-secret
+        image: us.gcr.io/cf-security-credhub-main/quarks-secret@sha256:15c623339d4a21b56fc655588dcca88229a37b552d6add89f4d5134753326788
+        imagePullPolicy: IfNotPresent
+        name: quarks-secret
+        ports:
+        - containerPort: 60000
+          name: metrics
+      serviceAccountName: cf-quarks-secret

@@ -34,6 +34,11 @@ directories:
       - v74.27.0
     path: .
   path: config/uaa/_ytt_lib/uaa
+      url: https://api.github.com/repos/pivotal/kpack/releases/27343776
+    path: github.com/pivotal/kpack
+  - manual: {}
+    path: quarks-secret
+  path: config/_ytt_lib
 - contents:
   - githubRelease:
       url: https://api.github.com/repos/pivotal/kpack/releases/30225354
@@ -68,4 +73,10 @@ directories:
       sha: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe
     path: .
   path: build/postgres/_vendir
+- contents:
+  - git:
+      commitTitle: Stop specifying UID/GID for quarks in Dockerfile...
+      sha: 5a31fccb204770d0cf851080389e6a25555f9e98
+    path: .
+  path: build/quarks-secret/_vendir
 kind: LockConfig

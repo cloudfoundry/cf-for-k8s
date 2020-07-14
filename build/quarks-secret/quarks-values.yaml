@@ -1,0 +1,9 @@
+fullnameOverride: cf-quarks-secret
+
+image:
+  repository: quarks-secret
+  org: us.gcr.io/cf-security-credhub-main
+  tag: latest
+
+global:
+  monitoredID: cf

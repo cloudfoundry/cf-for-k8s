@@ -44,7 +44,7 @@ ccdb:
   host: #@ capi_host()
   port: #@ data.values.capi.database.port
   user: #@ data.values.capi.database.user
-  password: #@ data.values.capi.database.password
+  password: "does-not-work"
   database: #@ data.values.capi.database.name
   ca_cert: #@ data.values.capi.database.ca_cert
 

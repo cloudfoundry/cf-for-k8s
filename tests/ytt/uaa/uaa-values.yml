@@ -49,3 +49,6 @@ capi:
 enable_automount_service_account_token:
 remove_resource_requirements:
 allow_prometheus_metrics_access:
+quarks_secret:
+  enable:
+

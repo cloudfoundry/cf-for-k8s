@@ -52,6 +52,10 @@ directories:
     path: postgres
   path: config/postgres/_ytt_lib
 - contents:
+  - manual: {}
+    path: quarks-secret
+  path: config/quarks-secret/_ytt_lib
+- contents:
   - git:
       commitTitle: '[stable/minio] Support imagePullSecrets (#22812)...'
       sha: 921eb8a969fb9d7b7b7d13904f740c76748ec2c9
@@ -68,4 +72,10 @@ directories:
       sha: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe
     path: .
   path: build/postgres/_vendir
+- contents:
+  - git:
+      commitTitle: Add delete secret permission to cluster role (#20)
+      sha: 01d7be017c3cec812a056e364a47dc6ca1d27d90
+    path: .
+  path: build/quarks-secret/_vendir
 kind: LockConfig

@@ -40,20 +40,38 @@ app_registry.hostname
 app_registry.password
 app_registry.repository_prefix
 app_registry.username
-blobstore.secret_access_key
+blobstore.secret_access_key'''.split("\n")
+
+    if not values.quarks_secret.enable:
+        required_parameters += '''\
 capi.cc_username_lookup_client_secret
 capi.cf_api_controllers_client_secret
 capi.cf_api_backup_metadata_generator_client_secret
-capi.database.encryption_key
-capi.database.password
-cf_admin_password
+capi.database.encryption_key'''.split("\n")
+    end
+
+    required_parameters += '''\
+capi.database.password'''.split("\n")
+
+    if not values.quarks_secret.enable:
+        required_parameters += '''\
+cf_admin_password'''.split("\n")
+    end
+
+    required_parameters += '''\
 internal_certificate.ca
 internal_certificate.crt
 internal_certificate.key
 system_certificate.crt
 system_certificate.key
-system_domain
-uaa.admin_client_secret
+system_domain'''.split("\n")
+
+    if not values.quarks_secret.enable:
+        required_parameters += '''\
+uaa.admin_client_secret'''.split("\n")
+    end
+
+    required_parameters += '''\
 uaa.database.password
 uaa.encryption_key.passphrase
 uaa.jwt_policy.signing_key

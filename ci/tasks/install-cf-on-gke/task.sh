@@ -67,7 +67,7 @@ rendered_yaml="/tmp/rendered.yml"
 ytt -f cf-for-k8s/config -f cf-values.yml > ${rendered_yaml}
 if [[ "${UPTIMER}" == "true" ]]; then
   echo "Running with uptimer"
-  write_uptimer_deploy_config "${password}"
+  write_uptimer_deploy_config "${password}" "${rendered_yaml}"
   mkdir -p uptimer-result
   uptimer -configFile /tmp/uptimer-config.json -resultFile uptimer-result/result.json
 else

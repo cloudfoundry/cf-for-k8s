@@ -2,12 +2,13 @@
 
 function write_uptimer_deploy_config {
 password="$1"
+manifest="$2"
 cat <<EOF > /tmp/uptimer-config.json
  {
     "while": [
         {
             "command": "kapp",
-            "command_args": ["deploy", "-a", "cf", "-f", "/tmp/manifest.yml", "-y"]
+            "command_args": ["deploy", "-a", "cf", "-f", "${manifest}", "-y"]
         }
     ],
     "cf": {

@@ -10,7 +10,7 @@
 
 - Make sure this PR is based off the `develop` branch
 - If you're adding/removing/changing any values in `config/values.yml`, please review [this "cf-for-k8s values for contributors" doc](https://docs.google.com/document/d/1Y3jAx48TCGIQdzOFmzqp_R_0WT8Hfjx9oyqs2Tk0Otw/edit#) for up-to-date principles and guidelines for contributing values changes.
-- Checkout the [contributing guidelines](https://github.com/cloudfoundry/cf-for-k8s/blob/develop/docs/contributing.md)
+- Checkout the [contributing guidelines](https://github.com/cloudfoundry/cf-for-k8s/blob/develop/community/CONTRIBUTING.md)
 - Include any links to related PRs, issues, stories, slack discussions, etc... that will help establish context.
 - Is there anything else of note that the reviewers should know about this change?
 

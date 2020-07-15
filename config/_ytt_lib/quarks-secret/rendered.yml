@@ -118,8 +118,8 @@ metadata:
       - Metas:
         - Tag: latest
           Type: resolved
-          URL: us.gcr.io/cf-security-credhub-main/quarks-secret:latest
-        URL: us.gcr.io/cf-security-credhub-main/quarks-secret@sha256:15c623339d4a21b56fc655588dcca88229a37b552d6add89f4d5134753326788
+          URL: cloudfoundry/quarks-secret:latest
+        URL: index.docker.io/cloudfoundry/quarks-secret@sha256:c53235f79663f48c893250a7000f80d7685c7b583f30066bb9e6041f0aff8dcc
   name: cf-quarks-secret
   namespace: cf-system
 spec:
@@ -156,7 +156,7 @@ spec:
               fieldPath: metadata.name
         - name: OPERATOR_NAME
           value: quarks-secret
-        image: us.gcr.io/cf-security-credhub-main/quarks-secret@sha256:15c623339d4a21b56fc655588dcca88229a37b552d6add89f4d5134753326788
+        image: index.docker.io/cloudfoundry/quarks-secret@sha256:c53235f79663f48c893250a7000f80d7685c7b583f30066bb9e6041f0aff8dcc
         imagePullPolicy: IfNotPresent
         name: quarks-secret
         ports:

@@ -2,7 +2,7 @@ fullnameOverride: cf-quarks-secret
 
 image:
   repository: quarks-secret
-  org: us.gcr.io/cf-security-credhub-main
+  org: cloudfoundry
   tag: latest
 
 global:

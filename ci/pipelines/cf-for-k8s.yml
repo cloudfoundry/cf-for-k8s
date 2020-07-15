@@ -438,6 +438,7 @@ jobs:
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    attempts: 3
     params:
       APP_NAME: lingering-node-app
       VERIFY_EXISTING_APP: false
@@ -1492,6 +1493,7 @@ jobs:
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    attempts: 3
     params:
       APP_NAME: jp-node-app
       VERIFY_EXISTING_APP: false
@@ -1607,6 +1609,7 @@ jobs:
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    attempts: 3
     params:
       APP_NAME: jp-node-app
       VERIFY_EXISTING_APP: false

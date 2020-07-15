@@ -31,7 +31,7 @@ else
 fi
 
 gcloud_auth "${cluster_name}"
-DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
+DNS_DOMAIN="${cluster_name}.${DOMAIN}"
 
 if [[ "${UPGRADE}" == "true" ]]; then
   echo "Copying bosh vars store from latest install"

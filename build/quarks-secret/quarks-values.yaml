@@ -6,4 +6,4 @@ image:
   tag: latest
 
 global:
-  monitoredID: cf
+  monitoredID: cf-quarks-secret

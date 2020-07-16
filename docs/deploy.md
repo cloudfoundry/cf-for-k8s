@@ -43,14 +43,14 @@ To deploy cf-for-k8s as is, the cluster should:
 
 ### Requirements for pushing source-code based apps to Cloud Foundry foundation
 
-To be able to push source-code based apps to your cf-for-k8s installation, you will need to add OCI compliant registry (e.g. dockerhub.com) to the configuration.
+To be able to push source-code based apps to your cf-for-k8s installation, you will need to add OCI compliant registry (e.g. hub.docker.com) to the configuration.
 
 > Under the hood, cf-for-k8s uses Cloud Native buildpacks to detect and build the app source code into an oci compliant image and pushes the app image to the registry. Though cf-for-k8s has been tested with Google Container Registry and Dockerhub.com, it should work for any external OCI compliant registry.
 
 Currently, we have tested the following two container registries:
 
 - Docker Hub:
-  1. Create an account in [dockerhub.com](dockerhub.com). Note down the user name and password you used during signup.
+  1. Create an account in [hub.docker.com](https://hub.docker.com/). Note down the user name and password you used during signup.
   1. Create a repository in your account. Note down the repository name.
 
 - Google Container Registry:
@@ -103,7 +103,7 @@ cf-for-k8s can be configured to [use an external database](platform_operators/ex
 
 1. To enable Cloud Native buildpacks feature, configure access to an external registry in `cf-values.yml`:
 
-   You can choose any of the cloud provider container registries, such as [dockerhub.com](dockerhub.com), [Google container registry](https://cloud.google.com/container-registry), [Azure container registry](https://azure.microsoft.com/en-us/services/container-registry/) and so on. Below are examples for dockerhub or google container registry.
+   You can choose any of the cloud provider container registries, such as [hub.docker.com](https://hub.docker.com/), [Google container registry](https://cloud.google.com/container-registry), [Azure container registry](https://azure.microsoft.com/en-us/services/container-registry/) and so on. Below are examples for dockerhub or google container registry.
 
    1. To configure Dockerhub.com
 

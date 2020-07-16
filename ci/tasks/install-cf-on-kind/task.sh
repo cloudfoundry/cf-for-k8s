@@ -25,7 +25,6 @@ ytt -f config \
     -f config-optional/remove-resource-requirements.yml \
     -f config-optional/enable-automount-service-account-token.yml \
     -f config-optional/first-party-jwt-istio.yml \
-    -f config-optional/ingressgateway-service-nodeport.yml \
     -f config-optional/add-metrics-server-components.yml \
     -f config-optional/patch-metrics-server.yml \
     -f \$CF_VALUES > \$CF_RENDERED

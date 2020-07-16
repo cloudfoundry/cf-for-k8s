@@ -4,4 +4,4 @@
 ---
 spec:
   #@overlay/replace
-  type: NodePort
+  type: LoadBalancer

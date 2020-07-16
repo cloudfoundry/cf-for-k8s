@@ -35,7 +35,6 @@ To deploy cf-for-k8s as is, the cluster should:
 - be running Kubernetes version within range 1.16.x to 1.18.x
 - have a minimum of 5 nodes
 - have a minimum of 4 CPU, 15GB memory per node
-- support `LoadBalancer` services
 - support `metrics-server`
   - Most IaaSes come with `metrics-server`, but if yours does not come with it or if you're using `kind`, you will need to include `config-optional/add-metrics-server-components.yml` when you render the K8s template.
 - defines a default StorageClass
@@ -141,6 +140,10 @@ cf-for-k8s can be configured to [use an external database](platform_operators/ex
       i. Render the final K8s template to raw K8s configuration
       ```console
       ytt -f config -f ${TMP_DIR}/cf-values.yml > ${TMP_DIR}/cf-for-k8s-rendered.yml
+      ```
+      OR if you are deploying on a public cloud that supports service type: `LoadBalancer` then you should include the `./config-optional/ingressgateway-service-loadbalancer.yml`.
+      ```console
+      ytt -f config -f config-optional/ingressgateway-service-loadbalancer.yml -f ${TMP_DIR}/cf-values.yml > ${TMP_DIR}/cf-for-k8s-rendered.yml
       ```
       > cf-for-k8s uses [ytt](https://github.com/k14s/ytt) to create and maintain reusable YAML templates. You can visit the ytt [playground](https://get-ytt.io/) to learn more about it's templating features.
       > In the above command, `ytt` can take a folder e.g. `config` or file via `-f`. See all options by running `ytt help`.

@@ -37,7 +37,7 @@ directories:
   - path: github.com/cloudfoundry/uaa
     git:
       url: https://github.com/cloudfoundry/uaa
-      ref: v74.22.0
+      ref: v74.23.0
     includePaths:
     - k8s/templates/**/*
   - path: github.com/pivotal/kpack

@@ -17,8 +17,8 @@ directories:
       sha: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
     path: github.com/cloudfoundry/metric-proxy
   - git:
-      commitTitle: Update UAA image reference in k8s deployment template to 74.22.0
-      sha: 652d25701d74b5dadf482126336bd881fe6d4d76
+      commitTitle: Update UAA image reference in k8s deployment template to 74.23.0
+      sha: 6efde609a06c53d87d8c68443906f32221705b14
     path: github.com/cloudfoundry/uaa
   - githubRelease:
       url: https://api.github.com/repos/pivotal/kpack/releases/27343776

@@ -252,3 +252,12 @@ type: Opaque
 data:
   uaa.key: #@ data.values.internal_certificate.key
   uaa.crt: #@ data.values.internal_certificate.crt
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ data.values.uaa.encryption_key_passphrase_secret_name
+  namespace: #@ data.values.system_namespace
+type: Opaque
+stringData:
+  password: #@ data.values.uaa.encryption_key.passphrase

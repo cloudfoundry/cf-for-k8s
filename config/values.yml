@@ -56,6 +56,7 @@ internal_certificate:
   ca: ""
 
 capi:
+  cf_blobstore_key_secret_name: capi-blobstore-secret-key
   blobstore:
     package_directory_key: cc-packages
     droplet_directory_key: cc-droplets
@@ -63,6 +64,7 @@ capi:
     buildpack_directory_key: cc-buildpacks
     region: "''"
     endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
+  database_password_secret_name: capi-database-password
   database:
     #! or mysql2, as needed
     adapter: postgres
@@ -74,6 +76,8 @@ capi:
     name: cloud_controller
     #! Plain text ca certificate if tls should be used
     ca_cert: ""
+  kpack_watcher_secret_name: kpack-watcher-client-secret
+  cloud_controller_username_lookup_secret_name: cloud-controller-username-lookup-client-secret
 
 uaa:
   #! client secret for uaa admin client in plain text
@@ -96,6 +100,7 @@ uaa:
     #! Plain text private key
     signing_key: ""
 
+  encryption_key_passphrase_secret_name: uaa-encryption-key-passphrase
   encryption_key:
     label: "default_encryption_key"
     #! Plain text passphrase

@@ -102,3 +102,40 @@ spec:
         host: #@ "capi." + data.values.system_namespace + ".svc.cluster.local"
         port:
           number: 80
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ data.values.capi.database_password_secret_name
+  namespace: #@ data.values.system_namespace
+type: Opaque
+stringData:
+  password: #@ data.values.capi.database.password
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ data.values.capi.cf_blobstore_key_secret_name
+  namespace: #@ data.values.system_namespace
+type: Opaque
+stringData:
+  password: #@ data.values.cf_blobstore.secret_key
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ data.values.capi.kpack_watcher_secret_name
+  namespace: #@ data.values.system_namespace
+type: Opaque
+stringData:
+  password: #@ data.values.uaa.admin_client_secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ data.values.capi.cloud_controller_username_lookup_secret_name
+  namespace: #@ data.values.system_namespace
+type: Opaque
+stringData:
+  password: #@ data.values.uaa.admin_client_secret

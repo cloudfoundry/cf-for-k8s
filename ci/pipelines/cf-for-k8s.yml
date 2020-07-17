@@ -13,7 +13,8 @@ groups:
   jobs:
   - install-and-smoketest-sli
   - long-lived-env-sli
-  - redeploy-long-lived-env-with-latest-master
+  - manual-redeploy-long-lived-env-with-latest-master
+  - upgrade-long-lived-env-to-latest-master
   - validate-azure
   - validate-cf-for-k8s-upgrade
   - validate-values-rotation-redeploy
@@ -123,6 +124,13 @@ resources:
     branch: master
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
+
+- name: relint-envs
+  type: git
+  source:
+    branch: master
+    uri: git@github.com:cloudfoundry/relint-envs.git
+    private_key: ((relint-ci-repository_readwrite_deploy_key.private_key))
 
 - name: weekly
   type: time
@@ -799,7 +807,7 @@ jobs:
           export SMOKE_TEST_SKIP_SSL=true
           cf-for-k8s-master/hack/run-smoke-tests.sh
 
-- name: redeploy-long-lived-env-with-latest-master
+- name: manual-redeploy-long-lived-env-with-latest-master
   serial: true
   serial_groups: [long-lived-env]
   public: true
@@ -807,8 +815,7 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-master
     - get: cf-for-k8s-ci
-    - get: weekday-pm
-      trigger: true
+    - get: relint-envs
 
   - task: delete-cf
     config:
@@ -841,9 +848,11 @@ jobs:
       inputs:
       - name: cf-for-k8s-master
       - name: cf-for-k8s-ci
+      - name: relint-envs
       - name: terraform
       outputs:
       - name: env-metadata
+      - name: relint-envs-updated
       params:
         CLUSTER_NAME: long-lived-sli
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
@@ -858,15 +867,97 @@ jobs:
           gcloud_auth "${CLUSTER_NAME}"
 
           export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
-          cf-for-k8s-master/hack/confirm-network-policy.sh "${CLUSTER_NAME}" '((ci_k8s_gcp_project_zone))'
 
           echo "Generating install values..."
           cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
+
           echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
 
           echo "Installing CF..."
           kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+
+          echo "((ll_dep_cf_admin_pass))" > env-metadata/cf-admin-password.txt
+          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
+
+          source cf-for-k8s-ci/ci/helpers/env-git.sh
+          commit-long-lived-sli-cf-vars
+
+  - put: relint-envs
+    params:
+      repository: relint-envs-updated
+      rebase: true
+
+  - task: push-test-app
+    attempts: 3
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    params:
+      APP_NAME: long-lived-node-app
+      VERIFY_EXISTING_APP: false
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-master
+
+- name: upgrade-long-lived-env-to-latest-master
+  serial: true
+  serial_groups: [long-lived-env]
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-master
+    - get: cf-for-k8s-ci
+    - get: relint-envs
+    - get: weekday-pm
+      trigger: true
+
+  - get: terraform-long-lived-sli
+
+  - task: install-cf
+    input_mapping:
+      pool-lock: stability-pool
+      terraform: terraform-long-lived-sli
+    config:
+      <<: *common-task-config
+      inputs:
+      - name: cf-for-k8s-master
+      - name: cf-for-k8s-ci
+      - name: relint-envs
+      - name: terraform
+      outputs:
+      - name: relint-envs-updated
+      params:
+        CLUSTER_NAME: long-lived-sli
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          gcloud_auth "${CLUSTER_NAME}"
+
+          export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
+
+          echo "Using cf-vars from relint-envs/k8s-environments/long-lived-sli/cf-vars.yaml..."
+          cp relint-envs/k8s-environments/long-lived-sli/cf-vars.yaml "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
+
+          echo "Generating install values..."
+          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
+
+          echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
+
+          echo "Installing CF..."
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+
+          source cf-for-k8s-ci/ci/helpers/env-git.sh
+          commit-long-lived-sli-cf-vars
+
+  - put: relint-envs
+    params:
+      repository: relint-envs-updated
+      rebase: true
 
 - name: fail-prs-to-cf-for-k8s-master
   public: true
@@ -1420,8 +1511,6 @@ jobs:
               jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
               export DNS_DOMAIN="azure-$(cat terraform/name).((ci_k8s_root_domain))"
-              #TODO, make this check work for AKS
-              # cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
               echo "Generating install values..."
               cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml

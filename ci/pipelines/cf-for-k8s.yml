@@ -1148,6 +1148,7 @@ jobs:
           export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
 
           echo "Using cf-vars from relint-envs/k8s-environments/long-lived-sli/cf-vars.yaml..."
+          mkdir -p "/tmp/${DNS_DOMAIN}"
           cp relint-envs/k8s-environments/long-lived-sli/cf-vars.yaml "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
 
           echo "Generating install values..."

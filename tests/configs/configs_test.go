@@ -129,7 +129,7 @@ var _ = Describe("Configs", func() {
 				fmt.Println(command.Args)
 				session, err := Start(command, ioutil.Discard, GinkgoWriter)
 				Expect(err).NotTo(HaveOccurred())
-				session.Wait(10 * time.Second)
+				session.Wait(30 * time.Second)
 				stdOut := removeExpectedKubevalOutput(session.Out.Contents())
 				Eventually(session).Should(Exit(0),
 					fmt.Sprintf("kubeval failed with (filtered) output: %s\n", stdOut))

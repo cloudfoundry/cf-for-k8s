@@ -1,6 +1,6 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:data", "data")
-#@ load("postgres.star", "cfdb_enabled")
+#@ load("postgres/postgres.star", "cfdb_enabled")
 
 #@ if cfdb_enabled():
 #@overlay/match by=overlay.subset({"kind": "StatefulSet", "metadata":{"name": "cf-db-postgresql"}})

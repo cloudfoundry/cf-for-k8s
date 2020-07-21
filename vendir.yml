@@ -53,6 +53,9 @@ directories:
     manual: {}
   - path: minio
     manual: {}
+
+- path: config/postgres/_ytt_lib
+  contents:
   - path: postgres
     manual: {}
 

@@ -27,9 +27,11 @@ directories:
     path: eirini
   - manual: {}
     path: minio
+  path: config/_ytt_lib
+- contents:
   - manual: {}
     path: postgres
-  path: config/_ytt_lib
+  path: config/postgres/_ytt_lib
 - contents:
   - git:
       commitTitle: '[stable/minio] Support imagePullSecrets (#22812)...'

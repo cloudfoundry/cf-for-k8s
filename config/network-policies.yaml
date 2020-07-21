@@ -465,8 +465,56 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    ports:
+    - port: 8085
+      protocol: TCP
   egress:
   - {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eirini-events
+  namespace: #@ data.values.system_namespace
+spec:
+  podSelector:
+    matchLabels:
+      name: eirini-events
+  egress:
+  - {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eirini-task-reporter
+  namespace: #@ data.values.system_namespace
+spec:
+  podSelector:
+    matchLabels:
+      name: eirini-events-task-reporter
+  egress:
+  - {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eirini-lrp-controller
+  namespace: #@ data.values.system_namespace
+spec:
+  podSelector:
+    matchLabels:
+      name: eirini-lrp-controller
+  egress:
+  - {}
+  policyTypes:
+  - Ingress
+  - Egress
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1

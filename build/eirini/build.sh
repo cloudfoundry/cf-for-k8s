@@ -9,4 +9,4 @@ helm template --namespace=cf-system "${SCRIPT_DIR}/_vendir/eirini" \
     ytt --ignore-unknown-comments -f - \
         -f "${SCRIPT_DIR}/add-namespaces-overlay.yml" |
     kbld -f "${SCRIPT_DIR}/osl-compliant-image-override.yml" -f - \
-        >"${SCRIPT_DIR}/../../config/_ytt_lib/eirini/rendered.yml"
+        >"${SCRIPT_DIR}/../../config/eirini/_ytt_lib/eirini/rendered.yml"

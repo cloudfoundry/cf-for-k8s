@@ -3,7 +3,10 @@
 ## Declare variables to be passed into your templates.
 
 
-# applyCRD is a boolean to control the installation of CRD's.
+# applyCRD is a boolean to control the installation of CRDs
+# when this is true, the operator will install the CRDs
+# an rbac rule will be set for the operator to control CRDs
+# when this is false, helm will install the CRDs
 applyCRD: true
 
 # fullnameOverride overrides the release name
@@ -50,6 +53,3 @@ global:
   # monitoredID is a string that has to match the content of the 'monitored' label in each monitored namespace.
   # The monitoredID helper uses the release fullname, unless this is set.
   monitoredID:
-  rbac:
-    # create is a boolean to control the installation of rbac resources.
-    create: true

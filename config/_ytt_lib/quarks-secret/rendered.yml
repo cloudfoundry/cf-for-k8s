@@ -68,6 +68,7 @@ rules:
   - secrets
   verbs:
   - create
+  - delete
   - get
   - list
   - update
@@ -119,7 +120,7 @@ metadata:
         - Tag: latest
           Type: resolved
           URL: cloudfoundry/quarks-secret:latest
-        URL: index.docker.io/cloudfoundry/quarks-secret@sha256:c53235f79663f48c893250a7000f80d7685c7b583f30066bb9e6041f0aff8dcc
+        URL: index.docker.io/cloudfoundry/quarks-secret@sha256:4636fde42cd678823daea530f465389e3e92740b8fdfe6a6dca45aec838b37cd
   name: cf-quarks-secret
   namespace: cf-system
 spec:
@@ -149,14 +150,14 @@ spec:
         - name: MELTDOWN_REQUEUE_AFTER
           value: "30"
         - name: MONITORED_ID
-          value: cf
+          value: cf-quarks-secret
         - name: POD_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
         - name: OPERATOR_NAME
           value: quarks-secret
-        image: index.docker.io/cloudfoundry/quarks-secret@sha256:c53235f79663f48c893250a7000f80d7685c7b583f30066bb9e6041f0aff8dcc
+        image: index.docker.io/cloudfoundry/quarks-secret@sha256:4636fde42cd678823daea530f465389e3e92740b8fdfe6a6dca45aec838b37cd
         imagePullPolicy: IfNotPresent
         name: quarks-secret
         ports:

@@ -35,7 +35,7 @@ rules:
   - create
   - update
 
-
+{{- if .Values.applyCRD }}
 - apiGroups:
   - apiextensions.k8s.io
   resources:
@@ -44,6 +44,7 @@ rules:
   - create
   - get
   - update
+{{- end }}
 
 - apiGroups:
   - ""
@@ -69,6 +70,7 @@ rules:
   - secrets
   verbs:
   - create
+  - delete
   - get
   - list
   - update

@@ -7,4 +7,4 @@ echo "generating Postgresql resource definitions..."
 helm template cf-db --namespace=cf-db "${SCRIPT_DIR}/_vendir/bitnami/postgresql" \
         --values="${SCRIPT_DIR}/init-db-values.yml" |
     ytt --ignore-unknown-comments -f - |
-    kbld -f - > "${SCRIPT_DIR}/../../config/_ytt_lib/postgres/rendered.yml"
+    kbld -f - > "${SCRIPT_DIR}/../../config/postgres/_ytt_lib/postgres/rendered.yml"

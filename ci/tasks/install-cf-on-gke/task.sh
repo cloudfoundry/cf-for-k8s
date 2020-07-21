@@ -64,7 +64,12 @@ password="$(bosh interpolate --path /cf_admin_password cf-values.yml)"
 
 echo "Installing CF..."
 rendered_yaml="/tmp/rendered.yml"
-ytt -f cf-for-k8s/config -f cf-values.yml > ${rendered_yaml}
+additional_args=""
+if [[ "${USE_EXTERNAL_DB}" == "true" ]]; then
+  additional_args = "-f db-metadata/db-values.yaml"
+fi
+
+ytt -f cf-for-k8s/config -f cf-values.yml $additional_args > ${rendered_yaml}
 if [[ "${UPTIMER}" == "true" ]]; then
   echo "Running with uptimer"
   write_uptimer_deploy_config "${password}" "${rendered_yaml}"

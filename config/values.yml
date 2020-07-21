@@ -57,6 +57,7 @@ internal_certificate:
 
 capi:
   cf_blobstore_key_secret_name: capi-blobstore-secret-key
+  database_encryption_key_secret_name: capi-database-encryption-key-secret
   blobstore:
     package_directory_key: cc-packages
     droplet_directory_key: cc-droplets
@@ -70,6 +71,7 @@ capi:
   database:
     #! or mysql2, as needed
     adapter: postgres
+    encryption_key: ""
     host: ""
     port: 5432
     user: cloud_controller

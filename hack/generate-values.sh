@@ -95,6 +95,8 @@ variables:
   type: password
 - name: capi_db_password
   type: password
+- name: capi_db_encryption_key
+  type: password
 - name: uaa_db_password
   type: password
 - name: uaa_admin_client_secret
@@ -224,6 +226,7 @@ capi:
   kpack_watcher_client_secret: $(bosh interpolate ${VARS_FILE} --path=/kpack_watcher_client_secret)
   database:
     password: $(bosh interpolate ${VARS_FILE} --path=/capi_db_password)
+    encryption_key: $(bosh interpolate ${VARS_FILE} --path=/capi_db_encryption_key)
 
 system_certificate:
   #! This certificates and keys are base64 encoded and should be valid for *.system.cf.example.com

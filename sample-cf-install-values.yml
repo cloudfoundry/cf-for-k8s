@@ -24,6 +24,8 @@ cf_db:
 
 #! The db password shared between CAPI and the database.
 capi:
+  kpack_watcher_client_secret: uaa_capi_kpack_watcher_client_credentials
+  cc_username_lookup_client_secret: uaa_cloud_controller_lookup_client_credentials
   database:
     password: ccdb_password
 

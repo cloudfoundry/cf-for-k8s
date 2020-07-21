@@ -439,7 +439,6 @@ jobs:
 
   - task: run-smoke-test
     file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-    attempts: 3
     params:
       SMOKE_TEST_SKIP_SSL: false
     input_mapping:
@@ -447,7 +446,6 @@ jobs:
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    attempts: 3
     params:
       APP_NAME: lingering-node-app
       VERIFY_EXISTING_APP: false
@@ -621,7 +619,6 @@ jobs:
 
   - task: run-smoke-test
     file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-    attempts: 3
     params:
       SMOKE_TEST_SKIP_SSL: false
     input_mapping:
@@ -1097,7 +1094,6 @@ jobs:
       rebase: true
 
   - task: push-test-app
-    attempts: 3
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     params:
       APP_NAME: long-lived-node-app
@@ -1361,7 +1357,6 @@ jobs:
       cf-for-k8s: cf-for-k8s-develop
 
   - task: push-test-app
-    attempts: 3
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     params:
       APP_NAME: jp-node-app
@@ -1734,7 +1729,6 @@ jobs:
 
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      attempts: 3
       params:
         SMOKE_TEST_SKIP_SSL: false
       input_mapping:
@@ -1793,7 +1787,6 @@ jobs:
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    attempts: 3
     params:
       APP_NAME: jp-node-app
       VERIFY_EXISTING_APP: false
@@ -1909,7 +1902,6 @@ jobs:
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    attempts: 3
     params:
       APP_NAME: jp-node-app
       VERIFY_EXISTING_APP: false

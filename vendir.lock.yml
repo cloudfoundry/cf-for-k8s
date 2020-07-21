@@ -23,17 +23,19 @@ directories:
   - githubRelease:
       url: https://api.github.com/repos/pivotal/kpack/releases/27343776
     path: github.com/pivotal/kpack
-  - manual: {}
-    path: minio
   path: config/_ytt_lib
-- contents:
-  - manual: {}
-    path: postgres
-  path: config/postgres/_ytt_lib
 - contents:
   - manual: {}
     path: eirini
   path: config/eirini/_ytt_lib
+- contents:
+  - manual: {}
+    path: minio
+  path: config/minio/_ytt_lib
+- contents:
+  - manual: {}
+    path: postgres
+  path: config/postgres/_ytt_lib
 - contents:
   - git:
       commitTitle: '[stable/minio] Support imagePullSecrets (#22812)...'

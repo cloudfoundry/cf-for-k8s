@@ -29,6 +29,11 @@ spec:
         - name: cf-api-server
           image: #@ data.values.images.ccng
           imagePullPolicy: Always
+          resources:
+            requests:
+              memory: 300Mi
+            limits:
+              memory: 1.2Gi
           volumeMounts:
           - name: server-sock
             mountPath: /data/cloud_controller_ng
@@ -52,6 +57,11 @@ spec:
         - name: cf-api-local-worker
           image: #@ data.values.images.ccng
           imagePullPolicy: Always
+          resources:
+            requests:
+              memory: 300Mi
+            limits:
+              memory: 1.2Gi
           command: ["/usr/local/bin/bundle"]
           args: ["exec", "rake", "jobs:local"]
           volumeMounts:

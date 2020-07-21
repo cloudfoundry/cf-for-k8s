@@ -49,14 +49,17 @@ directories:
     - release-*.yaml
 # the components in this section below are handled by their corresponding build scripts
 # the manual param tells vendir to not override/touch the contents of these config/_ytt_lib/<eirini|minio|postgres> directories
-  - path: eirini
-    manual: {}
   - path: minio
     manual: {}
 
 - path: config/postgres/_ytt_lib
   contents:
   - path: postgres
+    manual: {}
+
+- path: config/eirini/_ytt_lib
+  contents:
+  - path: eirini
     manual: {}
 
 # When adding a helm chart to our set of components:

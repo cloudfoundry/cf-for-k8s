@@ -3,15 +3,6 @@ apiVersion: vendir.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.8.0
 directories:
-- path: config/_ytt_lib
-  contents:
-  - path: github.com/cloudfoundry/uaa
-    git:
-      url: https://github.com/cloudfoundry/uaa
-      ref: v74.23.0
-    includePaths:
-    - k8s/templates/**/*
-
 # the components in this section below are handled by their corresponding build scripts
 # the manual param tells vendir to not override/touch the contents of these config/_ytt_lib/<eirini|minio|postgres> directories
 - path: config/eirini/_ytt_lib
@@ -107,3 +98,11 @@ directories:
       ref: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
     includePaths:
     - config/**/*
+- path: config/uaa/_ytt_lib/uaa
+  contents:
+  - path: .
+    git:
+      url: https://github.com/cloudfoundry/uaa
+      ref: v74.23.0
+    includePaths:
+    - k8s/templates/**/*

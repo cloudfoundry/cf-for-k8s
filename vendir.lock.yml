@@ -1,12 +1,6 @@
 apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
-  - git:
-      commitTitle: Update UAA image reference in k8s deployment template to 74.23.0
-      sha: 6efde609a06c53d87d8c68443906f32221705b14
-    path: github.com/cloudfoundry/uaa
-  path: config/_ytt_lib
-- contents:
   - manual: {}
     path: eirini
   path: config/eirini/_ytt_lib
@@ -63,4 +57,10 @@ directories:
       sha: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
     path: .
   path: config/metrics/_ytt_lib/metric-proxy
+- contents:
+  - git:
+      commitTitle: Update UAA image reference in k8s deployment template to 74.23.0
+      sha: 6efde609a06c53d87d8c68443906f32221705b14
+    path: .
+  path: config/uaa/_ytt_lib/uaa
 kind: LockConfig

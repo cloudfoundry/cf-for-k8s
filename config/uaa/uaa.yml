@@ -200,7 +200,7 @@ uaa:
 #@   return yaml.encode(overlay.apply(yaml.decode(old), uaa_config()))
 #@ end
 
-#@ uaa = library.get("github.com/cloudfoundry/uaa")
+#@ uaa = library.get("uaa")
 ---
   #@ template.replace(uaa.with_data_values(uaa_values()).eval())
 
@@ -292,7 +292,7 @@ type: Opaque
 stringData:
   cf_admin_user_credentials.yml: #@ yaml.encode(uaa_cf_admin_user_credentials())
 
-#@ load("@github.com/cloudfoundry/uaa/k8s:templates/deployment.star",
+#@ load("@uaa/k8s:templates/deployment.star",
 #@  "secrets_dir")
 #@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"uaa"}})
 ---

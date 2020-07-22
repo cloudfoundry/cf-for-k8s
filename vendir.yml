@@ -16,11 +16,6 @@ directories:
     - config/istio-config/**/*
     - config/istio/generated/**/*
     - config/routecontroller/**/*
-  - path: github.com/cloudfoundry/cf-k8s-logging/config
-    githubRelease:
-      slug: cloudfoundry/cf-k8s-logging
-      tag: 0.2.1
-      disableAutoChecksumValidation: true
   - path: github.com/cloudfoundry/metric-proxy
     git:
       url: https://github.com/cloudfoundry/metric-proxy
@@ -99,3 +94,10 @@ directories:
     includePaths:
     - templates/**/*
     - values/**/*
+- path: config/logging/_ytt_lib/cf-k8s-logging
+  contents:
+  - path: .
+    githubRelease:
+      slug: cloudfoundry/cf-k8s-logging
+      tag: 0.2.1
+      disableAutoChecksumValidation: true

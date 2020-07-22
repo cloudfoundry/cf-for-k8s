@@ -5,9 +5,6 @@ directories:
       commitTitle: Update routecontroller image digest to sha256:ed4b3e351a31313ebf974439e4fb43210281a02f0a9125cb8ea880c572385b5f
       sha: 4153bbdbaf3e8d3d681a84a112f3c9cc10129ff3
     path: github.com/cloudfoundry/cf-k8s-networking
-  - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288
-    path: github.com/cloudfoundry/cf-k8s-logging/config
   - git:
       commitTitle: Remove duplicated property
       sha: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
@@ -55,4 +52,9 @@ directories:
       sha: 624901cc813c1c8ff83e8bef88882cb97438ab6b
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288
+    path: .
+  path: config/logging/_ytt_lib/cf-k8s-logging
 kind: LockConfig

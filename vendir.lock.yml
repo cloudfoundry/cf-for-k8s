@@ -2,10 +2,6 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Remove duplicated property
-      sha: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
-    path: github.com/cloudfoundry/metric-proxy
-  - git:
       commitTitle: Update UAA image reference in k8s deployment template to 74.23.0
       sha: 6efde609a06c53d87d8c68443906f32221705b14
     path: github.com/cloudfoundry/uaa
@@ -61,4 +57,10 @@ directories:
       url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288
     path: .
   path: config/logging/_ytt_lib/cf-k8s-logging
+- contents:
+  - git:
+      commitTitle: Remove duplicated property
+      sha: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
+    path: .
+  path: config/metrics/_ytt_lib/metric-proxy
 kind: LockConfig

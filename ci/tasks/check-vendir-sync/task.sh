@@ -27,7 +27,7 @@ for dir in * ; do
     ./build.sh
     if [[ $dir = "minio" ]] ; then
       # Ignore the change to the `rollme` random value
-      minio_rendered_file="$DIR/config/_ytt_lib/minio/rendered.yml"
+      minio_rendered_file="$DIR/config/minio/_ytt_lib/minio/rendered.yml"
       if [[ $(git diff --unified=0 "$minio_rendered_file" | egrep "^(\+|-) " | grep -v rollme | wc -l) == 0 ]] ; then
         git checkout "$minio_rendered_file"
       fi

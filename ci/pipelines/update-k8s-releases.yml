@@ -423,7 +423,6 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    attempts: 3
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
     params:
@@ -734,7 +733,6 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    attempts: 3
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
     params:
@@ -1045,7 +1043,6 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    attempts: 3
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
     params:
@@ -1356,7 +1353,6 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    attempts: 3
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
     params:
@@ -1668,7 +1664,6 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    attempts: 3
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
     params:
@@ -1979,7 +1974,6 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    attempts: 3
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
     params:

@@ -27,12 +27,6 @@ directories:
       ref: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
     includePaths:
     - config/**/*
-  - path: github.com/cloudfoundry/uaa
-    git:
-      url: https://github.com/cloudfoundry/uaa
-      ref: v74.23.0
-    includePaths:
-    - k8s/templates/**/*
   - path: github.com/pivotal/kpack
     githubRelease:
       slug: pivotal/kpack
@@ -99,3 +93,11 @@ directories:
     includePaths:
     - templates/**/*
     - values/**/*
+- path: config/uaa/_ytt_lib/uaa
+  contents:
+  - path: .
+    git:
+      url: https://github.com/cloudfoundry/uaa
+      ref: v74.23.0
+    includePaths:
+    - k8s/templates/**/*

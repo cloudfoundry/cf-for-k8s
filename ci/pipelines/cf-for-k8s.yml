@@ -1290,7 +1290,6 @@ jobs:
 
 
 - name: validate-pr-on-gke
-  serial: true
   public: true
   plan:
   - in_parallel:
@@ -1304,7 +1303,6 @@ jobs:
       - test-vendir-sync-on-cf-for-k8s-pr
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
-    - get: cf-for-k8s-gke-terraform-templates
     - get: runtime-ci
 
   - put: cf-for-k8s-pr-all-branches-and-forks
@@ -1312,41 +1310,14 @@ jobs:
       path: cf-for-k8s-pr-all-branches-and-forks
       status: pending
       context: upgrade-check-uptime
-  - task: create-tf-vars-file
-    config:
-      <<: *common-task-config
-      outputs:
-      - name: tf-vars
-      params:
-        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          echo "pr-validation" > tf-vars/env-name.txt
-          cat <<EOT > tf-vars/input.tfvars
-          project = "((ci_k8s_gcp_project_name))"
-          region = "((ci_k8s_gcp_project_region))"
-          zone = "((ci_k8s_gcp_project_zone))"
-          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-          env_name = "$(cat tf-vars/env-name.txt)"
-          env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
-          dns_zone_name = "((ci_k8s_dns_zone_name))"
-          EOT
-  - put: terraform
-    params:
-      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
-      env_name_file: tf-vars/env-name.txt
-      delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
-
+  - put: ready-pool
+    params: {acquire: true}
   - task: install-cf-develop
     params:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      DOMAIN: cf-for-k8s.relint.rocks
+      DOMAIN: k8s-dev.relint.rocks
       USE_EXTERNAL_APP_REGISTRY: true
       APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
       APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
@@ -1355,7 +1326,7 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
-
+      pool-lock: ready-pool
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     params:
@@ -1369,13 +1340,14 @@ jobs:
     on_failure: *on_failure_uptime_pr_comment
     input_mapping:
       cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      pool-lock: ready-pool
     params:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
       UPGRADE: true
       UPTIMER: true
-      DOMAIN: cf-for-k8s.relint.rocks
+      DOMAIN: k8s-dev.relint.rocks
       USE_EXTERNAL_APP_REGISTRY: true
       APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
       APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
@@ -1409,11 +1381,13 @@ jobs:
   ensure:
     do:
     - task: delete-cf
+      input_mapping:
+        pool-lock: ready-pool
       config:
         <<: *common-task-config
         inputs:
         - name: cf-for-k8s-ci
-        - name: tf-vars
+        - name: pool-lock
         params:
           GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
           GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -1424,19 +1398,19 @@ jobs:
           - -ec
           - |
             source cf-for-k8s-ci/ci/helpers/gke.sh
-            cluster_name="$(cat tf-vars/env-name.txt)"
+
+            cluster_name="$(cat pool-lock/name)"
             gcloud_auth "${cluster_name}"
+
             kapp delete -a cf --yes
 
-    - put: terraform
+    - put: destroy-pool
       params:
-        terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
-        env_name_file: tf-vars/env-name.txt
-        action: destroy
-        var_files: [tf-vars/input.tfvars]
-      get_params:
-        action: destroy
+        add: ready-pool
 
+    - put: ready-pool
+      params:
+        remove: ready-pool
 - name: validate-pr-on-newest-k8s-kind
   plan:
   - in_parallel:

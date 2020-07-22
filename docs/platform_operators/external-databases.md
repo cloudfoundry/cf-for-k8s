@@ -42,7 +42,6 @@ As prerequisite, you need to execute the following steps to configure your postg
 1. Set the environment variables
 
     ```bash
-    export VALUES_FILE=<path to file from above>
     export PGPASSWORD=<password of postgres super user>
     export PGHOST=<host where postres is running>
     ```
@@ -54,12 +53,12 @@ As prerequisite, you need to execute the following steps to configure your postg
 
     The following uses the python module [yq](https://kislyuk.github.io/yq/).
     ```bash
-    CCDB_USERNAME=$(yq -r '.capi.database.user' "$VALUES_FILE")
-    CCDB_PASSWORD=$(yq -r '.capi.database.password' "$VALUES_FILE")
-    CCDB_NAME=$(yq -r '.capi.database.name' "$VALUES_FILE")
-    UAADB_USERNAME=$(yq -r '.uaa.database.user' "$VALUES_FILE")
-    UAADB_PASSWORD=$(yq -r '.uaa.database.password' "$VALUES_FILE")
-    UAADB_NAME=$(yq -r '.uaa.database.name' "$VALUES_FILE")
+    CCDB_USERNAME=$(yq -r '.capi.database.user' db-values.yml)
+    CCDB_PASSWORD=$(yq -r '.capi.database.password' db-values.yml)
+    CCDB_NAME=$(yq -r '.capi.database.name' db-values.yml)
+    UAADB_USERNAME=$(yq -r '.uaa.database.user' db-values.yml)
+    UAADB_PASSWORD=$(yq -r '.uaa.database.password' db-values.yml)
+    UAADB_NAME=$(yq -r '.uaa.database.name' db-values.yml)
     cat > /tmp/setup_db.sql <<EOT
     CREATE DATABASE ${CCDB_NAME};
     CREATE ROLE ${CCDB_USERNAME} LOGIN PASSWORD '${CCDB_PASSWORD}';
@@ -73,12 +72,12 @@ As prerequisite, you need to execute the following steps to configure your postg
     To use the Golang [yq](https://github.com/mikefarah/yq) utility, use these assignments.
     ```
     ```bash
-    CCDB_USERNAME=$(yq read "$VALUES_FILE" 'capi.database.user')
-    CCDB_PASSWORD=$(yq read "$VALUES_FILE" 'capi.database.password')
-    CCDB_NAME=$(yq read "$VALUES_FILE" 'capi.database.name')
-    UAADB_USERNAME=$(yq read "$VALUES_FILE" 'uaa.database.user')
-    UAADB_PASSWORD=$(yq read "$VALUES_FILE" 'uaa.database.password')
-    UAADB_NAME=$(yq read "$VALUES_FILE" 'uaa.database.name')
+    CCDB_USERNAME=$(yq read db-values.yml 'capi.database.user')
+    CCDB_PASSWORD=$(yq read db-values.yml 'capi.database.password')
+    CCDB_NAME=$(yq read db-values.yml 'capi.database.name')
+    UAADB_USERNAME=$(yq read db-values.yml 'uaa.database.user')
+    UAADB_PASSWORD=$(yq read db-values.yml 'uaa.database.password')
+    UAADB_NAME=$(yq read db-values.yml 'uaa.database.name')
     ...
     ```
 
@@ -86,18 +85,39 @@ As prerequisite, you need to execute the following steps to configure your postg
 
 If both, capi and uaa, are configured to use an external database, no internal database will be deployed.
 
-## Example
+## Example with external RDS database
 
 In the following section, an external database is created using the bitnami postgresql helm chart. Please note that this setup is **not suitable for production environments**.
 
-1. Install postgresql using helm
+1. Create a RDS database. The following command will create a small database for development. Please adjust the settings to your requirements.
 
     ```bash
-    helm repo add bitnami https://charts.bitnami.com/bitnami
-    helm install postgresql bitnami/postgresql
+    export PGPASSWORD=<your password>
+    aws rds create-db-instance \
+        --engine postgres \
+        --db-instance-identifier cf-for-k8s \
+        --allocated-storage 20 \
+        --db-instance-class db.t2.micro \
+        --db-subnet-group default \
+        --master-username postgres \
+        --master-user-password "$PGPASSWORD" \
+        --backup-retention-period 7 \
+        --publicly-accessible
     ```
 
-1. Create configuration file `db-values.yaml`
+1. Wait until RDS database is ready
+
+    ```bash
+    aws rds wait db-instance-available --db-instance-identifier cf-for-k8s
+    ```
+
+1. Extract database hostname
+
+    ```bash
+    aws rds describe-db-instances --db-instance-identifier cf-for-k8s | jq -r '.DBInstances[0].Endpoint.Address'
+    ```
+
+1. Create configuration file `db-values.yml`. Please replace the `host`, `password` and `ca_cert` in this file accordingly. You can download the certificate from [here](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
 
     ```yaml
     #@data/values
@@ -105,33 +125,76 @@ In the following section, an external database is created using the bitnami post
     capi:
       database:
         adapter: postgres
-        host: postgresql.default.svc.cluster.local
+        host: cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com
         port: 5432
         user: capi_user
-        password: capi_password
+        password: <password for capi_user>
         name: capi_db
+        ca_cert: |
+          -----BEGIN CERTIFICATE-----
+          MIIEBjCCAu6gAwIBAgIJAMc0ZzaSUK51MA0GCSqGSIb3DQEBCwUAMIGPMQswCQYD
+          VQQGEwJVUzEQMA4GA1UEBwwHU2VhdHRsZTETMBEGA1UECAwKV2FzaGluZ3RvbjEi
+          MCAGA1UECgwZQW1hem9uIFdlYiBTZXJ2aWNlcywgSW5jLjETMBEGA1UECwwKQW1h
+          em9uIFJEUzEgMB4GA1UEAwwXQW1hem9uIFJEUyBSb290IDIwMTkgQ0EwHhcNMTkw
+          ODIyMTcwODUwWhcNMjQwODIyMTcwODUwWjCBjzELMAkGA1UEBhMCVVMxEDAOBgNV
+          BAcMB1NlYXR0bGUxEzARBgNVBAgMCldhc2hpbmd0b24xIjAgBgNVBAoMGUFtYXpv
+          biBXZWIgU2VydmljZXMsIEluYy4xEzARBgNVBAsMCkFtYXpvbiBSRFMxIDAeBgNV
+          BAMMF0FtYXpvbiBSRFMgUm9vdCAyMDE5IENBMIIBIjANBgkqhkiG9w0BAQEFAAOC
+          AQ8AMIIBCgKCAQEArXnF/E6/Qh+ku3hQTSKPMhQQlCpoWvnIthzX6MK3p5a0eXKZ
+          oWIjYcNNG6UwJjp4fUXl6glp53Jobn+tWNX88dNH2n8DVbppSwScVE2LpuL+94vY
+          0EYE/XxN7svKea8YvlrqkUBKyxLxTjh+U/KrGOaHxz9v0l6ZNlDbuaZw3qIWdD/I
+          6aNbGeRUVtpM6P+bWIoxVl/caQylQS6CEYUk+CpVyJSkopwJlzXT07tMoDL5WgX9
+          O08KVgDNz9qP/IGtAcRduRcNioH3E9v981QO1zt/Gpb2f8NqAjUUCUZzOnij6mx9
+          McZ+9cWX88CRzR0vQODWuZscgI08NvM69Fn2SQIDAQABo2MwYTAOBgNVHQ8BAf8E
+          BAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUc19g2LzLA5j0Kxc0LjZa
+          pmD/vB8wHwYDVR0jBBgwFoAUc19g2LzLA5j0Kxc0LjZapmD/vB8wDQYJKoZIhvcN
+          AQELBQADggEBAHAG7WTmyjzPRIM85rVj+fWHsLIvqpw6DObIjMWokpliCeMINZFV
+          ynfgBKsf1ExwbvJNzYFXW6dihnguDG9VMPpi2up/ctQTN8tm9nDKOy08uNZoofMc
+          NUZxKCEkVKZv+IL4oHoeayt8egtv3ujJM6V14AstMQ6SwvwvA93EP/Ug2e4WAXHu
+          cbI1NAbUgVDqp+DRdfvZkgYKryjTWd/0+1fS8X1bBZVWzl7eirNVnHbSH2ZDpNuY
+          0SBd8dj5F6ld3t58ydZbrTHze7JJOd8ijySAp4/kiu9UfZWuTPABzDa/DSdz9Dk/
+          zPW4CXXvhLmE02TA9/HeCw3KEHIwicNuEfw=
+          -----END CERTIFICATE-----
 
     uaa:
       database:
         adapter: postgresql
-        host: postgresql.default.svc.cluster.local
+        host: cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com
         port: 5432
         user: uaa_user
-        password: uaa_password
+        password: <password for uaa_user>
         name: uaa_db
+        ca_cert: |
+          -----BEGIN CERTIFICATE-----
+          MIIEBjCCAu6gAwIBAgIJAMc0ZzaSUK51MA0GCSqGSIb3DQEBCwUAMIGPMQswCQYD
+          VQQGEwJVUzEQMA4GA1UEBwwHU2VhdHRsZTETMBEGA1UECAwKV2FzaGluZ3RvbjEi
+          MCAGA1UECgwZQW1hem9uIFdlYiBTZXJ2aWNlcywgSW5jLjETMBEGA1UECwwKQW1h
+          em9uIFJEUzEgMB4GA1UEAwwXQW1hem9uIFJEUyBSb290IDIwMTkgQ0EwHhcNMTkw
+          ODIyMTcwODUwWhcNMjQwODIyMTcwODUwWjCBjzELMAkGA1UEBhMCVVMxEDAOBgNV
+          BAcMB1NlYXR0bGUxEzARBgNVBAgMCldhc2hpbmd0b24xIjAgBgNVBAoMGUFtYXpv
+          biBXZWIgU2VydmljZXMsIEluYy4xEzARBgNVBAsMCkFtYXpvbiBSRFMxIDAeBgNV
+          BAMMF0FtYXpvbiBSRFMgUm9vdCAyMDE5IENBMIIBIjANBgkqhkiG9w0BAQEFAAOC
+          AQ8AMIIBCgKCAQEArXnF/E6/Qh+ku3hQTSKPMhQQlCpoWvnIthzX6MK3p5a0eXKZ
+          oWIjYcNNG6UwJjp4fUXl6glp53Jobn+tWNX88dNH2n8DVbppSwScVE2LpuL+94vY
+          0EYE/XxN7svKea8YvlrqkUBKyxLxTjh+U/KrGOaHxz9v0l6ZNlDbuaZw3qIWdD/I
+          6aNbGeRUVtpM6P+bWIoxVl/caQylQS6CEYUk+CpVyJSkopwJlzXT07tMoDL5WgX9
+          O08KVgDNz9qP/IGtAcRduRcNioH3E9v981QO1zt/Gpb2f8NqAjUUCUZzOnij6mx9
+          McZ+9cWX88CRzR0vQODWuZscgI08NvM69Fn2SQIDAQABo2MwYTAOBgNVHQ8BAf8E
+          BAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUc19g2LzLA5j0Kxc0LjZa
+          pmD/vB8wHwYDVR0jBBgwFoAUc19g2LzLA5j0Kxc0LjZapmD/vB8wDQYJKoZIhvcN
+          AQELBQADggEBAHAG7WTmyjzPRIM85rVj+fWHsLIvqpw6DObIjMWokpliCeMINZFV
+          ynfgBKsf1ExwbvJNzYFXW6dihnguDG9VMPpi2up/ctQTN8tm9nDKOy08uNZoofMc
+          NUZxKCEkVKZv+IL4oHoeayt8egtv3ujJM6V14AstMQ6SwvwvA93EP/Ug2e4WAXHu
+          cbI1NAbUgVDqp+DRdfvZkgYKryjTWd/0+1fS8X1bBZVWzl7eirNVnHbSH2ZDpNuY
+          0SBd8dj5F6ld3t58ydZbrTHze7JJOd8ijySAp4/kiu9UfZWuTPABzDa/DSdz9Dk/
+          zPW4CXXvhLmE02TA9/HeCw3KEHIwicNuEfw=
+          -----END CERTIFICATE-----
     ```
 1. Set environment variables
 
     ```bash
-    VALUES_FILE=db-values.yaml
-    export PGPASSWORD=$(kubectl get secret --namespace default postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode)
-    export PGHOST=127.0.0.1
+    export PGHOST=$(cat db-values.yml | yq -r '.capi.database.host' )
     ```
-1. Forward port to database
-
-   ```bash
-   kubectl port-forward --namespace default svc/postgresql 5432:5432 &
-   ```
 
 1. Run configuration script from above
 
@@ -142,10 +205,15 @@ In the following section, an external database is created using the bitnami post
 
 1. [Install cf-for-k8s](../deploy.md)
 
-    i. Render the final K8s template to raw K8s configuration. Pass the `db-values.yaml` file as additional file to `ytt`
+    i. Configure your [`cf-values.yml`](../deploy.md#cf-values) file
+    i. Render the final K8s template to raw K8s configuration. Pass the `db-values.yml` file as additional file to `ytt`
 
     ```bash
-    ytt -f config -f /tmp/cf-values.yml -f db-values.yaml > /tmp/cf-for-k8s-rendered.yml
+    ytt -f config -f /tmp/cf-values.yml -f db-values.yml > /tmp/cf-for-k8s-rendered.yml
     ```
 
     ii. Install using `kapp`
+
+    ```bash
+    kapp deploy -a cf-for-k8s -f /tmp/cf-for-k8s-rendered.yml
+    ```

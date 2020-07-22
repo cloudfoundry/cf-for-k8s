@@ -1,35 +1,6 @@
 apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
-  - manual: {}
-    path: eirini
-  path: config/eirini/_ytt_lib
-- contents:
-  - manual: {}
-    path: minio
-  path: config/minio/_ytt_lib
-- contents:
-  - manual: {}
-    path: postgres
-  path: config/postgres/_ytt_lib
-- contents:
-  - git:
-      commitTitle: '[stable/minio] Support imagePullSecrets (#22812)...'
-      sha: 921eb8a969fb9d7b7b7d13904f740c76748ec2c9
-    path: .
-  path: build/minio/_vendir
-- contents:
-  - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry-incubator/eirini-release/releases/28266990
-    path: .
-  path: build/eirini/_vendir
-- contents:
-  - git:
-      commitTitle: '[bitnami/postgresql] Release 8.10.6 updating components versions...'
-      sha: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe
-    path: .
-  path: build/postgres/_vendir
-- contents:
   - git:
       commitTitle: images.yml updated by CI...
       sha: 624901cc813c1c8ff83e8bef88882cb97438ab6b
@@ -63,4 +34,33 @@ directories:
       sha: 6efde609a06c53d87d8c68443906f32221705b14
     path: .
   path: config/uaa/_ytt_lib/uaa
+- contents:
+  - manual: {}
+    path: eirini
+  path: config/eirini/_ytt_lib
+- contents:
+  - manual: {}
+    path: minio
+  path: config/minio/_ytt_lib
+- contents:
+  - manual: {}
+    path: postgres
+  path: config/postgres/_ytt_lib
+- contents:
+  - git:
+      commitTitle: '[stable/minio] Support imagePullSecrets (#22812)...'
+      sha: 921eb8a969fb9d7b7b7d13904f740c76748ec2c9
+    path: .
+  path: build/minio/_vendir
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/cloudfoundry-incubator/eirini-release/releases/28266990
+    path: .
+  path: build/eirini/_vendir
+- contents:
+  - git:
+      commitTitle: '[bitnami/postgresql] Release 8.10.6 updating components versions...'
+      sha: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe
+    path: .
+  path: build/postgres/_vendir
 kind: LockConfig

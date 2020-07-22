@@ -3,55 +3,6 @@ apiVersion: vendir.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.8.0
 directories:
-# the components in this section below are handled by their corresponding build scripts
-# the manual param tells vendir to not override/touch the contents of these config/_ytt_lib/<eirini|minio|postgres> directories
-- path: config/eirini/_ytt_lib
-  contents:
-  - path: eirini
-    manual: {}
-
-- path: config/minio/_ytt_lib
-  contents:
-  - path: minio
-    manual: {}
-
-- path: config/postgres/_ytt_lib
-  contents:
-  - path: postgres
-    manual: {}
-
-# When adding a helm chart to our set of components:
-# 1. Find the chart you need from https://hub.helm.sh/charts/stable
-# 2. Note the latest (or desired) version from the "Chart Versions" section on the right.
-# 3. Navigate to the corresponding directory of https://github.com/helm/charts/tree/master/stable or related repo
-# 4. Look at the history or blame log of the Chart.yaml file to find when the version was bumped to the version you found earlier.
-# 5. The SHA of the commit that bumped the version will be the SHA you use as the 'ref' of the git section below.
-- path: build/minio/_vendir
-  contents:
-  - path: .
-    git:
-      url: https://github.com/helm/charts
-      ref: 921eb8a969fb9d7b7b7d13904f740c76748ec2c9 # version: 5.0.30
-    includePaths:
-    - stable/minio/**/*
-
-- path: build/eirini/_vendir
-  contents:
-  - path: .
-    githubRelease:
-      slug: cloudfoundry-incubator/eirini-release
-      tag: v1.7.0
-      disableAutoChecksumValidation: true
-      unpackArchive:
-        path: eirini.tgz
-- path: build/postgres/_vendir
-  contents:
-  - path: .
-    git:
-      url: https://github.com/bitnami/charts
-      ref: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe # version: 8.10.6
-    includePaths:
-    - bitnami/postgresql/**/*
 - path: config/capi/_ytt_lib/capi-k8s-release
   contents:
   - path: .
@@ -106,3 +57,52 @@ directories:
       ref: v74.23.0
     includePaths:
     - k8s/templates/**/*
+# the components in this section below are handled by their corresponding build scripts
+# the manual param tells vendir to not override/touch the contents of these directories
+- path: config/eirini/_ytt_lib
+  contents:
+  - path: eirini
+    manual: {}
+
+- path: config/minio/_ytt_lib
+  contents:
+  - path: minio
+    manual: {}
+
+- path: config/postgres/_ytt_lib
+  contents:
+  - path: postgres
+    manual: {}
+
+# When adding a helm chart to our set of components:
+# 1. Find the chart you need from https://hub.helm.sh/charts/stable
+# 2. Note the latest (or desired) version from the "Chart Versions" section on the right.
+# 3. Navigate to the corresponding directory of https://github.com/helm/charts/tree/master/stable or related repo
+# 4. Look at the history or blame log of the Chart.yaml file to find when the version was bumped to the version you found earlier.
+# 5. The SHA of the commit that bumped the version will be the SHA you use as the 'ref' of the git section below.
+- path: build/minio/_vendir
+  contents:
+  - path: .
+    git:
+      url: https://github.com/helm/charts
+      ref: 921eb8a969fb9d7b7b7d13904f740c76748ec2c9 # version: 5.0.30
+    includePaths:
+    - stable/minio/**/*
+
+- path: build/eirini/_vendir
+  contents:
+  - path: .
+    githubRelease:
+      slug: cloudfoundry-incubator/eirini-release
+      tag: v1.7.0
+      disableAutoChecksumValidation: true
+      unpackArchive:
+        path: eirini.tgz
+- path: build/postgres/_vendir
+  contents:
+  - path: .
+    git:
+      url: https://github.com/bitnami/charts
+      ref: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe # version: 8.10.6
+    includePaths:
+    - bitnami/postgresql/**/*

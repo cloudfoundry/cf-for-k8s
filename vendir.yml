@@ -21,12 +21,6 @@ directories:
       slug: cloudfoundry/cf-k8s-logging
       tag: 0.2.1
       disableAutoChecksumValidation: true
-  - path: github.com/cloudfoundry/metric-proxy
-    git:
-      url: https://github.com/cloudfoundry/metric-proxy
-      ref: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
-    includePaths:
-    - config/**/*
   - path: github.com/cloudfoundry/uaa
     git:
       url: https://github.com/cloudfoundry/uaa
@@ -99,3 +93,11 @@ directories:
     includePaths:
     - templates/**/*
     - values/**/*
+- path: config/metrics/_ytt_lib/metric-proxy
+  contents:
+  - path: .
+    git:
+      url: https://github.com/cloudfoundry/metric-proxy
+      ref: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
+    includePaths:
+    - config/**/*

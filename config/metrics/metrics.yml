@@ -18,6 +18,6 @@ metric_proxy:
     key: #@ data.values.metric_proxy.cert.key
 #@ end
 
-#@ metrics = library.get("github.com/cloudfoundry/metric-proxy")
+#@ metrics = library.get("metric-proxy")
 --- #@ template.replace(metrics.with_data_values(metrics_values()).eval())
 

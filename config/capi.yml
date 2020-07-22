@@ -69,9 +69,9 @@ uaa:
     secretName: uaa-certs
   clients:
     cloud_controller_username_lookup:
-      secret: #@ data.values.uaa.admin_client_secret
+      secret: #@ data.values.capi.cc_username_lookup_client_secret
     capi_kpack_watcher:
-      secret: #@ data.values.uaa.admin_client_secret
+      secret: #@ data.values.capi.kpack_watcher_client_secret
 
 kpack:
   registry:
@@ -129,7 +129,7 @@ metadata:
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:
-  password: #@ data.values.uaa.admin_client_secret
+  password: #@ data.values.capi.kpack_watcher_client_secret
 ---
 apiVersion: v1
 kind: Secret
@@ -138,4 +138,4 @@ metadata:
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:
-  password: #@ data.values.uaa.admin_client_secret
+  password: #@ data.values.capi.cc_username_lookup_client_secret

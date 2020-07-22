@@ -123,19 +123,14 @@ oauth:
       autoapprove:
       - openid
       id: admin
-    #! TODO: each client should use different secrets!
-    cf-k8s-networking:
-      authorities: uaa.resource,cloud_controller.admin_read_only
-      authorized-grant-types: client_credentials
-      secret: #@ data.values.uaa.admin_client_secret
     cloud_controller_username_lookup:
       authorities: scim.userids
       authorized-grant-types: client_credentials
-      secret: #@ data.values.uaa.admin_client_secret
+      secret: #@ data.values.capi.cc_username_lookup_client_secret
     capi_kpack_watcher:
       authorities: cloud_controller.write,cloud_controller.update_build_state
       authorized-grant-types: client_credentials
-      secret: #@ data.values.uaa.admin_client_secret
+      secret: #@ data.values.capi.kpack_watcher_client_secret
   #@overlay/match missing_ok=True
   user:
     authorities:

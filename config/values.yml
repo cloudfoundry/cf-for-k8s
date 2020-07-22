@@ -65,6 +65,8 @@ capi:
     region: "''"
     endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
   database_password_secret_name: capi-database-password
+  kpack_watcher_client_secret: ""
+  cc_username_lookup_client_secret: ""
   database:
     #! or mysql2, as needed
     adapter: postgres

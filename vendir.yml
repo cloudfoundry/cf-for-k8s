@@ -5,11 +5,6 @@ minimumRequiredVersion: 0.8.0
 directories:
 - path: config/_ytt_lib
   contents:
-  - path: github.com/cloudfoundry/cf-k8s-logging/config
-    githubRelease:
-      slug: cloudfoundry/cf-k8s-logging
-      tag: 0.2.1
-      disableAutoChecksumValidation: true
   - path: github.com/cloudfoundry/metric-proxy
     git:
       url: https://github.com/cloudfoundry/metric-proxy
@@ -103,3 +98,10 @@ directories:
       disableAutoChecksumValidation: true
     includePaths:
     - release-*.yaml
+- path: config/logging/_ytt_lib/cf-k8s-logging
+  contents:
+  - path: .
+    githubRelease:
+      slug: cloudfoundry/cf-k8s-logging
+      tag: 0.2.1
+      disableAutoChecksumValidation: true

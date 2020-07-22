@@ -9,7 +9,7 @@ systemNamespace: #@ data.values.system_namespace
 workloadsNamespace: #@ data.values.workloads_namespace
 #@ end
 
-#@ networking = library.get("github.com/cloudfoundry/cf-k8s-networking")
+#@ networking = library.get("cf-k8s-networking")
 --- #@ template.replace(networking.with_data_values(networking_values()).eval())
 
 #! Istio Configurations

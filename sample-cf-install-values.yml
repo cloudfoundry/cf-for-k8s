@@ -28,6 +28,7 @@ capi:
   cc_username_lookup_client_secret: uaa_cloud_controller_lookup_client_credentials
   database:
     password: ccdb_password
+    encryption_key: ccdb_encryption_key
 
 #! Notes about X.509 certificates:
 #! - the certificates and keys are base64 encoded

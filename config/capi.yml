@@ -139,3 +139,12 @@ metadata:
 type: Opaque
 stringData:
   password: #@ data.values.capi.cc_username_lookup_client_secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: #@ data.values.capi.database_encryption_key_secret_name
+  namespace: #@ data.values.system_namespace
+type: Opaque
+stringData:
+  password: #@ data.values.capi.database.encryption_key

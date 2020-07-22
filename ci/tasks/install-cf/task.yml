@@ -1,0 +1,43 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+inputs:
+  - name: cf-for-k8s-ci
+  - name: cf-for-k8s
+  - name: pool-lock
+    optional: true
+  - name: tf-vars
+    optional: true
+  - name: terraform
+    optional: true
+  - name: env-metadata
+    optional: true
+  - name: db-metadata
+    optional: true
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON:
+  GCP_PROJECT_NAME:
+  GCP_PROJECT_ZONE:
+  DOMAIN: k8s-dev.relint.rocks
+  USE_EXTERNAL_APP_REGISTRY:
+  APP_REGISTRY_HOSTNAME:
+  APP_REGISTRY_REPOSITORY_PREFIX:
+  APP_REGISTRY_USERNAME:
+  APP_REGISTRY_PASSWORD:
+  UPGRADE:
+  UPTIMER:
+  PGPASSWORD:
+  ADDITIONAL_YAML_CONFIG:
+
+outputs:
+  - name: env-metadata
+  - name: uptimer-result
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/install-cf/task.sh

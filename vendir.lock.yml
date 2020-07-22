@@ -12,9 +12,6 @@ directories:
       commitTitle: Update UAA image reference in k8s deployment template to 74.23.0
       sha: 6efde609a06c53d87d8c68443906f32221705b14
     path: github.com/cloudfoundry/uaa
-  - githubRelease:
-      url: https://api.github.com/repos/pivotal/kpack/releases/27343776
-    path: github.com/pivotal/kpack
   path: config/_ytt_lib
 - contents:
   - manual: {}
@@ -57,4 +54,9 @@ directories:
       sha: 4153bbdbaf3e8d3d681a84a112f3c9cc10129ff3
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
+- contents:
+  - githubRelease:
+      url: https://api.github.com/repos/pivotal/kpack/releases/27343776
+    path: .
+  path: config/kpack/_ytt_lib/kpack
 kind: LockConfig

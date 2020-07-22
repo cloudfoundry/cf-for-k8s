@@ -22,13 +22,6 @@ directories:
       ref: v74.23.0
     includePaths:
     - k8s/templates/**/*
-  - path: github.com/pivotal/kpack
-    githubRelease:
-      slug: pivotal/kpack
-      tag: v0.0.9
-      disableAutoChecksumValidation: true
-    includePaths:
-    - release-*.yaml
 
 # the components in this section below are handled by their corresponding build scripts
 # the manual param tells vendir to not override/touch the contents of these config/_ytt_lib/<eirini|minio|postgres> directories
@@ -101,3 +94,12 @@ directories:
     - config/istio-config/**/*
     - config/istio/generated/**/*
     - config/routecontroller/**/*
+- path: config/kpack/_ytt_lib/kpack
+  contents:
+  - path: .
+    githubRelease:
+      slug: pivotal/kpack
+      tag: v0.0.9
+      disableAutoChecksumValidation: true
+    includePaths:
+    - release-*.yaml

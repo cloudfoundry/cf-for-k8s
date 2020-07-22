@@ -81,7 +81,7 @@ kpack:
     password: #@ data.values.app_registry.password
 #@ end
 
-#@ capi = library.get("github.com/cloudfoundry/capi-k8s-release")
+#@ capi = library.get("capi-k8s-release")
 --- #@ template.replace(capi.with_data_values(capi_values()).eval())
 
 #! expose CAPI under the system domain

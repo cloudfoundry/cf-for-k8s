@@ -117,9 +117,9 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: latest
+        - Tag: v1.0.692
           Type: resolved
-          URL: cloudfoundry/quarks-secret:latest
+          URL: cloudfoundry/quarks-secret:v1.0.692
         URL: index.docker.io/cloudfoundry/quarks-secret@sha256:4636fde42cd678823daea530f465389e3e92740b8fdfe6a6dca45aec838b37cd
   name: cf-quarks-secret
   namespace: cf-system

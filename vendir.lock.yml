@@ -57,6 +57,10 @@ directories:
     path: postgres
   path: config/postgres/_ytt_lib
 - contents:
+  - manual: {}
+    path: quarks-secret
+  path: config/quarks-secret/_ytt_lib
+- contents:
   - git:
       commitTitle: '[stable/minio] Support imagePullSecrets (#22812)...'
       sha: 921eb8a969fb9d7b7b7d13904f740c76748ec2c9

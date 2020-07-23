@@ -73,6 +73,11 @@ directories:
   - path: postgres
     manual: {}
 
+- path: config/quarks-secret/_ytt_lib
+  contents:
+    - path: quarks-secret
+      manual: {}
+
 # When adding a helm chart to our set of components:
 # 1. Find the chart you need from https://hub.helm.sh/charts/stable
 # 2. Note the latest (or desired) version from the "Chart Versions" section on the right.

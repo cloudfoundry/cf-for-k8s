@@ -137,11 +137,11 @@ cf-for-k8s can be configured to [use an external database](platform_operators/ex
 
 1. Run the following commands to install Cloud Foundry on your Kubernetes cluster.
 
-      i. Render the final K8s template to raw K8s configuration
+      i. Render the final K8s template to raw K8s configuration. The default installation of cf-for-k8s is optimized for infrastructures that do not support `service.type: LoadBalancer`. You will have to manually configure a loadbalancer. 
       ```console
       ytt -f config -f ${TMP_DIR}/cf-values.yml > ${TMP_DIR}/cf-for-k8s-rendered.yml
       ```
-      OR if you are deploying on a public cloud that supports service type: `LoadBalancer` then you should include the `./config-optional/ingressgateway-service-loadbalancer.yml`.
+      If you are deploying on a public cloud that supports `service.type: LoadBalancer` then you should include the `./config-optional/ingressgateway-service-loadbalancer.yml`.
       ```console
       ytt -f config -f config-optional/ingressgateway-service-loadbalancer.yml -f ${TMP_DIR}/cf-values.yml > ${TMP_DIR}/cf-for-k8s-rendered.yml
       ```

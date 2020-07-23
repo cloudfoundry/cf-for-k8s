@@ -74,7 +74,7 @@ directories:
   - path: postgres
     manual: {}
 
-- path: config/_ytt_lib
+- path: config/quarks-secret/_ytt_lib
   contents:
     - path: quarks-secret
       manual: {}

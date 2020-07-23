@@ -18,6 +18,7 @@ groups:
   - upgrade-long-lived-env-to-latest-master
   - validate-azure
   - validate-cf-for-k8s-upgrade
+  - update-last-valid-commit-to-head-of-master
   - validate-values-rotation-redeploy
 - name: pr-checks
   jobs:
@@ -109,14 +110,13 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 
-- name: cf-for-k8s-latest-release
+- name: cf-for-k8s-last-valid-commit
   type: git
   icon: github
   source:
-    tag_filter: v*
-    branch: master
+    branch: last-valid-commit
     uri: git@github.com:cloudfoundry/cf-for-k8s
-    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
 
 - name: cf-for-k8s-master-push
   type: git
@@ -1754,7 +1754,7 @@ jobs:
   serial: true
   public: true
   plan:
-  - get: cf-for-k8s-latest-release
+  - get: cf-for-k8s-last-valid-commit
   - get: cf-for-k8s-master
     trigger: true
   - get: cf-for-k8s-ci
@@ -1762,11 +1762,11 @@ jobs:
   - put: ready-pool
     params: {acquire: true}
 
-  - task: install-cf-latest-release
+  - task: install-cf-last-valid-commit
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-latest-release
+      cf-for-k8s: cf-for-k8s-last-valid-commit
     params:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -1778,7 +1778,7 @@ jobs:
       APP_NAME: jp-node-app
       VERIFY_EXISTING_APP: false
     input_mapping:
-      cf-for-k8s: cf-for-k8s-latest-release
+      cf-for-k8s: cf-for-k8s-last-valid-commit
 
   - task: install-cf-master
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
@@ -1837,6 +1837,29 @@ jobs:
   - put: ready-pool
     params:
       remove: ready-pool
+
+  on_failure:
+      task: job-failure
+      config:
+        << : *common-task-config
+        run:
+          path: /bin/bash
+          args:
+          - -c
+          - |
+            echo Upgrade has failed.
+            echo Last valid commit can be updated to HEAD of master via the 'update-last-valid-commit-to-head-of-master' job.
+
+- name: update-last-valid-commit-to-head-of-master
+  serial: true
+  public: true
+  plan:
+  - get: cf-for-k8s-last-valid-commit
+  - get: cf-for-k8s-master
+  - put: cf-for-k8s-last-valid-commit
+    params:
+      repos:
+        - cf-for-k8s-master
 
 - name: validate-values-rotation-redeploy
   serial: true

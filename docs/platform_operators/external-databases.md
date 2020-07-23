@@ -90,7 +90,7 @@ If both, capi and uaa, are configured to use an external database, no internal d
 
 ## Example with external RDS database
 
-In the following section, an external database is created using the bitnami postgresql helm chart. Please note that this setup is **not suitable for production environments**.
+In the following section, we will show how to setup an AWS RDS database and configure it as the datebase to be used for Cloud Controller and UAA. Please note that the values passed for RDS creation are **not suitable for production environments**.
 
 1. Create a RDS database. The following command will create a small database for development. Please adjust the settings to your requirements.
 

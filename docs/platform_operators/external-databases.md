@@ -7,6 +7,7 @@ You can use an external database for the cloud controller and uaa by providing f
 #@data/values
 ---
 capi:
+  #@overlay/replace
   database:
     adapter: postgres
     host: <host>
@@ -17,6 +18,7 @@ capi:
     ca_cert: <ca certificate for tls>
 
 uaa:
+  #@overlay/replace
   database:
     adapter: postgresql
     host: <host>
@@ -44,6 +46,7 @@ As prerequisite, you need to execute the following steps to configure your postg
     ```bash
     export PGPASSWORD=<password of postgres super user>
     export PGHOST=<host where postres is running>
+    export DB_VALUES_FILE=db-values.yml
     ```
 
 2. Run the following script. It will
@@ -53,31 +56,31 @@ As prerequisite, you need to execute the following steps to configure your postg
 
     The following uses the python module [yq](https://kislyuk.github.io/yq/).
     ```bash
-    CCDB_USERNAME=$(yq -r '.capi.database.user' db-values.yml)
-    CCDB_PASSWORD=$(yq -r '.capi.database.password' db-values.yml)
-    CCDB_NAME=$(yq -r '.capi.database.name' db-values.yml)
-    UAADB_USERNAME=$(yq -r '.uaa.database.user' db-values.yml)
-    UAADB_PASSWORD=$(yq -r '.uaa.database.password' db-values.yml)
-    UAADB_NAME=$(yq -r '.uaa.database.name' db-values.yml)
-    cat > /tmp/setup_db.sql <<EOT
+    CCDB_USERNAME=$(yq -r '.capi.database.user' "$DB_VALUES_FILE")
+    CCDB_PASSWORD=$(yq -r '.capi.database.password' "$DB_VALUES_FILE")
+    CCDB_NAME=$(yq -r '.capi.database.name' "$DB_VALUES_FILE")
+    UAADB_USERNAME=$(yq -r '.uaa.database.user' "$DB_VALUES_FILE")
+    UAADB_PASSWORD=$(yq -r '.uaa.database.password' "$DB_VALUES_FILE")
+    UAADB_NAME=$(yq -r '.uaa.database.name' "$DB_VALUES_FILE")
+    cat > "$TMPDIR/setup_db.sql" <<EOT
     CREATE DATABASE ${CCDB_NAME};
     CREATE ROLE ${CCDB_USERNAME} LOGIN PASSWORD '${CCDB_PASSWORD}';
     CREATE DATABASE ${UAADB_NAME};
     CREATE ROLE ${UAADB_USERNAME} LOGIN PASSWORD '${UAADB_PASSWORD}';
     EOT
-    psql -U postgres -f /tmp/setup_db.sql
+    psql -U postgres -f "$TMPDIR/setup_db.sql"
     psql -U postgres -d "${CCDB_NAME}" -c "CREATE EXTENSION citext"
     psql -U postgres -d "${UAADB_NAME}" -c "CREATE EXTENSION citext"
     ```
     To use the Golang [yq](https://github.com/mikefarah/yq) utility, use these assignments.
     ```
     ```bash
-    CCDB_USERNAME=$(yq read db-values.yml 'capi.database.user')
-    CCDB_PASSWORD=$(yq read db-values.yml 'capi.database.password')
-    CCDB_NAME=$(yq read db-values.yml 'capi.database.name')
-    UAADB_USERNAME=$(yq read db-values.yml 'uaa.database.user')
-    UAADB_PASSWORD=$(yq read db-values.yml 'uaa.database.password')
-    UAADB_NAME=$(yq read db-values.yml 'uaa.database.name')
+    CCDB_USERNAME=$(yq read "$DB_VALUES_FILE" 'capi.database.user')
+    CCDB_PASSWORD=$(yq read "$DB_VALUES_FILE" 'capi.database.password')
+    CCDB_NAME=$(yq read "$DB_VALUES_FILE" 'capi.database.name')
+    UAADB_USERNAME=$(yq read "$DB_VALUES_FILE" 'uaa.database.user')
+    UAADB_PASSWORD=$(yq read "$DB_VALUES_FILE" 'uaa.database.password')
+    UAADB_NAME=$(yq read "$DB_VALUES_FILE" 'uaa.database.name')
     ...
     ```
 
@@ -117,12 +120,13 @@ In the following section, an external database is created using the bitnami post
     aws rds describe-db-instances --db-instance-identifier cf-for-k8s | jq -r '.DBInstances[0].Endpoint.Address'
     ```
 
-1. Create configuration file `db-values.yml`. Please replace the `host`, `password` and `ca_cert` in this file accordingly. You can download the certificate from [here](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
+1. Create configuration file `"$DB_VALUES_FILE"`. Please replace the `host`, `password` and `ca_cert` in this file accordingly. You can download the certificate from [here](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
 
     ```yaml
     #@data/values
     ---
     capi:
+      @override/replace
       database:
         adapter: postgres
         host: cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com
@@ -132,31 +136,10 @@ In the following section, an external database is created using the bitnami post
         name: capi_db
         ca_cert: |
           -----BEGIN CERTIFICATE-----
-          MIIEBjCCAu6gAwIBAgIJAMc0ZzaSUK51MA0GCSqGSIb3DQEBCwUAMIGPMQswCQYD
-          VQQGEwJVUzEQMA4GA1UEBwwHU2VhdHRsZTETMBEGA1UECAwKV2FzaGluZ3RvbjEi
-          MCAGA1UECgwZQW1hem9uIFdlYiBTZXJ2aWNlcywgSW5jLjETMBEGA1UECwwKQW1h
-          em9uIFJEUzEgMB4GA1UEAwwXQW1hem9uIFJEUyBSb290IDIwMTkgQ0EwHhcNMTkw
-          ODIyMTcwODUwWhcNMjQwODIyMTcwODUwWjCBjzELMAkGA1UEBhMCVVMxEDAOBgNV
-          BAcMB1NlYXR0bGUxEzARBgNVBAgMCldhc2hpbmd0b24xIjAgBgNVBAoMGUFtYXpv
-          biBXZWIgU2VydmljZXMsIEluYy4xEzARBgNVBAsMCkFtYXpvbiBSRFMxIDAeBgNV
-          BAMMF0FtYXpvbiBSRFMgUm9vdCAyMDE5IENBMIIBIjANBgkqhkiG9w0BAQEFAAOC
-          AQ8AMIIBCgKCAQEArXnF/E6/Qh+ku3hQTSKPMhQQlCpoWvnIthzX6MK3p5a0eXKZ
-          oWIjYcNNG6UwJjp4fUXl6glp53Jobn+tWNX88dNH2n8DVbppSwScVE2LpuL+94vY
-          0EYE/XxN7svKea8YvlrqkUBKyxLxTjh+U/KrGOaHxz9v0l6ZNlDbuaZw3qIWdD/I
-          6aNbGeRUVtpM6P+bWIoxVl/caQylQS6CEYUk+CpVyJSkopwJlzXT07tMoDL5WgX9
-          O08KVgDNz9qP/IGtAcRduRcNioH3E9v981QO1zt/Gpb2f8NqAjUUCUZzOnij6mx9
-          McZ+9cWX88CRzR0vQODWuZscgI08NvM69Fn2SQIDAQABo2MwYTAOBgNVHQ8BAf8E
-          BAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUc19g2LzLA5j0Kxc0LjZa
-          pmD/vB8wHwYDVR0jBBgwFoAUc19g2LzLA5j0Kxc0LjZapmD/vB8wDQYJKoZIhvcN
-          AQELBQADggEBAHAG7WTmyjzPRIM85rVj+fWHsLIvqpw6DObIjMWokpliCeMINZFV
-          ynfgBKsf1ExwbvJNzYFXW6dihnguDG9VMPpi2up/ctQTN8tm9nDKOy08uNZoofMc
-          NUZxKCEkVKZv+IL4oHoeayt8egtv3ujJM6V14AstMQ6SwvwvA93EP/Ug2e4WAXHu
-          cbI1NAbUgVDqp+DRdfvZkgYKryjTWd/0+1fS8X1bBZVWzl7eirNVnHbSH2ZDpNuY
-          0SBd8dj5F6ld3t58ydZbrTHze7JJOd8ijySAp4/kiu9UfZWuTPABzDa/DSdz9Dk/
-          zPW4CXXvhLmE02TA9/HeCw3KEHIwicNuEfw=
-          -----END CERTIFICATE-----
+          ...
 
     uaa:
+      #@overlay/replace
       database:
         adapter: postgresql
         host: cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com
@@ -166,54 +149,33 @@ In the following section, an external database is created using the bitnami post
         name: uaa_db
         ca_cert: |
           -----BEGIN CERTIFICATE-----
-          MIIEBjCCAu6gAwIBAgIJAMc0ZzaSUK51MA0GCSqGSIb3DQEBCwUAMIGPMQswCQYD
-          VQQGEwJVUzEQMA4GA1UEBwwHU2VhdHRsZTETMBEGA1UECAwKV2FzaGluZ3RvbjEi
-          MCAGA1UECgwZQW1hem9uIFdlYiBTZXJ2aWNlcywgSW5jLjETMBEGA1UECwwKQW1h
-          em9uIFJEUzEgMB4GA1UEAwwXQW1hem9uIFJEUyBSb290IDIwMTkgQ0EwHhcNMTkw
-          ODIyMTcwODUwWhcNMjQwODIyMTcwODUwWjCBjzELMAkGA1UEBhMCVVMxEDAOBgNV
-          BAcMB1NlYXR0bGUxEzARBgNVBAgMCldhc2hpbmd0b24xIjAgBgNVBAoMGUFtYXpv
-          biBXZWIgU2VydmljZXMsIEluYy4xEzARBgNVBAsMCkFtYXpvbiBSRFMxIDAeBgNV
-          BAMMF0FtYXpvbiBSRFMgUm9vdCAyMDE5IENBMIIBIjANBgkqhkiG9w0BAQEFAAOC
-          AQ8AMIIBCgKCAQEArXnF/E6/Qh+ku3hQTSKPMhQQlCpoWvnIthzX6MK3p5a0eXKZ
-          oWIjYcNNG6UwJjp4fUXl6glp53Jobn+tWNX88dNH2n8DVbppSwScVE2LpuL+94vY
-          0EYE/XxN7svKea8YvlrqkUBKyxLxTjh+U/KrGOaHxz9v0l6ZNlDbuaZw3qIWdD/I
-          6aNbGeRUVtpM6P+bWIoxVl/caQylQS6CEYUk+CpVyJSkopwJlzXT07tMoDL5WgX9
-          O08KVgDNz9qP/IGtAcRduRcNioH3E9v981QO1zt/Gpb2f8NqAjUUCUZzOnij6mx9
-          McZ+9cWX88CRzR0vQODWuZscgI08NvM69Fn2SQIDAQABo2MwYTAOBgNVHQ8BAf8E
-          BAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQUc19g2LzLA5j0Kxc0LjZa
-          pmD/vB8wHwYDVR0jBBgwFoAUc19g2LzLA5j0Kxc0LjZapmD/vB8wDQYJKoZIhvcN
-          AQELBQADggEBAHAG7WTmyjzPRIM85rVj+fWHsLIvqpw6DObIjMWokpliCeMINZFV
-          ynfgBKsf1ExwbvJNzYFXW6dihnguDG9VMPpi2up/ctQTN8tm9nDKOy08uNZoofMc
-          NUZxKCEkVKZv+IL4oHoeayt8egtv3ujJM6V14AstMQ6SwvwvA93EP/Ug2e4WAXHu
-          cbI1NAbUgVDqp+DRdfvZkgYKryjTWd/0+1fS8X1bBZVWzl7eirNVnHbSH2ZDpNuY
-          0SBd8dj5F6ld3t58ydZbrTHze7JJOd8ijySAp4/kiu9UfZWuTPABzDa/DSdz9Dk/
-          zPW4CXXvhLmE02TA9/HeCw3KEHIwicNuEfw=
-          -----END CERTIFICATE-----
+          ...
     ```
 1. Set environment variables
 
     ```bash
-    export PGHOST=$(cat db-values.yml | yq -r '.capi.database.host' )
+    export DB_VALUES_FILE=db-values.yml
+    export PGHOST=$(cat "$DB_VALUES_FILE" | yq -r '.capi.database.host' )
     ```
 
 1. Run configuration script from above
 
     ```bash
-    VALUES_JSON=...
+    CCDB_USERNAME=...
     ...
     ```
 
 1. [Install cf-for-k8s](../deploy.md)
 
     i. Configure your [`cf-values.yml`](../deploy.md#cf-values) file
-    i. Render the final K8s template to raw K8s configuration. Pass the `db-values.yml` file as additional file to `ytt`
+    i. Render the final K8s template to raw K8s yaml. Pass the `"$DB_VALUES_FILE"` file as additional file to `ytt`
 
     ```bash
-    ytt -f config -f /tmp/cf-values.yml -f db-values.yml > /tmp/cf-for-k8s-rendered.yml
+    ytt -f config -f "$TMPDIR/cf-values.yml" -f "$DB_VALUES_FILE" > "$TMPDIR/cf-for-k8s-rendered.yml"
     ```
 
     ii. Install using `kapp`
 
     ```bash
-    kapp deploy -a cf-for-k8s -f /tmp/cf-for-k8s-rendered.yml
+    kapp deploy -a cf-for-k8s -f "$TMPDIR/cf-for-k8s-rendered.yml"
     ```

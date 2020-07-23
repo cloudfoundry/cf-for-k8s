@@ -1,0 +1,9 @@
+fullnameOverride: cf-quarks-secret
+
+image:
+  repository: quarks-secret
+  org: cloudfoundry
+  tag: latest
+
+global:
+  monitoredID: cf-quarks-secret

@@ -3,7 +3,7 @@ fullnameOverride: cf-quarks-secret
 image:
   repository: quarks-secret
   org: cloudfoundry
-  tag: latest
+  tag: v1.0.692
 
 global:
   monitoredID: cf-quarks-secret

@@ -30,6 +30,6 @@ log_cache_syslog:
 
 #@ end
 
-#@ logging = library.get("github.com/cloudfoundry/cf-k8s-logging")
+#@ logging = library.get("cf-k8s-logging")
 --- #@ template.replace(logging.with_data_values(logging_values()).eval())
 

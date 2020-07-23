@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: images.yml updated by CI...
-      sha: 624901cc813c1c8ff83e8bef88882cb97438ab6b
+      commitTitle: fix bump-cf-for-k8s for the pipes...
+      sha: 9f3eb359e5546ce34ddc2ab5f8625c9c0a6abde7
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:

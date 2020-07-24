@@ -25,15 +25,6 @@ directories:
     - config/istio-config/**/*
     - config/istio/generated/**/*
     - config/routecontroller/**/*
-- path: config/kpack/_ytt_lib/kpack
-  contents:
-  - path: .
-    githubRelease:
-      slug: pivotal/kpack
-      tag: v0.0.9
-      disableAutoChecksumValidation: true
-    includePaths:
-    - release-*.yaml
 - path: config/logging/_ytt_lib/cf-k8s-logging
   contents:
   - path: .
@@ -62,6 +53,11 @@ directories:
 - path: config/eirini/_ytt_lib
   contents:
   - path: eirini
+    manual: {}
+
+- path: config/kpack/_ytt_lib
+  contents:
+  - path: kpack
     manual: {}
 
 - path: config/minio/_ytt_lib

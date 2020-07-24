@@ -103,7 +103,7 @@ system_domain: cf-system.svc.cluster.local
 system_namespace: cf-system
 uaa:
   clients:
-    capi_kpack_watcher:
+    cf_api_controllers:
       secret: supers3cret
     cloud_controller_username_lookup:
       secret: supers3cret
@@ -111,7 +111,7 @@ uaa:
     secretName: null
 workloads_namespace: cf-workloads
 images:
-  capi_kpack_watcher:
+  cf_api_controllers:
   ccng:
   cf_autodetect_builder:
   nginx:

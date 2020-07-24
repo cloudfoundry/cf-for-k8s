@@ -70,8 +70,8 @@ uaa:
   clients:
     cloud_controller_username_lookup:
       secret: #@ data.values.capi.cc_username_lookup_client_secret
-    capi_kpack_watcher:
-      secret: #@ data.values.capi.kpack_watcher_client_secret
+    cf_api_controllers:
+      secret: #@ data.values.capi.cf_api_controllers_client_secret
 
 kpack:
   registry:
@@ -125,11 +125,11 @@ stringData:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: #@ data.values.capi.kpack_watcher_secret_name
+  name: #@ data.values.capi.cf_api_controllers_secret_name
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:
-  password: #@ data.values.capi.kpack_watcher_client_secret
+  password: #@ data.values.capi.cf_api_controllers_client_secret
 ---
 apiVersion: v1
 kind: Secret

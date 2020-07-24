@@ -566,12 +566,6 @@ spec:
           cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
     - podSelector:
         matchLabels:
-          app.kubernetes.io/name: cf-api-server
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-    - podSelector:
-        matchLabels:
           app: fluentd
       namespaceSelector:
         matchLabels:
@@ -621,9 +615,42 @@ metadata:
   namespace: #@ data.values.system_namespace
 spec:
   policyTypes:
+  - Ingress
   - Egress
   podSelector:
     matchLabels:
       app: fluentd
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-server
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-worker
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-clock
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-deployment-updater
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          istio: ingressgateway
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
   egress:
   - {}

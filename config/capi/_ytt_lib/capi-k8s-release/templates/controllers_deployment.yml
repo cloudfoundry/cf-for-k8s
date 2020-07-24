@@ -3,11 +3,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cf-api-kpack-watcher
+  name: cf-api-controllers
   namespace: #@ data.values.system_namespace
   labels:
-    app.kubernetes.io/name: cf-api-kpack-watcher
-    app.kubernetes.io/instance: cf-api-kpack-watcher-0
+    app.kubernetes.io/name: cf-api-controllers
+    app.kubernetes.io/instance: cf-api-controllers-0
 spec:
   replicas: 1
   strategy:
@@ -16,23 +16,23 @@ spec:
       maxUnavailable: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: cf-api-kpack-watcher
+      app.kubernetes.io/name: cf-api-controllers
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: cf-api-kpack-watcher
+        app.kubernetes.io/name: cf-api-controllers
     spec:
-      serviceAccountName: cf-api-kpack-watcher-service-account
+      serviceAccountName: cf-api-controllers-service-account
       containers:
       - name: manager
-        image: #@ data.values.images.capi_kpack_watcher
+        image: #@ data.values.images.cf_api_controllers
         env:
         - name: UAA_CLIENT_SECRET
-          value: #@ data.values.uaa.clients.capi_kpack_watcher.secret
+          value: #@ data.values.uaa.clients.cf_api_controllers.secret
         - name: UAA_ENDPOINT
           value: #@ "http://uaa.{}.svc.cluster.local:8080".format(data.values.system_namespace)
         - name: UAA_CLIENT_NAME
-          value: capi_kpack_watcher
+          value: cf_api_controllers
         - name: CF_API_HOST
           value: #@ "http://capi.{}.svc.cluster.local".format(data.values.system_namespace)
         - name: STAGING_NAMESPACE
@@ -49,7 +49,7 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: kpack-watcher
+  name: cf-api-controllers
 rules:
 - apiGroups: ["build.pivotal.io"]
   resources: ["images", "builds", "builds/status", "images/status"]
@@ -58,12 +58,12 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: kpack-watcher-binding
+  name: controllers-binding
 subjects:
 - kind: ServiceAccount
   namespace: #@ data.values.system_namespace
-  name: cf-api-kpack-watcher-service-account
+  name: cf-api-controllers-service-account
 roleRef:
   kind: ClusterRole
-  name: kpack-watcher
+  name: cf-api-controllers
   apiGroup: rbac.authorization.k8s.io

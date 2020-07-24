@@ -53,20 +53,22 @@ cat > db-metadata/db-values.yaml <<EOT
 #@data/values
 ---
 capi:
-database:
-    adapter: postgres
-    host: postgresql.external-db.svc.cluster.local
-    port: 5432
-    user: $CCDB_USERNAME
-    password: $CCDB_PASSWORD
-    name: $CCDB_NAME
+  #@overlay/replace
+  database:
+      adapter: postgres
+      host: postgresql.external-db.svc.cluster.local
+      port: 5432
+      user: $CCDB_USERNAME
+      password: $CCDB_PASSWORD
+      name: $CCDB_NAME
 
 uaa:
-database:
-    adapter: postgresql
-    host: postgresql.external-db.svc.cluster.local
-    port: 5432
-    user: $UAADB_USERNAME
-    password: $UAADB_PASSWORD
-    name: $UAADB_NAME
+  #@overlay/replace
+  database:
+      adapter: postgresql
+      host: postgresql.external-db.svc.cluster.local
+      port: 5432
+      user: $UAADB_USERNAME
+      password: $UAADB_PASSWORD
+      name: $UAADB_NAME
 EOT

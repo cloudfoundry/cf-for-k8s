@@ -8,7 +8,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/capi-k8s-release
-      ref: rename-kpack-watcher-to-controllers
+      ref: 664572184e1b34a1230c713bb908b10a397ad98d
     includePaths:
     - templates/**/*
     - values/**/*

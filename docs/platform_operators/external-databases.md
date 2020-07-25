@@ -7,6 +7,7 @@ You can use an external database for the cloud controller and uaa by providing f
 #@data/values
 ---
 capi:
+  #@overlay/replace
   database:
     adapter: postgres
     host: <host>
@@ -17,6 +18,7 @@ capi:
     ca_cert: <ca certificate for tls>
 
 uaa:
+  #@overlay/replace
   database:
     adapter: postgresql
     host: <host>
@@ -42,9 +44,9 @@ As prerequisite, you need to execute the following steps to configure your postg
 1. Set the environment variables
 
     ```bash
-    export VALUES_FILE=<path to file from above>
     export PGPASSWORD=<password of postgres super user>
     export PGHOST=<host where postres is running>
+    export DB_VALUES_FILE=db-values.yml
     ```
 
 2. Run the following script. It will
@@ -54,31 +56,31 @@ As prerequisite, you need to execute the following steps to configure your postg
 
     The following uses the python module [yq](https://kislyuk.github.io/yq/).
     ```bash
-    CCDB_USERNAME=$(yq -r '.capi.database.user' "$VALUES_FILE")
-    CCDB_PASSWORD=$(yq -r '.capi.database.password' "$VALUES_FILE")
-    CCDB_NAME=$(yq -r '.capi.database.name' "$VALUES_FILE")
-    UAADB_USERNAME=$(yq -r '.uaa.database.user' "$VALUES_FILE")
-    UAADB_PASSWORD=$(yq -r '.uaa.database.password' "$VALUES_FILE")
-    UAADB_NAME=$(yq -r '.uaa.database.name' "$VALUES_FILE")
-    cat > /tmp/setup_db.sql <<EOT
+    CCDB_USERNAME=$(yq -r '.capi.database.user' "$DB_VALUES_FILE")
+    CCDB_PASSWORD=$(yq -r '.capi.database.password' "$DB_VALUES_FILE")
+    CCDB_NAME=$(yq -r '.capi.database.name' "$DB_VALUES_FILE")
+    UAADB_USERNAME=$(yq -r '.uaa.database.user' "$DB_VALUES_FILE")
+    UAADB_PASSWORD=$(yq -r '.uaa.database.password' "$DB_VALUES_FILE")
+    UAADB_NAME=$(yq -r '.uaa.database.name' "$DB_VALUES_FILE")
+    cat > "$TMPDIR/setup_db.sql" <<EOT
     CREATE DATABASE ${CCDB_NAME};
     CREATE ROLE ${CCDB_USERNAME} LOGIN PASSWORD '${CCDB_PASSWORD}';
     CREATE DATABASE ${UAADB_NAME};
     CREATE ROLE ${UAADB_USERNAME} LOGIN PASSWORD '${UAADB_PASSWORD}';
     EOT
-    psql -U postgres -f /tmp/setup_db.sql
+    psql -U postgres -f "$TMPDIR/setup_db.sql"
     psql -U postgres -d "${CCDB_NAME}" -c "CREATE EXTENSION citext"
     psql -U postgres -d "${UAADB_NAME}" -c "CREATE EXTENSION citext"
     ```
     To use the Golang [yq](https://github.com/mikefarah/yq) utility, use these assignments.
     ```
     ```bash
-    CCDB_USERNAME=$(yq read "$VALUES_FILE" 'capi.database.user')
-    CCDB_PASSWORD=$(yq read "$VALUES_FILE" 'capi.database.password')
-    CCDB_NAME=$(yq read "$VALUES_FILE" 'capi.database.name')
-    UAADB_USERNAME=$(yq read "$VALUES_FILE" 'uaa.database.user')
-    UAADB_PASSWORD=$(yq read "$VALUES_FILE" 'uaa.database.password')
-    UAADB_NAME=$(yq read "$VALUES_FILE" 'uaa.database.name')
+    CCDB_USERNAME=$(yq read "$DB_VALUES_FILE" 'capi.database.user')
+    CCDB_PASSWORD=$(yq read "$DB_VALUES_FILE" 'capi.database.password')
+    CCDB_NAME=$(yq read "$DB_VALUES_FILE" 'capi.database.name')
+    UAADB_USERNAME=$(yq read "$DB_VALUES_FILE" 'uaa.database.user')
+    UAADB_PASSWORD=$(yq read "$DB_VALUES_FILE" 'uaa.database.password')
+    UAADB_NAME=$(yq read "$DB_VALUES_FILE" 'uaa.database.name')
     ...
     ```
 
@@ -86,66 +88,94 @@ As prerequisite, you need to execute the following steps to configure your postg
 
 If both, capi and uaa, are configured to use an external database, no internal database will be deployed.
 
-## Example
+## Example with external RDS database
 
-In the following section, an external database is created using the bitnami postgresql helm chart. Please note that this setup is **not suitable for production environments**.
+In the following section, we will show how to setup an AWS RDS database and configure it as the datebase to be used for Cloud Controller and UAA. Please note that the values passed for RDS creation are **not suitable for production environments**.
 
-1. Install postgresql using helm
+1. Create a RDS database. The following command will create a small database for development. Please adjust the settings to your requirements.
 
     ```bash
-    helm repo add bitnami https://charts.bitnami.com/bitnami
-    helm install postgresql bitnami/postgresql
+    export PGPASSWORD=<your password>
+    aws rds create-db-instance \
+        --engine postgres \
+        --db-instance-identifier cf-for-k8s \
+        --allocated-storage 20 \
+        --db-instance-class db.t2.micro \
+        --db-subnet-group default \
+        --master-username postgres \
+        --master-user-password "$PGPASSWORD" \
+        --backup-retention-period 7 \
+        --publicly-accessible
     ```
 
-1. Create configuration file `db-values.yaml`
+1. Wait until RDS database is ready
+
+    ```bash
+    aws rds wait db-instance-available --db-instance-identifier cf-for-k8s
+    ```
+
+1. Extract database hostname
+
+    ```bash
+    aws rds describe-db-instances --db-instance-identifier cf-for-k8s | jq -r '.DBInstances[0].Endpoint.Address'
+    ```
+
+1. Create configuration file `"$DB_VALUES_FILE"`. Please replace the `host`, `password` and `ca_cert` in this file accordingly. You can download the certificate from [here](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
 
     ```yaml
     #@data/values
     ---
     capi:
+      @override/replace
       database:
         adapter: postgres
-        host: postgresql.default.svc.cluster.local
+        host: cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com
         port: 5432
         user: capi_user
-        password: capi_password
+        password: <password for capi_user>
         name: capi_db
+        ca_cert: |
+          -----BEGIN CERTIFICATE-----
+          ...
 
     uaa:
+      #@overlay/replace
       database:
         adapter: postgresql
-        host: postgresql.default.svc.cluster.local
+        host: cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com
         port: 5432
         user: uaa_user
-        password: uaa_password
+        password: <password for uaa_user>
         name: uaa_db
+        ca_cert: |
+          -----BEGIN CERTIFICATE-----
+          ...
     ```
 1. Set environment variables
 
     ```bash
-    VALUES_FILE=db-values.yaml
-    export PGPASSWORD=$(kubectl get secret --namespace default postgresql -o jsonpath="{.data.postgresql-password}" | base64 --decode)
-    export PGHOST=127.0.0.1
+    export DB_VALUES_FILE=db-values.yml
+    export PGHOST=$(cat "$DB_VALUES_FILE" | yq -r '.capi.database.host' )
     ```
-1. Forward port to database
-
-   ```bash
-   kubectl port-forward --namespace default svc/postgresql 5432:5432 &
-   ```
 
 1. Run configuration script from above
 
     ```bash
-    VALUES_JSON=...
+    CCDB_USERNAME=...
     ...
     ```
 
 1. [Install cf-for-k8s](../deploy.md)
 
-    i. Render the final K8s template to raw K8s configuration. Pass the `db-values.yaml` file as additional file to `ytt`
+    i. Configure your [`cf-values.yml`](../deploy.md#cf-values) file
+    i. Render the final K8s template to raw K8s yaml. Pass the `"$DB_VALUES_FILE"` file as additional file to `ytt`
 
     ```bash
-    ytt -f config -f /tmp/cf-values.yml -f db-values.yaml > /tmp/cf-for-k8s-rendered.yml
+    ytt -f config -f "$TMPDIR/cf-values.yml" -f "$DB_VALUES_FILE" > "$TMPDIR/cf-for-k8s-rendered.yml"
     ```
 
     ii. Install using `kapp`
+
+    ```bash
+    kapp deploy -a cf-for-k8s -f "$TMPDIR/cf-for-k8s-rendered.yml"
+    ```

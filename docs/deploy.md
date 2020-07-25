@@ -75,7 +75,7 @@ cf-for-k8s can be configured to [use an external database](platform_operators/ex
    TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
    ```
 
-1. Create a "CF Installation Values" file and configure it:
+1. Create a "CF Installation Values" file and configure it<a name="cf-values"></a>:
 
    You can either: a) auto-generate the installation values or b) create the values by yourself.
 

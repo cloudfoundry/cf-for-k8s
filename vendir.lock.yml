@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: rename kpack_watcher_client_secret => cf_api_controllers_client_secret...
-      sha: 664572184e1b34a1230c713bb908b10a397ad98d
+      commitTitle: Merge branch 'master' into rename-kpack-watcher-to-controllers
+      sha: 014ba15a0b27e6affb3b7f11d047ab14d1f19c17
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
@@ -19,8 +19,8 @@ directories:
   path: config/logging/_ytt_lib/cf-k8s-logging
 - contents:
   - git:
-      commitTitle: Remove duplicated property
-      sha: bd072aeb0c8dfd847997ab6fb84d9e6660b0ef01
+      commitTitle: 'Merge pull request #5 from cloudfoundry/build-scripts...'
+      sha: 717e715949f723f9022244ce019d555ca2ab63d5
     path: .
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:

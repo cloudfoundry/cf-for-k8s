@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Merge branch 'master' into rename-kpack-watcher-to-controllers
-      sha: 014ba15a0b27e6affb3b7f11d047ab14d1f19c17
+      commitTitle: rename kpack_watcher_client_secret => cf_api_controllers_client_secret...
+      sha: 664572184e1b34a1230c713bb908b10a397ad98d
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:

@@ -1,0 +1,33 @@
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: wildcard-core-api-rule-test
+rules:
+  - apiGroups: ["other-group", ""]
+    resources: ["pods", "*"]
+    verbs: ["create", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: disallowed-rbac-api-group-create-test
+rules:
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["pods", "*"]
+    verbs: ["create", "list", "watch"]
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: disallowed-admin-test
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: test-account
+    namespace: cf-system

@@ -82,28 +82,11 @@ var _ = Describe("RBac", func() {
 				if err != nil {
 					log.Fatal(err)
 				}
-				Expect(containsWildCardCoreApi(rule)).To(BeFalse())
+				Expect(rule.Resources).NotTo(ContainElement("*"))
 			}
 		})
 	})
 })
-
-func containsWildCardCoreApi(rule Rule) bool {
-	containsCoreApi := false
-	containsWildCard := false
-	for _, apiGroup := range rule.APIGroups {
-		if apiGroup == "" {
-			containsCoreApi = true
-		}
-	}
-
-	for _, resource := range rule.Resources {
-		if resource == "*" {
-			containsWildCard = true
-		}
-	}
-	return containsCoreApi && containsWildCard
-}
 
 type Rule struct {
 	APIGroups []string `json:"apiGroups"`

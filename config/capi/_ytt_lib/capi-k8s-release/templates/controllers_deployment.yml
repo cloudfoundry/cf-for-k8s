@@ -37,6 +37,8 @@ spec:
           value: #@ "http://capi.{}.svc.cluster.local".format(data.values.system_namespace)
         - name: STAGING_NAMESPACE
           value: #@ data.values.staging_namespace
+        - name: WORKLOADS_NAMESPACE
+          value: #@ data.values.workloads_namespace
         resources:
           limits:
             cpu: 100m

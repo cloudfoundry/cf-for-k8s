@@ -19,8 +19,8 @@ directories:
   path: config/logging/_ytt_lib/cf-k8s-logging
 - contents:
   - git:
-      commitTitle: 'Merge pull request #5 from cloudfoundry/build-scripts...'
-      sha: 717e715949f723f9022244ce019d555ca2ab63d5
+      commitTitle: bump to 0.2.0
+      sha: 909ef6a6370d324051825b6c15b4b4f34fa95925
     path: .
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:

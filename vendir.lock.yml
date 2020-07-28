@@ -18,9 +18,8 @@ directories:
     path: .
   path: config/logging/_ytt_lib/cf-k8s-logging
 - contents:
-  - git:
-      commitTitle: bump to 0.2.0
-      sha: 909ef6a6370d324051825b6c15b4b4f34fa95925
+  - githubRelease:
+      url: https://api.github.com/repos/cloudfoundry/metric-proxy/releases/29039927
     path: .
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:

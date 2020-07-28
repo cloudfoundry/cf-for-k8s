@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: rename kpack_watcher_client_secret => cf_api_controllers_client_secret...
-      sha: 664572184e1b34a1230c713bb908b10a397ad98d
+      commitTitle: remove opi certificates from capi-k8s-release...
+      sha: 047f5fb3d97bbb7c7f6fa0f61498ee633794e611
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:

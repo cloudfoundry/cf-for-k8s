@@ -1,11 +1,15 @@
 package rbac_test
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -59,5 +63,50 @@ var _ = Describe("RBac", func() {
 			Expect(err).ToNot(HaveOccurred())
 			Expect(string(output)).NotTo(ContainSubstring("cluster-admin"))
 		})
+
+		It("cluster roles should not contain wildcard for the core api group", func(){
+			command := exec.Command("yq", `select(.kind == "ClusterRole") | .rules[] | select(.apiGroups[] == "")`, outfile.Name())
+			session, err := Start(command, nil, GinkgoWriter)
+			Expect(err).NotTo(HaveOccurred())
+			Eventually(session, 40*time.Second).Should(Exit(0),
+				"yq failed to parse rendered manifest")
+			dec := json.NewDecoder(strings.NewReader(string(session.Out.Contents())))
+			for {
+				var rule Rule
+
+				err := dec.Decode(&rule)
+				if err == io.EOF {
+					// all done
+					break
+				}
+				if err != nil {
+					log.Fatal(err)
+				}
+				Expect(containsWildCardCoreApi(rule)).To(BeFalse())
+			}
+		})
 	})
 })
+
+func containsWildCardCoreApi(rule Rule) bool {
+	containsCoreApi := false
+	containsWildCard := false
+	for _, apiGroup := range rule.APIGroups {
+		if apiGroup == "" {
+			containsCoreApi = true
+		}
+	}
+
+	for _, resource := range rule.Resources {
+		if resource == "*" {
+			containsWildCard = true
+		}
+	}
+	return containsCoreApi && containsWildCard
+}
+
+type Rule struct {
+	APIGroups []string `json:"apiGroups"`
+	Resources []string `json:"resources"`
+	Verbs     []string `json:"verbs"`
+}

@@ -61,7 +61,8 @@ var _ = Describe("RBac", func() {
 		It("should not include cluster-admin", func() {
 			output, err := ioutil.ReadFile(outfile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).NotTo(ContainSubstring("cluster-admin"))
+			containsClusterAdmin := strings.Contains(string(output), "cluster-admin")
+			Expect(containsClusterAdmin).To(BeFalse())
 		})
 
 		It("cluster roles should not contain wildcard for the core api group", func(){

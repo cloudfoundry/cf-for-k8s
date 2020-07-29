@@ -156,3 +156,13 @@ metric_proxy:
     secret_name: "metric-proxy-cert"
     crt: ""
     key: ""
+
+#! [Optional] Used for optional config to set up `external-dns` deployment
+external_dns:
+  #! The domain which is the parent domain of `system_domain`
+  parent_domain: ""
+  gcp:
+    #! Use this to specify the project which contains the desired Google Cloud DNS entries
+    project_id: ""
+    #! The JSON key for a service account which has permission to modify the desired GCP project's Google Cloud DNS entries
+    service_account_key: ""

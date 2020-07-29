@@ -29,6 +29,10 @@ workloads_certificate:
   #! Base64-encoded CA certificate used to sign the workloads certifcate
   ca: ""
 
+#! When true, automatically upgrades incoming HTTP connections to HTTPS
+gateway:
+  https_only: true
+
 capi:
   database:
     #! or mysql2, as needed

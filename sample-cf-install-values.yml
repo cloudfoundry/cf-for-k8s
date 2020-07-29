@@ -30,6 +30,10 @@ capi:
     password: ccdb_password
     encryption_key: ccdb_encryption_key
 
+#! When true, automatically upgrades incoming HTTP connections to HTTPS
+gateway:
+  https_only: true
+
 #! Notes about X.509 certificates:
 #! - the certificates and keys are base64 encoded
 #! - all of the certs should have KeyUsage that includes server and client authentication

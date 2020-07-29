@@ -126,7 +126,7 @@ In the following section, we will show how to setup an AWS RDS database and conf
     #@data/values
     ---
     capi:
-      @override/replace
+      #@override/replace
       database:
         adapter: postgres
         host: cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com

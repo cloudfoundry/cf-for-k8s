@@ -26,6 +26,7 @@ groups:
   - pass-prs-to-cf-for-k8s-develop
   - run-unit-tests-on-pr
   - validate-pr-on-gke
+  - validate-pr-on-gke-external-db
   - validate-pr-on-newest-k8s-kind
   - validate-pr-on-oldest-k8s-kind
   - test-vendir-sync-on-cf-for-k8s-pr
@@ -485,76 +486,13 @@ jobs:
     params: {acquire: true}
 
   - task: install-postgres
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+    file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
     input_mapping:
       pool-lock: ready-pool
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: cf-for-k8s-develop
-      - name: cf-for-k8s-ci
-      - name: pool-lock
-      outputs:
-      - name: db-metadata
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          source cf-for-k8s-ci/ci/helpers/gke.sh
-
-          cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}"
-
-          kubectl create namespace external-db
-          helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm install -n external-db --wait postgresql bitnami/postgresql
-
-          CCDB_USERNAME="capi_user"
-          CCDB_PASSWORD="$(openssl rand -base64 32)"
-          CCDB_NAME="capi_db"
-          UAADB_USERNAME="uaa_user"
-          UAADB_PASSWORD="$(openssl rand -base64 32)"
-          UAADB_NAME="uaa_db"
-
-          cat > /tmp/setup_db.sql <<EOT
-          CREATE DATABASE ${CCDB_NAME};
-          CREATE ROLE ${CCDB_USERNAME} LOGIN PASSWORD '${CCDB_PASSWORD}';
-          CREATE DATABASE ${UAADB_NAME};
-          CREATE ROLE ${UAADB_USERNAME} LOGIN PASSWORD '${UAADB_PASSWORD}';
-          \c ${CCDB_NAME};
-          CREATE EXTENSION citext;
-          \c ${UAADB_NAME};
-          CREATE EXTENSION citext;
-          EOT
-
-          export POSTGRES_PASSWORD=$(kubectl get secret -n external-db postgresql -o jsonpath="{.data.postgresql-password}" | base64 -d)
-          kubectl exec -n external-db statefulset/postgresql-postgresql -i -- psql "postgresql://postgres:$POSTGRES_PASSWORD@localhost:5432/postgres" < /tmp/setup_db.sql
-
-          cat > db-metadata/db-values.yaml <<EOT
-          #@data/values
-          ---
-          capi:
-            database:
-              adapter: postgres
-              host: postgresql.external-db.svc.cluster.local
-              port: 5432
-              user: $CCDB_USERNAME
-              password: $CCDB_PASSWORD
-              name: $CCDB_NAME
-
-          uaa:
-            database:
-              adapter: postgresql
-              host: postgresql.external-db.svc.cluster.local
-              port: 5432
-              user: $UAADB_USERNAME
-              password: $UAADB_PASSWORD
-              name: $UAADB_NAME
-          EOT
 
   - task: install-cf
     input_mapping:
@@ -1413,6 +1351,164 @@ jobs:
       - put: ready-pool
         params:
           remove: ready-pool
+
+- name: validate-pr-on-gke-external-db
+  serial: true
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        integration_tool: rebase
+      trigger: true
+      version: every
+      passed:
+      - run-unit-tests-on-pr
+      - test-vendir-sync-on-cf-for-k8s-pr
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - get: cf-for-k8s-gke-terraform-templates
+    - get: runtime-ci
+
+  - put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: pending
+      context: upgrade-check-uptime
+  - task: create-tf-vars-file
+    config:
+      <<: *common-task-config
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          echo "pr-validation" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat tf-vars/env-name.txt)"
+          env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
+          EOT
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
+  - task: install-postgres
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+    file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
+  - do:
+    - task: install-cf-develop
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        DOMAIN: cf-for-k8s.relint.rocks
+        USE_EXTERNAL_APP_REGISTRY: true
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        USE_EXTERNAL_DB: "true"
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+
+  - task: push-test-app
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    params:
+      APP_NAME: jp-node-app
+      VERIFY_EXISTING_APP: false
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+
+  - task: upgrade-to-pr
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    on_failure: *on_failure_uptime_pr_comment
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPGRADE: true
+      UPTIMER: true
+      DOMAIN: cf-for-k8s.relint.rocks
+      USE_EXTERNAL_APP_REGISTRY: true
+      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+      USE_EXTERNAL_DB: "true"
+
+  - in_parallel:
+    - task: run-smoke-tests
+      on_failure: *on_failure_uptime_pr_comment
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      params:
+        SMOKE_TEST_SKIP_SSL: false
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+    - task: verify-existing-app
+      on_failure: *on_failure_uptime_pr_comment
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      params:
+        APP_NAME: jp-node-app
+        VERIFY_EXISTING_APP: true
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+
+  on_success:
+    put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: success
+      context: upgrade-check-uptime
+
+  ensure:
+    do:
+    - task: delete-cf
+      config:
+        <<: *common-task-config
+        inputs:
+        - name: cf-for-k8s-ci
+        - name: tf-vars
+        params:
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            source cf-for-k8s-ci/ci/helpers/gke.sh
+            cluster_name="$(cat tf-vars/env-name.txt)"
+            gcloud_auth "${cluster_name}"
+            kapp delete -a cf --yes
+
+    - put: terraform
+      params:
+        terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy
+
 
 - name: validate-pr-on-newest-k8s-kind
   plan:

@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: remove opi certificates from capi-k8s-release...
-      sha: 047f5fb3d97bbb7c7f6fa0f61498ee633794e611
+      commitTitle: images.yml updated by CI...
+      sha: b420ff1c0b35db8fed2ad48f43bcba9f305c4307
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:

@@ -2,7 +2,7 @@ load("@ytt:assert", "assert")
 load("gateway.lib.yml", "gateway")
 
 def test_gateway_when_app_domain_equals_system_domain():
-  result = gateway("sys-and-app-domain.com", ["sys-and-app-domain.com"], "sys-namespace", "work-namespace")
+  result = gateway("sys-and-app-domain.com", ["sys-and-app-domain.com"], "sys-namespace", "work-namespace", True)
   https_servers = https_servers_in_gateway(result)
 
   # We expect a single https-based entry in the servers list
@@ -14,7 +14,7 @@ def test_gateway_when_app_domain_equals_system_domain():
 end
 
 def test_gateway_when_app_domain_does_not_equal_system_domain():
-  result = gateway("sys-domain.com", ["app-domain.com"], "sys-namespace", "work-namespace")
+  result = gateway("sys-domain.com", ["app-domain.com"], "sys-namespace", "work-namespace", True)
   https_servers = https_servers_in_gateway(result)
 
   # We expect two https-based entries in the servers list: one for the system domain, and a different one for the app domain
@@ -28,7 +28,7 @@ def test_gateway_when_app_domain_does_not_equal_system_domain():
 end
 
 def test_gateway_when_one_app_domain_equals_system_domain_and_another_does_not():
-  result = gateway("sys-and-app-domain.com", ["sys-and-app-domain.com", "app-domain.com"], "sys-namespace", "work-namespace")
+  result = gateway("sys-and-app-domain.com", ["sys-and-app-domain.com", "app-domain.com"], "sys-namespace", "work-namespace", True)
   https_servers = https_servers_in_gateway(result)
 
   # We expect two https-based entries in the servers list: one for the system domain, and a different one for the app domain
@@ -44,7 +44,7 @@ def test_gateway_when_one_app_domain_equals_system_domain_and_another_does_not()
 end
 
 def test_gateway_when_multiple_app_domains():
-  result = gateway("sys-domain.com", ["app-domain-1.com", "app-domain-2.com"], "sys-namespace", "work-namespace")
+  result = gateway("sys-domain.com", ["app-domain-1.com", "app-domain-2.com"], "sys-namespace", "work-namespace", True)
   https_servers = https_servers_in_gateway(result)
 
   # We expect two https-based entries in the servers list: one for the system domain, and a different one for the app domain
@@ -56,18 +56,41 @@ def test_gateway_when_multiple_app_domains():
   assert_equals("work-namespace/*.app-domain-2.com", https_servers[1]["hosts"][1])
 end
 
+def test_gateway_when_https_only():
+  result = gateway("sys-domain.com", ["app-domain-1.com", "app-domain-2.com"], "sys-namespace", "work-namespace", True)
+  http_servers = http_servers_in_gateway(result)
+
+  assert_equals(1, len(http_servers))
+
+  assert_equals(True, http_servers[0]["tls"]["httpsRedirect"])
+end
+
+def test_gateway_when_http_allowed():
+  result = gateway("sys-domain.com", ["app-domain-1.com", "app-domain-2.com"], "sys-namespace", "work-namespace", False)
+  http_servers = http_servers_in_gateway(result)
+
+  assert_equals(1, len(http_servers))
+
+  assert_equals(False, http_servers[0]["tls"]["httpsRedirect"])
+end
+
 def assert_equals(expected, actual):
   if actual != expected:
     assert.fail("Expected %s, but found %s" % (expected, actual))
   end
 end
 
-
 def https_servers_in_gateway(gateway_yaml):
   return [ server for server in gateway_yaml["spec"]["servers"] if server["port"]["protocol"] == 'HTTPS' ]
+end
+
+def http_servers_in_gateway(gateway_yaml):
+  return [ server for server in gateway_yaml["spec"]["servers"] if server["port"]["protocol"] == 'HTTP' ]
 end
 
 test_gateway_when_app_domain_equals_system_domain()
 test_gateway_when_app_domain_does_not_equal_system_domain()
 test_gateway_when_one_app_domain_equals_system_domain_and_another_does_not()
 test_gateway_when_multiple_app_domains()
+test_gateway_when_https_only()
+test_gateway_when_http_allowed()

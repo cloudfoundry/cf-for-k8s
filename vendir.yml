@@ -37,7 +37,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/metric-proxy
-      ref: 909ef6a6370d324051825b6c15b4b4f34fa95925
+      ref: 30f654752198272ea8dfeddd78e73fbe1004875e
     includePaths:
     - config/**/*
 - path: config/uaa/_ytt_lib/uaa

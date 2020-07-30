@@ -1,0 +1,368 @@
+---
+groups:
+- name: infrastructure
+  jobs:
+  - create-stability-cluster
+  - destroy-stability-cluster
+  - add-stability-cluster-lock
+  - remove-stability-cluster-lock
+  - create-long-lived-sli-cluster
+  - destroy-long-lived-sli-cluster
+  - clean-registry
+- name: docker-images
+  jobs:
+  - build-cf-for-k8s-ci-image
+
+x-config: &common-task-config
+  platform: linux
+  image_resource:
+    type: docker-image
+    source:
+      repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+jobs:
+- name: build-cf-for-k8s-ci-image
+  public: true
+  plan:
+  - timeout: 4h
+    do:
+    - in_parallel:
+      - get: weekly
+        trigger: true
+      - get: cf-for-k8s-ci-dockerfile
+        trigger: true
+      - get: k14s-io
+        trigger: true
+
+    - put: cf-for-k8s-ci-image
+      params:
+        build: cf-for-k8s-ci-dockerfile/ci/dockerfiles/cf-for-k8s-ci/
+        push: true
+
+- name: create-stability-cluster
+  serial: true
+  public: true
+  plan:
+    - in_parallel:
+        - get: stability-pool
+          passed: [add-stability-cluster-lock]
+          trigger: true
+        - get: cf-for-k8s-gke-terraform-templates
+
+    - task: create-tf-vars-file
+      file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+
+    - put: terraform
+      params:
+        terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+        env_name_file: stability-pool/name
+        delete_on_failure: true
+        var_files: [tf-vars/input.tfvars]
+
+    - task: write-metadata-to-lock-file
+      config:
+        <<: *common-task-config
+        inputs:
+          - name: stability-pool
+          - name: terraform
+        outputs:
+          - name: updated-stability-pool
+        run:
+          path: /bin/bash
+          args:
+            - -ec
+            - |
+              cp -v stability-pool/name updated-stability-pool/name
+              cp -v terraform/metadata updated-stability-pool/metadata
+
+    - put: stability-pool
+      params:
+        remove: stability-pool
+
+    - put: stability-pool
+      params:
+        add: updated-stability-pool
+
+- name: destroy-stability-cluster
+  serial: true
+  public: true
+  plan:
+    - in_parallel:
+        - put: stability-pool
+          params:
+            claim: stability
+        - get: cf-for-k8s-gke-terraform-templates
+
+    - task: delete-cf
+      input_mapping:
+        pool-lock: stability-pool
+      config:
+        <<: *common-task-config
+        inputs:
+          - name: cf-for-k8s-ci
+          - name: pool-lock
+        params:
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        run:
+          path: /bin/bash
+          args:
+            - -ec
+            - |
+              source cf-for-k8s-ci/ci/helpers/gke.sh
+              cluster_name="$(cat pool-lock/name)"
+              gcloud_auth "${cluster_name}"
+
+              kapp delete -a cf --yes
+
+    - task: create-tf-vars-file
+      file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+
+    - put: terraform
+      params:
+        terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+        env_name_file: stability-pool/name
+        action: destroy
+        var_files: [ tf-vars/input.tfvars ]
+      get_params:
+        action: destroy
+
+
+- name: add-stability-cluster-lock
+  serial: true
+  public: true
+  plan:
+    - get: runtime-ci
+
+    - task: prepare-to-modify-pool-resource
+      file: runtime-ci/tasks/prepare-to-modify-pool-resource/task.yml
+      output_mapping:
+        pool-resource: stability-pool
+      params:
+        NAME: stability
+
+    - put: stability-pool
+      params:
+        add_claimed: stability-pool
+
+- name: remove-stability-cluster-lock
+  serial: true
+  public: true
+  plan:
+    - get: stability-pool
+      passed: [ destroy-stability-cluster ]
+      trigger: true
+
+    - put: stability-pool
+      params:
+        remove: stability-pool
+
+
+- name: create-long-lived-sli-cluster
+  serial: true
+  public: true
+  plan:
+  - get: cf-for-k8s-gke-terraform-templates
+
+  - task: create-tf-vars-file
+    config:
+      <<: *common-task-config
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          echo "long-lived-sli" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat tf-vars/env-name.txt)"
+          env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
+          EOT
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
+- name: destroy-long-lived-sli-cluster
+  serial: true
+  public: true
+  plan:
+  - get: cf-for-k8s-gke-terraform-templates
+  - get: cf-for-k8s-ci
+
+  - task: delete-cf
+    config:
+      <<: *common-task-config
+      inputs:
+      - name: cf-for-k8s-ci
+      params:
+        CLUSTER_NAME: long-lived-sli
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          gcloud_auth "${CLUSTER_NAME}"
+
+          kapp delete -a cf --yes
+
+  - task: create-tf-vars-file
+    config:
+      <<: *common-task-config
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          echo "long-lived-sli" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat tf-vars/env-name.txt)"
+          env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
+          EOT
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+      env_name_file: tf-vars/env-name.txt
+      action: destroy
+      var_files: [ tf-vars/input.tfvars ]
+    get_params:
+      action: destroy
+
+- name: clean-registry
+  plan:
+  - get: cf-for-k8s-ci
+  - get: friday-evening
+    trigger: true
+
+  - task: clean-gcr
+    file: cf-for-k8s-ci/ci/tasks/clean-gcr/task.yml
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCR_REPO_NAME: gcr.io/((ci_k8s_gcp_project_name))/cf-workloads
+
+resources:
+- name: cf-for-k8s-ci
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+      - ci/**
+
+- name: cf-for-k8s-ci-dockerfile
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+      - ci/dockerfiles/cf-for-k8s-ci/Dockerfile
+
+- name: weekly
+  type: time
+  icon: clock-outline
+  source:
+    start: 7:00 -0700
+    stop: 7:30 -0700
+    interval: 168h
+
+- name: friday-evening
+  type: time
+  icon: clock-outline
+  source:
+    start: 5:00 PM
+    stop: 7:00 PM
+    days: [Friday]
+    location: America/Los_Angeles
+
+- name: runtime-ci
+  type: git
+  icon: github
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/runtime-ci.git
+
+- name: cf-for-k8s-ci-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
+
+
+- name: k14s-io
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: https://github.com/k14s/k14s.io.git
+    paths:
+    - pkg/website/templates/install.sh
+
+- name: stability-pool
+  type: pool
+  icon: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: master
+    pool: cf-for-k8s-stability
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
+- name: terraform
+  type: terraform
+  source:
+    backend_type: gcs
+    backend_config:
+      bucket: relint-k8s-cluster-state
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
+
+- name: cf-for-k8s-gke-terraform-templates
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - deploy/gke/terraform/**

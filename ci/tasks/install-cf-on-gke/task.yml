@@ -17,8 +17,6 @@ inputs:
     optional: true
   - name: env-metadata
     optional: true
-  - name: db-metadata
-    optional: true
 
 params:
   GCP_SERVICE_ACCOUNT_JSON:
@@ -32,7 +30,6 @@ params:
   APP_REGISTRY_PASSWORD:
   UPGRADE: false
   UPTIMER: false
-  EXTERNAL_DB_CONFIG: false
 
 outputs:
   - name: env-metadata

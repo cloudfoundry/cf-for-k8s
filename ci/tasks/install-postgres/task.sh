@@ -61,6 +61,8 @@ capi:
       user: $CCDB_USERNAME
       password: $CCDB_PASSWORD
       name: $CCDB_NAME
+      ca_cert: ""
+      encryption_key: ""
 
 uaa:
   #@overlay/replace
@@ -71,4 +73,5 @@ uaa:
       user: $UAADB_USERNAME
       password: $UAADB_PASSWORD
       name: $UAADB_NAME
+      ca_cert: ""
 EOT

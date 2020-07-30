@@ -61,7 +61,8 @@ var _ = Describe("RBac", func() {
 		It("should not include cluster-admin", func() {
 			output, err := ioutil.ReadFile(outfile.Name())
 			Expect(err).ToNot(HaveOccurred())
-			Expect(string(output)).NotTo(ContainSubstring("cluster-admin"))
+			containsClusterAdmin := strings.Contains(string(output), "cluster-admin")
+			Expect(containsClusterAdmin).To(BeFalse())
 		})
 
 		It("cluster roles should not contain wildcard for the core api group", func(){
@@ -85,6 +86,32 @@ var _ = Describe("RBac", func() {
 				Expect(rule.Resources).NotTo(ContainElement("*"))
 			}
 		})
+
+		It("disallows escalating permissions via rbac.authorization.k8s.io clusterroles", func(){
+			command := exec.Command("yq", `select(.kind == "ClusterRole") | .rules[] | select(.apiGroups[] == "rbac.authorization.k8s.io")`, outfile.Name())
+			session, err := Start(command, nil, GinkgoWriter)
+			Expect(err).NotTo(HaveOccurred())
+			Eventually(session, 40*time.Second).Should(Exit(0),
+				"yq failed to parse rendered manifest")
+			dec := json.NewDecoder(strings.NewReader(string(session.Out.Contents())))
+			for {
+				var rule Rule
+
+				err := dec.Decode(&rule)
+				if err == io.EOF {
+					// all done
+					break
+				}
+				if err != nil {
+					log.Fatal(err)
+				}
+				denyList := []string {"*", "create", "update", "patch"}
+				for _, deniedVerb := range denyList {
+					Expect(rule.Verbs).NotTo(ContainElement(deniedVerb))
+				}
+			}
+		})
+
 	})
 })
 

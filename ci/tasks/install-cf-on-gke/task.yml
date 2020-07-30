@@ -32,7 +32,7 @@ params:
   APP_REGISTRY_PASSWORD:
   UPGRADE: false
   UPTIMER: false
-  EXTERNAL_DB_CONFIG: false
+  USE_EXTERNAL_DB: false
 
 outputs:
   - name: env-metadata

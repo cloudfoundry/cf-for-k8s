@@ -8,11 +8,9 @@ if [[ -d pool-lock ]]; then
     exit 1
   fi
   cluster_name="$(cat pool-lock/name)"
-  istio_static_ip="$(jq -r '.lb_static_ip' pool-lock/metadata)"
 elif [[ -d tf-vars ]]; then
   if [[ -d terraform ]]; then
     cluster_name="$(cat tf-vars/env-name.txt)"
-    istio_static_ip="$(jq -r '.lb_static_ip' terraform/metadata)"
   else
     echo "You must provide both tf-vars and terraform inputs together"
     exit 1
@@ -46,6 +44,7 @@ CREATE EXTENSION citext;
 CREATE EXTENSION citext;
 EOT
 
+# shellcheck disable=SC2155
 export POSTGRES_PASSWORD=$(kubectl get secret -n external-db postgresql -o jsonpath="{.data.postgresql-password}" | base64 -d)
 kubectl exec -n external-db statefulset/postgresql-postgresql -i -- psql "postgresql://postgres:$POSTGRES_PASSWORD@localhost:5432/postgres" < /tmp/setup_db.sql
 

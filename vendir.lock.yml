@@ -18,9 +18,8 @@ directories:
     path: .
   path: config/logging/_ytt_lib/cf-k8s-logging
 - contents:
-  - git:
-      commitTitle: update pipeline to tag image and publish draft release...
-      sha: 30f654752198272ea8dfeddd78e73fbe1004875e
+  - githubRelease:
+      url: https://api.github.com/repos/cloudfoundry/metric-proxy/releases/29039927
     path: .
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:

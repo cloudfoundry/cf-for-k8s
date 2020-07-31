@@ -35,11 +35,10 @@ directories:
 - path: config/metrics/_ytt_lib/metric-proxy
   contents:
   - path: .
-    git:
-      url: https://github.com/cloudfoundry/metric-proxy
-      ref: 30f654752198272ea8dfeddd78e73fbe1004875e
-    includePaths:
-    - config/**/*
+    githubRelease:
+      slug: cloudfoundry/metric-proxy
+      tag: 0.2.0
+      disableAutoChecksumValidation: true
 - path: config/uaa/_ytt_lib/uaa
   contents:
   - path: .

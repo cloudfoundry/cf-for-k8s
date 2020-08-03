@@ -1,0 +1,656 @@
+#@ load("@ytt:data", "data")
+
+#! TODO: Should be labeled in capi-k8s-release
+#@ load("@ytt:overlay", "overlay")
+#@overlay/match by=overlay.and_op(overlay.subset({"metadata":{"name":"cf-workloads-staging"}}), overlay.subset({"kind": "Namespace"}))
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    name: #@ data.values.staging_namespace
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: #@ data.values.system_namespace
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: cf-db
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: cf-blobstore
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-istio-control-plane
+  namespace: #@ data.values.system_namespace
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-istio-control-plane
+  namespace: cf-db
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-istio-control-plane
+  namespace: cf-blobstore
+spec:
+  podSelector: {}
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns-egress
+  namespace: #@ data.values.system_namespace
+spec:
+  podSelector: {}
+  egress:
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  policyTypes:
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns-egress
+  namespace: cf-db
+spec:
+  podSelector: {}
+  egress:
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  policyTypes:
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-dns-egress
+  namespace: cf-blobstore
+spec:
+  podSelector: {}
+  egress:
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: UDP
+      port: 53
+    - protocol: TCP
+      port: 53
+  policyTypes:
+  - Egress
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: cf-db
+  namespace: cf-db
+spec:
+  policyTypes:
+  - Ingress
+  podSelector:
+    matchLabels:
+      release: cf-db
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          job-name: ccdb-migrate
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-worker
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-clock
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-server
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-deployment-updater
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: uaa
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: uaa
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: uaa
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          istio: ingressgateway
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app: log-cache
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-server
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-kpack-watcher
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+  egress:
+  - {}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: cf-api-server
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cf-api-server
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          istio: ingressgateway
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-kpack-watcher
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          name: eirini
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app: log-cache
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+  egress:
+  - {}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: cf-api-deployment-updater
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cf-api-deployment-updater
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: cf-db
+      podSelector:
+        matchLabels:
+          release: cf-db
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+      podSelector:
+        matchLabels:
+          name: eirini
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: cf-api-clock
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cf-api-clock
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: cf-db
+      podSelector:
+        matchLabels:
+          release: cf-db
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+      podSelector:
+        matchLabels:
+          name: eirini
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: cf-api-worker
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cf-api-worker
+  egress:
+  - {}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: ccdb-migrate
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      job-name: ccdb-migrate
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: cf-db
+      podSelector:
+        matchLabels:
+          release: cf-db
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: cf-blobstore-minio
+  namespace: cf-blobstore
+spec:
+  policyTypes:
+  - Ingress
+  podSelector:
+    matchLabels:
+      release: cf-blobstore
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          istio: ingressgateway
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - podSelector:
+        matchLabels:
+          cloudfoundry.org/source_type: STG
+      namespaceSelector:
+        matchLabels:
+          name: #@ data.values.staging_namespace
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-server
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-worker
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-deployment-updater
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-clock
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: eirini
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      name: eirini
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-deployment-updater
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-clock
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-worker
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-server
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    ports:
+    - port: 8085
+      protocol: TCP
+  egress:
+  - {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eirini-events
+  namespace: #@ data.values.system_namespace
+spec:
+  podSelector:
+    matchLabels:
+      name: eirini-events
+  egress:
+  - {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eirini-task-reporter
+  namespace: #@ data.values.system_namespace
+spec:
+  podSelector:
+    matchLabels:
+      name: eirini-events-task-reporter
+  egress:
+  - {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eirini-lrp-controller
+  namespace: #@ data.values.system_namespace
+spec:
+  podSelector:
+    matchLabels:
+      name: eirini-lrp-controller
+  egress:
+  - {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: capi-kpack-watcher
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cf-api-kpack-watcher
+  egress:
+  - {}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: routecontroller
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      app: routecontroller
+  egress:
+  - {}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: log-cache
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app: log-cache
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          istio: ingressgateway
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app: fluentd
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: uaa
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-server
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: metric-proxy
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app: metric-proxy
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-server
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+  egress:
+  - {}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: fluentd
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app: fluentd
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-server
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-worker
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-clock
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-deployment-updater
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          istio: ingressgateway
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+  egress:
+  - {}

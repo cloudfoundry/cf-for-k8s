@@ -1,5 +1,7 @@
 FROM google/cloud-sdk:slim
 
+USER root
+
 RUN apt-get update && \
     apt-get install -y git gcc wget curl dnsutils jq google-cloud-sdk
 RUN apt-get install -y openssl && \

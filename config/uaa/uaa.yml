@@ -62,10 +62,8 @@ jwt:
 #@overlay/match missing_ok=True
 encryption:
   active_key_label: #@ data.values.uaa.encryption_key.label
-  #@overlay/replace
+  #@overlay/remove
   encryption_keys:
-  - label: #@ data.values.uaa.encryption_key.label
-    passphrase: #@ data.values.uaa.encryption_key.passphrase
 
 #@overlay/match missing_ok=True
 scim:
@@ -245,15 +243,23 @@ type: Opaque
 data:
   uaa.key: #@ data.values.internal_certificate.key
   uaa.crt: #@ data.values.internal_certificate.crt
+
+#@ def encryption_key_data(label, passphrase):
+encryption:
+  encryption_keys:
+  - label: #@ label
+    passphrase: #@ passphrase
+#@ end
+
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: #@ data.values.uaa.encryption_key_passphrase_secret_name
+  name: uaa-encryption-key-config
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:
-  password: #@ data.values.uaa.encryption_key.passphrase
+  encryption_key_config.yml: #@ yaml.encode(encryption_key_data(data.values.uaa.encryption_key.label, data.values.uaa.encryption_key.passphrase))
 
 #@ def uaa_login_secret_config(saml_provider_key, saml_provider_key_password, saml_provider_cert, login_secret):
 login:
@@ -348,6 +354,11 @@ spec:
           mountPath: #@ "{}/login_secret_config.yml".format(secrets_dir)
           subPath: login_secret_config.yml
           readOnly: true
+        #@overlay/append
+        - name: encryption-key-config-file
+          mountPath: #@ "{}/encryption_key_config.yml".format(secrets_dir)
+          subPath: encryption_key_config.yml
+          readOnly: true
       volumes:
       #@overlay/append
       - name: cf-admin-user-credentials-file
@@ -369,4 +380,8 @@ spec:
       - name: login-secret-config-file
         secret:
           secretName: uaa-login-secret-config
+      #@overlay/append
+      - name: encryption-key-config-file
+        secret:
+          secretName: uaa-encryption-key-config
 

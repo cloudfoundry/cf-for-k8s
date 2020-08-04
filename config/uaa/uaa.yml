@@ -67,8 +67,6 @@ encryption:
   - label: #@ data.values.uaa.encryption_key.label
     passphrase: #@ data.values.uaa.encryption_key.passphrase
 
-LOGIN_SECRET: #@ data.values.uaa.login_secret_name
-
 #@overlay/match missing_ok=True
 scim:
   userids_enabled: true
@@ -158,13 +156,17 @@ zones:
 #@overlay/match-child-defaults missing_ok=True
 login:
   url: #@ "https://login." + data.values.system_domain
-#@ if len(data.values.uaa.login.service_provider.key) > 0:
   entityBaseURL: #@ "https://uaa." + data.values.system_domain
   entityID: cloudfoundry-saml-login
+  #@overlay/remove
   serviceProviderKey: #@ data.values.uaa.login.service_provider.key
+  #@overlay/remove
   serviceProviderKeyPassword: #@ data.values.uaa.login.service_provider.key_password
+  #@overlay/remove
   serviceProviderCertificate: #@ data.values.uaa.login.service_provider.certificate
-#@ end
+
+#@overlay/remove
+LOGIN_SECRET: #@ data.values.uaa.login_secret
 
 #@overlay/match missing_ok=True
 uaa:
@@ -253,6 +255,24 @@ type: Opaque
 stringData:
   password: #@ data.values.uaa.encryption_key.passphrase
 
+#@ def uaa_login_secret_config(saml_provider_key, saml_provider_key_password, saml_provider_cert, login_secret):
+login:
+  serviceProviderKey: #@ saml_provider_key
+  serviceProviderKeyPassword: #@ saml_provider_key_password
+  serviceProviderCertificate: #@ saml_provider_cert
+LOGIN_SECRET: #@ login_secret
+#@ end
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: uaa-login-secret-config
+  namespace: #@ data.values.system_namespace
+type: Opaque
+stringData:
+  login_secret_config.yml: #@ yaml.encode(uaa_login_secret_config(data.values.uaa.login.service_provider.key, data.values.uaa.login.service_provider.key_password, data.values.uaa.login.service_provider.certificate, data.values.uaa.login_secret))
+
 #@ def uaa_client_credential_data(client_name, credential):
 oauth:
   #@yaml/text-templated-strings
@@ -323,6 +343,11 @@ spec:
           mountPath: #@ "{}/cf_api_controllers_client_credentials.yml".format(secrets_dir)
           subPath: client_credentials.yml
           readOnly: true
+        #@overlay/append
+        - name: login-secret-config-file
+          mountPath: #@ "{}/login_secret_config.yml".format(secrets_dir)
+          subPath: login_secret_config.yml
+          readOnly: true
       volumes:
       #@overlay/append
       - name: cf-admin-user-credentials-file
@@ -340,4 +365,8 @@ spec:
       - name: cf-api-controllers-client-credentials-file
         secret:
           secretName: uaa-cf-api-controllers-client-secret
+      #@overlay/append
+      - name: login-secret-config-file
+        secret:
+          secretName: uaa-login-secret-config
 

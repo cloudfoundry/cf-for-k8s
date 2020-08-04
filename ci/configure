@@ -3,8 +3,7 @@
 export PROJECT_DIR="$(cd $(dirname $0)/.. && pwd)"
 
 function main() {
-  local PIPELINES=(cf-for-k8s k8s-pool-management update-k8s-releases)
-  local PIPELINE=${1?"Valid input ${PIPELINES[@]}"}
+  local PIPELINE=${1}
 
   if [[ -r "${PROJECT_DIR}/ci/templates/${PIPELINE}.yml" ]]; then
     cat > "${PROJECT_DIR}/ci/pipelines/${PIPELINE}.yml" <<EOF
@@ -18,6 +17,11 @@ EOF
       -f "${PROJECT_DIR}/ci/templates/${PIPELINE}.yml" \
       -f "${PROJECT_DIR}/ci/inputs/${PIPELINE}.yml" \
       >> "${PROJECT_DIR}/ci/pipelines/${PIPELINE}.yml"
+  fi
+
+  if [[ ! -r "${PROJECT_DIR}/ci/pipelines/${PIPELINE}.yml" ]]; then
+    echo "Invalid pipeline: ${PIPELINE}."
+    exit 1
   fi
 
   fly -t relint-ci sp -p "${PIPELINE}" -c "${PROJECT_DIR}/ci/pipelines/${PIPELINE}.yml"

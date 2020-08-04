@@ -407,7 +407,7 @@ jobs:
           export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
 
           echo "replacing repository prefix with repo whose images are not cleaned up"
-          export long_lived_repository_prefix="gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON_FILE} --path=/project_id )/cf-workloads-long-lived"
+          export long_lived_repository_prefix="gcr.io/$( bosh interpolate gcp-service-account.json --path=/project_id )/cf-workloads-long-lived"
 
           echo "Using cf-vars from relint-envs/k8s-environments/long-lived-sli/cf-vars.yaml..."
           mkdir -p "/tmp/${DNS_DOMAIN}"
@@ -417,8 +417,7 @@ jobs:
           cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
-          sed -i.bak "s/\(repository_prefix:\).*$/\1 $long_lived_repository_prefix/" cf-install-values.yml
-
+          sed -i.bak "s=\(repository_prefix:\).*$=\1 $long_lived_repository_prefix=" cf-install-values.yml
           echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
 
           echo "Installing CF..."
@@ -494,11 +493,14 @@ jobs:
 
               export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
 
+              echo "replacing repository prefix with repo whose images are not cleaned up"
+              export long_lived_repository_prefix="gcr.io/$( bosh interpolate gcp-service-account.json --path=/project_id )/cf-workloads-long-lived"
               echo "Generating install values..."
               cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
               sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
               sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
 
+              sed -i.bak "s=\(repository_prefix:\).*$=\1 $long_lived_repository_prefix=" cf-install-values.yml
               echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
 
               echo "Installing CF..."

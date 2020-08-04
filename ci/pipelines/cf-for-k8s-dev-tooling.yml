@@ -1,17 +1,22 @@
 ---
 groups:
-- name: infrastructure
+- name: registry
+  jobs:
+  - clean-registry
+- name: stability-cluster
   jobs:
   - create-stability-cluster
   - destroy-stability-cluster
   - add-stability-cluster-lock
   - remove-stability-cluster-lock
+- name: long-lived-sli-cluster
+  jobs:
   - create-long-lived-sli-cluster
   - destroy-long-lived-sli-cluster
-  - clean-registry
 - name: docker-images
   jobs:
   - build-cf-for-k8s-ci-image
+  - build-cf-for-k8s-azure-image
 
 x-config: &common-task-config
   platform: linux
@@ -38,6 +43,24 @@ jobs:
       params:
         build: cf-for-k8s-ci-dockerfile/ci/dockerfiles/cf-for-k8s-ci/
         push: true
+
+- name: build-cf-for-k8s-azure-image
+  public: true
+  plan:
+    - timeout: 4h
+      do:
+        - in_parallel:
+            - get: weekly
+              trigger: true
+            - get: cf-for-k8s-azure-dockerfile
+              trigger: true
+            - get: k14s-io
+              trigger: true
+
+        - put: cf-for-k8s-azure-image
+          params:
+            build: cf-for-k8s-azure-dockerfile/ci/dockerfiles/cf-for-k8s-azure/
+            push: true
 
 - name: create-stability-cluster
   serial: true
@@ -366,3 +389,22 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
     - deploy/gke/terraform/**
+
+- name: cf-for-k8s-azure-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-azure
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
+
+- name: cf-for-k8s-azure-dockerfile
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+      - ci/dockerfiles/cf-for-k8s-azure/Dockerfile

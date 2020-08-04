@@ -1,10 +1,4 @@
 ---
-groups:
-  - name: release-to-master
-    jobs:
-      - validate-cf-for-k8s-upgrade
-      - update-last-valid-commit-to-head-of-master
-
 # Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
   platform: linux

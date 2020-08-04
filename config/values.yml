@@ -104,7 +104,6 @@ uaa:
     #! Plain text private key
     signing_key: ""
 
-  encryption_key_passphrase_secret_name: uaa-encryption-key-passphrase
   encryption_key:
     label: "default_encryption_key"
     #! Plain text passphrase

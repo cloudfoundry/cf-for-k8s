@@ -9,6 +9,12 @@ x-config: &common-task-config
     source:
       repository: relintdockerhubpushbot/cf-for-k8s-ci
 
+resource_types:
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource
+
 resources:
 - name: cf-for-k8s-develop
   type: git
@@ -72,9 +78,12 @@ resources:
       - deploy/kind-on-gcp/terraform/**
 
 - name: terraform
-  type: docker-image
+  type: terraform
   source:
-    repository: ljfranklin/terraform-resource
+    backend_type: gcs
+    backend_config:
+      bucket: relint-k8s-cluster-state
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
 - name: cf-for-k8s-master-push
   type: git

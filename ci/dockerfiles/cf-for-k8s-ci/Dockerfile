@@ -1,8 +1,10 @@
 FROM google/cloud-sdk:alpine
 
+USER root
+
 RUN apk update
 RUN apk add jq=1.6-r0
-RUN pip3 install yq
+RUN pip3 install --upgrade pip && pip3 install yq
 RUN apk add openssl && \
     curl --retry 3 --retry-delay 3 https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 RUN apk add perl-utils && \

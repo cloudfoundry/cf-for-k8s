@@ -113,6 +113,12 @@ uaa:
   #! Encyption key for encrypting data stored in the database
   encryption_key:
     passphrase: encryption_key_passphrase
+  #! Configuration for UAA's SAML provider
+  login:
+    service_provider:
+      #! This certificate/key should NOT be base64 encoded
+      key: login_service_provider_key
+      certificate: login_service_provider_certificate
 
 #! To push apps from source code, you need to configure the `app_registry` block
 #! Example below is for docker hub. For other registry examples, see below.

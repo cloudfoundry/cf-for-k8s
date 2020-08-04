@@ -119,7 +119,8 @@ uaa:
       #! Plain text certificate
       certificate: ""
 
-  login_secret_name: "uaa-login-secret"
+  #! Plain text password
+  login_secret: ""
 
 log_cache_ca:
   crt: "" #! Base64-encoded ca for the log cache

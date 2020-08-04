@@ -7,7 +7,7 @@ RUN apk add openssl && \
     curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 RUN apk add perl-utils && \
     wget -O- https://k14s.io/install.sh | bash
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.15.7/bin/linux/amd64/kubectl && \
+RUN curl -LO --retry 3 --retry-delay 3 https://storage.googleapis.com/kubernetes-release/release/v1.15.7/bin/linux/amd64/kubectl && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl
 RUN bosh_cli_version=$(curl --silent "https://api.github.com/repos/cloudfoundry/bosh-cli/releases/latest" | jq -r '.tag_name' | tr -d 'v') && \

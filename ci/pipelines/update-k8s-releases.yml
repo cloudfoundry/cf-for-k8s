@@ -1445,7 +1445,7 @@ jobs:
       GITHUB_RELEASE: true
       REPO_NAME: metric-proxy
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      VENDIR_GITHUB_RELEASE: false
+      VENDIR_GITHUB_RELEASE: true
   - task: run-unit-tests
     file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
     input_mapping:
@@ -1471,7 +1471,7 @@ jobs:
       GITHUB_RELEASE: true
       REPO_NAME: metric-proxy
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      VENDIR_GITHUB_RELEASE: false
+      VENDIR_GITHUB_RELEASE: true
   - task: create-tf-vars-file
     config:
       platform: linux
@@ -1559,7 +1559,7 @@ jobs:
       GITHUB_RELEASE: true
       REPO_NAME: metric-proxy
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      VENDIR_GITHUB_RELEASE: false
+      VENDIR_GITHUB_RELEASE: true
   - task: create-tf-vars-file
     config:
       platform: linux
@@ -1651,7 +1651,7 @@ jobs:
       GITHUB_RELEASE: true
       REPO_NAME: metric-proxy
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      VENDIR_GITHUB_RELEASE: false
+      VENDIR_GITHUB_RELEASE: true
   - task: first-install-cf-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
@@ -1733,7 +1733,7 @@ jobs:
       GITHUB_RELEASE: true
       REPO_NAME: metric-proxy
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
-      VENDIR_GITHUB_RELEASE: false
+      VENDIR_GITHUB_RELEASE: true
   - put: cf-for-k8s-develop
     params:
       repository: cf-for-k8s-bump

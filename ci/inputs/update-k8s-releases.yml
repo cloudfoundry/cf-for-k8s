@@ -27,7 +27,7 @@ releases:
 - name: metric-proxy
   github_release: true
   github_org: cloudfoundry
-  vendir_github_release: false
+  vendir_github_release: true
   build_dir: ""
 - name: uaa
   github_release: true

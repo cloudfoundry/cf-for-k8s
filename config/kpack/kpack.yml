@@ -31,7 +31,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: webhook
+      app: kpack-webhook
   mtls:
     mode: PERMISSIVE
 

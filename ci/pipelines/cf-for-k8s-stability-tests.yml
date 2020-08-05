@@ -9,8 +9,8 @@ groups:
   - long-lived-env-sli
 - name: long-lived-env
   jobs:
-
   - manual-redeploy-long-lived-env-with-latest-master
+  - deploy-long-lived-node-app
   - upgrade-long-lived-env-to-latest-master
 
 resource_types:
@@ -517,6 +517,31 @@ jobs:
         repository: relint-envs-updated
         rebase: true
 
+- name: deploy-long-lived-node-app
+  serial: true
+  serial_groups: [long-lived-env]
+  public: true
+  plan:
+    - in_parallel:
+        - get: cf-for-k8s-master
+          passed: [ manual-redeploy-long-lived-env-with-latest-master ]
+          trigger: true
+        - get: cf-for-k8s-ci
+    - task: get-env-metadata
+      config:
+        <<: *common-task-config
+        outputs:
+          - name: env-metadata
+        params:
+          CLUSTER_NAME: long-lived-sli
+        run:
+          path: /bin/bash
+          args:
+            - -ec
+            - |
+              export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
+              echo "((ll_dep_cf_admin_pass))" > env-metadata/cf-admin-password.txt
+              echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
     - task: push-test-app
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       params:

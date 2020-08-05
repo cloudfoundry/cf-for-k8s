@@ -172,6 +172,15 @@ resources:
     branch: master
     uri: https://github.com/cloudfoundry/runtime-ci.git
 
+- name: terraform-rds
+  type: terraform
+  source:
+    env_name: aws-rds
+    backend_type: gcs
+    backend_config:
+      bucket: relint-k8s-cluster-state
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
+
 jobs:
 - name: fail-prs-to-cf-for-k8s-master
   public: true
@@ -620,11 +629,15 @@ jobs:
         context: upgrade-check-uptime
     - task: create-tf-vars-file
       config:
-        <<: *common-task-config
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: relintdockerhubpushbot/cf-for-k8s-ci
         outputs:
           - name: tf-vars
         params:
-          SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_gcs_admin_service_account_json)) # rename back to dev_cluster_pool_admin_service_account_json
+          SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
         run:
           path: /bin/bash
           args:
@@ -642,7 +655,7 @@ jobs:
               EOT
     - put: terraform
       params:
-        terraform_source: terraform-rds/deploy/gke/terraform # rename to cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+        terraform_source: terraform-rds/deploy/gke/terraform
         env_name_file: tf-vars/env-name.txt
         delete_on_failure: true
         var_files: [tf-vars/input.tfvars]
@@ -735,10 +748,13 @@ jobs:
     do:
       - task: delete-cf
         config:
-          <<: *common-task-config
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: relintdockerhubpushbot/cf-for-k8s-ci
           inputs:
             - name: cf-for-k8s-ci
-          # - name: tf-vars
           params:
             GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
             GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))

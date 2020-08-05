@@ -14,12 +14,6 @@
 #@ end
 
 #@ def capi_values():
-images:
-#@ if/end data.values.images.capi:
-  ccng: #@ data.values.images.capi
-#@ if/end data.values.images.nginx:
-  nginx: #@ data.values.images.nginx
-
 system_namespace: #@ data.values.system_namespace
 workloads_namespace: #@ data.values.workloads_namespace
 staging_namespace: #@ data.values.staging_namespace
@@ -30,14 +24,14 @@ app_domains:
 - #@ domain
 
 blobstore:
-  endpoint: #@ data.values.capi.blobstore.endpoint
-  region: #@ data.values.capi.blobstore.region
-  access_key_id: #@ data.values.cf_blobstore.access_key
+  endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
+  region: "''"
+  access_key_id: "admin"
   secret_access_key: #@ data.values.cf_blobstore.secret_key
-  package_directory_key: #@ data.values.capi.blobstore.package_directory_key
-  droplet_directory_key: #@ data.values.capi.blobstore.droplet_directory_key
-  resource_directory_key: #@ data.values.capi.blobstore.resource_directory_key
-  buildpack_directory_key: #@ data.values.capi.blobstore.buildpack_directory_key
+  package_directory_key: cc-packages
+  droplet_directory_key: cc-droplets
+  resource_directory_key: cc-resources
+  buildpack_directory_key: cc-buildpacks
 
 ccdb:
   adapter: #@ data.values.capi.database.adapter
@@ -107,7 +101,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: #@ data.values.capi.database_password_secret_name
+  name: capi-database-password
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:
@@ -116,7 +110,7 @@ stringData:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: #@ data.values.capi.cf_blobstore_key_secret_name
+  name: capi-blobstore-secret-key
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:
@@ -125,7 +119,7 @@ stringData:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: #@ data.values.capi.cf_api_controllers_secret_name
+  name: cf-api-controllers-client-secret
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:
@@ -134,7 +128,7 @@ stringData:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: #@ data.values.capi.cloud_controller_username_lookup_secret_name
+  name: cloud-controller-username-lookup-client-secret
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:
@@ -143,7 +137,7 @@ stringData:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: #@ data.values.capi.database_encryption_key_secret_name
+  name: capi-database-encryption-key-secret
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:

@@ -3,6 +3,30 @@
 #! TODO: Should be labeled in capi-k8s-release
 #@ load("@ytt:overlay", "overlay")
 #@overlay/match by=overlay.and_op(overlay.subset({"metadata":{"name":"cf-workloads-staging"}}), overlay.subset({"kind": "Namespace"}))
+#@ def cfdb_enabled():
+#@   return len(data.values.uaa.database.host) == 0 or len(data.values.capi.database.host) == 0
+#@ end
+
+#@ def database_egress():
+to:
+#@ if cfdb_enabled():
+- namespaceSelector:
+    matchLabels:
+      name: cf-db
+  podSelector:
+    matchLabels:
+      release: cf-db
+#@ else:
+- ipBlock:
+    cidr: 0.0.0.0/32
+#@ end
+ports:
+- protocol: TCP 
+  port: #@ data.values.capi.database.port  
+- protocol: TCP 
+  port: #@ data.values.uaa.database.port
+#@ end
+
 ---
 metadata:
   #@overlay/match missing_ok=True
@@ -20,6 +44,7 @@ spec:
   podSelector: {}
   policyTypes:
   - Ingress
+#@ if cfdb_enabled():
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -30,6 +55,7 @@ spec:
   podSelector: {}
   policyTypes:
   - Ingress
+#@ end
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -61,6 +87,7 @@ spec:
   policyTypes:
   - Ingress
   - Egress
+#@ if cfdb_enabled():
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -82,6 +109,7 @@ spec:
   policyTypes:
   - Ingress
   - Egress
+#@ end
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -121,6 +149,7 @@ spec:
       port: 53
   policyTypes:
   - Egress
+#@ if cfdb_enabled():
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -139,6 +168,7 @@ spec:
       port: 53
   policyTypes:
   - Egress
+#@ end
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -157,6 +187,7 @@ spec:
       port: 53
   policyTypes:
   - Egress
+#@ if cfdb_enabled():
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -207,6 +238,7 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+#@ end
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -293,7 +325,7 @@ spec:
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: cf-api-deployment-updater
+  name: cf-api-deployment-updater-eirini
   namespace: #@ data.values.system_namespace
 spec:
   policyTypes:
@@ -305,10 +337,39 @@ spec:
   - to:
     - namespaceSelector:
         matchLabels:
-          name: cf-db
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
       podSelector:
         matchLabels:
-          release: cf-db
+          name: eirini
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: cf-api-deployment-updater
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cf-api-deployment-updater
+  egress:
+  - #@ database_egress()
+
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: cf-api-clock-eirini
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cf-api-clock
+  egress:
+  - to:
     - namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
@@ -328,20 +389,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: cf-api-clock
   egress:
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: cf-db
-      podSelector:
-        matchLabels:
-          release: cf-db
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-      podSelector:
-        matchLabels:
-          name: eirini
+  - #@ database_egress()
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -369,13 +417,7 @@ spec:
     matchLabels:
       job-name: ccdb-migrate
   egress:
-  - to:
-    - namespaceSelector:
-        matchLabels:
-          name: cf-db
-      podSelector:
-        matchLabels:
-          release: cf-db
+  - #@ database_egress()
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1

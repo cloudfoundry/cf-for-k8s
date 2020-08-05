@@ -27,7 +27,9 @@ blobstore:
   endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
   region: "''"
   access_key_id: "admin"
+  #! TODO: this should be removed
   secret_access_key: #@ data.values.cf_blobstore.secret_key
+  secret_access_key_secret_name: capi-blobstore-secret-key
   package_directory_key: cc-packages
   droplet_directory_key: cc-droplets
   resource_directory_key: cc-resources
@@ -38,7 +40,9 @@ ccdb:
   host: #@ capi_host()
   port: #@ data.values.capi.database.port
   user: #@ data.values.capi.database.user
+  #! TODO: this should be removed
   password: #@ data.values.capi.database.password
+  password_secret_name: capi-database-password
   database: #@ data.values.capi.database.name
   ca_cert: #@ data.values.capi.database.ca_cert
 
@@ -63,7 +67,9 @@ uaa:
     secretName: uaa-certs
   clients:
     cloud_controller_username_lookup:
+      #! TODO: this should be removed
       secret: #@ data.values.capi.cc_username_lookup_client_secret
+      secret_name: cloud-controller-username-lookup-client-secret
     cf_api_controllers:
       secret: #@ data.values.capi.cf_api_controllers_client_secret
 

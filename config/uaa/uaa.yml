@@ -51,17 +51,17 @@ namespace: #@ data.values.system_namespace
 
 jwt:
   policy:
-    activeKeyId: #@ data.values.uaa.jwt_policy.key_id
+    activeKeyId: "default_jwt_policy_key"
     #@overlay/replace
     keys:
-    - keyId: #@ data.values.uaa.jwt_policy.key_id
+    - keyId: "default_jwt_policy_key"
       signingKey: #@ data.values.uaa.jwt_policy.signing_key
 #@ end
 
 #@ def uaa_config():
 #@overlay/match missing_ok=True
 encryption:
-  active_key_label: #@ data.values.uaa.encryption_key.label
+  active_key_label: "default_encryption_key"
   #@overlay/remove
   encryption_keys:
 
@@ -164,7 +164,7 @@ login:
   serviceProviderCertificate: #@ data.values.uaa.login.service_provider.certificate
 
 #@overlay/remove
-LOGIN_SECRET: #@ data.values.uaa.login_secret
+LOGIN_SECRET: "uaa-login-secret"
 
 #@overlay/match missing_ok=True
 uaa:
@@ -259,7 +259,7 @@ metadata:
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:
-  encryption_key_config.yml: #@ yaml.encode(encryption_key_data(data.values.uaa.encryption_key.label, data.values.uaa.encryption_key.passphrase))
+  encryption_key_config.yml: #@ yaml.encode(encryption_key_data("default_encryption_key", data.values.uaa.encryption_key.passphrase))
 
 #@ def uaa_login_secret_config(saml_provider_key, saml_provider_key_password, saml_provider_cert, login_secret):
 login:

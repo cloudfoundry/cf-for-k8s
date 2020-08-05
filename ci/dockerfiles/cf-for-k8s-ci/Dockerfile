@@ -23,6 +23,14 @@ RUN wget --tries=3 https://github.com/instrumenta/kubeval/releases/latest/downlo
     mv kubeval /usr/local/bin
 RUN gcloud components install beta -q
 
+# Installing hub (for creating PRs from concourse)
+RUN hub_version=$(curl --silent "https://api.github.com/repos/github/hub/releases/latest" | jq -r '.tag_name' | tr -d 'v') && \
+    echo "Installing hub version ${hub_version}" && \
+    curl -LO --retry 3 --retry-delay 3 https://github.com/github/hub/releases/download/v${hub_version}/hub-linux-amd64-${hub_version}.tgz && \
+    tar xfz hub-linux-amd64-${hub_version}.tgz && \
+    chmod +x ./hub-linux-amd64-${hub_version}/bin/hub && \
+    mv ./hub-linux-amd64-${hub_version}/bin/hub /usr/local/bin/hub
+
 # ginkgo
 RUN export GO_TAR=go1.13.8.linux-amd64.tar.gz && \
     wget --tries=3 https://dl.google.com/go/${GO_TAR} && \

@@ -1,7 +1,7 @@
 ---
 groups:
 
-# Extract common platform and image_resource details so task configs can be more concise
+#! Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
   platform: linux
   image_resource:
@@ -99,6 +99,15 @@ resources:
     token: ((cf_relint_tracker_api_token))
     project_id: "1382120"
     tracker_url: https://www.pivotaltracker.com
+
+- name: terraform-rds
+  type: terraform
+  source:
+    env_name: aws-rds
+    backend_type: gcs
+    backend_config:
+      bucket: relint-k8s-cluster-state
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
 jobs:
 - name: run-unit-tests
@@ -241,18 +250,18 @@ jobs:
         pool-lock: ready-pool
 
     - task: install-cf
-        input_mapping:
-          pool-lock: ready-pool
-        params:
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-          APP_REGISTRY_HOSTNAME: ((cf_for_k8s_private_dockerhub.hostname))
-          APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.repository_prefix))
-          APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-          APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
-          ADDITIONAL_YAML_CONFIG: db-metadata/db-values.yaml
-        file: cf-for-k8s-ci/ci/tasks/install-cf/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        APP_REGISTRY_HOSTNAME: ((cf_for_k8s_private_dockerhub.hostname))
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.repository_prefix))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        ADDITIONAL_YAML_CONFIG: db-metadata/db-values.yaml
+      file: cf-for-k8s-ci/ci/tasks/install-cf/task.yml
 
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml

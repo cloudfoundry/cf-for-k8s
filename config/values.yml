@@ -156,6 +156,3 @@ metric_proxy:
     secret_name: "metric-proxy-cert"
     crt: ""
     key: ""
-
-opi:
-  unsafe_allow_automount_service_account_token: false

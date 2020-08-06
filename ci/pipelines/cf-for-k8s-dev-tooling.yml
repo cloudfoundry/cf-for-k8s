@@ -483,3 +483,9 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
       - deploy/rds/terraform/**
+
+resource_types:
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource

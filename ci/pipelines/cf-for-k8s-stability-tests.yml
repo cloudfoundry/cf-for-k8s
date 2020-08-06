@@ -38,6 +38,13 @@ resources:
     paths:
       - ci/**
 
+- name: runtime-ci
+  type: git
+  icon: github
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/runtime-ci.git
+
 - name: weekday-pm
   type: time
   icon: clock-outline
@@ -341,6 +348,7 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-master
+    - get: runtime-ci
     - get: every-20-minutes
       trigger: true
 
@@ -349,6 +357,7 @@ jobs:
       <<: *common-task-config
       inputs:
       - name: cf-for-k8s-master
+      - name: runtime-ci
       params:
         CF_ADMIN_PASSWORD: ((ll_dep_cf_admin_pass))
       run:
@@ -356,6 +365,7 @@ jobs:
         args:
         - -ec
         - |
+          source runtime-ci/tasks/shared-functions
           DNS_DOMAIN="long-lived-sli.((ci_k8s_root_domain))"
           export SMOKE_TEST_API_ENDPOINT="https://api.${DNS_DOMAIN}"
           export SMOKE_TEST_APPS_DOMAIN="apps.${DNS_DOMAIN}"
@@ -363,6 +373,13 @@ jobs:
           export SMOKE_TEST_PASSWORD=${CF_ADMIN_PASSWORD}
           export SMOKE_TEST_SKIP_SSL=true
           cf-for-k8s-master/hack/run-smoke-tests.sh
+          passed=$?
+          export METRIC_NAME=smoke_test_sli.status
+          export METRIC_VALUE=${passed}
+          export METRIC_SOURCE_NAME=long_lived
+          export WAVEFRONT_API_KEY=((wavefront_ci_service_account))
+          export WAVEFRONT_API_ENDPOINT="https://vmwareprod.wavefront.com/report"
+          emit_metric
 
 - name: upgrade-long-lived-env-to-latest-master
   serial: true

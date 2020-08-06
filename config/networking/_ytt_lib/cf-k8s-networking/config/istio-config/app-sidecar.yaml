@@ -1,10 +1,12 @@
+#@ load("@ytt:data", "data")
+
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Sidecar
 metadata:
   name: default
-  namespace: cf-workloads
+  namespace: #@ data.values.workloadsNamespace
 spec:
   egress:
   - hosts:
-    - "cf-system/*"
+    - #@ data.values.systemNamespace + "/*"

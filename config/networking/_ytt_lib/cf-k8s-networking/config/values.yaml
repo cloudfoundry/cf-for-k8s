@@ -3,21 +3,14 @@
 #! Default values for cf-k8s-networking.
 #! This is a YTT-formatted file.
 
+istioVersion: 1.6.4
 systemNamespace: cf-system
 workloadsNamespace: cf-workloads
 
-cfroutesync:
-  image: gcr.io/cf-networking-images/cf-k8s-networking/cfroutesync@sha256:87704f76960a66e5f11a73ad1a853f5e06203d29d00ef4dc3f61ad81feee1898
-
-  ccCA: 'base64_encoded_cloud_controller_ca'
-  ccBaseURL: 'https://api.example.com'
-  uaaCA: 'base64_encoded_uaa_ca'
-  uaaBaseURL: 'https://uaa.example.com'
-  clientName: 'uaaClientName'
-  clientSecret: 'base64_encoded_uaaClientSecret'
-
 routecontroller:
-  image: gcr.io/cf-networking-images/cf-k8s-networking/routecontroller@sha256:ed4b3e351a31313ebf974439e4fb43210281a02f0a9125cb8ea880c572385b5f
+  image: gcr.io/cf-networking-images/cf-k8s-networking/routecontroller@sha256:8ef88e0dcaa5228c2b325cf5296ff31666bd3e7525e994f4495ba4e8fc052ac8
+upgradeSidecars:
+  image: gcr.io/cf-networking-images/cf-k8s-networking/upgrade-sidecars@sha256:2e4253fd217138652a19dbd4d93cf925e70e18a3c3dc640d72d88580fddcb090
 
 service:
   externalPort: 80

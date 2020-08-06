@@ -4,6 +4,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: istiod
+    cloudfoundry.org/istio_version: 1.6.4
     release: istio
   name: istiod-istio-system
 rules:
@@ -164,6 +165,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: istio-reader
+    cloudfoundry.org/istio_version: 1.6.4
     release: istio
   name: istio-reader-istio-system
 rules:
@@ -206,6 +208,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: istio-reader
+    cloudfoundry.org/istio_version: 1.6.4
     release: istio
   name: istio-reader-istio-system
 roleRef:
@@ -222,6 +225,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: pilot
+    cloudfoundry.org/istio_version: 1.6.4
     release: istio
   name: istiod-pilot-istio-system
 roleRef:
@@ -238,6 +242,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: istio-reader
+    cloudfoundry.org/istio_version: 1.6.4
     release: istio
   name: istio-reader-service-account
   namespace: istio-system
@@ -247,6 +252,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: istiod
+    cloudfoundry.org/istio_version: 1.6.4
     release: istio
   name: istiod-service-account
   namespace: istio-system
@@ -256,6 +262,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   labels:
     app: istiod
+    cloudfoundry.org/istio_version: 1.6.4
     istio: istiod
     release: istio
   name: istiod-istio-system
@@ -292,6 +299,7 @@ metadata:
   labels:
     app: istio-mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: httpapispecs.config.istio.io
@@ -564,6 +572,7 @@ metadata:
   labels:
     app: istio-mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: httpapispecbindings.config.istio.io
@@ -660,6 +669,7 @@ metadata:
   labels:
     app: istio-mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: quotaspecs.config.istio.io
@@ -756,6 +766,7 @@ metadata:
   labels:
     app: istio-mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: quotaspecbindings.config.istio.io
@@ -839,6 +850,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: destinationrules.networking.istio.io
@@ -1978,6 +1990,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: envoyfilters.networking.istio.io
@@ -2214,6 +2227,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: gateways.networking.istio.io
@@ -2368,6 +2382,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: serviceentries.networking.istio.io
@@ -2531,6 +2546,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: sidecars.networking.istio.io
@@ -2878,6 +2894,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: virtualservices.networking.istio.io
@@ -3692,6 +3709,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     release: istio
   name: workloadentries.networking.istio.io
@@ -3779,6 +3797,7 @@ metadata:
   labels:
     app: mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: core
     package: istio.io.mixer
@@ -3858,6 +3877,7 @@ metadata:
   labels:
     app: mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: mixer-handler
     package: handler
@@ -4067,6 +4087,7 @@ metadata:
   labels:
     app: mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: mixer-instance
     package: instance
@@ -4131,6 +4152,7 @@ metadata:
   labels:
     app: mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: core
     package: istio.io.mixer
@@ -4289,6 +4311,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: rbac
     release: istio
@@ -4378,6 +4401,7 @@ metadata:
   labels:
     app: mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: rbac
     package: istio.io.mixer
@@ -4468,6 +4492,7 @@ metadata:
   labels:
     app: mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: rbac
     package: istio.io.mixer
@@ -4581,6 +4606,7 @@ metadata:
   labels:
     app: mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: rbac
     package: istio.io.mixer
@@ -4785,6 +4811,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: security
     release: istio
@@ -4987,6 +5014,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: security
     release: istio
@@ -5068,6 +5096,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: security
     release: istio
@@ -5178,6 +5207,7 @@ metadata:
   labels:
     app: mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: mixer-adapter
     package: adapter
@@ -5208,6 +5238,7 @@ metadata:
   labels:
     app: mixer
     chart: istio
+    cloudfoundry.org/istio_version: 1.6.4
     heritage: Tiller
     istio: mixer-template
     package: template
@@ -5234,6 +5265,7 @@ apiVersion: apiextensions.k8s.io/v1beta1
 kind: CustomResourceDefinition
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     release: istio
   name: istiooperators.install.istio.io
 spec:
@@ -5293,6 +5325,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   labels:
     app: istio-ingressgateway
+    cloudfoundry.org/istio_version: 1.6.4
     istio: ingressgateway
     release: istio
   name: istio-ingressgateway
@@ -5316,12 +5349,13 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: 1.6.0
+        - Tag: 1.6.4
           Type: resolved
-          URL: gcr.io/cf-routing/proxyv2:1.6.0
-        URL: gcr.io/cf-routing/proxyv2@sha256:0671300037c5d706f20f01ebc4e403f44fff648245b5e121851c81a389b9ea0f
+          URL: gcr.io/cf-routing/proxyv2:1.6.4
+        URL: gcr.io/cf-routing/proxyv2@sha256:4e4d05059e65080b158a347bcfac67090968e96f302dea54c0efac9a16ef62f0
   labels:
     app: istio-ingressgateway
+    cloudfoundry.org/istio_version: 1.6.4
     istio: ingressgateway
     release: istio
   name: istio-ingressgateway
@@ -5338,6 +5372,7 @@ spec:
       labels:
         app: istio-ingressgateway
         chart: gateways
+        cloudfoundry.org/istio_version: 1.6.4
         heritage: Tiller
         istio: ingressgateway
         release: istio
@@ -5443,7 +5478,7 @@ spec:
           value: sni-dnat
         - name: ISTIO_META_CLUSTER_ID
           value: Kubernetes
-        image: gcr.io/cf-routing/proxyv2@sha256:0671300037c5d706f20f01ebc4e403f44fff648245b5e121851c81a389b9ea0f
+        image: gcr.io/cf-routing/proxyv2@sha256:4e4d05059e65080b158a347bcfac67090968e96f302dea54c0efac9a16ef62f0
         name: istio-proxy
         ports:
         - containerPort: 15021
@@ -5544,6 +5579,7 @@ metadata:
     kapp.k14s.io/update-strategy: fallback-on-replace
   labels:
     app: istio-ingressgateway
+    cloudfoundry.org/istio_version: 1.6.4
     istio: ingressgateway
     release: istio
   name: istio-ingressgateway
@@ -5560,6 +5596,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     release: istio
   name: istio-ingressgateway-sds
   namespace: istio-system
@@ -5577,6 +5614,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     release: istio
   name: istio-ingressgateway-sds
   namespace: istio-system
@@ -5594,6 +5632,7 @@ metadata:
   annotations: null
   labels:
     app: istio-ingressgateway
+    cloudfoundry.org/istio_version: 1.6.4
     istio: ingressgateway
     release: istio
   name: istio-ingressgateway
@@ -5616,13 +5655,14 @@ spec:
   selector:
     app: istio-ingressgateway
     istio: ingressgateway
-  type: LoadBalancer
+  type: NodePort
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
     app: istio-ingressgateway
+    cloudfoundry.org/istio_version: 1.6.4
     istio: ingressgateway
     release: istio
   name: istio-ingressgateway-service-account
@@ -5633,6 +5673,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   labels:
     app: istiod
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
     release: istio
   name: istiod
@@ -5722,6 +5763,7 @@ data:
 kind: ConfigMap
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
     release: istio
   name: istio
@@ -5733,12 +5775,13 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: 1.6.0
+        - Tag: 1.6.4
           Type: resolved
-          URL: gcr.io/cf-routing/pilot:1.6.0
-        URL: gcr.io/cf-routing/pilot@sha256:b952b244c0de5151ccf14457187f41dd16b1e1da617ca2a429e2d0771ae743cb
+          URL: gcr.io/cf-routing/pilot:1.6.4
+        URL: gcr.io/cf-routing/pilot@sha256:0516ef03cc2fb03e0202c7d08e73ffc761caad6946b664bd9ad1814020462c09
   labels:
     app: istiod
+    cloudfoundry.org/istio_version: 1.6.4
     istio: pilot
     istio.io/rev: default
     release: istio
@@ -5758,6 +5801,7 @@ spec:
         sidecar.istio.io/inject: "false"
       labels:
         app: istiod
+        cloudfoundry.org/istio_version: 1.6.4
         istio: pilot
         istio.io/rev: default
     spec:
@@ -5809,7 +5853,7 @@ spec:
           value: Kubernetes
         - name: CENTRAL_ISTIOD
           value: "false"
-        image: gcr.io/cf-routing/pilot@sha256:b952b244c0de5151ccf14457187f41dd16b1e1da617ca2a429e2d0771ae743cb
+        image: gcr.io/cf-routing/pilot@sha256:0516ef03cc2fb03e0202c7d08e73ffc761caad6946b664bd9ad1814020462c09
         name: discovery
         ports:
         - containerPort: 8080
@@ -6301,6 +6345,13 @@ data:
           {{- end }}
       {{- end }}
       podRedirectAnnot:
+      {{- if and (.Values.istio_cni.enabled) (not .Values.istio_cni.chained) }}
+      {{ if isset .ObjectMeta.Annotations `k8s.v1.cni.cncf.io/networks` }}
+        k8s.v1.cni.cncf.io/networks: "{{ index .ObjectMeta.Annotations `k8s.v1.cni.cncf.io/networks`}}, istio-cni"
+      {{- else }}
+        k8s.v1.cni.cncf.io/networks: "istio-cni"
+      {{- end }}
+      {{- end }}
         sidecar.istio.io/interceptionMode: "{{ annotation .ObjectMeta `sidecar.istio.io/interceptionMode` .ProxyConfig.InterceptionMode }}"
         traffic.sidecar.istio.io/includeOutboundIPRanges: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeOutboundIPRanges` .Values.global.proxy.includeIPRanges }}"
         traffic.sidecar.istio.io/excludeOutboundIPRanges: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/excludeOutboundIPRanges` .Values.global.proxy.excludeIPRanges }}"
@@ -6310,6 +6361,12 @@ data:
         traffic.sidecar.istio.io/excludeOutboundPorts: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/excludeOutboundPorts` .Values.global.proxy.excludeOutboundPorts }}"
       {{- end }}
         traffic.sidecar.istio.io/kubevirtInterfaces: "{{ index .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces` }}"
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.global.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
   values: |-
     {
       "global": {
@@ -6418,7 +6475,7 @@ data:
         "sts": {
           "servicePort": 0
         },
-        "tag": "1.6.0",
+        "tag": "1.6.4",
         "telemetryNamespace": "istio-system",
         "tracer": {
           "datadog": {
@@ -6463,6 +6520,7 @@ data:
 kind: ConfigMap
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
     release: istio
   name: istio-sidecar-injector
@@ -6473,6 +6531,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   labels:
     app: sidecar-injector
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
     release: istio
   name: istio-sidecar-injector
@@ -6496,6 +6555,7 @@ webhooks:
     - CREATE
     resources:
     - pods
+  sideEffects: None
 ---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
@@ -6504,6 +6564,7 @@ metadata:
     kapp.k14s.io/update-strategy: fallback-on-replace
   labels:
     app: istiod
+    cloudfoundry.org/istio_version: 1.6.4
     istio: pilot
     istio.io/rev: default
     release: istio
@@ -6521,6 +6582,7 @@ kind: Service
 metadata:
   labels:
     app: istiod
+    cloudfoundry.org/istio_version: 1.6.4
     istio: pilot
     istio.io/rev: default
     release: istio
@@ -6553,6 +6615,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
   name: metadata-exchange-1.4
   namespace: istio-system
@@ -6583,6 +6646,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
   name: stats-filter-1.4
   namespace: istio-system
@@ -6678,6 +6742,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
   name: metadata-exchange-1.5
   namespace: istio-system
@@ -6712,6 +6777,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
   name: tcp-metadata-exchange-1.5
   namespace: istio-system
@@ -6766,6 +6832,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
   name: stats-filter-1.5
   namespace: istio-system
@@ -6873,6 +6940,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
   name: tcp-stats-filter-1.5
   namespace: istio-system
@@ -6973,6 +7041,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
   name: metadata-exchange-1.6
   namespace: istio-system
@@ -7008,6 +7077,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
   name: tcp-metadata-exchange-1.6
   namespace: istio-system
@@ -7065,6 +7135,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
   name: stats-filter-1.6
   namespace: istio-system
@@ -7172,6 +7243,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
+    cloudfoundry.org/istio_version: 1.6.4
     istio.io/rev: default
   name: tcp-stats-filter-1.6
   namespace: istio-system
@@ -7271,11 +7343,15 @@ spec:
 apiVersion: v1
 kind: Namespace
 metadata:
+  labels:
+    cloudfoundry.org/istio_version: 1.6.4
   name: istio-system
 ---
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
+  labels:
+    cloudfoundry.org/istio_version: 1.6.4
   name: default
   namespace: istio-system
 spec:

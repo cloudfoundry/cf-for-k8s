@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: increase routecontroller resync_interval time...
-      sha: a7e5484bcc075e71d68101225c1fd492833ca8d6
+      commitTitle: 'CI: make pipeline trigger on acceptance test changes...'
+      sha: 94ee011c7ff74b2ed48483f49280a4e9917f313f
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

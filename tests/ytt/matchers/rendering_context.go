@@ -1,4 +1,4 @@
-package ytt
+package matchers
 
 type RenderingContext struct {
 	templates []string

@@ -1,4 +1,4 @@
-package ytt
+package matchers
 
 import (
 	"fmt"

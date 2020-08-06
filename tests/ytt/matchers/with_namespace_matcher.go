@@ -1,4 +1,4 @@
-package ytt
+package matchers
 
 import (
 	"fmt"
@@ -38,6 +38,36 @@ func (matcher *WithNamespaceMatcher) FailureMessage(actual interface{}) string {
 func (matcher *WithNamespaceMatcher) NegatedFailureMessage(actual interface{}) string {
 	msg := fmt.Sprintf(
 		"FailureMessage: A namespace with name %q exists",
+		matcher.name,
+	)
+	return msg
+}
+
+type WithoutNamespaceMatcher struct {
+	name string
+	withNsMatcher *WithNamespaceMatcher
+}
+
+func WithoutNamespace(name string) *WithoutNamespaceMatcher {
+	return &WithoutNamespaceMatcher{name, &WithNamespaceMatcher{}}
+}
+
+func (matcher *WithoutNamespaceMatcher) Match(actual interface{}) (bool, error) {
+	result, err := matcher.withNsMatcher.Match(actual)
+	return !result, err
+}
+
+func (matcher *WithoutNamespaceMatcher) FailureMessage(actual interface{}) string {
+	msg := fmt.Sprintf(
+		"FailureMessage: A namespace with name %q does exist",
+		matcher.name,
+	)
+	return msg
+}
+
+func (matcher *WithoutNamespaceMatcher) NegatedFailureMessage(actual interface{}) string {
+	msg := fmt.Sprintf(
+		"FailureMessage: A namespace with name %q does not exist",
 		matcher.name,
 	)
 	return msg

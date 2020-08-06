@@ -22,6 +22,7 @@ spec:
             items:
             - key: events.yml
               path: events.yml
+        {{- if not .Values.opi.cc_api.tls_disabled }}
         - name: cf-secrets
           projected:
             sources:
@@ -37,6 +38,7 @@ spec:
                 items:
                 - key: "{{ .Values.opi.events.tls.capi.caPath }}"
                   path: cc.ca
+        {{- end }}
       securityContext:
         runAsNonRoot: true
       containers:
@@ -50,8 +52,10 @@ spec:
         volumeMounts:
         - name: config-map-volume
           mountPath: /etc/eirini/config
+        {{- if not .Values.opi.cc_api.tls_disabled }}
         - name: cf-secrets
           mountPath: /etc/eirini/secrets
+        {{- end }}
         resources:
           requests:
             cpu: 15m

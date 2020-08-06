@@ -26,6 +26,7 @@ spec:
         - name: cf-secrets
           projected:
             sources:
+            {{- if not .Values.opi.cc_api.tls_disabled }}
             - secret:
                 name: "{{ .Values.opi.tls.opiCapiClient.secretName }}"
                 items:
@@ -38,6 +39,7 @@ spec:
                 items:
                 - key: "{{ .Values.opi.tls.capi.caPath }}"
                   path: cc.ca
+            {{- end }}
             - secret:
                 name: "{{ .Values.opi.tls.opiServer.secretName }}"
                 items:

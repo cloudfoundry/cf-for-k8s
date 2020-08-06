@@ -15,11 +15,9 @@ spec:
             spec:
               type: object
               properties:
-                guid:
+                GUID:
                   type: string
                 version:
-                  type: string
-                processGUID:
                   type: string
                 processType:
                   type: string
@@ -27,15 +25,17 @@ spec:
                   type: string
                 appName:
                   type: string
-                spaceGUID:
-                  type: string
                 spaceName:
                   type: string
-                orgGUID:
+                spaceGUID:
                   type: string
                 orgName:
                   type: string
-                placementTags:
+                orgGUID:
+                  type: string
+                image:
+                  type: string
+                command:
                   type: array
                   items:
                     type: string
@@ -44,39 +44,23 @@ spec:
                   items:
                     type: integer
                     format: int32
-                routes:
-                  type: object
-                  additionalProperties:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        hostname:
-                          type: string
-                        port:
-                          type: integer
-                environment:
-                  type: object
-                  additionalProperties:
-                    type: string
-                egressRules:
+                volumeMounts:
                   type: array
                   items:
+                    type: object
+                    properties:
+                      mountPath:
+                        type: string
+                      claimName:
+                        type: string
+                env:
+                  type: object
+                  additionalProperties:
                     type: string
                 instances:
                   type: integer
                 lastUpdated:
                   type: string
-                healthCheckType:
-                  type: string
-                healthCheckHTTPEndpoint:
-                  type: string
-                healthCheckTimeoutMs:
-                  type: integer
-                  format: uint32
-                startTimeoutMs:
-                  type: integer
-                  format: uint32
                 memoryMB:
                   type: integer
                   format: int64
@@ -86,46 +70,44 @@ spec:
                 cpuWeight:
                   type: integer
                   format: uint8
-                volumeMounts:
+                runsAsRoot:
+                  type: boolean
+                appRoutes:
                   type: array
                   items:
                     type: object
                     properties:
-                      volumeID:
+                      hostname:
                         type: string
-                      mountDir:
-                        type: string
-                lifecycle:
-                  type: object
-                  maxProperties: 1
-                  properties:
-                    docker:
-                      type: object
-                      properties:
-                        image:
-                          type: string
-                        command:
-                          type: array
-                          items:
-                            type: string
-                        registryUsername:
-                          type: string
-                        registryPassword:
-                          type: string
-                          format: password
-                    buildpack:
-                      type: object
-                      properties:
-                        dropletHash:
-                          type: string
-                        dropletGUID:
-                          type: string
-                        startCommand:
-                          type: string
+                      port:
+                        type: integer
+                        format: in32
                 userDefinedAnnotations:
                   type: object
                   additionalProperties:
                     type: string
+                privateRegistry:
+                  type: object
+                  properties:
+                    server:
+                      type: string
+                    username:
+                      type: string
+                    password:
+                      type: string
+                health:
+                  type: object
+                  properties:
+                    type:
+                      type: string
+                    port:
+                      type: integer
+                      format: int32
+                    endpoint:
+                      type: string
+                    timeoutMs:
+                      type: integer
+                      format: uint8
             status:
               type: object
               properties:

@@ -44,9 +44,12 @@ data:
       ca_cert_secret_name: {{ .Values.opi.staging.tls.ca.secretName }}
       ca_cert_path: {{ .Values.opi.staging.tls.ca.path }}
 
+      cc_tls_disabled: {{ .Values.opi.cc_api.tls_disabled }}
+      {{- if not .Values.opi.cc_api.tls_disabled }}
       cc_cert_path: "/workspace/jobs/opi/secrets/cc.crt"
       cc_key_path: "/workspace/jobs/opi/secrets/cc.key"
       cc_ca_path: "/workspace/jobs/opi/secrets/cc.ca"
+      {{- end }}
       rootfs_version: {{ .Values.global.rootfs_version }}
       client_ca_path: "/workspace/jobs/opi/secrets/eirini.ca"
       server_cert_path: "/workspace/jobs/opi/secrets/eirini-server.crt"
@@ -65,15 +68,18 @@ data:
   metrics.yml: |
     app_namespace: {{ .Values.opi.namespace }}
     loggregator_address: "{{ .Values.opi.logs.serviceName }}.{{ .Release.Namespace }}.svc.cluster.local:8082"
-    loggergator_cert_path: "/etc/eirini/secrets/doppler.crt"
+    loggregator_cert_path: "/etc/eirini/secrets/doppler.crt"
     loggregator_key_path: "/etc/eirini/secrets/doppler.key"
     loggregator_ca_path: "/etc/eirini/secrets/doppler.ca"
   events.yml: |
     app_namespace: {{ .Values.opi.namespace }}
     cc_internal_api: "https://{{ .Values.opi.cc_api.serviceName }}.{{ .Release.Namespace }}.svc.cluster.local:9023"
+    cc_tls_disabled: {{ .Values.opi.cc_api.tls_disabled }}
+    {{- if not .Values.opi.cc_api.tls_disabled }}
     cc_cert_path: "/etc/eirini/secrets/cc.crt"
     cc_key_path: "/etc/eirini/secrets/cc.key"
     cc_ca_path: "/etc/eirini/secrets/cc.ca"
+    {{- end }}
   staging-reporter.yml: |
     app_namespace: {{ .Values.opi.namespace }}
     eirini_cert_path: "/etc/eirini/secrets/eirini-client.crt"
@@ -81,10 +87,14 @@ data:
     ca_path: "/etc/eirini/secrets/eirini-client.ca"
   task-reporter.yml: |
     app_namespace: {{ .Values.opi.namespace }}
+    cc_tls_disabled: {{ .Values.opi.cc_api.tls_disabled }}
+    {{- if not .Values.opi.cc_api.tls_disabled }}
+    cc_cert_path: "/etc/eirini/secrets/cc.crt"
     cc_cert_path: "/etc/eirini/secrets/cc.crt"
     cc_key_path: "/etc/eirini/secrets/cc.key"
     ca_path: "/etc/eirini/secrets/cc.ca"
-  lrp-controller.yml: |
+    {{- end }}
+  eirini-controller.yml: |
     app_namespace: {{ .Values.opi.namespace }}
     eirini_uri: "https://{{ .Values.opi.serviceName }}.{{ .Release.Namespace }}.svc.cluster.local:8085"
     eirini_cert_path: "/etc/eirini/secrets/eirini-client.crt"

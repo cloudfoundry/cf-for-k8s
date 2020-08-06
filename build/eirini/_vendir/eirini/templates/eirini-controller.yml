@@ -3,27 +3,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: eirini-lrp-controller
+  name: eirini-controller
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
-      name: eirini-lrp-controller
+      name: eirini-controller
   template:
     metadata:
       labels:
-        name: eirini-lrp-controller
+        name: eirini-controller
     spec:
       dnsPolicy: ClusterFirst
-      serviceAccountName: lrp-controller
+      serviceAccountName: eirini-controller
       securityContext:
         runAsNonRoot: true
       containers:
-      - name: lrp-controller
-        {{- if .Values.opi.lrp_controller_image }}
-        image: {{ .Values.opi.lrp_controller_image }}:{{ .Values.opi.lrp_controller_image_tag }}
+      - name: eirini-controller
+        {{- if .Values.opi.eirini_controller_image }}
+        image: {{ .Values.opi.eirini_controller_image }}:{{ .Values.opi.eirini_controller_image_tag }}
         {{- else }}
-        image: eirini/lrp-controller@{{ .Files.Get "versions/lrp-controller" }}
+        image: eirini/eirini-controller@{{ .Files.Get "versions/eirini-controller" }}
         {{- end }}
         imagePullPolicy: Always
         resources:
@@ -40,8 +40,8 @@ spec:
           configMap:
             name: "eirini"
             items:
-            - key: lrp-controller.yml
-              path: lrp-controller.yml
+            - key: eirini-controller.yml
+              path: eirini-controller.yml
         - name: cf-secrets
           secret:
             secretName: "{{ .Values.opi.lrpController.tls.secretName }}"

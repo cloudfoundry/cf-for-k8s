@@ -17,6 +17,7 @@ opi:
 
   cc_api:
     serviceName: "api"
+    tls_disabled: false
 
   tls:
     opiCapiClient:

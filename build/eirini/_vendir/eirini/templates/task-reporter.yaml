@@ -33,8 +33,10 @@ spec:
         volumeMounts:
         - name: config-map-volume
           mountPath: /etc/eirini/config
+        {{- if not .Values.opi.cc_api.tls_disabled }}
         - name: cf-secrets
           mountPath: /etc/eirini/secrets
+        {{- end }}
       volumes:
         - name: config-map-volume
           configMap:
@@ -42,6 +44,7 @@ spec:
             items:
             - key: task-reporter.yml
               path: task-reporter.yml
+        {{- if not .Values.opi.cc_api.tls_disabled }}
         - name: cf-secrets
           secret:
              secretName: "{{ .Values.opi.tasks.tls.taskReporter.secretName }}"
@@ -52,4 +55,5 @@ spec:
                path: cc.key
              - key: "{{ .Values.opi.tasks.tls.taskReporter.caPath }}"
                path: cc.ca
+        {{- end }}
 {{- end }}

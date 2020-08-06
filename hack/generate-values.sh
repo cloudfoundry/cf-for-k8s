@@ -99,6 +99,8 @@ variables:
   type: password
 - name: uaa_db_password
   type: password
+- name: uaa_login_secret
+  type: password
 - name: uaa_admin_client_secret
   type: password
 - name: uaa_encryption_key_passphrase
@@ -144,6 +146,12 @@ variables:
   options:
     ca: default_ca
     common_name: uaa_jwt_policy_signing_key
+
+- name: uaa_login_service_provider
+  type: certificate
+  options:
+    ca: default_ca
+    common_name: uaa_login_service_provider
 
 - name: log_cache_ca
   type: certificate
@@ -283,6 +291,13 @@ uaa:
 $(bosh interpolate "${VARS_FILE}" --path=/uaa_jwt_policy_signing_key/private_key | sed -e 's#^#      #')
   encryption_key:
     passphrase: $(bosh interpolate "${VARS_FILE}" --path=/uaa_encryption_key_passphrase)
+  login:
+    service_provider:
+      key: |
+$(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/private_key | sed -e 's#^#        #')
+      certificate: |
+$(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/certificate | sed -e 's#^#        #')
+  login_secret: $(bosh interpolate "${VARS_FILE}" --path=/uaa_login_secret)
 EOF
 
 if [[ -n "${GCP_SERVICE_ACCOUNT_JSON_FILE:=}" ]]; then

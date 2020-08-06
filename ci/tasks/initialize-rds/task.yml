@@ -27,4 +27,4 @@ outputs:
   - name: db-metadata
 
 run:
-  path: cf-for-k8s-ci/ci/tasks/install-rds/task.sh
+  path: cf-for-k8s-ci/ci/tasks/initialize-rds/task.sh

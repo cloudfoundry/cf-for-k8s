@@ -689,10 +689,10 @@ jobs:
       delete_on_failure: true
       var_files:
       - tf-vars/input.tfvars
-  - task: install-rds
+  - task: initialize-rds
     params:
       PGPASSWORD: ((ci_k8s_aws_rds_database_password))
-    file: cf-for-k8s-ci/ci/tasks/install-rds/task.yml
+    file: cf-for-k8s-ci/ci/tasks/initialize-rds/task.yml
   - do:
     - task: install-cf-develop
       params:

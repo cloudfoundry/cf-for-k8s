@@ -73,7 +73,6 @@ As prerequisite, you need to execute the following steps to configure your postg
     psql -U postgres -d "${UAADB_NAME}" -c "CREATE EXTENSION citext"
     ```
     To use the Golang [yq](https://github.com/mikefarah/yq) utility, use these assignments.
-    ```
     ```bash
     CCDB_USERNAME=$(yq read "$DB_VALUES_FILE" 'capi.database.user')
     CCDB_PASSWORD=$(yq read "$DB_VALUES_FILE" 'capi.database.password')

@@ -14,7 +14,7 @@ directories:
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26725288
+      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/26057148
     path: .
   path: config/logging/_ytt_lib/cf-k8s-logging
 - contents:

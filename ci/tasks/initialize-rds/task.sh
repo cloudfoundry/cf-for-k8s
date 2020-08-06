@@ -50,16 +50,9 @@ function setup_db {
     CREATE EXTENSION citext;
 EOT
 
-    if [[ -z $PGPASSWORD ]] ;then
-        echo "Installing in-cluster database ..."
-        export POSTGRES_PASSWORD=$(kubectl get secret -n external-db postgresql -o jsonpath="{.data.postgresql-password}" | base64 -d)
-        export PGHOST='postgresql.external-db.svc.cluster.local'
-        kubectl exec -n external-db statefulset/postgresql-postgresql -i -- psql "postgresql://postgres:$POSTGRES_PASSWORD@localhost:5432/postgres" < /tmp/setup_db.sql
-    else
-        echo "Installing RDS database ..."
-        export PGHOST=$(jq -r '.address' terraform-rds/metadata)
-        psql -U postgres -f /tmp/setup_db.sql
-    fi
+    echo "Initializing RDS database ..."
+    export PGHOST=$(jq -r '.address' terraform-rds/metadata)
+    psql -U postgres -f /tmp/setup_db.sql
 
     cat > db-metadata/db-values.yaml <<EOT
 #@data/values

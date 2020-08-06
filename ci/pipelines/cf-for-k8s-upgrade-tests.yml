@@ -161,5 +161,5 @@ jobs:
     - get: cf-for-k8s-master
     - put: cf-for-k8s-last-valid-commit
       params:
-        repos:
-          - cf-for-k8s-master
+        repository:
+          cf-for-k8s-master

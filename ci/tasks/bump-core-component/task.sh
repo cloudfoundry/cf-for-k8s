@@ -1,4 +1,33 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
+
+setup_ssh_config() {
+  eval $(ssh-agent) >/dev/null 2>&1
+  trap "kill $SSH_AGENT_PID" EXIT
+  mkdir -p ~/.ssh
+  cat > ~/.ssh/config <<EOF
+StrictHostKeyChecking no
+LogLevel quiet
+EOF
+  chmod 0600 ~/.ssh/config
+}
+
+set_ssh_key() {
+  local private_key_path=/tmp/github-private-key
+  github_key="${1:-}"
+
+  echo "$github_key" > $private_key_path
+  if [ ! -s $private_key_path ]; then
+    echo "No github key found" 1>&2
+    exit 1
+  fi
+
+  chmod 0600 $private_key_path
+
+  ssh-add -D
+  SSH_ASKPASS=/bin/false DISPLAY= ssh-add $private_key_path >/dev/null
+
+}
+
 
 if [[ "${GITHUB_RELEASE}" == "false" ]]; then
   pushd release > /dev/null
@@ -31,13 +60,20 @@ pushd cf-for-k8s-develop > /dev/null
       popd > /dev/null
     fi
 
-    git config user.email "cf-release-integration@pivotal.io"
-    git config user.name "relint-ci"
+    git config user.email "${GITHUB_EMAIL}"
+    git config user.name "${GITHUB_USER}"
+    branch_name=bump/${REPO_NAME}-to-${TAG}
+
+    git checkout -b ${branch_name}
     git add .
     git commit -m "Bump ${REPO_NAME} to ${TAG}"
+
+    setup_ssh_config
+
+    set_ssh_key "${GITHUB_KEY}"
+    git push --set-upstream origin ${branch_name}
+    hub pull-request -b develop --no-edit
   else
     echo "Tag ${CURR_TAG} has not changed. No update needed."
   fi
 popd > /dev/null
-
-cp -r cf-for-k8s-develop/. cf-for-k8s-bump

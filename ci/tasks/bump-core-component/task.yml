@@ -11,15 +11,16 @@ inputs:
   - name: cf-for-k8s-develop
   - name: release
 
-outputs:
-  - name: cf-for-k8s-bump
-
 params:
   BUILD_DIR: ""
   GITHUB_RELEASE:
   REPO_NAME:
   VENDIR_GITHUB_API_TOKEN:
   VENDIR_GITHUB_RELEASE:
+  GITHUB_TOKEN:
+  GITHUB_USER:
+  GITHUB_KEY:
+  GITHUB_EMAIL:
 
 run:
   path: cf-for-k8s-ci/ci/tasks/bump-core-component/task.sh

@@ -1,6 +1,7 @@
 package ytt
 
 import (
+	. "code.cloudfoundry.org/cf-for-k8s-ytt-tests/matchers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -39,7 +40,7 @@ var _ = Describe("External DB", func() {
 			Expect(ctx).To(ProduceYAML(
 				And(
 					WithNamespace("cf-db"),
-					WithStatefulSet("cf-db-postgresql").WithNamespace("cf-db")),
+					WithStatefulSet("cf-db-postgresql", "cf-db")),
 			))
 		})
 	})
@@ -58,12 +59,11 @@ var _ = Describe("External DB", func() {
 
 		It("should not have cf-db* namespace/statefulset", func() {
 
-			Expect(ctx).To(Not(ProduceYAML(
+			Expect(ctx).To(ProduceYAML(
 				And(
-					WithNamespace("cf-db"),
-					WithStatefulSet("cf-db-postgresql").WithNamespace("cf-db")),
+					Not(WithNamespace("cf-db")),
+					Not(WithStatefulSet("cf-db-postgresql", "cf-db")),
 			)))
 		})
 	})
-
 })

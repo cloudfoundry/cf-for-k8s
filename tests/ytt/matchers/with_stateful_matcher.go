@@ -1,4 +1,4 @@
-package ytt
+package matchers
 
 import (
 	"fmt"
@@ -14,15 +14,12 @@ type WithStatefulSetMatcher struct {
 	failedMatcher                             types.GomegaMatcher
 }
 
-func WithStatefulSet(name string) *WithStatefulSetMatcher {
-	return &WithStatefulSetMatcher{name: name}
-}
-
-func (matcher *WithStatefulSetMatcher) WithNamespace(namespace string) *WithStatefulSetMatcher {
+func WithStatefulSet(name, ns string) *WithStatefulSetMatcher {
 	meta := NewObjectMetaMatcher()
-	meta.WithNamespace(namespace)
-	matcher.metas = append(matcher.metas, meta)
-	return matcher
+	meta.WithNamespace(ns)
+	var metas []types.GomegaMatcher
+	metas = append(metas, meta)
+	return &WithStatefulSetMatcher{name: name, metas: metas}
 }
 
 func (matcher *WithStatefulSetMatcher) Match(actual interface{}) (bool, error) {

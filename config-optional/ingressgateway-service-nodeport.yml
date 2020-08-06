@@ -1,4 +1,7 @@
 #@ load("@ytt:overlay", "overlay")
 
 #@overlay/match by=overlay.subset({"kind":"Service","metadata":{"name":"istio-ingressgateway"}})
-#@overlay/remove
+---
+spec:
+  #@overlay/replace
+  type: NodePort

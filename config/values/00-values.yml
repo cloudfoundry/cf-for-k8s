@@ -67,3 +67,4 @@ app_registry:
   password: ""
 
 remove_resource_requirements: false
+add_metrics_server: false

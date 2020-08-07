@@ -65,3 +65,4 @@ app_registry:
 remove_resource_requirements: false
 add_metrics_server: false
 disable_loadbalancer: false
+patch_for_kind: false

@@ -147,3 +147,4 @@ app_registry:
 
 remove_resource_requirements: true
 add_metrics_server: true
+disable_loadbalancer: true

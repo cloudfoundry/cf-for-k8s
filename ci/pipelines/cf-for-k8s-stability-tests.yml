@@ -372,14 +372,25 @@ jobs:
           export SMOKE_TEST_USERNAME=admin
           export SMOKE_TEST_PASSWORD=${CF_ADMIN_PASSWORD}
           export SMOKE_TEST_SKIP_SSL=true
+
+          set +e
           cf-for-k8s-master/hack/run-smoke-tests.sh
-          passed=$?
+          smoke_tests_exit_code=$?
+          set -e
+          if [[ ${smoke_tests_exit_code} == 0 ]]; then
+            sli_status=1
+          else
+            sli_status=0
+          fi
           export METRIC_NAME=smoke_test_sli.status
-          export METRIC_VALUE=${passed}
+          export METRIC_VALUE=${sli_status}
           export METRIC_SOURCE_NAME=long_lived
           export WAVEFRONT_API_KEY=((wavefront_ci_service_account))
           export WAVEFRONT_API_ENDPOINT="https://vmwareprod.wavefront.com/report"
+          echo "Emitting result \"${METRIC_VALUE}\" to wavefront"
           emit_metric
+
+          exit ${smoke_tests_exit_code}
 
 - name: upgrade-long-lived-env-to-latest-master
   serial: true

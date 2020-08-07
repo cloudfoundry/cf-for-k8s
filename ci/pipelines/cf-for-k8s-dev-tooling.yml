@@ -17,6 +17,11 @@ groups:
   jobs:
   - build-cf-for-k8s-ci-image
   - build-cf-for-k8s-azure-image
+- name: rds-databases
+  jobs:
+  - create-rds-database
+  - destroy-rds-database
+
 
 x-config: &common-task-config
   platform: linux
@@ -300,6 +305,58 @@ jobs:
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCR_REPO_NAME: gcr.io/((ci_k8s_gcp_project_name))/cf-workloads
 
+- name: create-rds-database
+  plan:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-rds-terraform-templates
+    - task: create-rds-tf-vars-file
+      file: cf-for-k8s-ci/ci/tasks/create-rds-tf-vars-file/task.yml
+      params:
+        AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
+        DATABASE_PASSWORD: ((ci_k8s_aws_rds_database_password))
+        AWS_REGION: ((ci_k8s_aws_region))
+
+    - put: terraform-rds
+      params:
+        terraform_source: cf-for-k8s-rds-terraform-templates/deploy/rds/terraform
+        delete_on_failure: true
+        var_files: [tf-vars/input.tfvars]
+
+    - task: dump
+      config:
+        <<: *common-task-config
+        inputs:
+          - name: terraform-rds
+        run:
+          path: /bin/bash
+          args:
+            - -ec
+            - |
+              cat  terraform-rds/metadata
+              echo "rds address: $(jq -r '.address' terraform-rds/metadata)"
+
+- name: destroy-rds-database
+  plan:
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-rds-terraform-templates
+    - task: create-rds-tf-vars-file
+      file: cf-for-k8s-ci/ci/tasks/create-rds-tf-vars-file/task.yml
+      params:
+        AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
+        DATABASE_PASSWORD: ((ci_k8s_aws_rds_database_password))
+        AWS_REGION: ((ci_k8s_aws_region))
+
+    - put: terraform-rds
+      params:
+        terraform_source: cf-for-k8s-rds-terraform-templates/deploy/rds/terraform
+        var_files: [tf-vars/input.tfvars]
+        action: destroy
+      get_params:
+        action: destroy
+
+
 resources:
 - name: cf-for-k8s-ci
   type: git
@@ -408,3 +465,27 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
       - ci/dockerfiles/cf-for-k8s-azure/Dockerfile
+
+- name: terraform-rds
+  type: terraform
+  source:
+    env_name: aws-rds
+    backend_type: gcs
+    backend_config:
+      bucket: relint-k8s-cluster-state
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
+
+- name: cf-for-k8s-rds-terraform-templates
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: rds-validation-pipeline
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+      - deploy/rds/terraform/**
+
+resource_types:
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource

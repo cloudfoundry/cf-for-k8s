@@ -153,3 +153,4 @@ remove_resource_requirements: true
 add_metrics_server: true
 disable_loadbalancer: true
 patch_for_kind: true
+use_external_dns: true

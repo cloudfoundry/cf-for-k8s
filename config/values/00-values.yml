@@ -65,3 +65,5 @@ app_registry:
   repository_prefix: ""
   username: ""
   password: ""
+
+remove_resource_requirements: false

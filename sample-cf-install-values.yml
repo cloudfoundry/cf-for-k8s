@@ -148,3 +148,5 @@ app_registry:
 #!  repository_prefix: <registry-name>.azurecr.io
 #!  username: <username>
 #!  password: <password>
+
+remove_resource_requirements: true

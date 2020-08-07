@@ -18,7 +18,7 @@ to:
       release: cf-db
 #@ else:
 - ipBlock:
-    cidr: 0.0.0.0/32
+    cidr: 0.0.0.0/0
 #@ end
 ports:
 - protocol: TCP 

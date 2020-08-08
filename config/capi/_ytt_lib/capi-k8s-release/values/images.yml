@@ -1,8 +1,8 @@
 #@data/values
 ---
 images:
-  ccng: cloudfoundry/cloud-controller-ng@sha256:794dec754efb3595e7a3274d17fff842197b2171cd3694a738c0ccab300c97f3
-  cf_api_controllers: cloudfoundry/capi-kpack-watcher@sha256:6e4940b613616570832ac0801eb0919f49eac9c8f795f38de3f972c8aea7eda9
+  ccng: cloudfoundry/cloud-controller-ng@sha256:2c9a5f1d66163d7d3f376608d2343ccc1143de96194bb9a513f713e6d7bdbcee
+  cf_api_controllers: cloudfoundry/capi-kpack-watcher@sha256:a3e7e356e8c6395f8c79de36624c72844dff1b5d71e8da8d89a9c4bff4fe6ed2
   cf_autodetect_builder: cloudfoundry/cnb:0.0.94-bionic@sha256:5b03a853e636b78c44e475bbc514e2b7b140cc41cca8ab907e9753431ae8c0b0
   nginx: cloudfoundry/capi-nginx@sha256:980f50e190cbff72d23300bc422da23faa888271c2d07ac3abaa65af55a5316a
   statsd_exporter: oratos/statsd_exporter:v0.15.0@sha256:10a64dc4ad0a3e3fe88372f0481dea5c02595c38d168617836a99a649d3ac407

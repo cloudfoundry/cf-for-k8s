@@ -1,7 +1,7 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
-#@ if data.values.patch_for_kind:
+#@ if data.values.patch_metrics_server_for_kind:
 #! Patch metrics-server to work in Kind
 #! https://github.com/kubernetes-sigs/kind/issues/398#issuecomment-621143252
 #! https://github.com/kubernetes-sigs/metrics-server/issues/131#issuecomment-618671827

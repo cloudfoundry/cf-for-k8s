@@ -479,7 +479,7 @@ resources:
   type: git
   source:
     uri: git@github.com:cloudfoundry/cf-for-k8s
-    branch: rds-validation-pipeline
+    branch: develop
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
       - deploy/rds/terraform/**

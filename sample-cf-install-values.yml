@@ -152,5 +152,7 @@ app_registry:
 remove_resource_requirements: true
 add_metrics_server: true
 disable_loadbalancer: true
-patch_for_kind: true
 use_external_dns: true
+automount_service_account_token: true
+patch_metrics_server_for_kind: true
+use_first_party_jwt_tokens: true

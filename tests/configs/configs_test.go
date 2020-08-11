@@ -1,14 +1,12 @@
 package configs_test
 
 import (
-	"crypto/md5"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"strings"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -20,12 +18,14 @@ import (
 var _ = Describe("Configs", func() {
 	var (
 		args          []string
-		baseHash      [16]byte
 		repoDir       string
 		templatedPath string = "/tmp/cf-for-k8s.yml"
 	)
+
 	BeforeEach(func() {
 		currentDirectory, err := os.Getwd()
+		Expect(err).NotTo(HaveOccurred())
+
 		repoDir = filepath.Dir(filepath.Dir(currentDirectory))
 
 		command := exec.Command(filepath.Join(repoDir, "hack", "generate-values.sh"),
@@ -40,22 +40,27 @@ var _ = Describe("Configs", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		print("generating fake values...")
-		command.Wait()
+		err = command.Wait()
+		Expect(err).NotTo(HaveOccurred())
+
 		print(" [done]\n")
 
 		args = []string{
 			"-f", "../../config",
 			"-f", "/tmp/dummy-domain-values.yml",
 		}
+
 		outfile, err := os.Create(templatedPath)
 		Expect(err).NotTo(HaveOccurred())
+
 		defer outfile.Close()
+
 		command = exec.Command("ytt", args...)
 		session, err := Start(command, outfile, GinkgoWriter)
 		Expect(err).NotTo(HaveOccurred())
+
 		Eventually(session, 20*time.Second).Should(Exit(0),
 			fmt.Sprintf("ytt failed on base with output %s", session.Err.Contents()))
-		baseHash = md5.Sum(session.Out.Contents())
 	})
 	Describe("Check optional configs", func() {
 
@@ -145,13 +150,18 @@ type supportedK8sVersions struct {
 
 func getSupportedK8Versions() []string {
 	currentDirectory, err := os.Getwd()
+	Expect(err).NotTo(HaveOccurred())
+
 	repoDir := filepath.Dir(filepath.Dir(currentDirectory))
 
 	v := supportedK8sVersions{}
+
 	f, err := ioutil.ReadFile(filepath.Join(repoDir, "supported_k8s_versions.yml"))
 	Expect(err).NotTo(HaveOccurred())
+
 	err = yaml.Unmarshal(f, &v)
 	Expect(err).NotTo(HaveOccurred())
+
 	Expect(v.NewestVersion).ToNot(Equal(""))
 	return []string{v.NewestVersion, v.OldestVersion}
 }

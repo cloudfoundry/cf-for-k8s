@@ -62,70 +62,7 @@ var _ = Describe("Configs", func() {
 		Eventually(session, 20*time.Second).Should(Exit(0),
 			fmt.Sprintf("ytt failed on base with output %s", session.Err.Contents()))
 	})
-	Describe("Check optional configs", func() {
 
-		It("should load each independent optional config file", func() {
-			currentDirectory, err := os.Getwd()
-			Expect(err).ToNot(HaveOccurred())
-
-			configDirectory := filepath.Join(filepath.Dir(filepath.Dir(currentDirectory)), "config-optional")
-
-			count := 0
-			filepath.Walk(configDirectory, func(path string, info os.FileInfo, err error) error {
-
-				basename := info.Name()
-				if !strings.HasSuffix(basename, ".yml") {
-					return nil
-				}
-
-				if strings.Contains(basename, "patch-metrics-server") {
-					return nil
-				}
-
-				fmt.Printf("Test file %s\n", basename)
-				finalArgs := append(args, "-f", path)
-				command := exec.Command("ytt", finalArgs...)
-
-				session, err := Start(command, ioutil.Discard, GinkgoWriter)
-				Expect(err).NotTo(HaveOccurred())
-				session.Wait(10 * time.Second)
-				Eventually(session).Should(Exit(0),
-					fmt.Sprintf("ytt failed on %s with output %s", path, session.Err.Contents()))
-				newHash := md5.Sum(session.Out.Contents())
-				Expect(newHash).NotTo(Equal(baseHash), fmt.Sprintf("optional file %s had no effect", basename))
-				count += 1
-
-				return nil
-			})
-			Expect(count).To(BeNumerically(">=", 1))
-		})
-
-		It("should load patch-metrics-server config with add-metrics-server-components config", func() {
-			currentDirectory, err := os.Getwd()
-			Expect(err).ToNot(HaveOccurred())
-
-			configDirectory := filepath.Join(filepath.Dir(filepath.Dir(currentDirectory)), "config-optional")
-
-			configPath := filepath.Join(configDirectory, "patch-metrics-server.yml")
-			requiredConfigPath := filepath.Join(configDirectory, "add-metrics-server-components.yml")
-			configs := []string{configPath, requiredConfigPath}
-
-			for _, config := range configs {
-				fmt.Printf("Test file %s\n", config)
-				args = append(args, "-f", config)
-			}
-			command := exec.Command("ytt", args...)
-
-			session, err := Start(command, ioutil.Discard, GinkgoWriter)
-			Expect(err).NotTo(HaveOccurred())
-			session.Wait(10 * time.Second)
-			Eventually(session).Should(Exit(0),
-				fmt.Sprintf("ytt failed on %+v with output %s", configs, session.Err.Contents()))
-			newHash := md5.Sum(session.Out.Contents())
-			Expect(newHash).NotTo(Equal(baseHash), fmt.Sprintf("optional files %+v had no effect", configs))
-
-		})
-	})
 	When("validating with kubeval", func() {
 		It("should pass", func() {
 			for _, v := range getSupportedK8Versions() {

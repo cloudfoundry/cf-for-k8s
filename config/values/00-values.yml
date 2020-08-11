@@ -64,7 +64,7 @@ app_registry:
 
 remove_resource_requirements: false
 add_metrics_server: false
-disable_loadbalancer: false
+enable_load_balancer: true
 use_external_dns: false
 automount_service_account_token: false
 patch_metrics_server_for_kind: false

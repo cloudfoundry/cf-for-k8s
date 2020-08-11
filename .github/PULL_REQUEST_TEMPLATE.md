@@ -21,4 +21,5 @@
 - Make sure this PR is based off the `develop` branch
 - Include any links to related PRs, issues, stories, slack discussions, etc... that will help establish context.
 - Is there anything else of note that the reviewers should know about this change?
+- Our CI uses concourse task files from HEAD of the `develop` branch. If your PR includes/requires CI changes, please ping the RelInt interrupt and they'll help apply the CI changes for you.
 - Checkout the [contributing guidelines](https://github.com/cloudfoundry/cf-for-k8s/blob/develop/community/CONTRIBUTING.md)

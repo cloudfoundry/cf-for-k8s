@@ -274,7 +274,7 @@ spec:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
     - podSelector:
         matchLabels:
-          app.kubernetes.io/name: cf-api-kpack-watcher
+          app.kubernetes.io/name: cf-api-controllers
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
@@ -303,7 +303,7 @@ spec:
           cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
     - podSelector:
         matchLabels:
-          app.kubernetes.io/name: cf-api-kpack-watcher
+          app.kubernetes.io/name: cf-api-controllers
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
@@ -546,12 +546,12 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: eirini-lrp-controller
+  name: eirini-controller
   namespace: #@ data.values.system_namespace
 spec:
   podSelector:
     matchLabels:
-      name: eirini-lrp-controller
+      name: eirini-controller
   egress:
   - {}
   policyTypes:
@@ -561,14 +561,14 @@ spec:
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: capi-kpack-watcher
+  name: cf-api-controllers
   namespace: #@ data.values.system_namespace
 spec:
   policyTypes:
   - Egress
   podSelector:
     matchLabels:
-      app.kubernetes.io/name: cf-api-kpack-watcher
+      app.kubernetes.io/name: cf-api-controllers
   egress:
   - {}
 ---

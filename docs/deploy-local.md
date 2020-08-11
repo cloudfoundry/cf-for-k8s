@@ -51,7 +51,7 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
    ```yaml
    add_metrics_server: true
    automount_service_account_token: true
-   disable_loadbalancer: true
+   enable_load_balancer: false
    patch_metrics_server_for_kind: true
    remove_resource_requirements: true
    use_first_party_jwt_tokens: true

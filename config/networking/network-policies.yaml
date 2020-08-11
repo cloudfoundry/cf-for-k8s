@@ -1,8 +1,6 @@
 #@ load("@ytt:data", "data")
-
-#! TODO: Should be labeled in capi-k8s-release
 #@ load("@ytt:overlay", "overlay")
-#@overlay/match by=overlay.and_op(overlay.subset({"metadata":{"name":"cf-workloads-staging"}}), overlay.subset({"kind": "Namespace"}))
+
 #@ def cfdb_enabled():
 #@   return len(data.values.uaa.database.host) == 0 or len(data.values.capi.database.host) == 0
 #@ end
@@ -21,12 +19,14 @@ to:
     cidr: 0.0.0.0/0
 #@ end
 ports:
-- protocol: TCP 
-  port: #@ data.values.capi.database.port  
-- protocol: TCP 
+- protocol: TCP
+  port: #@ data.values.capi.database.port
+- protocol: TCP
   port: #@ data.values.uaa.database.port
 #@ end
 
+#! TODO: Should be labeled in capi-k8s-release
+#@overlay/match by=overlay.and_op(overlay.subset({"metadata":{"name":"cf-workloads-staging"}}), overlay.subset({"kind": "Namespace"}))
 ---
 metadata:
   #@overlay/match missing_ok=True

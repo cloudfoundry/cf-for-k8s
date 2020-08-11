@@ -107,6 +107,7 @@ uaa:
   clients:
     cf_api_controllers:
       secret: supers3cret
+      secret_name:
     cloud_controller_username_lookup:
       secret: supers3cret
       secret_name:

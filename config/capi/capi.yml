@@ -71,7 +71,9 @@ uaa:
       secret: #@ data.values.capi.cc_username_lookup_client_secret
       secret_name: cloud-controller-username-lookup-client-secret
     cf_api_controllers:
+      #! TODO: this should be removed
       secret: #@ data.values.capi.cf_api_controllers_client_secret
+      secret_name: cf-api-controllers-client-secret
 
 kpack:
   registry:

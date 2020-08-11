@@ -35,9 +35,6 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
 ## Steps to Deploy on Kind
 
-   - Use `vcap.me` as the domain for the installation. This means that you do not have to
-     configure DNS for the domain.
-
 1. Create a kind cluster:
 
    ```console
@@ -47,27 +44,18 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
 1. Follow the instructions in [Deploying CF for K8s](deploy.md).
 
-   - Include the [remove-resource-requirements.yml](../config-optional/remove-resource-requirements.yml),
-     [enable-automount-service-account-token.yml](../config-optional/enable-automount-service-account-token.yml),
-     [first-party-jwt-istio.yml](../config-optional/first-party-jwt-istio.yml),
-     [ingressgateway-service-nodeport.yml](../config-optional/ingressgateway-service-nodeport.yml),
-     [add-metrics-server-components.yml](../config-optional/add-metrics-server-components.yml) and
-     [patch-metrics-server.yml](../config-optional/patch-metrics-server.yml)
-     overlay files in the set of templates to be deployed. This can be achieved by
-     using the following commands:
+   - Use `vcap.me` as the domain for the installation. This means that you do not have to
+     configure DNS for the domain.
 
-     ```console
-     TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
-     ytt -f config \
-       -f config-optional/remove-resource-requirements.yml \
-       -f config-optional/enable-automount-service-account-token.yml \
-       -f config-optional/first-party-jwt-istio.yml \
-       -f config-optional/ingressgateway-service-nodeport.yml \
-       -f config-optional/add-metrics-server-components.yml \
-       -f config-optional/patch-metrics-server.yml \
-       -f <cf_install_values_path> > ${TMP_DIR}/cf-for-k8s-rendered.yml
-     kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
-     ```
+   - Make sure the following values are included in your install values file:
+   ```yaml
+   add_metrics_server: true
+   automount_service_account_token: true
+   disable_loadbalancer: true
+   patch_metrics_server_for_kind: true
+   remove_resource_requirements: true
+   use_first_party_jwt_tokens: true
+   ```
 
 1. Once the `kapp deploy` succeeds, you should be able to run `cf api api.vcap.me --skip-ssl-validation`, etc
 
@@ -105,17 +93,14 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
      run to allow minikube to create the LoadBalancer service.
 
 1. Follow the instructions in [Deploying CF for K8s](deploy.md).
+
    - Use `<minikube ip>.nip.io` as the domain for the installation. This means that you do not have to
      configure DNS for the domain.
-   - Include the [remove-resource-requirements.yml](../config-optional/remove-resource-requirements.yml)
-     overlay file in the set of templates to be deployed. This can be achieved by
-     using the following commands:
 
-     ```console
-     TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
-     ytt -f config -f config-optional/remove-resource-requirements.yml -f <cf_install_values_path> > ${TMP_DIR}/cf-for-k8s-rendered.yml
-     kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
-     ```
+   - Make sure the following values are included in your install values file:
+   ```yaml
+   remove_resource_requirements: true
+   ```
 
 1. You will be able to target your CF CLI to point to the new CF instance
 

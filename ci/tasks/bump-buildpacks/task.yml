@@ -20,7 +20,5 @@ inputs:
 outputs:
 - name: cf-for-k8s-bumped
 
-params: []
-
 run:
   path: cf-for-k8s-ci/ci/tasks/bump-buildpacks/task.sh

@@ -1,4 +1,6 @@
 #@ load("@ytt:data","data")
+#@ load("@ytt:template", "template")
+#@ load("secrets.lib.yml","shared_config_volumes", "shared_config_volume_mounts", "ccng_config_mount_path", "ccng_secrets_mount_path")
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -19,11 +21,16 @@ spec:
       imagePullSecrets: #@ data.values.imagePullSecrets
       containers:
         - name: cf-api-worker
+          image: #@ data.values.images.ccng
+          imagePullPolicy: Always
           workingDir: "/cloud_controller_ng"
           command: ["/usr/local/bin/bundle"]
           args: ["exec", "rake", "jobs:generic"]
-          image: #@ data.values.images.ccng
-          imagePullPolicy: Always
+          env:
+          - name: CLOUD_CONTROLLER_NG_CONFIG
+            value: #@ ccng_config_mount_path
+          - name: CLOUD_CONTROLLER_NG_SECRETS
+            value: #@ ccng_secrets_mount_path
           resources:
             requests:
               memory: 300Mi
@@ -34,8 +41,7 @@ spec:
               port: 4444
             periodSeconds: 3
           volumeMounts:
-          - name: cloud-controller-ng-yaml
-            mountPath: /config
+          - #@ template.replace(shared_config_volume_mounts())
           #@ if/end data.values.eirini.serverCerts.secretName:
           - name: eirini-certs
             mountPath: /config/eirini/certs
@@ -44,9 +50,7 @@ spec:
             mountPath: /config/database/certs
       serviceAccountName: cf-api-worker-service-account
       volumes:
-      - name: cloud-controller-ng-yaml
-        configMap:
-          name: cloud-controller-ng-yaml
+      - #@ template.replace(shared_config_volumes())
       #@ if/end data.values.eirini.serverCerts.secretName:
       - name: eirini-certs
         secret:

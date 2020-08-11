@@ -113,7 +113,6 @@ db: &db
     host: #@ data.values.ccdb.host
     port: #@ data.values.ccdb.port
     user: #@ data.values.ccdb.user
-    password: #@ data.values.ccdb.password
     database: #@ data.values.ccdb.database
   max_connections: 25
   pool_timeout: 10
@@ -180,7 +179,6 @@ resource_pool:
     provider: AWS
     endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
     region: #@ data.values.blobstore.region
     path_style: true
@@ -201,7 +199,6 @@ packages:
     provider: AWS
     endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
     region: #@ data.values.blobstore.region
     path_style: true
@@ -222,7 +219,6 @@ droplets:
     provider: AWS
     endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
     region: #@ data.values.blobstore.region
     path_style: true
@@ -242,7 +238,6 @@ buildpacks:
     provider: AWS
     endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_secret_access_key: #@ data.values.blobstore.secret_access_key
     aws_signature_version: '2'
     region: #@ data.values.blobstore.region
     path_style: true
@@ -276,7 +271,6 @@ uaa_client_secret: TODO
 uaa_client_scope: openid,cloud_controller_service_permissions.read
 
 cloud_controller_username_lookup_client_name: "cloud_controller_username_lookup"
-cloud_controller_username_lookup_client_secret: #@ data.values.uaa.clients.cloud_controller_username_lookup.secret
 
 cc_service_key_client_name: "cc_service_key_client"
 cc_service_key_client_secret: TODO

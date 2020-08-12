@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -ec
+set -e
 
 RUBY_SHA=`cat ruby-buildpack/digest`
 PYTHON_SHA=`cat python-buildpack/digest`

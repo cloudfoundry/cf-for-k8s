@@ -31,6 +31,9 @@ groups:
   - #@ "{}-validate-upgrade".format(release.name)
   - #@ "{}-push-to-develop".format(release.name)
   #@ end
+- name: buildpacks
+  jobs:
+    - bump-buildpacks
 
 resource_types:
 - name: pull-request
@@ -180,6 +183,15 @@ resources:
     backend_config:
       bucket: relint-k8s-cluster-state
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
+
+#@ for source, bpnames in [['community', ['ruby', 'python']], ['buildpacks', ['java', 'nodejs', 'go', 'dotnet-core', 'php', 'procfile']]]:
+#@   for bpname in bpnames:
+- name: #@ "{}-buildpack".format(bpname)
+  type: docker-image
+  source:
+    repository: #@ "gcr.io/paketo-{}/{}".format(source, bpname)
+#@   end
+#@ end
 
 jobs:
 - name: fail-prs-to-cf-for-k8s-master
@@ -1330,3 +1342,52 @@ jobs:
       repository: cf-for-k8s-bump
       rebase: true
 #@ end
+
+- name: bump-buildpacks
+  public: true
+  plan:
+  - in_parallel:
+#@ for bpname in ['ruby', 'python', 'java', 'nodejs', 'go', 'dotnet-core', 'php', 'procfile']:
+    - get: #@ "{}-buildpack".format(bpname)
+      trigger: true
+#@ end
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - put: pool-lock
+      resource: ready-pool
+      params:
+        acquire: true
+
+  - task: bump-buildpacks
+    file: cf-for-k8s-ci/ci/tasks/bump-buildpacks/task.yml
+
+  - task: validate-buildpacks
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-bumped
+      pool-lock: pool-lock
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+
+  - task: run-smoke-tests
+    file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+    params:
+      SMOKE_TEST_SKIP_SSL: false
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-bumped
+
+  - put: cf-for-k8s-develop
+    params:
+      repository: cf-for-k8s-bumped
+      rebase: true
+
+  ensure:
+    do:
+      - put: destroy-pool
+        params:
+          add: pool-lock
+      - put: ready-pool
+        params:
+          remove: pool-lock

@@ -1,5 +1,10 @@
 #!/bin/bash
 set -eux
 
-cd "cf-for-k8s/tests/configs"
-ginkgo -r -v .
+pushd "cf-for-k8s/tests/configs" > /dev/null
+  ginkgo -r -v .
+popd > /dev/null
+
+pushd "cf-for-k8s/tests/ytt" > /dev/null
+  ginkgo -r -v .
+popd > /dev/null

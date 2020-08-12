@@ -1,4 +1,5 @@
-#@ def gateway(system_domain, app_domains, system_namespace, workloads_namespace):
+#@ def gateway(system_domain, app_domains, system_namespace, workloads_namespace, https_only):
+
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
@@ -15,6 +16,8 @@ spec:
       name: http
       number: 80
       protocol: HTTP
+    tls:
+      httpsRedirect: #@ https_only
   - hosts:
     - #@ ('' if system_domain in app_domains else '*/') + '*.' + system_domain
     port:

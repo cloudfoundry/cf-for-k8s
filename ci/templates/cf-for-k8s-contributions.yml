@@ -795,6 +795,7 @@ jobs:
         file: cf-for-k8s-ci/ci/tasks/delete-rds/task.yml
 
 - name: validate-pr-on-newest-k8s-kind
+  public: true
   plan:
     - in_parallel:
         - get: cf-for-k8s-pr-all-branches-and-forks
@@ -887,6 +888,7 @@ jobs:
           action: destroy
 
 - name: validate-pr-on-oldest-k8s-kind
+  public: true
   plan:
     - in_parallel:
         - get: cf-for-k8s-pr-all-branches-and-forks

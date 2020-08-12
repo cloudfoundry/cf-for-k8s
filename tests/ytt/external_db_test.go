@@ -1,7 +1,7 @@
 package ytt
 
 import (
-	. "code.cloudfoundry.org/cf-for-k8s-ytt-tests/matchers"
+	. "code.cloudfoundry.org/yttk8smatchers/matchers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

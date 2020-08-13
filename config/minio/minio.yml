@@ -18,6 +18,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: cf-blobstore
+  labels:
+    name: cf-blobstore
 
 #@overlay/match by=overlay.subset({"kind": "Secret", "metadata": {"name": "cf-blobstore-minio"}})
 ---

@@ -507,9 +507,6 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-    ports:
-    - port: 8085
-      protocol: TCP
   egress:
   - {}
 ---

@@ -841,6 +841,7 @@ jobs:
         PGPASSWORD: ((ci_k8s_aws_rds_database_password))
       file: cf-for-k8s-ci/ci/tasks/delete-rds/task.yml
 - name: validate-pr-on-newest-k8s-kind
+  public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
@@ -850,6 +851,7 @@ jobs:
       - run-unit-tests-on-pr
       - test-vendir-sync-on-cf-for-k8s-pr
     - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
     - get: cf-for-k8s-kind-gcp-terraform-templates
     - get: runtime-ci
   - put: cf-for-k8s-pr-all-branches-and-forks
@@ -875,7 +877,7 @@ jobs:
     - task: create-kind-cluster
       attempts: 5
       input_mapping:
-        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        cf-for-k8s: cf-for-k8s-develop
       file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
@@ -924,6 +926,7 @@ jobs:
       get_params:
         action: destroy
 - name: validate-pr-on-oldest-k8s-kind
+  public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
@@ -933,6 +936,7 @@ jobs:
       - run-unit-tests-on-pr
       - test-vendir-sync-on-cf-for-k8s-pr
     - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
     - get: cf-for-k8s-kind-gcp-terraform-templates
     - get: runtime-ci
   - put: cf-for-k8s-pr-all-branches-and-forks
@@ -958,7 +962,7 @@ jobs:
     - task: create-kind-cluster
       attempts: 5
       input_mapping:
-        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        cf-for-k8s: cf-for-k8s-develop
       file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))

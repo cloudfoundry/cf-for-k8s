@@ -1,6 +1,6 @@
 #@ load("@ytt:data", "data")
 
-#@ if data.values.add_metrics_server:
+#@ if data.values.add_metrics_server_components:
 #! https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.3.6/components.yaml
 ---
 apiVersion: rbac.authorization.k8s.io/v1

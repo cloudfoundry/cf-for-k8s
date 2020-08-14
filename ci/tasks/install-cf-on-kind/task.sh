@@ -6,10 +6,10 @@ source cf-for-k8s-ci/ci/helpers/auth-to-gcp.sh
 echo "Generating install values..."
 cf-for-k8s/hack/generate-values.sh -d vcap.me -g gcp-service-account.json > cf-install-values/cf-install-values.yml
 cat <<EOT >> cf-install-values/cf-install-values.yml
-add_metrics_server: true
-automount_service_account_token: true
+add_metrics_server_components: true
+enable_automount_service_account_token: true
 enable_load_balancer: false
-patch_metrics_server_for_kind: true
+metrics_server_prefer_internal_kubelet_address: true
 remove_resource_requirements: true
 use_first_party_jwt_tokens: true
 EOT

@@ -49,10 +49,10 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 
    - Make sure the following values are included in your install values file:
    ```yaml
-   add_metrics_server: true
-   automount_service_account_token: true
+   add_metrics_server_components: true
+   enable_automount_service_account_token: true
    enable_load_balancer: false
-   patch_metrics_server_for_kind: true
+   metrics_server_prefer_internal_kubelet_address: true
    remove_resource_requirements: true
    use_first_party_jwt_tokens: true
    ```

@@ -1,5 +1,7 @@
 code.cloudfoundry.org/yttk8smatchers v0.0.0-20200812192701-57881d7b9088 h1:k3/yM9F38uAevijrY1bxb382/xCdlDdeSG3Pwxk0oeo=
 code.cloudfoundry.org/yttk8smatchers v0.0.0-20200812192701-57881d7b9088/go.mod h1:uQKgquQszSXmPikQZkAbTeO+M33JVX4HtQZWIPq2fa4=
+code.cloudfoundry.org/yttk8smatchers v0.0.0-20200814185530-4401c7f66084 h1:tpkX0Tjnxm5Et9V7P37BT7nWRHPrgoyhcNsnoNPLON8=
+code.cloudfoundry.org/yttk8smatchers v0.0.0-20200814185530-4401c7f66084/go.mod h1:uQKgquQszSXmPikQZkAbTeO+M33JVX4HtQZWIPq2fa4=
 github.com/NYTimes/gziphandler v0.0.0-20170623195520-56545f4a5d46/go.mod h1:3wb06e3pkSAbeQ52E9H9iFoQsEEwGN64994WTCIhntQ=
 github.com/PuerkitoBio/purell v1.0.0/go.mod h1:c11w/QuzBsJSee3cPx9rAFu61PvFxuPbtSwDGJws/X0=
 github.com/PuerkitoBio/urlesc v0.0.0-20160726150825-5bd2802263f2/go.mod h1:uGdkoq3SwY9Y+13GIhn11/XLaGBb4BfwItxLd5jeuXE=

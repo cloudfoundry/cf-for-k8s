@@ -37,7 +37,7 @@ To deploy cf-for-k8s as is, the cluster should:
 - have a minimum of 4 CPU, 15GB memory per node
 - support `LoadBalancer` services
 - support `metrics-server`
-  - Most IaaSes come with `metrics-server`, but if yours does not come (for example, if you are using `kind`), you will need to include `add_metrics_server: true` in your values file.
+  - Most IaaSes come with `metrics-server`, but if yours does not come (for example, if you are using `kind`), you will need to include `add_metrics_server_components: true` in your values file.
 - defines a default StorageClass
   - requires [additional config on vSphere](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/storageclass.html), for example
 

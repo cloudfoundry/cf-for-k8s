@@ -146,9 +146,9 @@ app_registry:
 #!  password: <password>
 
 remove_resource_requirements: true
-add_metrics_server: true
+add_metrics_server_components: true
 enable_load_balancer: false
-use_external_dns: true
-automount_service_account_token: true
-patch_metrics_server_for_kind: true
+use_external_dns_for_wildcard: true
+enable_automount_service_account_token: true
+metrics_server_prefer_internal_kubelet_address: true
 use_first_party_jwt_tokens: true

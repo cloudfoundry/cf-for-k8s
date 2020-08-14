@@ -27,8 +27,8 @@ spec:
       - name: manager
         image: #@ data.values.images.cf_api_controllers
         env:
-        - name: UAA_CLIENT_SECRET
-          value: #@ data.values.uaa.clients.cf_api_controllers.secret
+        - name: UAA_CLIENT_SECRET_FILE
+          value: /config/uaa_client_secret/password
         - name: UAA_ENDPOINT
           value: #@ "http://uaa.{}.svc.cluster.local:8080".format(data.values.system_namespace)
         - name: UAA_CLIENT_NAME
@@ -46,6 +46,13 @@ spec:
           requests:
             cpu: 100m
             memory: 50Mi
+        volumeMounts:
+          - name: uaa-client-secret
+            mountPath: /config/uaa_client_secret
+      volumes:
+        - name: uaa-client-secret
+          secret:
+            secretName: #@ data.values.uaa.clients.cf_api_controllers.secret_name
       terminationGracePeriodSeconds: 10
 ---
 apiVersion: rbac.authorization.k8s.io/v1

@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Add uaa.clients.cf_api_controllers.secret_name key...
-      sha: 7eefd42e92b13fedee4a944ae0c7c97b60161538
+      commitTitle: images.yml updated by CI...
+      sha: dda77ae25a3b91896cbb22f777f85ee60693b45d
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:

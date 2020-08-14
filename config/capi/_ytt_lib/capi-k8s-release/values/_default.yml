@@ -73,13 +73,11 @@ blobstore:
   package_directory_key: cc-packages
   region: ""
   resource_directory_key: cc-resources
-  secret_access_key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
   secret_access_key_secret_name:
 ccdb:
   adapter: postgres
   database: cloud_controller
   host: capi-database-postgresql
-  password: cloud_controller
   password_secret_name:
   port: 5432
   user: cloud_controller
@@ -109,7 +107,6 @@ uaa:
       secret: supers3cret
       secret_name:
     cloud_controller_username_lookup:
-      secret: supers3cret
       secret_name:
   serverCerts:
     secretName: null

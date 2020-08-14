@@ -1,5 +1,7 @@
+#@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
+#@ if data.values.metrics_server_prefer_internal_kubelet_address:
 #! Patch metrics-server to work in Kind
 #! https://github.com/kubernetes-sigs/kind/issues/398#issuecomment-621143252
 #! https://github.com/kubernetes-sigs/metrics-server/issues/131#issuecomment-618671827
@@ -18,4 +20,4 @@ spec:
             - --secure-port=4443
             - --kubelet-insecure-tls
             - --kubelet-preferred-address-types=InternalIP
-
+#@ end

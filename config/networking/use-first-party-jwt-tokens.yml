@@ -1,8 +1,9 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:json", "json")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:yaml", "yaml")
-#@ load("@ytt:json", "json")
-#@ load("@ytt:data", "data")
 
+#@ if data.values.use_first_party_jwt_tokens:
 #! Patch istio to use first party jwt tokens
 #!   - Kind does not support setting 3rd party tokens yet
 
@@ -17,7 +18,6 @@ global:
 data:
   #@overlay/replace via=lambda a,_: json.encode(overlay.apply(yaml.decode(a),replace_jwt_policy()))
   values:
-
 
 #@overlay/match by=overlay.subset({"kind":"DaemonSet","metadata":{"name":"istio-ingressgateway"}})
 ---
@@ -54,4 +54,4 @@ spec:
       volumes:
       #@overlay/match by=overlay.subset({"name":"istio-token"})
       - #@overlay/remove
-
+#@ end

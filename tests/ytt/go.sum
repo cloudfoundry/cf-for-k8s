@@ -7,6 +7,8 @@ code.cloudfoundry.org/yttk8smatchers v0.0.0-20200814185530-4401c7f66084 h1:tpkX0
 code.cloudfoundry.org/yttk8smatchers v0.0.0-20200814185530-4401c7f66084/go.mod h1:uQKgquQszSXmPikQZkAbTeO+M33JVX4HtQZWIPq2fa4=
 code.cloudfoundry.org/yttk8smatchers v0.0.0-20200814220101-15bf10a1956a h1:aGd0gtUjpLdxumC5t5KrPYDx9Q0zqGrBNJauKsrMyyM=
 code.cloudfoundry.org/yttk8smatchers v0.0.0-20200814220101-15bf10a1956a/go.mod h1:EAUBddDyGwvaLiNjClsbf+5CKlMqAw3wVTpA5LRX0sg=
+code.cloudfoundry.org/yttk8smatchers v0.0.0-20200817062509-7f493f49b3e2 h1:9ApAWi9L8ru/AqHq/+52AkLn3e6fJkvwehTPIdfBel4=
+code.cloudfoundry.org/yttk8smatchers v0.0.0-20200817062509-7f493f49b3e2/go.mod h1:EAUBddDyGwvaLiNjClsbf+5CKlMqAw3wVTpA5LRX0sg=
 github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78/go.mod h1:LmzpDX56iTiv29bbRTIsUNlaFfuhWRQBWjQdVyAevI8=
 github.com/Azure/go-autorest/autorest v0.9.0/go.mod h1:xyHB1BMZT0cuDHU7I0+g046+BFDTQ8rEZB0s4Yfa6bI=
 github.com/Azure/go-autorest/autorest/adal v0.5.0/go.mod h1:8Z9fGy2MpX0PvDjB1pEgQTmVqjGhiHBW7RJJEciWzS0=

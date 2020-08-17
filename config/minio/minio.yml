@@ -24,7 +24,7 @@ metadata:
 #@overlay/match by=overlay.subset({"kind": "Secret", "metadata": {"name": "cf-blobstore-minio"}})
 ---
 data:
-  accesskey: #@ base64.encode("admin")
-  secretkey: #@ base64.encode(must_exist(data.values, "cf_blobstore.secret_key"))
+  accesskey: #@ base64.encode(must_exist(data.values, "blobstore.access_key_id"))
+  secretkey: #@ base64.encode(must_exist(data.values, "blobstore.secret_access_key"))
 
 --- #@ template.replace(overlay.apply(library.get("minio").eval(), add_cf_blobstore_namespace()))

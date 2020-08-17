@@ -24,14 +24,15 @@ app_domains:
 - #@ domain
 
 blobstore:
-  endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
-  region: "''"
-  access_key_id: "admin"
+  endpoint: #@ data.values.blobstore.endpoint
+  region: #@ data.values.blobstore.region
+  access_key_id: #@ data.values.blobstore.access_key_id
   secret_access_key_secret_name: capi-blobstore-secret-key
-  package_directory_key: cc-packages
-  droplet_directory_key: cc-droplets
-  resource_directory_key: cc-resources
-  buildpack_directory_key: cc-buildpacks
+  package_directory_key: #@ data.values.blobstore.package_directory_key
+  droplet_directory_key: #@ data.values.blobstore.droplet_directory_key
+  resource_directory_key: #@ data.values.blobstore.resource_directory_key
+  buildpack_directory_key: #@ data.values.blobstore.buildpack_directory_key
+  aws_signature_version: #@ data.values.blobstore.aws_signature_version
 
 ccdb:
   adapter: #@ data.values.capi.database.adapter
@@ -114,7 +115,7 @@ metadata:
   namespace: #@ data.values.system_namespace
 type: Opaque
 stringData:
-  password: #@ data.values.cf_blobstore.secret_key
+  password: #@ data.values.blobstore.secret_access_key
 ---
 apiVersion: v1
 kind: Secret

@@ -223,8 +223,8 @@ app_domains:
 - "apps.${DOMAIN}"
 cf_admin_password: $(bosh interpolate ${VARS_FILE} --path=/cf_admin_password)
 
-cf_blobstore:
-  secret_key: $(bosh interpolate ${VARS_FILE} --path=/blobstore_secret_key)
+blobstore:
+  secret_access_key: $(bosh interpolate ${VARS_FILE} --path=/blobstore_secret_key)
 
 cf_db:
   admin_password: $(bosh interpolate ${VARS_FILE} --path=/db_admin_password)

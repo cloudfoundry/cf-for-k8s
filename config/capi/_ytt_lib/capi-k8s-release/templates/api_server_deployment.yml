@@ -21,7 +21,7 @@ spec:
       annotations:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '9102'
-        prometheus.io/path: 'metrics'
+        traffic.sidecar.istio.io/excludeInboundPorts: "9102"
       labels:
         app.kubernetes.io/name: cf-api-server
     spec:
@@ -103,6 +103,8 @@ spec:
           - name: nginx-uploads
             mountPath: /tmp/uploads
         - name: statsd-exporter
+          ports:
+          - containerPort: 9102
           image: #@ data.values.images.statsd_exporter
           imagePullPolicy: Always
       serviceAccountName: cf-api-server-service-account

@@ -1084,8 +1084,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas: null
-        URL: index.docker.io/eirini/eirini-controller@sha256:142c4f335d8a117300eac610accd7183a0bfa5c793594deee5487b9af95f3a33
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-controller@sha256:a0caba94d99cb89511dbe68c3360ac7177f39cd42d8ee7d4990306ea105d8c58
+        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-controller@sha256:a0caba94d99cb89511dbe68c3360ac7177f39cd42d8ee7d4990306ea105d8c58
   name: eirini-controller
   namespace: cf-system
 spec:
@@ -1098,7 +1100,7 @@ spec:
         name: eirini-controller
     spec:
       containers:
-      - image: index.docker.io/eirini/eirini-controller@sha256:142c4f335d8a117300eac610accd7183a0bfa5c793594deee5487b9af95f3a33
+      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-controller@sha256:a0caba94d99cb89511dbe68c3360ac7177f39cd42d8ee7d4990306ea105d8c58
         imagePullPolicy: Always
         name: eirini-controller
         resources:

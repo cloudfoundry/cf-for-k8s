@@ -8,7 +8,7 @@ overrides:
   - image: eirini/event-reporter@sha256:62a30205593b22dfb954dfe803c0e01866e4ac08717ec3089c4c32aec2f00457
     newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:b9e2218b95aa2557b5d85a1c31c6a0b4a60156a78afaea56ceac1bbe7787996a
     preresolved: true
-  - image: index.docker.io/eirini/eirini-controller@sha256:142c4f335d8a117300eac610accd7183a0bfa5c793594deee5487b9af95f3a33
+  - image: eirini/eirini-controller@sha256:142c4f335d8a117300eac610accd7183a0bfa5c793594deee5487b9af95f3a33
     newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-controller@sha256:a0caba94d99cb89511dbe68c3360ac7177f39cd42d8ee7d4990306ea105d8c58
     preresolved: true
   - image: eirini/task-reporter@sha256:23e081f0875c40f59526aa2f3bc77cd25c26776d840b2e6e49c4b0f2cbf5a04a

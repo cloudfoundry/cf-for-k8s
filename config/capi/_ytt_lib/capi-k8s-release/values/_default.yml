@@ -71,6 +71,7 @@ blobstore:
   droplet_directory_key: cc-droplets
   endpoint: http://capi-blobstore-minio.default:9000
   package_directory_key: cc-packages
+  aws_signature_version: '2'
   region: ""
   resource_directory_key: cc-resources
   secret_access_key_secret_name:

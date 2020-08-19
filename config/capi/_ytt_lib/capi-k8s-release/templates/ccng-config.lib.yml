@@ -179,7 +179,7 @@ resource_pool:
     provider: AWS
     endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_signature_version: '2'
+    aws_signature_version: #@ data.values.blobstore.aws_signature_version
     region: #@ data.values.blobstore.region
     path_style: true
   minimum_size: 65536
@@ -199,7 +199,7 @@ packages:
     provider: AWS
     endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_signature_version: '2'
+    aws_signature_version: #@ data.values.blobstore.aws_signature_version
     region: #@ data.values.blobstore.region
     path_style: true
   max_valid_packages_stored: 5
@@ -219,7 +219,7 @@ droplets:
     provider: AWS
     endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_signature_version: '2'
+    aws_signature_version: #@ data.values.blobstore.aws_signature_version
     region: #@ data.values.blobstore.region
     path_style: true
 
@@ -238,7 +238,7 @@ buildpacks:
     provider: AWS
     endpoint: #@ data.values.blobstore.endpoint
     aws_access_key_id: #@ data.values.blobstore.access_key_id
-    aws_signature_version: '2'
+    aws_signature_version: #@ data.values.blobstore.aws_signature_version
     region: #@ data.values.blobstore.region
     path_style: true
 

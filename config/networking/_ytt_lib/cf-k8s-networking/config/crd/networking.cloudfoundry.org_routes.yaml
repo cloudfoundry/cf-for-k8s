@@ -17,6 +17,13 @@ spec:
   scope: Namespaced
   subresources:
     status: {}
+  additionalPrinterColumns:
+  - name: URL
+    type: string
+    JSONPath: .spec.url
+  - name: Age
+    type: date
+    JSONPath: .metadata.creationTimestamp
   validation:
     openAPIV3Schema:
       description: Route is the Schema for the routes API

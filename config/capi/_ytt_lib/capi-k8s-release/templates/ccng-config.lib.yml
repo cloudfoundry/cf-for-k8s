@@ -17,7 +17,7 @@ fluent:
 internal_service_hostname: #@ "capi.{}.svc.cluster.local".format(data.values.system_namespace)
 internal_service_port: 9023
 
-pid_filename: /cloud_controller_ng/cloud_controller_ng.pid
+pid_filename: cloud_controller_ng.pid
 newrelic_enabled: false
 development_mode: false
 
@@ -55,6 +55,7 @@ internal_api:
 
 nginx:
   use_nginx: true
+  #! TODO: consume this from a variable since it's defined in the pod's mounts
   instance_socket: "/data/cloud_controller_ng/cloud_controller.sock"
 
 index: 0
@@ -82,7 +83,7 @@ directories:
 logging:
   file: /dev/stdout
   syslog: vcap.cloud_controller_ng
-  level: "info"
+  level: #@ data.values.cc.log_level
   max_retries: 1
 
 logcache:
@@ -130,7 +131,6 @@ uaa:
   internal_url: #@ "http://uaa.{}.svc.cluster.local:8080".format(data.values.system_namespace)
   resource_id: cloud_controller,cloud_controller_service_permissions
   client_timeout: 60
-  ca_file: /config/uaa/certs/uaa.crt
 
 routing_api:
   url: #@ "https://api.{}/routing".format(data.values.system_domain)
@@ -154,7 +154,7 @@ default_health_check_timeout: 60
 maximum_health_check_timeout: 180
 
 runtimes_file: "/dev/null"
-stacks_file: "/cloud_controller_ng/config/stacks.yml"
+stacks_file: config/stacks.yml
 
 shared_isolation_segment_name: shared
 

@@ -46,7 +46,7 @@ spec:
 metadata:
   annotations:
     #@overlay/remove
-    build.pivotal.io/docker:
+    kpack.io/docker:
 type: kubernetes.io/dockerconfigjson
 #@overlay/match missing_ok=True
 data:

@@ -17,12 +17,7 @@ spec:
       - name: run-migrations
         image: #@ data.values.images.ccng
         imagePullPolicy: Always
-        command: ["/bin/bash", "-c"]
-        args:
-        - |
-          bundle exec rake db:wait_for_istio && \
-          bundle exec rake db:setup_database && \
-          bundle exec rake db:terminate_istio
+        command: [ "/cnb/process/migrate" ]
         env:
         - name: CLOUD_CONTROLLER_NG_CONFIG
           value: #@ ccng_config_mount_path

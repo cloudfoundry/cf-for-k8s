@@ -10,8 +10,8 @@ waitRules:
     status: "True"
     success: true
   resourceMatchers:
-  - apiVersionKindMatcher: {apiVersion: experimental.kpack.pivotal.io/v1alpha1, kind: Stack}
-  - apiVersionKindMatcher: {apiVersion: experimental.kpack.pivotal.io/v1alpha1, kind: Store}
+  - apiVersionKindMatcher: {apiVersion: kpack.io/v1alpha1, kind: ClusterStack}
+  - apiVersionKindMatcher: {apiVersion: kpack.io/v1alpha1, kind: ClusterStore}
 - supportsObservedGeneration: true
   conditionMatchers:
   - type: Ready
@@ -21,6 +21,6 @@ waitRules:
     status: "False"
     failure: true
   resourceMatchers:
-  - apiVersionKindMatcher: {apiVersion: experimental.kpack.pivotal.io/v1alpha1, kind: CustomBuilder}
+  - apiVersionKindMatcher: {apiVersion: kpack.io/v1alpha1, kind: Builder}
 
 

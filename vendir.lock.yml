@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: increase routecontroller resync_interval time...
-      sha: a7e5484bcc075e71d68101225c1fd492833ca8d6
+      commitTitle: generate istio config assuming third-party-jwt...
+      sha: c62024c07a6251d3b5db7dc49c115a5d2669bdfb
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

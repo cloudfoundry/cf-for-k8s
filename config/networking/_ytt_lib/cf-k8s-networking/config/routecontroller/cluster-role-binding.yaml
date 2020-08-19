@@ -6,6 +6,10 @@ kind: ClusterRoleBinding
 metadata:
   name: routecontroller
   namespace: #@ data.values.systemNamespace
+  labels:
+    app.kubernetes.io/name: routecontroller
+    app.kubernetes.io/component: cf-networking
+    app.kubernetes.io/part-of: cloudfoundry
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

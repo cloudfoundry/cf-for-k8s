@@ -6,6 +6,10 @@ kind: ClusterRole
 metadata:
   name: routecontroller
   namespace: #@ data.values.systemNamespace
+  labels:
+    app.kubernetes.io/name: routecontroller
+    app.kubernetes.io/component: cf-networking
+    app.kubernetes.io/part-of: cloudfoundry
 rules:
 - apiGroups: ["networking.cloudfoundry.org"]
   resources: ["routes", "routes/status"]

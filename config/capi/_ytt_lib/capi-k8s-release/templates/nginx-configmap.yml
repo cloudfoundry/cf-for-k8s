@@ -9,6 +9,7 @@ metadata:
     kapp.k14s.io/versioned: ""
 data:
   nginx.conf: |
+    user cnb cnb;
     error_log stderr info;
 
     worker_processes auto;

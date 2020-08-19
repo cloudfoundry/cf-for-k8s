@@ -27,9 +27,7 @@ spec:
         - name: cf-api-deployment-updater
           image: #@ data.values.images.ccng
           imagePullPolicy: Always
-          workingDir: "/cloud_controller_ng"
-          command: ["/usr/local/bin/bundle"]
-          args: ["exec", "rake", "deployment_updater:start"]
+          command: [ "/cnb/process/deployment-updater" ]
           env:
           - name: CLOUD_CONTROLLER_NG_CONFIG
             value: #@ ccng_config_mount_path
@@ -37,8 +35,10 @@ spec:
             value: #@ ccng_secrets_mount_path
           resources:
             requests:
+              cpu: 300m
               memory: 300Mi
             limits:
+              cpu: 1000m
               memory: 1Gi
           readinessProbe:
             tcpSocket:

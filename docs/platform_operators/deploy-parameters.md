@@ -19,6 +19,7 @@
 | capi.database.password | password for the capi database user in plaintext | Yes | no value | d8sQaD9yFWEvBADQE9yFBAt4s5843e6P |  |
 | capi.database.name | name of the capi database | Yes | no value | ccdb |  |
 | capi.database.ca_cert | authority of the certificate used for tls connections to the database | No | no value |  |  |
+| uaa.database.adapter | database adapter for use by uaa | Yes | no value | postgresql | mysql |
 | uaa.database.host | address of the database | Yes | no value | `my-postgres.cf.example.com` |  |
 | uaa.database.port | port on which to make database communication | Yes | no value | 5432 |  |
 | uaa.database.user | database user for uaa tables | Yes | no value | uaa-db-user |  |

@@ -177,6 +177,7 @@ jobs:
         APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.repository_prefix))
         APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
         APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        DOMAIN: k8s-dev.relint.rocks
       file: cf-for-k8s-ci/ci/tasks/install-cf/task.yml
 
     - task: run-smoke-test
@@ -261,6 +262,7 @@ jobs:
         APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
         APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
         ADDITIONAL_YAML_CONFIG: db-metadata/db-values.yaml
+        DOMAIN: k8s-dev.relint.rocks
       file: cf-for-k8s-ci/ci/tasks/install-cf/task.yml
 
     - task: run-smoke-test
@@ -368,6 +370,7 @@ jobs:
         APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
         APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
         ADDITIONAL_YAML_CONFIG: db-metadata/db-values.yaml
+        DOMAIN: k8s-dev.relint.rocks
       file: cf-for-k8s-ci/ci/tasks/install-cf/task.yml
 
     - task: run-smoke-test

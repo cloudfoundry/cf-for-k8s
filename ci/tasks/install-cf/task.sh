@@ -5,7 +5,7 @@ source cf-for-k8s-ci/ci/helpers/gke.sh
 cluster_name="$(cat pool-lock/name)"
 gcloud_auth "${cluster_name}"
 
-DNS_DOMAIN="${cluster_name}.k8s-dev.relint.rocks"
+DNS_DOMAIN="${cluster_name}.${DOMAIN}"
 cf-for-k8s/hack/confirm-network-policy.sh "${cluster_name}" "$GCP_PROJECT_ZONE"
 
 echo "Generating install values..."

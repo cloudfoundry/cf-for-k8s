@@ -215,6 +215,7 @@ jobs:
       - name: tf-vars
       params:
         SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+        DOMAIN: k8s-dev.relint.rocks
       run:
         path: /bin/bash
         args:
@@ -226,7 +227,7 @@ jobs:
           zone = "us-central1-a"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat building-cluster/name)"
-          env_dns_domain = "$(cat building-cluster/name).k8s-dev.relint.rocks"
+          env_dns_domain = "$(cat building-cluster/name).${DOMAIN}"
           dns_zone_name = "k8s-dev-relint-rocks"
           EOT
   - put: terraform
@@ -324,6 +325,7 @@ jobs:
       - name: tf-vars
       params:
         SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+        DOMAIN: k8s-dev.relint.rocks
       run:
         path: /bin/bash
         args:
@@ -334,7 +336,7 @@ jobs:
           region = "((ci_k8s_gcp_project_region))"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat destroy-cluster/name)"
-          env_dns_domain = "$(cat building-cluster/name).k8s-dev.relint.rocks"
+          env_dns_domain = "$(cat building-cluster/name).${DOMAIN}"
           dns_zone_name = "k8s-dev-relint-rocks"
           EOT
   - put: terraform

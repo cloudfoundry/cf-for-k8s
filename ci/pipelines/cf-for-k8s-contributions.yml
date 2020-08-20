@@ -1241,6 +1241,7 @@ jobs:
       cf-for-k8s: cf-for-k8s-develop
       pool-lock: pool-lock
     params:
+      DOMAIN: k8s-dev.relint.rocks
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
@@ -1261,6 +1262,7 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
       UPGRADE: true
       UPTIMER: true
+      DOMAIN: k8s-dev.relint.rocks
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
@@ -1554,6 +1556,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
@@ -1569,6 +1572,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
       UPGRADE: true
       UPTIMER: true
   - in_parallel:
@@ -1864,6 +1868,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
@@ -1879,6 +1884,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
       UPGRADE: true
       UPTIMER: true
   - in_parallel:
@@ -2174,6 +2180,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
@@ -2189,6 +2196,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
       UPGRADE: true
       UPTIMER: true
   - in_parallel:
@@ -2484,6 +2492,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
@@ -2499,6 +2508,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
       UPGRADE: true
       UPTIMER: true
   - in_parallel:
@@ -2794,6 +2804,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
@@ -2809,6 +2820,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
       UPGRADE: true
       UPTIMER: true
   - in_parallel:
@@ -2908,6 +2920,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
   - task: run-smoke-tests
     file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
     params:

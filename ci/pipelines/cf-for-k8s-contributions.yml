@@ -288,6 +288,18 @@ jobs:
 - name: fail-prs-to-cf-for-k8s-master
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-master
       trigger: true
@@ -306,6 +318,18 @@ jobs:
 - name: pass-prs-to-cf-for-k8s-develop
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - get: cf-for-k8s-pr-develop
     trigger: true
     version: every
@@ -317,6 +341,18 @@ jobs:
 - name: run-unit-tests-on-pr
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -353,6 +389,18 @@ jobs:
 - name: test-vendir-sync-on-cf-for-k8s-pr
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: runtime-ci
     - get: cf-for-k8s-pr-all-branches-and-forks
@@ -394,6 +442,18 @@ jobs:
 - name: validate-pr-on-gke
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       params:
@@ -506,6 +566,18 @@ jobs:
   serial: true
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       params:
@@ -673,6 +745,18 @@ jobs:
   serial: true
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       params:
@@ -843,6 +927,18 @@ jobs:
 - name: validate-pr-on-newest-k8s-kind
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -928,6 +1024,18 @@ jobs:
 - name: validate-pr-on-oldest-k8s-kind
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -1013,6 +1121,18 @@ jobs:
 - name: capi-k8s-release-run-unit-tests
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1036,6 +1156,18 @@ jobs:
 - name: capi-k8s-release-validate-on-oldest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1124,6 +1256,18 @@ jobs:
 - name: capi-k8s-release-validate-on-newest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1212,6 +1356,18 @@ jobs:
 - name: capi-k8s-release-validate-upgrade
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1294,6 +1450,18 @@ jobs:
 - name: capi-k8s-release-push-to-develop
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1324,6 +1492,18 @@ jobs:
 - name: cf-k8s-logging-run-unit-tests
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1346,6 +1526,18 @@ jobs:
 - name: cf-k8s-logging-validate-on-oldest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1434,6 +1626,18 @@ jobs:
 - name: cf-k8s-logging-validate-on-newest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1522,6 +1726,18 @@ jobs:
 - name: cf-k8s-logging-validate-upgrade
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1604,6 +1820,18 @@ jobs:
 - name: cf-k8s-logging-push-to-develop
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1634,6 +1862,18 @@ jobs:
 - name: eirini-release-run-unit-tests
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1656,6 +1896,18 @@ jobs:
 - name: eirini-release-validate-on-oldest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1744,6 +1996,18 @@ jobs:
 - name: eirini-release-validate-on-newest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1832,6 +2096,18 @@ jobs:
 - name: eirini-release-validate-upgrade
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1914,6 +2190,18 @@ jobs:
 - name: eirini-release-push-to-develop
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1944,6 +2232,18 @@ jobs:
 - name: kpack-run-unit-tests
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1966,6 +2266,18 @@ jobs:
 - name: kpack-validate-on-oldest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2054,6 +2366,18 @@ jobs:
 - name: kpack-validate-on-newest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2142,6 +2466,18 @@ jobs:
 - name: kpack-validate-upgrade
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2224,6 +2560,18 @@ jobs:
 - name: kpack-push-to-develop
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2254,6 +2602,18 @@ jobs:
 - name: metric-proxy-run-unit-tests
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2276,6 +2636,18 @@ jobs:
 - name: metric-proxy-validate-on-oldest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2364,6 +2736,18 @@ jobs:
 - name: metric-proxy-validate-on-newest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2452,6 +2836,18 @@ jobs:
 - name: metric-proxy-validate-upgrade
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2534,6 +2930,18 @@ jobs:
 - name: metric-proxy-push-to-develop
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2564,6 +2972,18 @@ jobs:
 - name: uaa-run-unit-tests
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2586,6 +3006,18 @@ jobs:
 - name: uaa-validate-on-oldest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2674,6 +3106,18 @@ jobs:
 - name: uaa-validate-on-newest-k8s-version
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2762,6 +3206,18 @@ jobs:
 - name: uaa-validate-upgrade
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2844,6 +3300,18 @@ jobs:
 - name: uaa-push-to-develop
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2874,6 +3342,18 @@ jobs:
 - name: bump-buildpacks
   public: true
   plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: ruby-buildpack
       trigger: true

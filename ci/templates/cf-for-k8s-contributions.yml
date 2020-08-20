@@ -40,6 +40,7 @@ resource_types:
   type: docker-image
   source:
     repository: teliaoss/github-pr-resource
+
 - name: terraform
   type: docker-image
   source:
@@ -70,7 +71,12 @@ resources:
   type: time
   icon: clock-outline
   source:
-    days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+    days:
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
     start: 6:00 PM
     stop: 7:00 PM
     location: America/Los_Angeles
@@ -131,7 +137,6 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
     - deploy/gke/terraform/**
-
 
 - name: cf-for-k8s-kind-gcp-terraform-templates
   type: git
@@ -197,248 +202,250 @@ jobs:
 - name: fail-prs-to-cf-for-k8s-master
   public: true
   plan:
-    - in_parallel:
-        - get: cf-for-k8s-pr-master
-          trigger: true
-          version: every
-        - get: runtime-ci
+  - in_parallel:
+    - get: cf-for-k8s-pr-master
+      trigger: true
+      version: every
+    - get: runtime-ci
 
-    - task: write-pr-check-failure-comment
-      file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
-      input_mapping:
-        pull-request: cf-for-k8s-pr-master
+  - task: write-pr-check-failure-comment
+    file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+    input_mapping:
+      pull-request: cf-for-k8s-pr-master
 
-    - put: cf-for-k8s-pr-master
-      params:
-        path: cf-for-k8s-pr-master
-        status: failure
-        context: ((pr_context))
-        comment_file: pull-request-comment/comment
+  - put: cf-for-k8s-pr-master
+    params:
+      path: cf-for-k8s-pr-master
+      status: failure
+      context: ((pr_context))
+      comment_file: pull-request-comment/comment
 
 - name: pass-prs-to-cf-for-k8s-develop
   public: true
   plan:
-    - get: cf-for-k8s-pr-develop
-      trigger: true
-      version: every
+  - get: cf-for-k8s-pr-develop
+    trigger: true
+    version: every
 
-    - put: cf-for-k8s-pr-develop
-      params:
-        path: cf-for-k8s-pr-develop
-        status: success
-        context: ((pr_context))
+  - put: cf-for-k8s-pr-develop
+    params:
+      path: cf-for-k8s-pr-develop
+      status: success
+      context: ((pr_context))
 
 - name: run-unit-tests-on-pr
   public: true
   plan:
-    - in_parallel:
-        - get: cf-for-k8s-pr-all-branches-and-forks
-          trigger: true
-          version: every
-        - get: cf-for-k8s-ci
-        - get: runtime-ci
+  - in_parallel:
+    - get: cf-for-k8s-pr-all-branches-and-forks
+      trigger: true
+      version: every
+    - get: cf-for-k8s-ci
+    - get: runtime-ci
 
-    - put: cf-for-k8s-pr-all-branches-and-forks
-      params:
-        path: cf-for-k8s-pr-all-branches-and-forks
-        status: pending
-        context: run-unit-tests
+  - put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: pending
+      context: run-unit-tests
 
-    - task: run-unit-tests
-      file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+  - task: run-unit-tests
+    file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
 
-      on_failure:
-        do:
-          - task: write-pr-check-failure-comment
-            file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
-            input_mapping:
-              pull-request: cf-for-k8s-pr-all-branches-and-forks
+    on_failure:
+      do:
+      - task: write-pr-check-failure-comment
+        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+        input_mapping:
+          pull-request: cf-for-k8s-pr-all-branches-and-forks
 
-          - put: cf-for-k8s-pr-all-branches-and-forks
-            params:
-              path: cf-for-k8s-pr-all-branches-and-forks
-              status: failure
-              context: run-unit-tests
-              comment_file: pull-request-comment/comment
-
-      on_success:
-        put: cf-for-k8s-pr-all-branches-and-forks
+      - put: cf-for-k8s-pr-all-branches-and-forks
         params:
           path: cf-for-k8s-pr-all-branches-and-forks
-          status: success
+          status: failure
           context: run-unit-tests
+          comment_file: pull-request-comment/comment
 
+    on_success:
+      put: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        path: cf-for-k8s-pr-all-branches-and-forks
+        status: success
+        context: run-unit-tests
 
 - name: test-vendir-sync-on-cf-for-k8s-pr
   public: true
   plan:
-    - in_parallel:
-        - get: runtime-ci
-        - get: cf-for-k8s-pr-all-branches-and-forks
-          params:
-            integration_tool: rebase
-          trigger: true
-          version: every
-        - get: cf-for-k8s-ci
-
-    - put: cf-for-k8s-pr-all-branches-and-forks
+  - in_parallel:
+    - get: runtime-ci
+    - get: cf-for-k8s-pr-all-branches-and-forks
       params:
-        path: cf-for-k8s-pr-all-branches-and-forks
-        status: pending
-        context: check-vendir-sync
+        integration_tool: rebase
+      trigger: true
+      version: every
+    - get: cf-for-k8s-ci
 
-    - task: check-vendir-sync
-      file: cf-for-k8s-ci/ci/tasks/check-vendir-sync/task.yml
-      input_mapping:
-        ci-tasks: cf-for-k8s-ci
-        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-      params:
-        VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
+  - put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: pending
+      context: check-vendir-sync
 
-      on_failure:
-        do:
-          - task: write-pr-check-failure-comment
-            file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
-            input_mapping:
-              pull-request: cf-for-k8s-pr-all-branches-and-forks
+  - task: check-vendir-sync
+    file: cf-for-k8s-ci/ci/tasks/check-vendir-sync/task.yml
+    input_mapping:
+      ci-tasks: cf-for-k8s-ci
+      cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
 
-          - put: cf-for-k8s-pr-all-branches-and-forks
-            params:
-              path: cf-for-k8s-pr-all-branches-and-forks
-              status: failure
-              context: check-vendir-sync
-              comment_file: pull-request-comment/comment
+    on_failure:
+      do:
+      - task: write-pr-check-failure-comment
+        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+        input_mapping:
+          pull-request: cf-for-k8s-pr-all-branches-and-forks
 
-      on_success:
-        put: cf-for-k8s-pr-all-branches-and-forks
+      - put: cf-for-k8s-pr-all-branches-and-forks
         params:
           path: cf-for-k8s-pr-all-branches-and-forks
-          status: success
+          status: failure
           context: check-vendir-sync
+          comment_file: pull-request-comment/comment
+
+    on_success:
+      put: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        path: cf-for-k8s-pr-all-branches-and-forks
+        status: success
+        context: check-vendir-sync
 
 - name: validate-pr-on-gke
   public: true
   plan:
-    - in_parallel:
-        - get: cf-for-k8s-pr-all-branches-and-forks
-          params:
-            integration_tool: rebase
-          trigger: true
-          version: every
-          passed:
-            - run-unit-tests-on-pr
-            - test-vendir-sync-on-cf-for-k8s-pr
-        - get: cf-for-k8s-ci
-        - get: cf-for-k8s-develop
-        - get: runtime-ci
-
-    - put: cf-for-k8s-pr-all-branches-and-forks
+  - in_parallel:
+    - get: cf-for-k8s-pr-all-branches-and-forks
       params:
-        path: cf-for-k8s-pr-all-branches-and-forks
-        status: pending
-        context: upgrade-check-uptime
+        integration_tool: rebase
+      trigger: true
+      version: every
+      passed:
+      - run-unit-tests-on-pr
+      - test-vendir-sync-on-cf-for-k8s-pr
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - get: runtime-ci
 
-    - put: ready-pool
-      params: {acquire: true}
+  - put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: pending
+      context: upgrade-check-uptime
 
-    - do:
-        - task: install-cf-develop
-          file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-develop
-            pool-lock: ready-pool
-          params:
-            GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-            GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-            DOMAIN: k8s-dev.relint.rocks
-            USE_EXTERNAL_APP_REGISTRY: true
-            APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-            APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-            APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-            APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+  - put: ready-pool
+    params:
+      acquire: true
 
-        - task: push-test-app
-          file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-develop
-          params:
-            APP_NAME: jp-node-app
-            VERIFY_EXISTING_APP: false
+  - do:
+    - task: install-cf-develop
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+        pool-lock: ready-pool
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        DOMAIN: k8s-dev.relint.rocks
+        USE_EXTERNAL_APP_REGISTRY: true
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
 
-        - task: upgrade-to-pr
-          file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-            pool-lock: ready-pool
-          params:
-            GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-            GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-            UPGRADE: true
-            UPTIMER: true
-            DOMAIN: k8s-dev.relint.rocks
-            USE_EXTERNAL_APP_REGISTRY: true
-            APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-            APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-            APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-            APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+    - task: push-test-app
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        APP_NAME: jp-node-app
+        VERIFY_EXISTING_APP: false
 
-        - in_parallel:
-            - task: run-smoke-tests
-              file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-              input_mapping:
-                cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-              params:
-                SMOKE_TEST_SKIP_SSL: false
-            - task: verify-existing-app
-              file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-              input_mapping:
-                cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-              params:
-                APP_NAME: jp-node-app
-                VERIFY_EXISTING_APP: true
+    - task: upgrade-to-pr
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        pool-lock: ready-pool
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        UPGRADE: true
+        UPTIMER: true
+        DOMAIN: k8s-dev.relint.rocks
+        USE_EXTERNAL_APP_REGISTRY: true
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
 
-      on_failure:
-        do:
-          - task: write-pr-check-failure-comment
-            file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
-            input_mapping:
-              pull-request: cf-for-k8s-pr-all-branches-and-forks
+    - in_parallel:
+      - task: run-smoke-tests
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        params:
+          SMOKE_TEST_SKIP_SSL: false
 
-          - put: cf-for-k8s-pr-all-branches-and-forks
-            params:
-              path: cf-for-k8s-pr-all-branches-and-forks
-              status: failure
-              context: upgrade-check-uptime
-              comment_file: pull-request-comment/comment
+      - task: verify-existing-app
+        file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        params:
+          APP_NAME: jp-node-app
+          VERIFY_EXISTING_APP: true
 
-      on_success:
-        put: cf-for-k8s-pr-all-branches-and-forks
+    on_failure:
+      do:
+      - task: write-pr-check-failure-comment
+        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+        input_mapping:
+          pull-request: cf-for-k8s-pr-all-branches-and-forks
+
+      - put: cf-for-k8s-pr-all-branches-and-forks
         params:
           path: cf-for-k8s-pr-all-branches-and-forks
-          status: success
+          status: failure
           context: upgrade-check-uptime
+          comment_file: pull-request-comment/comment
 
-      ensure:
-        do:
-          - task: delete-cf
-            file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-            input_mapping:
-              pool-lock: ready-pool
-            params:
-              GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-              GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-              GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-          - put: destroy-pool
-            params:
-              add: ready-pool
+    on_success:
+      put: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        path: cf-for-k8s-pr-all-branches-and-forks
+        status: success
+        context: upgrade-check-uptime
 
-          - put: ready-pool
-            params:
-              remove: ready-pool
+    ensure:
+      do:
+      - task: delete-cf
+        file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+        params:
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+
+      - put: destroy-pool
+        params:
+          add: ready-pool
+
+      - put: ready-pool
+        params:
+          remove: ready-pool
 
 - name: validate-pr-on-gke-external-db
   serial: true
@@ -463,6 +470,7 @@ jobs:
       path: cf-for-k8s-pr-all-branches-and-forks
       status: pending
       context: external-db
+
   - task: create-tf-vars-file
     config:
       platform: linux
@@ -489,21 +497,27 @@ jobs:
           env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
           dns_zone_name = "((ci_k8s_dns_zone_name))"
           EOT
+
   - put: terraform
     params:
       terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
       env_name_file: tf-vars/env-name.txt
       delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
+      var_files:
+      - tf-vars/input.tfvars
 
   - task: install-postgres
+    file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
     params:
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-    file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
+
   - do:
     - task: install-cf-develop
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
       params:
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -515,17 +529,14 @@ jobs:
         APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
         APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
         USE_EXTERNAL_DB: "true"
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
     params:
       APP_NAME: jp-node-app
       VERIFY_EXISTING_APP: false
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
 
   - task: upgrade-to-pr
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
@@ -548,17 +559,18 @@ jobs:
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      params:
-        SMOKE_TEST_SKIP_SSL: false
       input_mapping:
         cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        SMOKE_TEST_SKIP_SSL: false
+
     - task: verify-existing-app
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
       params:
         APP_NAME: jp-node-app
         VERIFY_EXISTING_APP: true
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
 
   on_failure:
     do:
@@ -606,12 +618,14 @@ jobs:
             cluster_name="$(cat tf-vars/env-name.txt)"
             gcloud_auth "${cluster_name}"
             kapp delete -a cf --yes
+
     - put: terraform
       params:
         terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
         env_name_file: tf-vars/env-name.txt
         action: destroy
-        var_files: [tf-vars/input.tfvars]
+        var_files:
+        - tf-vars/input.tfvars
       get_params:
         action: destroy
 
@@ -619,135 +633,139 @@ jobs:
   serial: true
   public: true
   plan:
-    - in_parallel:
-        - get: cf-for-k8s-pr-all-branches-and-forks
-          params:
-            integration_tool: rebase
-          trigger: true
-          version: every
-          passed:
-            - run-unit-tests-on-pr
-            - test-vendir-sync-on-cf-for-k8s-pr
-        - get: cf-for-k8s-ci
-        - get: cf-for-k8s-develop
-        - get: cf-for-k8s-gke-terraform-templates
-        - get: runtime-ci
-        - get: terraform-rds
+  - in_parallel:
+    - get: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        integration_tool: rebase
+      trigger: true
+      version: every
+      passed:
+      - run-unit-tests-on-pr
+      - test-vendir-sync-on-cf-for-k8s-pr
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - get: cf-for-k8s-gke-terraform-templates
+    - get: runtime-ci
+    - get: terraform-rds
+
+  - put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: pending
+      context: upgrade-with-rds
+
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: relintdockerhubpushbot/cf-for-k8s-ci
+      outputs:
+        - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          echo "pr-validation-rds" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat tf-vars/env-name.txt)"
+          env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
+          EOT
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files:
+      - tf-vars/input.tfvars
+
+  - task: initialize-rds
+    file: cf-for-k8s-ci/ci/tasks/initialize-rds/task.yml
+    params:
+      PGPASSWORD: ((ci_k8s_aws_rds_database_password))
+
+  - task: install-cf-develop
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: cf-for-k8s.relint.rocks
+      USE_EXTERNAL_APP_REGISTRY: true
+      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+      USE_EXTERNAL_DB: "true"
+
+  - task: push-test-app
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+    params:
+      APP_NAME: jp-node-app
+      VERIFY_EXISTING_APP: false
+    attempts: 3
+
+  - task: upgrade-to-pr
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      UPGRADE: true
+      UPTIMER: true
+      DOMAIN: cf-for-k8s.relint.rocks
+      USE_EXTERNAL_APP_REGISTRY: true
+      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+      USE_EXTERNAL_DB: "true"
+
+  - in_parallel:
+      - task: run-smoke-tests
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        params:
+          SMOKE_TEST_SKIP_SSL: false
+
+      - task: verify-existing-app
+        file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        params:
+          APP_NAME: jp-node-app
+          VERIFY_EXISTING_APP: true
+
+  on_failure:
+    do:
+    - task: write-pr-check-failure-comment
+      file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+      input_mapping:
+        pull-request: cf-for-k8s-pr-all-branches-and-forks
 
     - put: cf-for-k8s-pr-all-branches-and-forks
       params:
         path: cf-for-k8s-pr-all-branches-and-forks
-        status: pending
+        status: failure
         context: upgrade-with-rds
-    - task: create-tf-vars-file
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: relintdockerhubpushbot/cf-for-k8s-ci
-        outputs:
-          - name: tf-vars
-        params:
-          SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-        run:
-          path: /bin/bash
-          args:
-            - -ec
-            - |
-              echo "pr-validation-rds" > tf-vars/env-name.txt
-              cat <<EOT > tf-vars/input.tfvars
-              project = "((ci_k8s_gcp_project_name))"
-              region = "((ci_k8s_gcp_project_region))"
-              zone = "((ci_k8s_gcp_project_zone))"
-              service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-              env_name = "$(cat tf-vars/env-name.txt)"
-              env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
-              dns_zone_name = "((ci_k8s_dns_zone_name))"
-              EOT
-    - put: terraform
-      params:
-        terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
-        env_name_file: tf-vars/env-name.txt
-        delete_on_failure: true
-        var_files: [tf-vars/input.tfvars]
-
-    - task: initialize-rds
-      params:
-        PGPASSWORD: ((ci_k8s_aws_rds_database_password))
-      file: cf-for-k8s-ci/ci/tasks/initialize-rds/task.yml
-    - do:
-        - task: install-cf-develop
-          params:
-            GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-            GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-            DOMAIN: cf-for-k8s.relint.rocks
-            USE_EXTERNAL_APP_REGISTRY: true
-            APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-            APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-            APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-            APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
-            USE_EXTERNAL_DB: "true"
-          file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-develop
-
-    - task: push-test-app
-      attempts: 3
-      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-      params:
-        APP_NAME: jp-node-app
-        VERIFY_EXISTING_APP: false
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-
-    - task: upgrade-to-pr
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        UPGRADE: true
-        UPTIMER: true
-        DOMAIN: cf-for-k8s.relint.rocks
-        USE_EXTERNAL_APP_REGISTRY: true
-        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
-        USE_EXTERNAL_DB: "true"
-
-    - in_parallel:
-        - task: run-smoke-tests
-          file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-          params:
-            SMOKE_TEST_SKIP_SSL: false
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-        - task: verify-existing-app
-          file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-          params:
-            APP_NAME: jp-node-app
-            VERIFY_EXISTING_APP: true
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-
-  on_failure:
-    do:
-      - task: write-pr-check-failure-comment
-        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
-        input_mapping:
-          pull-request: cf-for-k8s-pr-all-branches-and-forks
-
-      - put: cf-for-k8s-pr-all-branches-and-forks
-        params:
-          path: cf-for-k8s-pr-all-branches-and-forks
-          status: failure
-          context: upgrade-with-rds
-          comment_file: pull-request-comment/comment
+        comment_file: pull-request-comment/comment
 
   on_success:
     put: cf-for-k8s-pr-all-branches-and-forks
@@ -758,229 +776,236 @@ jobs:
 
   ensure:
     do:
-      - task: delete-cf
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: relintdockerhubpushbot/cf-for-k8s-ci
-          inputs:
-            - name: cf-for-k8s-ci
-            - name: tf-vars
-          params:
-            GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-            GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-          run:
-            path: /bin/bash
-            args:
-              - -ec
-              - |
-                source cf-for-k8s-ci/ci/helpers/gke.sh
-                cluster_name="$(cat tf-vars/env-name.txt)"
-                gcloud_auth "${cluster_name}"
-                kapp delete -a cf --yes
-      - put: terraform
+    - task: delete-cf
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: relintdockerhubpushbot/cf-for-k8s-ci
+        inputs:
+          - name: cf-for-k8s-ci
+          - name: tf-vars
         params:
-          terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
-          env_name_file: tf-vars/env-name.txt
-          action: destroy
-          var_files: [tf-vars/input.tfvars]
-        get_params:
-          action: destroy
-      - task: delete-rds
-        params:
-          PGPASSWORD: ((ci_k8s_aws_rds_database_password))
-        file: cf-for-k8s-ci/ci/tasks/delete-rds/task.yml
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            source cf-for-k8s-ci/ci/helpers/gke.sh
+            cluster_name="$(cat tf-vars/env-name.txt)"
+            gcloud_auth "${cluster_name}"
+            kapp delete -a cf --yes
+
+    - put: terraform
+      params:
+        terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files:
+        - tf-vars/input.tfvars
+      get_params:
+        action: destroy
+
+    - task: delete-rds
+      file: cf-for-k8s-ci/ci/tasks/delete-rds/task.yml
+      params:
+        PGPASSWORD: ((ci_k8s_aws_rds_database_password))
 
 - name: validate-pr-on-newest-k8s-kind
   public: true
   plan:
-    - in_parallel:
-        - get: cf-for-k8s-pr-all-branches-and-forks
-          trigger: true
-          version: every
-          passed:
-            - run-unit-tests-on-pr
-            - test-vendir-sync-on-cf-for-k8s-pr
-        - get: cf-for-k8s-ci
-        - get: cf-for-k8s-develop
-        - get: cf-for-k8s-kind-gcp-terraform-templates
-        - get: runtime-ci
+  - in_parallel:
+    - get: cf-for-k8s-pr-all-branches-and-forks
+      trigger: true
+      version: every
+      passed:
+      - run-unit-tests-on-pr
+      - test-vendir-sync-on-cf-for-k8s-pr
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - get: cf-for-k8s-kind-gcp-terraform-templates
+    - get: runtime-ci
 
-    - put: cf-for-k8s-pr-all-branches-and-forks
+  - put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: pending
+      context: newest-supported-k8s-version
+
+  - task: create-tf-vars-file
+    file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files:
+      - tf-vars/input.tfvars
+
+  - do:
+    - task: create-kind-cluster
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: newest_version
+      attempts: 5
+
+    - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    on_failure:
+      do:
+      - task: write-pr-check-failure-comment
+        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+        input_mapping:
+          pull-request: cf-for-k8s-pr-all-branches-and-forks
+
+      - put: cf-for-k8s-pr-all-branches-and-forks
+        params:
+          path: cf-for-k8s-pr-all-branches-and-forks
+          status: failure
+          context: newest-supported-k8s-version
+          comment_file: pull-request-comment/comment
+
+    on_success:
+      put: cf-for-k8s-pr-all-branches-and-forks
       params:
         path: cf-for-k8s-pr-all-branches-and-forks
-        status: pending
+        status: success
         context: newest-supported-k8s-version
 
-    - task: create-tf-vars-file
-      file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-
-    - put: terraform
+    ensure:
+      put: terraform
       params:
         terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
-        delete_on_failure: true
-        var_files: [tf-vars/input.tfvars]
-
-    - do:
-        - task: create-kind-cluster
-          attempts: 5
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-          file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-            VERSION_SELECTOR: newest_version
-
-        - task: install-cf
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-          file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-        - task: run-smoke-tests
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-          file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-      on_failure:
-        do:
-          - task: write-pr-check-failure-comment
-            file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
-            input_mapping:
-              pull-request: cf-for-k8s-pr-all-branches-and-forks
-
-          - put: cf-for-k8s-pr-all-branches-and-forks
-            params:
-              path: cf-for-k8s-pr-all-branches-and-forks
-              status: failure
-              context: newest-supported-k8s-version
-              comment_file: pull-request-comment/comment
-
-      on_success:
-        put: cf-for-k8s-pr-all-branches-and-forks
-        params:
-          path: cf-for-k8s-pr-all-branches-and-forks
-          status: success
-          context: newest-supported-k8s-version
-
-      ensure:
-        put: terraform
-        params:
-          terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
-          env_name_file: tf-vars/env-name.txt
-          action: destroy
-          var_files: [tf-vars/input.tfvars]
-        get_params:
-          action: destroy
+        action: destroy
+        var_files:
+        - tf-vars/input.tfvars
+      get_params:
+        action: destroy
 
 - name: validate-pr-on-oldest-k8s-kind
   public: true
   plan:
-    - in_parallel:
-        - get: cf-for-k8s-pr-all-branches-and-forks
-          trigger: true
-          version: every
-          passed:
-            - run-unit-tests-on-pr
-            - test-vendir-sync-on-cf-for-k8s-pr
-        - get: cf-for-k8s-ci
-        - get: cf-for-k8s-develop
-        - get: cf-for-k8s-kind-gcp-terraform-templates
-        - get: runtime-ci
+  - in_parallel:
+    - get: cf-for-k8s-pr-all-branches-and-forks
+      trigger: true
+      version: every
+      passed:
+      - run-unit-tests-on-pr
+      - test-vendir-sync-on-cf-for-k8s-pr
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - get: cf-for-k8s-kind-gcp-terraform-templates
+    - get: runtime-ci
 
-    - put: cf-for-k8s-pr-all-branches-and-forks
+  - put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: pending
+      context: oldest-supported-k8s-version
+
+  - task: create-tf-vars-file
+    file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files:
+      - tf-vars/input.tfvars
+
+  - do:
+    - task: create-kind-cluster
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: oldest_version
+      attempts: 5
+
+    - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    on_failure:
+      do:
+      - task: write-pr-check-failure-comment
+        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+        input_mapping:
+          pull-request: cf-for-k8s-pr-all-branches-and-forks
+
+      - put: cf-for-k8s-pr-all-branches-and-forks
+        params:
+          path: cf-for-k8s-pr-all-branches-and-forks
+          status: failure
+          context: oldest-supported-k8s-version
+          comment_file: pull-request-comment/comment
+
+    on_success:
+      put: cf-for-k8s-pr-all-branches-and-forks
       params:
         path: cf-for-k8s-pr-all-branches-and-forks
-        status: pending
+        status: success
         context: oldest-supported-k8s-version
 
-    - task: create-tf-vars-file
-      file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-
-    - put: terraform
+    ensure:
+      put: terraform
       params:
         terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
-        delete_on_failure: true
-        var_files: [tf-vars/input.tfvars]
-
-    - do:
-        - task: create-kind-cluster
-          attempts: 5
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-          file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-            VERSION_SELECTOR: oldest_version
-
-        - task: install-cf
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-          file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-        - task: run-smoke-tests
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-          file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
-          params:
-            GCP_KEY: ((ci_k8s_gcp_service_account_json))
-            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-      on_failure:
-        do:
-          - task: write-pr-check-failure-comment
-            file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
-            input_mapping:
-              pull-request: cf-for-k8s-pr-all-branches-and-forks
-
-          - put: cf-for-k8s-pr-all-branches-and-forks
-            params:
-              path: cf-for-k8s-pr-all-branches-and-forks
-              status: failure
-              context: oldest-supported-k8s-version
-              comment_file: pull-request-comment/comment
-
-      on_success:
-        put: cf-for-k8s-pr-all-branches-and-forks
-        params:
-          path: cf-for-k8s-pr-all-branches-and-forks
-          status: success
-          context: oldest-supported-k8s-version
-
-      ensure:
-        put: terraform
-        params:
-          terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
-          env_name_file: tf-vars/env-name.txt
-          action: destroy
-          var_files: [tf-vars/input.tfvars]
-        get_params:
-          action: destroy
+        action: destroy
+        var_files:
+        - tf-vars/input.tfvars
+      get_params:
+        action: destroy
 
 #@ for release in data.values.releases:
 - name: #@ "{}-run-unit-tests".format(release.name)
@@ -1051,7 +1076,8 @@ jobs:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source:
+          repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
       outputs:
       - name: tf-vars
       params:
@@ -1076,31 +1102,32 @@ jobs:
       terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
       delete_on_failure: true
-      var_files: [tf-vars/input.tfvars]
+      var_files:
+      - tf-vars/input.tfvars
 
   - do:
     - task: create-kind-cluster
-      attempts: 5
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
-      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: oldest_version
+      attempts: 5
 
     - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
 
     - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -1111,7 +1138,8 @@ jobs:
         terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
         action: destroy
-        var_files: [tf-vars/input.tfvars]
+        var_files:
+        - tf-vars/input.tfvars
       get_params:
         action: destroy
 
@@ -1149,7 +1177,8 @@ jobs:
         platform: linux
         image_resource:
           type: docker-image
-          source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+          source:
+            repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
         outputs:
         - name: tf-vars
         params:
@@ -1174,31 +1203,32 @@ jobs:
         terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
         delete_on_failure: true
-        var_files: [tf-vars/input.tfvars]
+        var_files:
+        - tf-vars/input.tfvars
 
     - do:
       - task: create-kind-cluster
-        attempts: 5
+        file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
         input_mapping:
           cf-for-k8s: cf-for-k8s-bump
-        file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
         params:
           GCP_KEY: ((ci_k8s_gcp_service_account_json))
           GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
           VERSION_SELECTOR: newest_version
+        attempts: 5
 
       - task: install-cf
+        file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
         input_mapping:
           cf-for-k8s: cf-for-k8s-bump
-        file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
         params:
           GCP_KEY: ((ci_k8s_gcp_service_account_json))
           GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
 
       - task: run-smoke-tests
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
         input_mapping:
           cf-for-k8s: cf-for-k8s-bump
-        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
         params:
           GCP_KEY: ((ci_k8s_gcp_service_account_json))
           GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -1209,7 +1239,8 @@ jobs:
           terraform_source: cf-for-k8s-develop/deploy/kind-on-gcp/terraform
           env_name_file: tf-vars/env-name.txt
           action: destroy
-          var_files: [tf-vars/input.tfvars]
+          var_files:
+          - tf-vars/input.tfvars
         get_params:
           action: destroy
 
@@ -1225,9 +1256,10 @@ jobs:
       passed:
       - #@ "{}-run-unit-tests".format(release.name)
       trigger: true
-    - put: pool-lock
-      resource: ready-pool
-      params: {acquire: true}
+
+  - put: ready-pool
+    params:
+      acquire: true
 
   #! TODO reduce duplication of this bump release task
   - task: bump-release-onto-develop
@@ -1249,7 +1281,7 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
-      pool-lock: pool-lock
+      pool-lock: ready-pool
     params:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -1266,7 +1298,7 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-bump
-      pool-lock: pool-lock
+      pool-lock: ready-pool
     params:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -1277,10 +1309,11 @@ jobs:
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      params:
-        SMOKE_TEST_SKIP_SSL: false
       input_mapping:
         cf-for-k8s: cf-for-k8s-bump
+      params:
+        SMOKE_TEST_SKIP_SSL: false
+
     - task: verify-existing-app
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       input_mapping:
@@ -1291,22 +1324,22 @@ jobs:
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+    input_mapping:
+      pool-lock: ready-pool
     params:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-    input_mapping:
-      pool-lock: pool-lock
 
   on_success:
     do:
     - put: destroy-pool
       params:
-        add: pool-lock
+        add: ready-pool
 
     - put: ready-pool
       params:
-        remove: pool-lock
+        remove: ready-pool
 
 - name: #@ "{}-push-to-develop".format(release.name)
   public: true
@@ -1357,10 +1390,10 @@ jobs:
 #@ end
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
-    - put: pool-lock
-      resource: ready-pool
-      params:
-        acquire: true
+
+  - put: ready-pool
+    params:
+      acquire: true
 
   - task: bump-buildpacks
     file: cf-for-k8s-ci/ci/tasks/bump-buildpacks/task.yml
@@ -1369,7 +1402,7 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-bumped
-      pool-lock: pool-lock
+      pool-lock: ready-pool
     params:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -1377,10 +1410,10 @@ jobs:
 
   - task: run-smoke-tests
     file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-    params:
-      SMOKE_TEST_SKIP_SSL: false
     input_mapping:
       cf-for-k8s: cf-for-k8s-bumped
+    params:
+      SMOKE_TEST_SKIP_SSL: false
 
   - put: cf-for-k8s-develop
     params:
@@ -1389,9 +1422,10 @@ jobs:
 
   ensure:
     do:
-      - put: destroy-pool
-        params:
-          add: pool-lock
-      - put: ready-pool
-        params:
-          remove: pool-lock
+    - put: destroy-pool
+      params:
+        add: ready-pool
+
+    - put: ready-pool
+      params:
+        remove: ready-pool

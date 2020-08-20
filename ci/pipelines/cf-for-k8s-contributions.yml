@@ -877,7 +877,7 @@ jobs:
     - task: create-kind-cluster
       attempts: 5
       input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
       file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
@@ -962,7 +962,7 @@ jobs:
     - task: create-kind-cluster
       attempts: 5
       input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
       file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))

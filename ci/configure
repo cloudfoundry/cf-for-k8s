@@ -14,9 +14,16 @@ function main() {
 
 EOF
 
+    REVISION="$(git remote get-url origin) $(git rev-parse HEAD) $(git ls-files --full-name "${PROJECT_DIR}/ci/templates/${PIPELINE}.yml")"
+    if [[ -n $(git status --porcelain) ]] ; then
+      REVISION="$REVISION \e[31mdirty\e[0m"
+    fi
+
     ytt template \
       -f "${PROJECT_DIR}/ci/templates/${PIPELINE}.yml" \
       -f "${PROJECT_DIR}/ci/inputs/${PIPELINE}.yml" \
+      -f "${PROJECT_DIR}/ci/overlays/" \
+      -v "pipeline_revision=$REVISION" \
       >> "${PROJECT_DIR}/ci/pipelines/${PIPELINE}.yml"
   fi
 

@@ -37,7 +37,7 @@ This project is licensed under the APACHE LICENSE-2.0 - see the [LICENSE.md](LIC
 
 ## CI Pipelines
 
-This project includes a test suite that makes use of Concourse pipelines, which can be found [here](https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s).
+This project includes a test suite that makes use of Concourse pipelines, which can be found [here](https://release-integration.ci.cf-app.com).
 
 ## Have a question or feedback, reach out to us
 

@@ -58,7 +58,8 @@ app_registry:
    hostname: ${APP_REGISTRY_HOSTNAME}
    repository_prefix: ${APP_REGISTRY_REPOSITORY_PREFIX}
    username: ${APP_REGISTRY_USERNAME}
-   password: ${APP_REGISTRY_PASSWORD}
+   password: |
+     ${APP_REGISTRY_PASSWORD}
 EOT
 else
   cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-values.yml

@@ -4,6 +4,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:base64", "base64")
 
 #@ def uaa_db_host():
 #@   if len(data.values.uaa.database.host) > 0:
@@ -385,3 +386,41 @@ spec:
         secret:
           secretName: uaa-encryption-key-config
 
+#@ def cfdb_enabled():
+#@   return len(data.values.uaa.database.host) == 0 or len(data.values.capi.database.host) == 0
+#@ end
+
+#@ if cfdb_enabled():
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"cf-db-postgresql-init-scripts"}}),expects="0+"
+---
+#@ uaadb = data.values.uaa.database
+#@yaml/text-templated-strings
+data:
+  #@overlay/match missing_ok=True
+  uaadb_init.sh: |
+    #!/bin/bash
+    UAADB_USERNAME=$(cat /docker-entrypoint-initdb.d/secret/uaadb-username)
+    UAADB_PASSWORD=$(cat /docker-entrypoint-initdb.d/secret/uaadb-password)
+    cat > /tmp/setup_db.sql <<EOT
+    CREATE DATABASE (@= uaadb.name @);
+    CREATE ROLE ${UAADB_USERNAME} LOGIN PASSWORD '${UAADB_PASSWORD}';
+    EOT
+    psql -U postgres -f /tmp/setup_db.sql
+    psql -U postgres -d (@= uaadb.name @) -c "CREATE EXTENSION citext"
+
+#@overlay/match by=overlay.subset({"kind": "Secret", "metadata":{"name":"cf-db-credentials"}}),expects="0+"
+---
+#@overlay/match missing_ok=True
+data:
+  #@ if len(data.values.uaa.database.user) == 0:
+  #@  assert.fail("uaa.database.user cannot be empty")
+  #@ end
+  #@overlay/match missing_ok=True
+  uaadb-username: #@ base64.encode(data.values.uaa.database.user)
+  #@ if len(data.values.uaa.database.password) == 0:
+  #@  assert.fail("uaa.database.password cannot be empty")
+  #@ end
+  #@overlay/match missing_ok=True
+  uaadb-password: #@ base64.encode(data.values.uaa.database.password)
+
+#@ end

@@ -27,8 +27,8 @@ uaa:
     port:
     name:
     ca_cert: ""
-    user:
-    password:
+    user: "foo"
+    password: "bar"
 
   jwt_policy:
     key_id: "some-key"
@@ -41,6 +41,8 @@ uaa:
     passphrase:
 
 capi:
+  database:
+    host: ""
   cc_username_lookup_client_secret:
   cf_api_controllers_client_secret:
 

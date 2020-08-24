@@ -89,18 +89,6 @@ logcache:
   port: 8080
   temporary_ignore_server_unavailable_errors: true
 
-logcache_tls:
-  #@ if data.values.metric_proxy.cert.secret_name:
-  ca_file: "/config/metric_proxy/ca/tls.crt"
-  cert_file: "/config/metric_proxy/certs/tls.crt"
-  key_file: "/config/metric_proxy/certs/tls.key"
-  #@ else:
-  ca_file: "/dev/null"
-  cert_file: "/dev/null"
-  key_file: "/dev/null"
-  #@ end
-  subject_name: metric-proxy
-
 log_stream:
   url: #@ "https://log-stream.{}".format(data.values.system_domain)
 

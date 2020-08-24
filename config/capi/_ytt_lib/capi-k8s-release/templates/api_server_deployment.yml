@@ -55,12 +55,6 @@ spec:
           #@ if/end data.values.ccdb.ca_cert:
           - name: database-ca-cert
             mountPath: /config/database/certs
-          #@ if/end data.values.metric_proxy.cert.secret_name:
-          - name: metric-proxy-certs
-            mountPath: /config/metric_proxy/certs
-          #@ if/end data.values.metric_proxy.ca.secret_name:
-          - name: metric-proxy-ca
-            mountPath: /config/metric_proxy/ca
         - name: cf-api-local-worker
           image: #@ data.values.images.ccng
           imagePullPolicy: Always
@@ -129,14 +123,6 @@ spec:
       - name: database-ca-cert
         secret:
           secretName: database-ca-cert
-      #@ if/end data.values.metric_proxy.cert.secret_name:
-      - name: metric-proxy-certs
-        secret:
-          secretName: #@ data.values.metric_proxy.cert.secret_name
-      #@ if/end data.values.metric_proxy.ca.secret_name:
-      - name: metric-proxy-ca
-        secret:
-          secretName: #@ data.values.metric_proxy.ca.secret_name
       - name: nginx-uploads
         emptyDir: {}
 

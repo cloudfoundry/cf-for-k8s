@@ -93,6 +93,7 @@ kpack:
     password: ""
     repository_prefix: ""
     username: ""
+#! TODO: remove metric_proxy certs after PR to cf-for-k8s
 metric_proxy:
   ca:
     secret_name: null

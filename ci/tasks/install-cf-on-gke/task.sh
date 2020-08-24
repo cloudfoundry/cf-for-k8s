@@ -1,5 +1,10 @@
 #!/bin/bash -eu
 
+if [[ -z "${DOMAIN}" ]]; then
+  echo "DOMAIN must be specified"
+  exit 1
+fi
+
 echo "Installation Configuration"
 echo "=========================="
 echo "External Registry: ${USE_EXTERNAL_APP_REGISTRY}"

@@ -299,7 +299,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-master
       trigger: true
@@ -329,7 +329,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - get: cf-for-k8s-pr-develop
     trigger: true
     version: every
@@ -352,7 +352,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -400,7 +400,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: runtime-ci
     - get: cf-for-k8s-pr-all-branches-and-forks
@@ -453,7 +453,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       params:
@@ -577,7 +577,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       params:
@@ -756,7 +756,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       params:
@@ -937,7 +937,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -1034,7 +1034,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -1131,7 +1131,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1166,7 +1166,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1266,7 +1266,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1366,7 +1366,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1389,16 +1389,16 @@ jobs:
       REPO_NAME: capi-k8s-release
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
       VENDIR_GITHUB_RELEASE: false
-  - task: first-install-cf-develop
+  - task: fresh-install-cf-from-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
       pool-lock: ready-pool
     params:
-      DOMAIN: k8s-dev.relint.rocks
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
@@ -1414,9 +1414,9 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
       UPGRADE: true
       UPTIMER: true
-      DOMAIN: k8s-dev.relint.rocks
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
@@ -1461,7 +1461,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1503,7 +1503,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1537,7 +1537,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1637,7 +1637,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1737,7 +1737,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1760,7 +1760,7 @@ jobs:
       REPO_NAME: cf-k8s-logging
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
       VENDIR_GITHUB_RELEASE: true
-  - task: first-install-cf-develop
+  - task: fresh-install-cf-from-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
@@ -1832,7 +1832,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1874,7 +1874,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1908,7 +1908,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2008,7 +2008,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2108,7 +2108,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2131,7 +2131,7 @@ jobs:
       REPO_NAME: eirini
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
       VENDIR_GITHUB_RELEASE: true
-  - task: first-install-cf-develop
+  - task: fresh-install-cf-from-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
@@ -2203,7 +2203,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2245,7 +2245,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2279,7 +2279,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2379,7 +2379,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2479,7 +2479,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2502,7 +2502,7 @@ jobs:
       REPO_NAME: kpack
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
       VENDIR_GITHUB_RELEASE: true
-  - task: first-install-cf-develop
+  - task: fresh-install-cf-from-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
@@ -2574,7 +2574,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2616,7 +2616,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2650,7 +2650,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2750,7 +2750,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2850,7 +2850,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2873,7 +2873,7 @@ jobs:
       REPO_NAME: metric-proxy
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
       VENDIR_GITHUB_RELEASE: true
-  - task: first-install-cf-develop
+  - task: fresh-install-cf-from-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
@@ -2945,7 +2945,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2987,7 +2987,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3021,7 +3021,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3121,7 +3121,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3221,7 +3221,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3244,7 +3244,7 @@ jobs:
       REPO_NAME: uaa
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
       VENDIR_GITHUB_RELEASE: false
-  - task: first-install-cf-develop
+  - task: fresh-install-cf-from-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
@@ -3316,7 +3316,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3358,7 +3358,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:sap-contributions/cf-for-k8s.git f8a549d2a21a0518f27a80c4557c5844b58b5d66 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s 18184529be557ed8eca55d7f4b35b7aea53bf1db ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: ruby-buildpack
       trigger: true

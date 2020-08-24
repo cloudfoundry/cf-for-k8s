@@ -1277,7 +1277,7 @@ jobs:
       VENDIR_GITHUB_API_TOKEN: ((github_status_bot_vendir_github_read_token))
       VENDIR_GITHUB_RELEASE: #@ release.vendir_github_release
 
-  - task: first-install-cf-develop
+  - task: fresh-install-cf-from-develop
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop

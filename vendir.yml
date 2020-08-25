@@ -44,7 +44,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/uaa
-      ref: v74.23.0
+      ref: v74.24.0
     includePaths:
     - k8s/templates/**/*
 # the components in this section below are handled by their corresponding build scripts

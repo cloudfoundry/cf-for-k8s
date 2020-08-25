@@ -8,6 +8,9 @@ metadata:
   namespace: #@ data.values.systemNamespace
   labels:
     app: routecontroller
+    app.kubernetes.io/name: routecontroller
+    app.kubernetes.io/component: cf-networking
+    app.kubernetes.io/part-of: cloudfoundry
 spec:
   replicas: 1
   selector:
@@ -18,6 +21,9 @@ spec:
       namespace: #@ data.values.systemNamespace
       labels:
         app: routecontroller
+        app.kubernetes.io/name: routecontroller
+        app.kubernetes.io/component: cf-networking
+        app.kubernetes.io/part-of: cloudfoundry
     spec:
       containers:
       - name: routecontroller

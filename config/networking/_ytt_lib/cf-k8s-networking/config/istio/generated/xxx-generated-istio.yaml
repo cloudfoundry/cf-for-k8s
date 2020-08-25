@@ -5316,10 +5316,10 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: 1.6.0
+        - Tag: 1.6.4
           Type: resolved
-          URL: gcr.io/cf-routing/proxyv2:1.6.0
-        URL: gcr.io/cf-routing/proxyv2@sha256:0671300037c5d706f20f01ebc4e403f44fff648245b5e121851c81a389b9ea0f
+          URL: gcr.io/cf-routing/proxyv2:1.6.4
+        URL: gcr.io/cf-routing/proxyv2@sha256:4e4d05059e65080b158a347bcfac67090968e96f302dea54c0efac9a16ef62f0
   labels:
     app: istio-ingressgateway
     istio: ingressgateway
@@ -5443,7 +5443,7 @@ spec:
           value: sni-dnat
         - name: ISTIO_META_CLUSTER_ID
           value: Kubernetes
-        image: gcr.io/cf-routing/proxyv2@sha256:0671300037c5d706f20f01ebc4e403f44fff648245b5e121851c81a389b9ea0f
+        image: gcr.io/cf-routing/proxyv2@sha256:4e4d05059e65080b158a347bcfac67090968e96f302dea54c0efac9a16ef62f0
         name: istio-proxy
         ports:
         - containerPort: 15021
@@ -5733,10 +5733,10 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: 1.6.0
+        - Tag: 1.6.4
           Type: resolved
-          URL: gcr.io/cf-routing/pilot:1.6.0
-        URL: gcr.io/cf-routing/pilot@sha256:b952b244c0de5151ccf14457187f41dd16b1e1da617ca2a429e2d0771ae743cb
+          URL: gcr.io/cf-routing/pilot:1.6.4
+        URL: gcr.io/cf-routing/pilot@sha256:0516ef03cc2fb03e0202c7d08e73ffc761caad6946b664bd9ad1814020462c09
   labels:
     app: istiod
     istio: pilot
@@ -5809,7 +5809,7 @@ spec:
           value: Kubernetes
         - name: CENTRAL_ISTIOD
           value: "false"
-        image: gcr.io/cf-routing/pilot@sha256:b952b244c0de5151ccf14457187f41dd16b1e1da617ca2a429e2d0771ae743cb
+        image: gcr.io/cf-routing/pilot@sha256:0516ef03cc2fb03e0202c7d08e73ffc761caad6946b664bd9ad1814020462c09
         name: discovery
         ports:
         - containerPort: 8080
@@ -6301,6 +6301,13 @@ data:
           {{- end }}
       {{- end }}
       podRedirectAnnot:
+      {{- if and (.Values.istio_cni.enabled) (not .Values.istio_cni.chained) }}
+      {{ if isset .ObjectMeta.Annotations `k8s.v1.cni.cncf.io/networks` }}
+        k8s.v1.cni.cncf.io/networks: "{{ index .ObjectMeta.Annotations `k8s.v1.cni.cncf.io/networks`}}, istio-cni"
+      {{- else }}
+        k8s.v1.cni.cncf.io/networks: "istio-cni"
+      {{- end }}
+      {{- end }}
         sidecar.istio.io/interceptionMode: "{{ annotation .ObjectMeta `sidecar.istio.io/interceptionMode` .ProxyConfig.InterceptionMode }}"
         traffic.sidecar.istio.io/includeOutboundIPRanges: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeOutboundIPRanges` .Values.global.proxy.includeIPRanges }}"
         traffic.sidecar.istio.io/excludeOutboundIPRanges: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/excludeOutboundIPRanges` .Values.global.proxy.excludeIPRanges }}"
@@ -6310,6 +6317,12 @@ data:
         traffic.sidecar.istio.io/excludeOutboundPorts: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/excludeOutboundPorts` .Values.global.proxy.excludeOutboundPorts }}"
       {{- end }}
         traffic.sidecar.istio.io/kubevirtInterfaces: "{{ index .ObjectMeta.Annotations `traffic.sidecar.istio.io/kubevirtInterfaces` }}"
+      {{- if .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.global.imagePullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
   values: |-
     {
       "global": {
@@ -6418,7 +6431,7 @@ data:
         "sts": {
           "servicePort": 0
         },
-        "tag": "1.6.0",
+        "tag": "1.6.4",
         "telemetryNamespace": "istio-system",
         "tracer": {
           "datadog": {
@@ -6496,6 +6509,7 @@ webhooks:
     - CREATE
     resources:
     - pods
+  sideEffects: None
 ---
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget

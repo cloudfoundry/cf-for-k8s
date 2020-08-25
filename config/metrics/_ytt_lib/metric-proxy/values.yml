@@ -4,14 +4,4 @@ system_domain: ""
 system_namespace: ""
 
 images:
-  metric_proxy: "oratos/metric-proxy@sha256:938ac36f0f1ede38b1ed7b2451b918345709848fc807a11500fd9b1b05fd239d"
-
-metric_proxy:
-  ca:
-    secret_name: "metric-proxy-ca"
-    crt: "" #! Base64-encoded ca for the metric-proxy-ca
-    key: "" #! Base64-encoded private key for the cert above
-  cert:
-    secret_name: "metric-proxy-cert"
-    crt: "" #! Base64-encoded cert for the metric-proxy server requires CN of metric-proxy
-    key: "" #! Base64-encoded private key for the cert above
+  metric_proxy: "oratos/metric-proxy@sha256:266be9306a2cb1aa862b382bdc5b029e000efd25aa8c0ceab3fffa66cf6ab512"

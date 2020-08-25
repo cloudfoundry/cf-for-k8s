@@ -267,6 +267,17 @@ jobs:
         DOMAIN: k8s-dev.relint.rocks
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
 
+    - task: run-external-db-validation-test
+      file: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.yml
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        EXTERNAL_DB: "incluster"
+      input_mapping:
+        pool-lock: ready-pool
+        cf-for-k8s: cf-for-k8s-develop
+
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       params:
@@ -374,6 +385,13 @@ jobs:
         USE_EXTERNAL_DB: true
         DOMAIN: k8s-dev.relint.rocks
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+
+    - task: run-rds-validation-test
+      file: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.yml
+      params:
+        PGPASSWORD: ((ci_k8s_aws_rds_database_password))
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
 
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml

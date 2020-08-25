@@ -406,6 +406,7 @@ jobs:
         params:
           APP_NAME: jp-node-app
           VERIFY_EXISTING_APP: true
+        attempts: 5
 
     on_failure:
       do:
@@ -582,6 +583,7 @@ jobs:
       params:
         APP_NAME: jp-node-app
         VERIFY_EXISTING_APP: true
+      attempts: 5
 
   on_failure:
     do:
@@ -770,6 +772,7 @@ jobs:
         params:
           APP_NAME: jp-node-app
           VERIFY_EXISTING_APP: true
+        attempts: 5
 
   on_failure:
     do:
@@ -1341,6 +1344,7 @@ jobs:
       params:
         APP_NAME: my-node-app
         VERIFY_EXISTING_APP: true
+      attempts: 5
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml

@@ -1,6 +1,7 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 #@ load("/postgres/postgres.star", "cfdb_enabled")
+#@ load("/minio/minio.star", "minio_enabled")
 
 #@ def database_egress():
 to:
@@ -53,6 +54,7 @@ spec:
   policyTypes:
   - Ingress
 #@ end
+#@ if minio_enabled():
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -63,6 +65,7 @@ spec:
   podSelector: {}
   policyTypes:
   - Ingress
+#@ end
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -107,6 +110,7 @@ spec:
   - Ingress
   - Egress
 #@ end
+#@ if minio_enabled():
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -128,6 +132,7 @@ spec:
   policyTypes:
   - Ingress
   - Egress
+#@ end
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -166,6 +171,7 @@ spec:
   policyTypes:
   - Egress
 #@ end
+#@ if minio_enabled():
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -184,6 +190,7 @@ spec:
       port: 53
   policyTypes:
   - Egress
+#@ end
 #@ if cfdb_enabled():
 ---
 kind: NetworkPolicy
@@ -427,6 +434,7 @@ spec:
       job-name: ccdb-migrate
   egress:
   - #@ database_egress()
+#@ if minio_enabled():
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -477,6 +485,7 @@ spec:
       podSelector:
         matchLabels:
           app.kubernetes.io/name: cf-api-clock
+#@ end
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1

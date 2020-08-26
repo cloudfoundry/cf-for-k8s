@@ -116,10 +116,11 @@ jobs:
   serial: true
   public: true
   plan:
-    - get: cf-for-k8s-master
-    - get: cf-for-k8s-ci
-    - get: weekday-pm
-      trigger: true
+    - in_parallel:
+      - get: cf-for-k8s-master
+      - get: cf-for-k8s-ci
+      - get: weekday-pm
+        trigger: true
 
     - put: ready-pool
       params: {acquire: true}
@@ -405,8 +406,7 @@ jobs:
     - get: relint-envs
     - get: weekday-pm
       trigger: true
-
-  - get: terraform-long-lived-sli
+    - get: terraform-long-lived-sli
 
   - task: install-cf
     input_mapping:
@@ -471,6 +471,7 @@ jobs:
         - get: cf-for-k8s-master
         - get: cf-for-k8s-ci
         - get: relint-envs
+        - get: terraform-long-lived-sli
 
     - task: delete-cf
       config:
@@ -491,8 +492,6 @@ jobs:
               gcloud_auth "${CLUSTER_NAME}"
 
               kapp delete -a cf --yes
-
-    - get: terraform-long-lived-sli
 
     - task: install-cf
       input_mapping:

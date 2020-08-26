@@ -147,10 +147,11 @@ resources:
 jobs:
 - name: check-pool-size
   plan:
-  - get: cf-for-k8s-develop-ci
-  - get: every-5-minutes
-    trigger: true
-  - get: pool-repo
+  - in_parallel:
+    - get: cf-for-k8s-develop-ci
+    - get: every-5-minutes
+      trigger: true
+    - get: pool-repo
   - try:
       task: check-pool-size
       file: cf-for-k8s-develop-ci/ci/tasks/check-pool-size/task.yml
@@ -166,12 +167,13 @@ jobs:
 
 - name: check-pool-size-after-hours
   plan:
-  - get: cf-for-k8s-develop-ci
-  - get: every-5-minutes-off-hours
-    trigger: true
-  - get: every-5-minutes-weekends
-    trigger: true
-  - get: pool-repo
+  - in_parallel:
+    - get: cf-for-k8s-develop-ci
+    - get: every-5-minutes-off-hours
+      trigger: true
+    - get: every-5-minutes-weekends
+      trigger: true
+    - get: pool-repo
   - try:
       task: check-pool-size
       file: cf-for-k8s-develop-ci/ci/tasks/check-pool-size/task.yml
@@ -263,9 +265,10 @@ jobs:
 
 - name: spin-down-after-hours
   plan:
-  - get: after-7pm
-    trigger: true
-  - get: pool-repo
+  - in_parallel:
+    - get: after-7pm
+      trigger: true
+    - get: pool-repo
   - task: delete-unclaimed
     # this moves everything from ready/unclaimed to destroy/unclaimed
     config:
@@ -352,9 +355,10 @@ jobs:
 
 - name: post-to-slack
   plan:
-  - get: tues-fri-afternoon
-    trigger: true
-  - get: pool-repo
+  - in_parallel:
+    - get: tues-fri-afternoon
+      trigger: true
+    - get: pool-repo
   - task: generate-list-of-claimed-envs
     config:
       platform: linux

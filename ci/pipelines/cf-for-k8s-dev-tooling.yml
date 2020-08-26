@@ -237,8 +237,9 @@ jobs:
   serial: true
   public: true
   plan:
-  - get: cf-for-k8s-gke-terraform-templates
-  - get: cf-for-k8s-ci
+  - in_parallel:
+    - get: cf-for-k8s-gke-terraform-templates
+    - get: cf-for-k8s-ci
 
   - task: delete-cf
     config:
@@ -294,9 +295,10 @@ jobs:
 
 - name: clean-registry
   plan:
-  - get: cf-for-k8s-ci
-  - get: friday-evening
-    trigger: true
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: friday-evening
+      trigger: true
 
   - task: clean-gcr
     file: cf-for-k8s-ci/ci/tasks/clean-gcr/task.yml
@@ -307,8 +309,9 @@ jobs:
 
 - name: create-rds-database
   plan:
-    - get: cf-for-k8s-ci
-    - get: cf-for-k8s-rds-terraform-templates
+    - in_parallel:
+      - get: cf-for-k8s-ci
+      - get: cf-for-k8s-rds-terraform-templates
     - task: create-rds-tf-vars-file
       file: cf-for-k8s-ci/ci/tasks/create-rds-tf-vars-file/task.yml
       params:
@@ -338,8 +341,9 @@ jobs:
 
 - name: destroy-rds-database
   plan:
-    - get: cf-for-k8s-ci
-    - get: cf-for-k8s-rds-terraform-templates
+    - in_parallel:
+      - get: cf-for-k8s-ci
+      - get: cf-for-k8s-rds-terraform-templates
     - task: create-rds-tf-vars-file
       file: cf-for-k8s-ci/ci/tasks/create-rds-tf-vars-file/task.yml
       params:

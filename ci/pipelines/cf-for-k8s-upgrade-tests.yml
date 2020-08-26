@@ -57,10 +57,11 @@ jobs:
   serial: true
   public: true
   plan:
-    - get: cf-for-k8s-last-valid-commit
-    - get: cf-for-k8s-master
-      trigger: true
-    - get: cf-for-k8s-ci
+    - in_parallel:
+      - get: cf-for-k8s-last-valid-commit
+      - get: cf-for-k8s-master
+        trigger: true
+      - get: cf-for-k8s-ci
 
     - put: ready-pool
       params: {acquire: true}
@@ -159,8 +160,9 @@ jobs:
   serial: true
   public: true
   plan:
-    - get: cf-for-k8s-last-valid-commit
-    - get: cf-for-k8s-master
+    - in_parallel:
+      - get: cf-for-k8s-last-valid-commit
+      - get: cf-for-k8s-master
     - put: cf-for-k8s-last-valid-commit
       params:
         repository:

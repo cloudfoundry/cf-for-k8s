@@ -36,11 +36,11 @@ resources:
       prefix: k8s-dev
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
-- name: every-5-minutes
+- name: every-2-minutes
   type: time
   icon: clock-outline
   source:
-    interval: 5m
+    interval: 2m
     start: 7:00 AM
     stop: 5:00 PM
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
@@ -149,7 +149,7 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-develop-ci
-    - get: every-5-minutes
+    - get: every-2-minutes
       trigger: true
     - get: pool-repo
   - try:

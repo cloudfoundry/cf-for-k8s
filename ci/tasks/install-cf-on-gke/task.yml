@@ -9,6 +9,8 @@ image_resource:
 inputs:
   - name: cf-for-k8s-ci
   - name: cf-for-k8s
+  - name: runtime-ci
+    optional: true
   - name: pool-lock
     optional: true
   - name: tf-vars
@@ -32,11 +34,11 @@ params:
   APP_REGISTRY_PASSWORD:
   UPGRADE: false
   UPTIMER: false
+  EMIT_UPTIMER_METRICS_TO_WAVEFRONT: false
   USE_EXTERNAL_DB: false
 
 outputs:
   - name: env-metadata
-  - name: uptimer-result
 
 run:
   path: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.sh

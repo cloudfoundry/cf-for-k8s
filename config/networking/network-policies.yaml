@@ -315,6 +315,12 @@ spec:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
     - podSelector:
         matchLabels:
+          name: eirini-task-reporter
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
           app: log-cache
       namespaceSelector:
         matchLabels:
@@ -533,7 +539,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      name: eirini-events-task-reporter
+      name: eirini-task-reporter
   egress:
   - {}
   policyTypes:
@@ -550,6 +556,23 @@ spec:
     matchLabels:
       name: eirini-controller
   egress:
+  - {}
+  policyTypes:
+  - Ingress
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eirini-instance-index-env-injector
+  namespace: #@ data.values.system_namespace
+spec:
+  podSelector:
+    matchLabels:
+      name: instance-index-env-injector
+  egress:
+  - {}
+  ingress:
   - {}
   policyTypes:
   - Ingress

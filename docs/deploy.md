@@ -112,10 +112,10 @@ cf-for-k8s can be configured to [use an external database](platform_operators/ex
       ```yml
 
       app_registry:
-         hostname: https://index.docker.io/v1/
-         repository_prefix: "<my_username>"
-         username: "<my_username>"
-         password: "<my_password>"
+        hostname: https://index.docker.io/v1/
+        repository_prefix: "<my_username>"
+        username: "<my_username>"
+        password: "<my_password>"
 
       ```
 
@@ -126,11 +126,11 @@ cf-for-k8s can be configured to [use an external database](platform_operators/ex
 
       ```yml
       app_registry:
-         hostname: gcr.io
-         repository_prefix: gcr.io/<gcp_project_id>/cf-workloads
-         username: _json_key
-         password: |
-         <contents_of_service_account_json>
+        hostname: gcr.io
+        repository_prefix: gcr.io/<gcp_project_id>/cf-workloads
+        username: _json_key
+        password: |
+          <contents_of_service_account_json>
       ```
 
       1. Update the `gcp_project_id` portion to your GCP Project Id.

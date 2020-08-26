@@ -55,11 +55,10 @@ if [[ "${USE_EXTERNAL_APP_REGISTRY}" == "true" ]]; then
   cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" > cf-values.yml
 cat <<EOT >> cf-values.yml
 app_registry:
-   hostname: ${APP_REGISTRY_HOSTNAME}
-   repository_prefix: ${APP_REGISTRY_REPOSITORY_PREFIX}
-   username: ${APP_REGISTRY_USERNAME}
-   password: |
-     ${APP_REGISTRY_PASSWORD}
+  hostname: ${APP_REGISTRY_HOSTNAME}
+  repository_prefix: ${APP_REGISTRY_REPOSITORY_PREFIX}
+  username: ${APP_REGISTRY_USERNAME}
+  password: ${APP_REGISTRY_PASSWORD}
 EOT
 else
   cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-values.yml

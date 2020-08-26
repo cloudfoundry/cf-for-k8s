@@ -1,9 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
-
-#@ def cfdb_enabled():
-#@   return len(data.values.uaa.database.host) == 0 or len(data.values.capi.database.host) == 0
-#@ end
+#@ load("/postgres/postgres.star", "cfdb_enabled")
 
 #@ def database_egress():
 to:

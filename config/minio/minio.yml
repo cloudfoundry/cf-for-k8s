@@ -4,6 +4,9 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("must_exist.star", "must_exist")
+#@ load("minio.star", "minio_enabled")
+
+#@ if minio_enabled():
 
 #@ def add_cf_blobstore_namespace():
 #@overlay/match by=overlay.all, expects="1+"
@@ -28,3 +31,5 @@ data:
   secretkey: #@ base64.encode(must_exist(data.values, "blobstore.secret_access_key"))
 
 --- #@ template.replace(overlay.apply(library.get("minio").eval(), add_cf_blobstore_namespace()))
+
+#@ end

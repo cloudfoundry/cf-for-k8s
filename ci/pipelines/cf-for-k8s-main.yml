@@ -156,12 +156,13 @@ jobs:
   serial: true
   public: true
   plan:
-    - get: cf-for-k8s-develop
-      passed:
-        - test-vendir-sync-on-cf-for-k8s
-        - run-unit-tests
-      trigger: true
-    - get: cf-for-k8s-ci
+    - in_parallel:
+      - get: cf-for-k8s-develop
+        passed:
+          - test-vendir-sync-on-cf-for-k8s
+          - run-unit-tests
+        trigger: true
+      - get: cf-for-k8s-ci
 
     - put: ready-pool
       params: {acquire: true}
@@ -232,12 +233,13 @@ jobs:
   serial: true
   public: true
   plan:
-    - get: cf-for-k8s-develop
-      passed:
-        - test-vendir-sync-on-cf-for-k8s
-        - run-unit-tests
-      trigger: true
-    - get: cf-for-k8s-ci
+    - in_parallel:
+      - get: cf-for-k8s-develop
+        passed:
+          - test-vendir-sync-on-cf-for-k8s
+          - run-unit-tests
+        trigger: true
+      - get: cf-for-k8s-ci
 
     - put: ready-pool
       params: {acquire: true}
@@ -354,13 +356,14 @@ jobs:
   serial: true
   public: true
   plan:
-    - get: cf-for-k8s-develop
-      passed:
-        - test-vendir-sync-on-cf-for-k8s
-        - run-unit-tests
-      trigger: true
-    - get: cf-for-k8s-ci
-    - get: terraform-rds
+    - in_parallel:
+      - get: cf-for-k8s-develop
+        passed:
+          - test-vendir-sync-on-cf-for-k8s
+          - run-unit-tests
+        trigger: true
+      - get: cf-for-k8s-ci
+      - get: terraform-rds
 
     - put: ready-pool
       params: {acquire: true}

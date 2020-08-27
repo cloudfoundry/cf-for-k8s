@@ -1,8 +1,5 @@
 ---
 groups:
-- name: registry
-  jobs:
-  - clean-registry
 - name: stability-cluster
   jobs:
   - create-stability-cluster
@@ -293,20 +290,6 @@ jobs:
     get_params:
       action: destroy
 
-- name: clean-registry
-  plan:
-  - in_parallel:
-    - get: cf-for-k8s-ci
-    - get: friday-evening
-      trigger: true
-
-  - task: clean-gcr
-    file: cf-for-k8s-ci/ci/tasks/clean-gcr/task.yml
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCR_REPO_NAME: gcr.io/((ci_k8s_gcp_project_name))/cf-workloads
-
 - name: create-rds-database
   plan:
     - in_parallel:
@@ -389,15 +372,6 @@ resources:
     start: 7:00 -0700
     stop: 7:30 -0700
     interval: 168h
-
-- name: friday-evening
-  type: time
-  icon: clock-outline
-  source:
-    start: 5:00 PM
-    stop: 7:00 PM
-    days: [Friday]
-    location: America/Los_Angeles
 
 - name: runtime-ci
   type: git

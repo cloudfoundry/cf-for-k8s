@@ -105,7 +105,7 @@ format](https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/
   start time to the first byte read from the app; see `%RESPONSE_DURATION%`
   in Envoy docs
 * `response_flags`: Additional details about the response or connection, if any;
-  see `%RESPONSE_FLAGS%` in Envoy docs
+  see `%RESPONSE_FLAGS%` in [Envoy docs](https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage)
 * `response_tx_duration`: Total duration in milliseconds of the request from the
   first byte read from the app to the last byte sent downstream; see
   `%RESPONSE_TX_DURATION%` in Envoy docs

@@ -1,5 +1,19 @@
 ---
 groups:
+- name: main
+  jobs:
+  - test-vendir-sync-on-cf-for-k8s
+  - validate-cf-for-k8s-gke
+  - validate-cf-for-k8s-oldest
+  - validate-cf-for-k8s-newest
+  - validate-cf-for-k8s-gke-rds
+  - promote-master-deliver-stories
+  - run-unit-tests
+  - branch-freshness
+  - validate-cf-for-k8s-gke-external-db
+- name: cats-on-k8s
+  jobs:
+  - validate-cats-on-cf-for-k8s-gke
 
 #! Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
@@ -42,6 +56,14 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
       - ci/**
+
+- name: cf-acceptance-tests
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-acceptance-tests
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 
 - name: runtime-ci
   type: git
@@ -194,6 +216,74 @@ jobs:
       params:
         APP_NAME: lingering-node-app
         VERIFY_EXISTING_APP: false
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+
+    - task: delete-cf
+      input_mapping:
+        pool-lock: ready-pool
+      config:
+        <<: *common-task-config
+        inputs:
+          - name: cf-for-k8s-ci
+          - name: pool-lock
+        params:
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        run:
+          path: /bin/bash
+          args:
+            - -ec
+            - |
+              source cf-for-k8s-ci/ci/helpers/gke.sh
+
+              cluster_name="$(cat pool-lock/name)"
+              gcloud_auth "${cluster_name}"
+
+              kapp delete -a cf --yes
+
+    - put: destroy-pool
+      params:
+        add: ready-pool
+
+    - put: ready-pool
+      params:
+        remove: ready-pool
+
+- name: validate-cats-on-cf-for-k8s
+  serial: true
+  public: true
+  plan:
+    - in_parallel:
+      - get: cf-for-k8s-develop
+        passed:
+          - test-vendir-sync-on-cf-for-k8s
+          - run-unit-tests
+        trigger: true
+      - get: cf-for-k8s-ci
+      - get: cf-acceptance-tests
+
+    - put: ready-pool
+      params: {acquire: true}
+
+    - task: install-cf
+      input_mapping:
+        pool-lock: ready-pool
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        DOMAIN: k8s-dev.relint.rocks
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+
+    - task: cats-on-k8s
+      file: cf-for-k8s-ci/ci/tasks/cats-on-cf-for-k8s/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
 

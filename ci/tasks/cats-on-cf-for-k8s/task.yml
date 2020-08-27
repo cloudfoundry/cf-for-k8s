@@ -1,0 +1,16 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+inputs:
+- name: cf-for-k8s
+- name: cf-for-k8s-ci
+- name: env-metadata
+- name: cf-acceptance-tests
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/cats-on-cf-for-k8s/task.sh

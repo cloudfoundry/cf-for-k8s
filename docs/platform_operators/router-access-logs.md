@@ -50,23 +50,18 @@ kubectl logs -l app=istio-ingressgateway -c istio-proxy -n istio-system
 
 ### Duration fields
 
-The access log contains the following fields for duration
+The access log contains the following fields for duration in milliseconds
 
-- `upstream_service_time`: time in milliseconds spent by the app processing
-  the request including network latency.
-- `duration`: total duration in milliseconds of the request from the start time
-  to the last byte out.
-- `response_duration`: total duration in milliseconds of the request from the
-  start time to the first byte read from the app.
-- `response_tx_duration`: total duration in milliseconds of the request from the
-  first byte read from the app to the last byte sent downstream.
+- `upstream_service_time`: The time from when the gateway sends a request to the sidecar to when it recieves a response from the sidecar
+- `duration`: The time from when the gateway receives a request from the client to when it sends a response to the client
+  to the last byte out
+- `response_duration`: The time from when the gateway receives a request from the client to when it receives a response from the sidecar
+- `response_tx_duration`: The time a response spends in the gateway
 
 ![](assets/duration-fields.jpg)
 
 #### Determining App Latency vs Platform Latency
-If you want to identify the time a request spends within the router
-calculate the difference between `response_duration` and `upstream_service_time`. For example,
-`response_duration - upstream_service_time`.
+To calculate the time a request spends within the gateway subtract `upstream_service_time` from `response_duration`
 
 ### Fields
 

@@ -115,7 +115,7 @@ format](https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/
   the request including network latency.; see [Duration Fields](#duration-fields) and these [Envoy
   docs](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-upstream-service-time)
   for more information
-* `upstream_transport_failure_reason`: If upstream connection failed due to
+* `upstream_transport_failure_reason`: If upstream connection failed due to a TLS failure. This field currently does not indicate any [Transport Layer](https://osi-model.com/transport-layer/) failures. 
   transport socket (e.g. TLS handshake), provides the failure reason from the
   transport socket
 * `user_agent`: HTTP request `User-Agent` header

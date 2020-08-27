@@ -50,7 +50,7 @@ RUN go get -u github.com/onsi/ginkgo/ginkgo
 # https://github.com/cloudfoundry/cli/releases
 WORKDIR /tmp
 RUN \
-  wget --tries=3 -O "cf-tar" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=6.50.0" && \
+  wget --tries=3 -O "cf-tar" "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=7.0.2&source=github-rel" && \
   tar xzvf cf-tar -C /usr/local/bin && \
   chmod +x /usr/local/bin/cf
 

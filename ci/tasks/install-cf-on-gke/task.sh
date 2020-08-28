@@ -73,6 +73,9 @@ additional_args=""
 if [[ "${USE_EXTERNAL_DB}" == "true" ]]; then
   additional_args="-f db-metadata/db-values.yaml"
 fi
+if [[ "${USE_EXTERNAL_BLOBSTORE}" == "true" ]]; then
+  additional_args+="-f blobstore-metadata/blobstore-values.yaml"
+fi
 
 ytt -f cf-for-k8s/config -f cf-values.yml $additional_args > ${rendered_yaml}
 if [[ "${UPTIMER}" == "true" ]]; then

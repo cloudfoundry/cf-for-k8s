@@ -21,6 +21,8 @@ inputs:
     optional: true
   - name: db-metadata
     optional: true
+  - name: blobstore-metadata
+    optional: true
 
 params:
   GCP_SERVICE_ACCOUNT_JSON:
@@ -36,6 +38,7 @@ params:
   UPTIMER: false
   EMIT_UPTIMER_METRICS_TO_WAVEFRONT: false
   USE_EXTERNAL_DB: false
+  USE_EXTERNAL_BLOBSTORE: false
 
 outputs:
   - name: env-metadata

@@ -105,7 +105,7 @@ format](https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/
   first byte read from the app to the last byte sent downstream; see
   `%RESPONSE_TX_DURATION%` in Envoy docs
 * `space_id`: Cloud Foundry space GUID of the application
-* `start_time`: Request start time including milliseconds; see `%START_TIME%`
+* `start_time`: Request start time including milliseconds; see `%START_TIME%` in Envoy docs
 * `upstream_cluster`: Upstream cluster to which the upstream host belongs to
 * `upstream_host`: Upstream host URL
 * `upstream_local_address`: Local address of the upstream connection. If the

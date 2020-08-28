@@ -13,7 +13,7 @@ groups:
   - validate-cf-for-k8s-gke-external-db
 - name: cats-on-k8s
   jobs:
-  - validate-cats-on-cf-for-k8s-gke
+  - validate-cats-on-cf-for-k8s
 
 #! Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config

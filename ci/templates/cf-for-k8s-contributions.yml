@@ -465,23 +465,26 @@ jobs:
     params:
       acquire: true
 
-  - task: install-postgres
-    file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
   - do:
-    - task: install-cf-pr
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    - task: install-postgres
+      file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
       input_mapping:
-        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        pool-lock: ready-pool
       params:
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        DOMAIN: cf-for-k8s.relint.rocks
+
+    - task: install-cf-pr
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        pool-lock: ready-pool
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        DOMAIN: k8s-dev.relint.rocks
         USE_EXTERNAL_APP_REGISTRY: true
         APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
         APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
@@ -576,21 +579,22 @@ jobs:
     params:
       acquire: true
 
-  - task: initialize-rds
-    file: cf-for-k8s-ci/ci/tasks/initialize-rds/task.yml
-    params:
-      PGPASSWORD: ((ci_k8s_aws_rds_database_password))
-
   - do:
+    - task: initialize-rds
+      file: cf-for-k8s-ci/ci/tasks/initialize-rds/task.yml
+      params:
+        PGPASSWORD: ((ci_k8s_aws_rds_database_password))
+
     - task: install-cf-pr
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        pool-lock: ready-pool
       params:
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        DOMAIN: cf-for-k8s.relint.rocks
+        DOMAIN: k8s-dev.relint.rocks
         USE_EXTERNAL_APP_REGISTRY: true
         APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
         APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))

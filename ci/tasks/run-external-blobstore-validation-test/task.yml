@@ -1,0 +1,23 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+inputs:
+- name: cf-for-k8s-ci
+- name: pool-lock
+  optional: true
+- name: tf-vars
+  optional: true
+- name: terraform
+  optional: true
+- name: blobstore-metadata
+
+params:
+  EXTERNAL_BLOBSTORE: "incluster"
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.sh

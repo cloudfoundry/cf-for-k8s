@@ -79,7 +79,7 @@ if [[ "${UPTIMER}" == "true" ]]; then
   echo "Running with uptimer"
   write_uptimer_deploy_config "${password}" "${rendered_yaml}"
   mkdir -p uptimer-result
-  uptimer -useBuildpackDetection true -configFile /tmp/uptimer-config.json -resultFile uptimer-result/result.json
+  uptimer -useBuildpackDetection=true -configFile=/tmp/uptimer-config.json -resultFile=uptimer-result/result.json
 else
   kapp deploy -a cf -f ${rendered_yaml} -y
 fi

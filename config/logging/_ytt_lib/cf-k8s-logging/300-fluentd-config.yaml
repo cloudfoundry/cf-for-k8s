@@ -46,12 +46,21 @@ data:
     </filter>
 
     <filter kubernetes.**>
+      @type grep
+
+      <exclude>
+        key $.kubernetes.container_name
+        pattern /.*istio.*/
+      </exclude>
+    </filter>
+
+    <filter kubernetes.**>
       @type record_transformer
       enable_ruby
       <record>
         app_id ${record.dig("kubernetes", "labels", "cloudfoundry_org/app_guid")}
-        instance_id ${record.dig("kubernetes", "pod_id")}
-        structured_data \[tags@47450 source_type="${record.dig("kubernetes", "labels", "cloudfoundry_org/source_type")}"\]
+        instance_id ${record["kubernetes"]["pod_id"]}
+        structured_data \[tags@47450 source_type="${record.dig("kubernetes", "labels", "cloudfoundry_org/source_type") == "APP" ? record.dig("kubernetes", "labels", "cloudfoundry_org/source_type") + "/PROC/" + record.dig("kubernetes", "labels", "cloudfoundry_org/process_type")&.upcase : record.dig("kubernetes", "labels", "cloudfoundry_org/source_type")}"\]
       </record>
     </filter>
 
@@ -75,8 +84,7 @@ data:
       @type syslog_rfc5424
       host log-cache-syslog
       port 8082
-      transport tls
-      trusted_ca_path /ca/tls.crt
+      transport tcp
       <format>
         @type syslog_rfc5424
         proc_id_field instance_id

@@ -25,6 +25,10 @@ spec:
         image: #@ data.values.images.fluent
         ports:
         - containerPort: 24224
+        env:
+        #@ if/end data.values.debug:
+          - name: "FLUENTD_FLAGS"
+            value: "-vvv"
         resources:
           limits:
             memory: 200Mi
@@ -40,9 +44,6 @@ spec:
           mountPath: /var/vcap/store
         - name: dockercontainers
           mountPath: /var/lib/docker/containers
-        - mountPath: /ca
-          name: ca
-          readOnly: true
       terminationGracePeriodSeconds: 30
       volumes:
       - name: fluentd-config
@@ -57,6 +58,3 @@ spec:
       - name: dockercontainers
         hostPath:
           path: /var/lib/docker/containers
-      - name: ca
-        secret:
-          secretName: log-cache-ca

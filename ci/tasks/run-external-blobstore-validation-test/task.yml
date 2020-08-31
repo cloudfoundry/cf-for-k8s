@@ -8,6 +8,8 @@ image_resource:
 
 inputs:
 - name: cf-for-k8s-ci
+- name: cf-for-k8s
+- name: env-metadata
 - name: pool-lock
   optional: true
 - name: tf-vars

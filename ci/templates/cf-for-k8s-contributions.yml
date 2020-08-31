@@ -745,22 +745,6 @@ jobs:
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
       USE_EXTERNAL_BLOBSTORE: "true"
 
-  - in_parallel:
-    - task: run-smoke-tests
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-      params:
-        SMOKE_TEST_SKIP_SSL: false
-
-    - task: push-test-app
-      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-      params:
-        APP_NAME: lingering-node-app
-        VERIFY_EXISTING_APP: false
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
-
   - task: run-external-blobstore-validation-test
     file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
     params:

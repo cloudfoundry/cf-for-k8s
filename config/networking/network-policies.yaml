@@ -315,6 +315,16 @@ spec:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
     - podSelector:
         matchLabels:
+          app: log-cache
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    ports:
+      - protocol: TCP
+        port: 80
+  - from:
+    - podSelector:
+        matchLabels:
           name: eirini-task-reporter
       namespaceSelector:
         matchLabels:
@@ -325,12 +335,9 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-    - podSelector:
-        matchLabels:
-          app: log-cache
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    ports:
+    - protocol: TCP
+      port: 9023  
   egress:
   - {}
 ---

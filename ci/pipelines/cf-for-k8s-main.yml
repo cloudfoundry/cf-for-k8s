@@ -11,6 +11,7 @@ groups:
   - run-unit-tests
   - branch-freshness
   - validate-cf-for-k8s-gke-external-db
+  - validate-cf-for-k8s-gke-external-blobstore
 - name: cats-on-k8s
   jobs:
   - validate-cats-on-cf-for-k8s
@@ -369,20 +370,21 @@ jobs:
         pool-lock: ready-pool
         cf-for-k8s: cf-for-k8s-develop
 
-    - task: run-smoke-test
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      params:
-        SMOKE_TEST_SKIP_SSL: false
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
+    - in_parallel:
+      - task: run-smoke-test
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        params:
+          SMOKE_TEST_SKIP_SSL: false
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
 
-    - task: push-test-app
-      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-      params:
-        APP_NAME: lingering-node-app
-        VERIFY_EXISTING_APP: false
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
+      - task: push-test-app
+        file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+        params:
+          APP_NAME: lingering-node-app
+          VERIFY_EXISTING_APP: false
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
 
     - task: delete-cf
       input_mapping:
@@ -481,21 +483,6 @@ jobs:
         DOMAIN: k8s-dev.relint.rocks
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
 
-    - task: run-smoke-test
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      params:
-        SMOKE_TEST_SKIP_SSL: false
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-
-    - task: push-test-app
-      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-      params:
-        APP_NAME: lingering-node-app
-        VERIFY_EXISTING_APP: false
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-
     - task: run-external-blobstore-validation-test
       file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
       params:
@@ -505,6 +492,7 @@ jobs:
         EXTERNAL_BLOBSTORE: "incluster"
       input_mapping:
         pool-lock: ready-pool
+        cf-for-k8s: cf-for-k8s-develop
 
     - task: delete-cf
       input_mapping:

@@ -33,6 +33,22 @@ SUFFIX=$(openssl rand -hex 12)
 
 IMAGE="minio/mc"
 
+APP_NAME="blobstore-test"
+DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
+
+cf api api.${DNS_DOMAIN} --skip-ssl-validation
+cf auth admin "$(cat env-metadata/cf-admin-password.txt)"
+cf create-org org
+cf target -o org
+cf create-space space
+cf target -o org -s space
+
+echo "Pushing ${APP_NAME}"
+cf push ${APP_NAME} -p cf-for-k8s/tests/smoke/assets/test-node-app
+echo "Verify availability of ${APP_NAME}"
+curl -k https://${APP_NAME}.apps.${DNS_DOMAIN}
+echo "Confirmed that app is available"
+
 if [ ${EXTERNAL_BLOBSTORE} == "incluster" ];then
   HOSTNAME=$(echo $ENDPOINT | cut -d'/' -f3)
   ENV="MC_HOST_minio=http://$ACCESS_KEY:$SECRET_ACCESS_KEY@$HOSTNAME"

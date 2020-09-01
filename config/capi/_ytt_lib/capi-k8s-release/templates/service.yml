@@ -11,5 +11,9 @@ spec:
       targetPort: 80
       protocol: TCP
       name: http
+    - port: 9023
+      targetPort: 9023
+      protocol: TCP
+      name: http-internal
   selector:
     app.kubernetes.io/name: cf-api-server

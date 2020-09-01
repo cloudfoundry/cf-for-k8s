@@ -77,11 +77,34 @@ spec:
           #@ if/end data.values.ccdb.ca_cert:
           - name: database-ca-cert
             mountPath: /config/database/certs
+        - name: package-image-uploader
+          image: #@ data.values.images.package_image_uploader
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 0
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+          volumeMounts:
+          - name: nginx-uploads
+            mountPath: /tmp/uploads
+          env:
+          - name: REGISTRY_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: cc-package-registry-upload-secret
+                key: username
+          - name: REGISTRY_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: cc-package-registry-upload-secret
+                key: password
         - name: nginx
           image: #@ data.values.images.nginx
           imagePullPolicy: Always
           ports:
           - containerPort: 80
+          - containerPort: 9023
           readinessProbe:
             httpGet:
               port: 80

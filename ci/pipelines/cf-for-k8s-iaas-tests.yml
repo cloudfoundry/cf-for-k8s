@@ -153,26 +153,23 @@ jobs:
           input_mapping:
             cf-for-k8s: cf-for-k8s-master
 
-          ensure:
-            do:
-              - task: delete-cf
-                config:
-                  <<: *common-task-config
-                  inputs:
-                    - name: terraform
-                  run:
-                    path: /bin/bash
-                    args:
-                      - -ec
-                      - |
-                        cluster_name="$(cat terraform/name)"
-                        export KUBECONFIG=kube-config.yml
-                        jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
-
-                        kapp delete -a cf --yes
-
       ensure:
         do:
+          - task: delete-cf
+            config:
+              <<: *common-task-config
+              inputs:
+                - name: terraform
+              run:
+                path: /bin/bash
+                args:
+                  - -ec
+                  - |
+                    cluster_name="$(cat terraform/name)"
+                    export KUBECONFIG=kube-config.yml
+                    jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
+
+                    kapp delete -a cf --yes
           - put: terraform
             params:
               terraform_source: cf-for-k8s-aks-terraform-templates/deploy/aks/terraform

@@ -4,11 +4,11 @@ This document is intended for cf-for-k8s maintainers.
 
 ## Dependencies
 
-see "Dependencies" in [docs/contributing.md](/docs/contributing.md#dependencies).
+see "Dependencies" in [community/PREPARING-FOR-DEVELOPMENT.md](/community/PREPARING-FOR-DEVELOPMENT.md#dependencies).
 
 ## Smoke tests
 
-see "Running Smoke Tests" in [docs/contributing.md](/docs/contributing.md#running-smoke-tests).
+see "Running Smoke Tests" in [community/PREPARING-FOR-DEVELOPMENT.md](/community/PREPARING-FOR-DEVELOPMENT.md#running-smoke-tests).
 
 ## Directory structure
 

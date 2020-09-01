@@ -14,6 +14,10 @@ spec:
       app: log-cache
   template:
     metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "6060"
+        prometheus.io/path: "/metrics"
       labels:
         app: log-cache
     spec:
@@ -24,18 +28,11 @@ spec:
           - containerPort: 8083
         env:
         - name: LOG_CACHE_GATEWAY_ADDR
-          value: https://localhost:8081
+          value: http://localhost:8081
         - name: CAPI_ADDR
           value: #@ "http://capi.{}.svc.cluster.local:80".format(data.values.system_namespace)
         - name: UAA_ADDR
           value: #@ "http://uaa.{}.svc.cluster.local:8080".format(data.values.system_namespace)
-        volumeMounts:
-        - mountPath: /ca
-          name: ca
-          readOnly: true
-        - mountPath: /metrics-certs
-          name: metrics-certs
-          readOnly: true
       - name: syslog-server
         image: #@ data.values.images.syslog_server
         ports:
@@ -43,31 +40,8 @@ spec:
         env:
         - name: LOG_CACHE_ADDR
           value: localhost:8080
-        volumeMounts:
-        - mountPath: /ca
-          name: ca
-          readOnly: true
-        - mountPath: /log-cache-certs
-          name: log-cache-certs
-          readOnly: true
-        - mountPath: /syslog-server-certs
-          name: syslog-server-certs
-          readOnly: true
-        - mountPath: /metrics-certs
-          name: metrics-certs
-          readOnly: true
       - name: log-cache
         image: #@ data.values.images.log_cache
-        volumeMounts:
-        - mountPath: /ca
-          name: ca
-          readOnly: true
-        - mountPath: /log-cache-certs
-          name: log-cache-certs
-          readOnly: true
-        - mountPath: /metrics-certs
-          name: metrics-certs
-          readOnly: true
       - name: gateway
         image: #@ data.values.images.log_cache_gateway
         ports:
@@ -75,32 +49,3 @@ spec:
         env:
         - name: LOG_CACHE_ADDR
           value: localhost:8080
-        volumeMounts:
-        - mountPath: /ca
-          name: ca
-          readOnly: true
-        - mountPath: /log-cache-certs
-          name: log-cache-certs
-          readOnly: true
-        - mountPath: /gateway-certs
-          name: gateway-certs
-          readOnly: true
-        - mountPath: /metrics-certs
-          name: metrics-certs
-          readOnly: true
-      volumes:
-      - name: ca
-        secret:
-          secretName: log-cache-ca
-      - name: log-cache-certs
-        secret:
-          secretName: log-cache
-      - name: syslog-server-certs
-        secret:
-          secretName: log-cache-syslog
-      - name: gateway-certs
-        secret:
-          secretName: log-cache-gateway
-      - name: metrics-certs
-        secret:
-          secretName: log-cache-metrics

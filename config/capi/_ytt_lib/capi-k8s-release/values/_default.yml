@@ -118,5 +118,6 @@ images:
   cf_autodetect_builder:
   nginx:
   statsd_exporter:
+  package_image_uploader:
 kbld:
   destination:

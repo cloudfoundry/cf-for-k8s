@@ -95,15 +95,6 @@ log_cache_syslog:
   crt: log_cache_syslog_certificate
   key: log_cache_syslog_private_key
 
-metric_proxy:
-  ca:
-    crt: *crt
-    key: *key
-  cert:
-    #! This certificate should be valid for metric-proxy.cf-system.svc.cluster.local
-    crt: *crt
-    key: *key
-
 uaa:
   database:
     #! The db password shared between UAA and the database.

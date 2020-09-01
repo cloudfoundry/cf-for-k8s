@@ -1,0 +1,37 @@
+#@ load("@ytt:data","data")
+
+#@ def principal(namespace, service_account):
+#@   return "cluster.local/ns/{}/sa/{}".format(namespace, service_account)
+#@ end
+
+#! https://istio.io/latest/docs/reference/config/security/authorization-policy/
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: default-allow-all
+  namespace: #@ data.values.system_namespace
+spec:
+  rules:
+    - {}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: cf-api-server
+  namespace: #@ data.values.system_namespace
+spec:
+  action: DENY
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cf-api-server
+  rules:
+    - from:
+        - source:
+            notPrincipals:
+            - #@ principal(data.values.system_namespace, "eirini-events")
+            - #@ principal(data.values.system_namespace, "eirini-task-reporter")
+      to:
+        - operation:
+            paths:
+            - "/internal*"

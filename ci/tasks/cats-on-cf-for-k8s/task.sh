@@ -18,6 +18,8 @@ echo '{}' | jq \
   "admin_user": "admin",
   "admin_password": $cf_admin_password,
   "apps_domain": $cf_apps_url,
+  "cf_push_timeout": 150,
+  "default_timeout": 180,
   "skip_ssl_validation": true,
   "timeout_scale": 1,
   "include_apps": true,
@@ -43,9 +45,22 @@ echo '{}' | jq \
   "php_buildpack_name": "paketo-buildpacks/php",
   "binary_buildpack_name": "paketo-buildpacks/procfile"
 }' > "${DIR}/config/cats_config.json"
+# `cf_push_timeout` and `default_timeout` are set fairly arbitrarily
 
 set -x
 pushd cf-acceptance-tests
-export CONFIG="${DIR}/config/cats_config.json"
-./bin/test
+  export CONFIG="${DIR}/config/cats_config.json"
+  ./bin/test \
+    -keepGoing \
+    -randomizeAllSpecs \
+    -flakeAttempts=2 \
+    -nodes=6
+  # As of 2020-08-02, we're seeing CATS failures when using >6 nodes
+  # CATS run time looks like
+  # nodes | run time
+  #     1 | 47min
+  #     3 | 17min
+  #     6 | 11min
+  #    12 | fails
+
 popd

@@ -108,6 +108,7 @@ resources:
 
 - name: building-pool-trigger
   type: pool-trigger
+  check_every: 10s
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
     branch: master

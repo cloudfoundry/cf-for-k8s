@@ -11,6 +11,9 @@ cf_admin_password:
 #! reserved static ip for istio LoadBalancer
 istio_static_ip: ""
 
+#! restrict traffic for istio LoadBalancer to the specified IPs
+istio_source_ranges: []
+
 system_certificate:
   #! Base64-encoded certificate for the wildcard
   #! subdomain of the system domain (e.g., CN=*.system.cf.example.com)

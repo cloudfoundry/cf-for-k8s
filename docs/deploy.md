@@ -276,3 +276,4 @@ Use the following resources to enable additional features in cf-for-k8s.
 
 - [Setup ingress certs with letsencrypt](platform_operators/setup-ingress-certs-with-letsencrypt.md)
 - [Setup static loadbalancer IP](platform_operators/setup-static-loadbalancer-ip.md)
+- [Define loadbalancer firewalls](platform_operators/define-loadbalancer-firewalls.md)

@@ -47,3 +47,12 @@ spec:
   #@overlay/match missing_ok=True
   loadBalancerIP: #@ data.values.istio_static_ip
 #@ end
+
+#! This will restrict traffic through the cloud-provider load-balancer to the specified client IPs
+#@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "istio-ingressgateway"}})
+---
+#@ if data.values.istio_source_ranges:
+spec:
+  #@overlay/match missing_ok=True
+  loadBalancerSourceRanges: #@ data.values.istio_source_ranges
+#@ end

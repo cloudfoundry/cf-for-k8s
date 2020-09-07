@@ -4,6 +4,7 @@
 | app_domains | list of app domains | Yes | no value | ["apps.cf.example.com"] | |
 | cf_admin_password | password for admin user in plain text | Yes | no value | 2fK2zLXPgvmsESrB87sADZQvdLeY5Kv4 | |
 | istio_static_ip | reserved static ip for istio LoadBalancer | No | no value | "192.168.0.0" | |
+| istio_source_ranges | restrict traffic for istio LoadBalancer to the specified IPs | No | no value | ["10.10.0.0/16"] | |
 | system_certificate.crt | Base64-encoded certificate for the wildcard - subdomain of the system domain | Yes | no value | CN=*.system.cf.example.com |  |
 | system_certificate.key | Base64-encoded private key for the system certificate | Yes | no value |  |  |
 | system_certificate.ca | Base64-encoded CA certificate used to sign the system certifcate | Yes | no value |  |  |

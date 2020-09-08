@@ -30,7 +30,7 @@ directories:
   - path: .
     githubRelease:
       slug: cloudfoundry/cf-k8s-logging
-      tag: 0.3.0
+      tag: 0.3.1
       disableAutoChecksumValidation: true
 - path: config/metrics/_ytt_lib/metric-proxy
   contents:

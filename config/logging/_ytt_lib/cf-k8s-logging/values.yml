@@ -4,10 +4,10 @@ system_domain: ""
 system_namespace: ""
 
 images:
-  log_cache: "logcache/log-cache@sha256:d0ea7cd515a5e46bc162e8e600afd1888c00935bff9e085d9f7575352cd828c2"
-  syslog_server: "logcache/syslog-server@sha256:a3924d66117cbdcb3aecfea7268e39e92aae78965f7daef28be2a8dc0c400e27"
-  log_cache_gateway: "logcache/log-cache-gateway@sha256:ff61f78c8cf94cce2a0d21897c4c1144a412686f16fb7afec9ba7e3f179887dd"
-  fluent: "logcache/cf-k8s-logging@sha256:28f4c43ad85aa8fe5a33f0c37ddfe73db3e0b39e05c2c1f55a7af8b96487cf3a"
-  cf_auth_proxy: "logcache/log-cache-cf-auth-proxy@sha256:243cd2b8c1ce52213b97e2bc0eb45c505ef839133c0194c37596ade464826ef2"
+  log_cache: "logcache/log-cache@sha256:5fd672ee9b1f1279d3e40ea6a2f91f543053db8a5acd96a0bb1328d8b0017c94"
+  syslog_server: "logcache/syslog-server@sha256:0346cc5576a8f555d4a251b5b5a9990168d4f10f67809fa2a54de544ab4b6a39"
+  log_cache_gateway: "logcache/log-cache-gateway@sha256:d8e9f472afe77c09d62705eaf157026686dd4d41127825eefddb4c72d6498cc6"
+  fluent: "logcache/cf-k8s-logging@sha256:3875e721751f9b43ac6c5185126e1ca57ef884a6df7fd87cedf18440d984e68e"
+  cf_auth_proxy: "logcache/log-cache-cf-auth-proxy@sha256:ca56f83bed81f19c4a64c2c376b46c5f3e79afa6c2a003f4b46cf5f75b7097f6"
 
 debug: false

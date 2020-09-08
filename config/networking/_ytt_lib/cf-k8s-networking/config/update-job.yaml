@@ -1,0 +1,84 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ load("@ytt:data", "data")
+
+---
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: restart-workloads
+  namespace: #@ data.values.workloadsNamespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: restart-workloads
+  namespace: #@ data.values.workloadsNamespace
+rules:
+  - apiGroups: ["apps", "extensions"]
+    resources: ["statefulsets"]
+    verbs: ["get", "patch", "list"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["delete", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: restart-workloads
+  namespace: #@ data.values.workloadsNamespace
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: restart-workloads
+subjects:
+  - kind: ServiceAccount
+    name: restart-workloads
+    namespace: #@ data.values.workloadsNamespace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: restart-workloads
+  namespace: istio-system
+rules:
+  - apiGroups: ["apps", "extensions", ""]
+    resources: ["daemonsets","pods","deployments","configmaps"]
+    verbs: ["get", "patch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: restart-workloads
+  namespace: istio-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: restart-workloads
+subjects:
+  - kind: ServiceAccount
+    name: restart-workloads
+    namespace: #@ data.values.workloadsNamespace
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: #@ "restart-workloads-for-istio" + data.values.istioVersion
+  namespace: #@ data.values.workloadsNamespace
+  labels:
+    cloudfoundry.org/istio_version: #@ data.values.istioVersion
+spec:
+  backoffLimit: 2
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: restart-workloads
+      restartPolicy: Never
+      containers:
+        - name: roll
+          image: gcr.io/cf-networking-images/cf-k8s-networking/upgrade-sidecars
+          env:
+          - name: ISTIO_VERSION
+            value: #@ data.values.istioVersion

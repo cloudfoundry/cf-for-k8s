@@ -1,16 +1,11 @@
 #! Documentation for Istio ports https://istio.io/docs/ops/deployment/requirements/#ports-used-by-istio
-#@ control_plane_monitoring = 15014 #! used by Citadel, Citadel agent, Galley, Mixer, Pilot, Sidecar Injector
-#@ grpc_server = 8060 #! used by Citadel
-#@ pilot_health_checks = 15020 #! used by Ingress Gateway
-#@ pilot_service_discovery = 15010 #! used by Pilot
-#@ pilot_service_proxy_discovery_mtls = 15011 #! used by Pilot
-#@ policy_telemetry = 9091 #! used by Mixer
-#@ policy_telemetry_mtls = 15004 #! used by Mixer, Pilot
-#@ proxy = 15090 #! used by Mixer
-#@ sds_service_monitoring = 8080 #! used by Citadel agent
-#@ sni_monitoring = 15443 #! used by Ingress and Egress Gateways.
-#@ telemetry_prometheus = 42422 #! used by Mixer
-#@ sidecar_injector = 9443 #! used by the K8s API server
+#! The following ports are exposed by the istiod and ingressgateway services
+#@ grpc_xds = 15010 #! Istiod XDS and CA services (plaintext)
+#@ https_dns = 15012 #! Istiod XDS and CA services (TLS)
+#@ https_webhook = 15017 #! Istiod Webhooks
+#@ https_monitoring = 15014 #! Istiod Control plane monitoring (Prometheus)
+#@ dns = 15053 #! Istiod dns UDP
+#@ dns_tls = 15053 #! Istiod dns tls TCP
 
 #@ def istio_ns_selector():
 namespaceSelector:
@@ -18,87 +13,56 @@ namespaceSelector:
     cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
 #@ end
 
+---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: pilot-network-policy
+  name: default-deny-istio-system-ingress
   namespace: istio-system
 spec:
-  podSelector:
-    matchLabels:
-      app: pilot
+  podSelector: {}
   policyTypes:
   - Ingress
-  ingress:
-  - ports:
-    - port: #@ policy_telemetry_mtls
-    - port: #@ pilot_service_discovery
-    - port: #@ pilot_service_proxy_discovery_mtls
-    - port: #@ control_plane_monitoring
 
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: citadel-network-policy
+  name: allow-ingress-within-istio-system
   namespace: istio-system
 spec:
-  podSelector:
-    matchLabels:
-      app: citadel
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-      - #@ istio_ns_selector()
-    ports:
-    - port: #@ grpc_server
-    - port: #@ sds_service_monitoring
-  - ports:
-    - port: #@ control_plane_monitoring
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: mixer-network-policy
-  namespace: istio-system
-spec:
-  podSelector:
-    matchLabels:
-      app: mixer
+  podSelector: {}
   policyTypes:
   - Ingress
   ingress:
   - from:
     - #@ istio_ns_selector()
-    ports:
-    - port: #@ policy_telemetry
-    - port: #@ policy_telemetry_mtls
-    - port: #@ proxy
-    - port: #@ telemetry_prometheus
-  - ports:
-    - port: #@ control_plane_monitoring
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: sidecar-injector-network-policy
+  name: istiod-network-policy
   namespace: istio-system
 spec:
   podSelector:
     matchLabels:
-      app: sidecarInjectorWebhook
+      app: istiod
   policyTypes:
   - Ingress
   ingress:
   - ports:
-    - port: #@ sidecar_injector
-    - port: #@ control_plane_monitoring
+    - port: #@ grpc_xds
+    - port: #@ https_dns
+    - port: #@ https_webhook
+    - port: #@ https_monitoring
+    - port: #@ dns
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: ingressgateway-network-policy-pilot
+  name: ingressgateway-network-policy
   namespace: istio-system
 spec:
   podSelector:
@@ -107,11 +71,6 @@ spec:
   policyTypes:
   - Ingress
   ingress:
-  - from:
-    - #@ istio_ns_selector()
-    ports:
-    - port: #@ sni_monitoring
-    - port: #@ pilot_health_checks
   - ports:
     - port: 80
     - port: 443

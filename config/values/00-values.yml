@@ -46,6 +46,244 @@ capi:
     name: cloud_controller
     #! Plain text ca certificate if tls should be used
     ca_cert: ""
+  scaling:
+    cf_api_server:
+      replicas: 2
+      cf_api_server:
+        resources:
+          requests:
+            mem: 300Mi
+            cpu: 500m
+          limits:
+            mem: 1.2Gi
+            cpu: 1000m
+      cf_api_local_worker:
+        resources:
+          requests:
+            mem: 300Mi
+            cpu: 100m
+          limits:
+            mem: 1.2Gi
+            cpu: 500m
+      nginx:
+        resources:
+          requests:
+            mem: 300Mi
+            cpu: 100m
+          limits:
+            mem: 1Gi
+            cpu: 500m
+      statsd:
+        resources:
+          requests:
+            mem: 300Mi
+            cpu: 100m
+          limits:
+            mem: 1Gi
+            cpu: 500m
+    cf_api_clock:
+      replicas: 1
+      cf_api_clock:
+        resources:
+          requests:
+            mem: 300Mi
+            cpu: 300m
+          limits:
+            mem: 1Gi
+            cpu: 600m
+    cf_api_controllers:
+      replicas: 1
+      cf_api_controllers:
+        resources:
+          requests:
+            mem: 50Mi
+            cpu: 100m
+          limits:
+            mem: 200Mi
+            cpu: 100m
+    cf_api_deployment_updater:
+      replicas: 1
+      cf_api_deployment_updater:
+        resources:
+          requests:
+            mem: 300Mi
+            cpu: 300m
+          limits:
+            mem: 1Gi
+            cpu: 500m
+    cf_api_worker:
+      replicas: 1
+      cf_api_worker:
+        resources:
+          requests:
+            mem: 300Mi
+            cpu: 100m
+          limits:
+            mem: 1Gi
+            cpu: 500m
+
+eirini:
+  scaling:
+    eirini:
+      replicas: 1
+      eirini:
+        resources:
+          requests:
+            mem: 20Mi
+            cpu: 20m
+          limits:
+            mem: 100Mi
+            cpu: 100m
+    eirini_controller:
+      replicas: 1
+      eirini_controller:
+        resources:
+          requests:
+            mem: 15Mi
+            cpu: 15m
+          limits:
+            mem: 200Mi
+            cpu: 100m
+    eirini_events:
+      replicas: 1
+      eirini_events:
+        resources:
+          requests:
+            mem: 15Mi
+            cpu: 15m
+          limits:
+            mem: 100Mi
+            cpu: 100m
+    eirini_task_reporter:
+      replicas: 1
+      eirini_task_reporter:
+        resources:
+          requests:
+            mem: 15Mi
+            cpu: 15m
+          limits:
+            mem: 100Mi
+            cpu: 100m
+
+kpack:
+  scaling:
+    kpack_controller:
+      replicas: 1
+      kpack_controller:
+        resources:
+          requests:
+            mem: 50Mi
+            cpu: 10m
+          limits:
+            mem: 200Mi
+            cpu: 100m
+    kpack_webhook:
+      replicas: 1
+      kpack_webhook:
+        resources:
+          requests:
+            mem: 50Mi
+            cpu: 10m
+          limits:
+            mem: 200Mi
+            cpu: 100m
+
+fluentd:
+  scaling:
+    fluentd:
+      fluentd:
+        resources:
+          requests:
+            mem: 150Mi
+            cpu: 10m
+          limits:
+            mem: 500Mi
+            cpu: 100m
+
+log_cache:
+  scaling:
+    log_cache:
+      replicas: 1
+      log_cache:
+        resources:
+          requests:
+            mem: 200Mi
+            cpu: 15m
+          limits:
+            mem: 500Mi
+            cpu: 100m
+      cf_auth_proxy:
+        resources:
+          requests:
+            mem: 100Mi
+            cpu: 15m
+          limits:
+            mem: 200Mi
+            cpu: 100m
+      syslog_server:
+        resources:
+          requests:
+            mem: 100Mi
+            cpu: 15m
+          limits:
+            mem: 200Mi
+            cpu: 100m
+      gateway:
+        resources:
+          requests:
+            mem: 100Mi
+            cpu: 15m
+          limits:
+            mem: 200Mi
+            cpu: 100m
+
+metric_proxy:
+  scaling:
+    metric_proxy:
+      replicas: 1
+      metric_proxy:
+        resources:
+          requests:
+            mem: 100Mi
+            cpu: 15m
+          limits:
+            mem: 200Mi
+            cpu: 100m
+
+istio:
+  scaling:
+    istio_ingressgateway:
+      istio_proxy:
+        resources:
+          requests:
+            mem: 128Mi
+            cpu: 100m
+          limits:
+            mem: 1Gi
+            cpu: 2
+    istiod:
+      replicas: 1
+      discovery:
+        resources:
+          requests:
+            mem: 2Gi
+            cpu: 500m
+          limits:
+            mem: 5Gi
+            cpu: 2
+
+networking:
+  scaling:
+    routecontroller:
+      replicas: 1
+      routecontroller:
+        resources:
+          requests:
+            mem: 20Mi
+            cpu: 100m
+          limits:
+            mem: 10Gi
+            cpu: 100m
 
 uaa:
   database:
@@ -59,6 +297,25 @@ uaa:
     name: uaa
     #! Plain text ca certificate for tls
     ca_cert: ""
+  scaling:
+    uaa:
+      replicas: 1
+      uaa:
+        resources:
+          requests:
+            mem: 512Mi
+            cpu: 50m
+          limits:
+            mem: 2Gi
+            cpu: 500m
+      statsd_exporter:
+        resources:
+          requests:
+            mem: 10Mi
+            cpu: 10m
+          limits:
+            mem: 100Mi
+            cpu: 100m
 
 app_registry:
   hostname: ""

@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: 'feat: use fluent-bit sidecars...'
-      sha: ab1b32f57e7c449d8c9887de1d3fa9c03d1416dd
+      commitTitle: Use data value for upgrade-sidecars image...
+      sha: 2a32cf42b43e4926dc7e69b15507c2994dd5a799
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

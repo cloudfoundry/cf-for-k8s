@@ -82,7 +82,20 @@ if [[ "${UPTIMER}" == "true" ]]; then
   echo "Running with uptimer"
   write_uptimer_deploy_config "${password}" "${rendered_yaml}"
   mkdir -p uptimer-result
-  uptimer -useBuildpackDetection=true -configFile=/tmp/uptimer-config.json -resultFile=uptimer-result/result.json
+  UPTIMER_RESULT_FILE_PATH="uptimer-result/result.json"
+  set +e
+  uptimer -useBuildpackDetection=true -configFile=/tmp/uptimer-config.json -resultFile=${UPTIMER_RESULT_FILE_PATH}
+  uptimer_exit_code=$?
+  set -e
+
+  if [[ "${EMIT_UPTIMER_METRICS_TO_WAVEFRONT}" == "true" ]]; then
+    echo "Emitting uptimer metrics"
+    source runtime-ci/tasks/shared-functions
+    push_uptimer_metrics_to_wavefront "${SOURCE_PIPELINE}" "${UPTIMER_RESULT_FILE_PATH}"
+  fi
+  if [[ "$uptimer_exit_code" != "0" ]]; then
+    exit 1
+  fi
 else
   kapp deploy -a cf -f ${rendered_yaml} -y
 fi

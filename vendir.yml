@@ -17,13 +17,10 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: 2a32cf42b43e4926dc7e69b15507c2994dd5a79
+      ref: move-istio-to-cf-for-k8s
     includePaths:
     - config/*
     - config/crd/**/*
-    - config/istio-generated/**/*
-    - config/istio-config/**/*
-    - config/istio/generated/**/*
     - config/routecontroller/**/*
 - path: config/logging/_ytt_lib/cf-k8s-logging
   contents:

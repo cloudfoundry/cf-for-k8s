@@ -119,7 +119,6 @@ jobs:
     - in_parallel:
       - get: cf-for-k8s-master
       - get: cf-for-k8s-ci
-      - get: runtime-ci
       - get: weekday-pm
         trigger: true
 
@@ -184,8 +183,6 @@ jobs:
         DOMAIN: k8s-dev.relint.rocks
         UPGRADE: true
         UPTIMER: true
-        EMIT_UPTIMER_METRICS_TO_WAVEFRONT: true
-        SOURCE_PIPELINE: values-rotation
     - in_parallel:
         - task: run-smoke-tests
           file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
@@ -394,8 +391,7 @@ jobs:
           export WAVEFRONT_API_KEY=((wavefront_ci_service_account))
           export WAVEFRONT_API_ENDPOINT="https://vmwareprod.wavefront.com/report"
           echo "Emitting result \"${METRIC_VALUE}\" to wavefront"
-          # todo remove exports above
-          emit_metric "${METRIC_NAME}" "${METRIC_VALUE}"
+          emit_metric
 
           exit ${smoke_tests_exit_code}
 

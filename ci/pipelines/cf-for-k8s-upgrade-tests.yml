@@ -26,13 +26,6 @@ resources:
     paths:
       - ci/**
 
-- name: runtime-ci
-  type: git
-  icon: github
-  source:
-    branch: master
-    uri: https://github.com/cloudfoundry/runtime-ci.git
-
 - name: cf-for-k8s-last-valid-commit
   type: git
   icon: github
@@ -69,7 +62,6 @@ jobs:
       - get: cf-for-k8s-master
         trigger: true
       - get: cf-for-k8s-ci
-      - get: runtime-ci
 
     - put: ready-pool
       params: {acquire: true}
@@ -103,10 +95,8 @@ jobs:
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
         DOMAIN: k8s-dev.relint.rocks
-        EMIT_UPTIMER_METRICS_TO_WAVEFRONT: true
         UPGRADE: true
         UPTIMER: true
-        SOURCE_PIPELINE: upgrade-tests
 
     - in_parallel:
         - task: run-smoke-tests

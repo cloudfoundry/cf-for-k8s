@@ -1,0 +1,28 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ daemonset = overlay.subset({"kind": "DaemonSet", "metadata":{"name":"istio-ingressgateway"}})
+#@ deployment = overlay.subset({"kind": "Deployment", "metadata":{"name":"istio-ingressgateway"}})
+#@overlay/match by=overlay.or_op(deployment, daemonset),expects=1
+---
+#@overlay/match
+spec:
+  #@overlay/match missing_ok=True
+  template:
+    #@overlay/match missing_ok=True
+    spec:
+      #@overlay/match missing_ok=True
+      terminationGracePeriodSeconds: 80
+      containers:
+      #@overlay/match by=overlay.subset({"name":"istio-proxy"}),expects=1
+      - env:
+        #@overlay/append
+        - name: TERMINATION_DRAIN_DURATION_SECONDS
+          value: "60"
+        #@overlay/match missing_ok=True
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/bash
+              - -c
+              - sleep 20

@@ -12,6 +12,15 @@ workloadsNamespace: #@ data.values.workloads_namespace
 #@ networking = library.get("cf-k8s-networking")
 --- #@ template.replace(networking.with_data_values(networking_values()).eval())
 
+---
+#@ def istio_values():
+system_namespace: #@ data.values.system_namespace
+workloads_namespace: #@ data.values.workloads_namespace
+#@ end
+
+#@ istio = library.get("istio")
+--- #@ template.replace(istio.with_data_values(istio_values()).eval())
+
 #! Istio Configurations
 
 #@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name": "istio-system"}})

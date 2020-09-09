@@ -7,13 +7,13 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: restart-workloads
-  namespace: #@ data.values.workloadsNamespace
+  namespace: #@ data.values.workloads_namespace
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: restart-workloads
-  namespace: #@ data.values.workloadsNamespace
+  namespace: #@ data.values.workloads_namespace
 rules:
   - apiGroups: ["apps", "extensions"]
     resources: ["statefulsets"]
@@ -26,7 +26,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: restart-workloads
-  namespace: #@ data.values.workloadsNamespace
+  namespace: #@ data.values.workloads_namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -34,7 +34,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: restart-workloads
-    namespace: #@ data.values.workloadsNamespace
+    namespace: #@ data.values.workloads_namespace
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -58,15 +58,15 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: restart-workloads
-    namespace: #@ data.values.workloadsNamespace
+    namespace: #@ data.values.workloads_namespace
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: #@ "restart-workloads-for-istio" + data.values.istioVersion
-  namespace: #@ data.values.workloadsNamespace
+  name: #@ "restart-workloads-for-istio" + data.values.istio_version
+  namespace: #@ data.values.workloads_namespace
   labels:
-    cloudfoundry.org/istio_version: #@ data.values.istioVersion
+    cloudfoundry.org/istio_version: #@ data.values.istio_version
 spec:
   backoffLimit: 2
   template:
@@ -81,4 +81,4 @@ spec:
           image: #@ data.values.upgradeSidecars.image
           env:
           - name: ISTIO_VERSION
-            value: #@ data.values.istioVersion
+            value: #@ data.values.istio_version

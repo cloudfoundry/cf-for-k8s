@@ -5,8 +5,8 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Sidecar
 metadata:
   name: default
-  namespace: #@ data.values.workloadsNamespace
+  namespace: #@ data.values.workloads_namespace
 spec:
   egress:
   - hosts:
-    - #@ data.values.systemNamespace + "/*"
+    - #@ data.values.system_namespace + "/*"

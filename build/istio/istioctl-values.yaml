@@ -1,0 +1,83 @@
+---
+apiVersion: install.istio.io/v1alpha2
+kind: IstioOperator
+spec:
+  hub: gcr.io/cf-routing
+  profile: default
+  namespace: istio-system
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        enabled: true
+        k8s:
+          hpaSpec:
+            minReplicas: 1
+            maxReplicas: 1
+          service:
+            externalTrafficPolicy: Local
+            ports: # TODO: remove when https://github.com/istio/istio/issues/24432 fixed
+            - name: status-port
+              port: 15021
+              targetPort: 15021
+            - name: http2
+              port: 80
+              targetPort: 8080
+            - name: https
+              port: 443
+              targetPort: 8443
+            - name: tls
+              port: 15443
+              targetPort: 15443
+    pilot:
+      k8s:
+        hpaSpec:
+          minReplicas: 1
+          maxReplicas: 1
+  values:
+    prometheus:
+      enabled: false
+    sidecarInjectorWebhook:
+      rewriteAppHTTPProbe: true
+    meshConfig:
+      enableAutoMtls: true
+      accessLogFile: "/dev/stdout"
+      accessLogFormat: >-
+        {
+          "app_id": "%REQ(CF-APP-ID)%",
+          "authority": "%REQ(:AUTHORITY)%",
+          "bytes_received": "%BYTES_RECEIVED%",
+          "bytes_sent": "%BYTES_SENT%",
+          "downstream_local_address": "%DOWNSTREAM_LOCAL_ADDRESS%",
+          "downstream_remote_address": "%DOWNSTREAM_REMOTE_ADDRESS%",
+          "duration": "%DURATION%",
+          "method": "%REQ(:METHOD)%",
+          "organization_id": "%REQ(CF-ORGANIZATION-ID)%",
+          "path": "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%",
+          "process_type": "%REQ(APP-PROCESS-TYPE)%",
+          "protocol": "%PROTOCOL%",
+          "referer": "%REQ(REFERER)%",
+          "request_id": "%REQ(X-REQUEST-ID)%",
+          "requested_server_name": "%REQUESTED_SERVER_NAME%",
+          "response_code": "%RESPONSE_CODE%",
+          "response_duration": "%RESPONSE_DURATION%",
+          "response_flags": "%RESPONSE_FLAGS%",
+          "response_tx_duration": "%RESPONSE_TX_DURATION%",
+          "space_id": "%REQ(CF-SPACE-ID)%",
+          "start_time": "%START_TIME%",
+          "upstream_cluster": "%UPSTREAM_CLUSTER%",
+          "upstream_host": "%UPSTREAM_HOST%",
+          "upstream_local_address": "%UPSTREAM_LOCAL_ADDRESS%",
+          "upstream_service_time": "%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)%",
+          "upstream_transport_failure_reason": "%UPSTREAM_TRANSPORT_FAILURE_REASON%",
+          "user_agent": "%REQ(USER-AGENT)%",
+          "x_b3_parentspanid": "%REQ(X-B3-PARENTSPANID)%",
+          "x_b3_spanid": "%REQ(X-B3-SPANID)%",
+          "x_b3_traceid": "%REQ(X-B3-TRACEID)%",
+          "x_forwarded_for": "%REQ(X-FORWARDED-FOR)%",
+          "x_forwarded_proto": "%REQ(X-FORWARDED-PROTO)%"
+        }
+    global:
+      controlPlaneSecurityEnabled: true
+      proxy:
+        accessLogEncoding: 'JSON'
+

@@ -65,6 +65,10 @@ This project is in its early stages of development and hence there are features 
 
 cf-for-k8s can be configured to [use an external database](platform_operators/external-databases.md).
 
+### Requirements to use an external blobstore
+
+cf-for-k8s can be configured to [use an external blobstore](platform_operators/external-blobstore.md).
+
 ## Steps to deploy
 
 1. Clone and initialize this git repository:

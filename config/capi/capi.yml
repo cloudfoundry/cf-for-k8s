@@ -137,3 +137,22 @@ metadata:
 type: Opaque
 stringData:
   password: #@ data.values.capi.database.encryption_key
+
+#! overlays for scaling capi
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"cf-api-server"}})
+---
+#@overlay/match-child-defaults missing_ok=True
+spec:
+  replicas: #@ data.values.capi.scale.cf_api_server.replicas
+  template:
+    spec:
+      containers:
+      - #@overlay/match by=overlay.subset({"name":"cf-api-server"})
+        resources:
+          requests:
+            memory: #@ data.values.capi.scale.cf_api_server.cf_api_server.requests.mem
+            cpu: #@ data.values.capi.scale.cf_api_server.cf_api_server.requests.cpu
+          limits:
+            memory: #@ data.values.capi.scale.cf_api_server.cf_api_server.limits.mem
+            cpu: #@ data.values.capi.scale.cf_api_server.cf_api_server.limits.cpu
+

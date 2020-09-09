@@ -26,6 +26,13 @@ resources:
     paths:
       - ci/**
 
+- name: runtime-ci
+  type: git
+  icon: github
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/runtime-ci.git
+
 - name: cf-for-k8s-last-valid-commit
   type: git
   icon: github

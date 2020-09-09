@@ -97,6 +97,10 @@ jobs:
         DOMAIN: k8s-dev.relint.rocks
         UPGRADE: true
         UPTIMER: true
+        EMIT_UPTIMER_METRICS_TO_WAVEFRONT: true
+        WAVEFRONT_API_KEY: ((wavefront_ci_service_account))
+        WAVEFRONT_API_ENDPOINT: "https://vmwareprod.wavefront.com/report"
+        SOURCE_PIPELINE: upgrade-tests
 
     - in_parallel:
         - task: run-smoke-tests

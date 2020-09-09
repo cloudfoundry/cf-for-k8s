@@ -391,7 +391,7 @@ jobs:
           export WAVEFRONT_API_KEY=((wavefront_ci_service_account))
           export WAVEFRONT_API_ENDPOINT="https://vmwareprod.wavefront.com/report"
           echo "Emitting result \"${METRIC_VALUE}\" to wavefront"
-          emit_metric
+          emit_metric "${METRIC_NAME}" "${METRIC_VALUE}" ""
 
           exit ${smoke_tests_exit_code}
 

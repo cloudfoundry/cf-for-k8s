@@ -1,7 +1,4 @@
-#@ load("@ytt:overlay", "overlay")
-
 #@ load("@ytt:data", "data")
-
 ---
 kind: ServiceAccount
 apiVersion: v1
@@ -63,10 +60,10 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: #@ "restart-workloads-for-istio" + data.values.istio_version
+  name: #@ "restart-workloads-for-istio" + data.values.istio.build_version
   namespace: #@ data.values.workloads_namespace
   labels:
-    cloudfoundry.org/istio_version: #@ data.values.istio_version
+    cloudfoundry.org/istio_version: #@ data.values.istio.build_version
 spec:
   backoffLimit: 2
   template:
@@ -78,7 +75,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: roll
-          image: #@ data.values.upgradeSidecars.image
+          image: #@ data.values.istio.upgrade_sidecars.image
           env:
           - name: ISTIO_VERSION
-            value: #@ data.values.istio_version
+            value: #@ data.values.istio.build_version

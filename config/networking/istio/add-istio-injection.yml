@@ -1,0 +1,12 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ is_ns = overlay.subset({"kind":"Namespace"})
+#@ not_istio_ns = overlay.not_op(overlay.subset({"metadata":{"name":"istio-system"}}))
+
+#@overlay/match by=overlay.and_op(is_ns, not_istio_ns), expects="1+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    istio-injection: enabled

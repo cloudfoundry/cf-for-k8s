@@ -43,6 +43,7 @@ ENV GOPATH /go
 ENV PATH=$PATH:/go/bin:/usr/local/go/bin
 
 RUN go get -u github.com/cloudfoundry/uptimer
+RUN rm $GOPATH/src/github.com/cloudfoundry/uptimer/app/Procfile
 
 # https://github.com/onsi/ginkgo/releases
 RUN go get -u github.com/onsi/ginkgo/ginkgo

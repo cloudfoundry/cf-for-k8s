@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: generate istio config assuming third-party-jwt...
-      sha: c62024c07a6251d3b5db7dc49c115a5d2669bdfb
+      commitTitle: Use data value for upgrade-sidecars image...
+      sha: 2a32cf42b43e4926dc7e69b15507c2994dd5a799
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

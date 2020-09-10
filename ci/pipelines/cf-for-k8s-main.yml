@@ -7,11 +7,11 @@ groups:
   - validate-cf-for-k8s-oldest
   - validate-cf-for-k8s-newest
   - validate-cf-for-k8s-gke-rds
+  - validate-cf-for-k8s-gke-external-db
+  - validate-cf-for-k8s-gke-external-blobstore
   - promote-master-deliver-stories
   - run-unit-tests
   - branch-freshness
-  - validate-cf-for-k8s-gke-external-db
-  - validate-cf-for-k8s-gke-external-blobstore
 - name: cats-on-k8s
   jobs:
   - validate-cats-on-cf-for-k8s
@@ -823,10 +823,12 @@ jobs:
   plan:
     - get: cf-for-k8s-develop
       passed:
-        - validate-cf-for-k8s-newest
-        - validate-cf-for-k8s-oldest
-        - validate-cf-for-k8s-gke
-        - validate-cf-for-k8s-gke-external-db
+      - validate-cf-for-k8s-gke
+      - validate-cf-for-k8s-oldest
+      - validate-cf-for-k8s-newest
+      - validate-cf-for-k8s-gke-rds
+      - validate-cf-for-k8s-gke-external-db
+      - validate-cf-for-k8s-gke-external-blobstore
       trigger: true
     - put: cf-for-k8s-master-push
       params:

@@ -11,6 +11,7 @@ groups:
   - run-unit-tests-on-pr
   - validate-pr-on-gke
   - validate-pr-on-gke-external-db
+  - validate-pr-on-gke-external-blobstore
   - validate-pr-on-gke-rds
   - validate-pr-on-newest-k8s-kind
   - validate-pr-on-oldest-k8s-kind
@@ -775,6 +776,137 @@ jobs:
         file: cf-for-k8s-ci/ci/tasks/delete-rds/task.yml
         params:
           PGPASSWORD: ((ci_k8s_aws_rds_database_password))
+- name: validate-pr-on-gke-external-blobstore
+  serial: true
+  public: true
+  plan:
+  - task: pipeline-revision-info
+    config:
+      platform: linux
+      image_resource:
+        source:
+          repository: busybox
+        type: docker-image
+      run:
+        path: /bin/echo
+        args:
+        - -e
+        - git@github.com:cloudfoundry/cf-for-k8s.git aaedbc2531563fd8fef78b3bfccde34c7e41f731 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+  - in_parallel:
+    - get: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        integration_tool: rebase
+      trigger: true
+      version: every
+      passed:
+      - run-unit-tests-on-pr
+      - test-vendir-sync-on-cf-for-k8s-pr
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - get: runtime-ci
+  - put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: pending
+      context: external-blobstore
+  - put: ready-pool
+    params:
+      acquire: true
+  - do:
+    - task: install-minio
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      file: cf-for-k8s-ci/ci/tasks/install-minio/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+    - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        pool-lock: ready-pool
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        DOMAIN: cf-for-k8s.relint.rocks
+        USE_EXTERNAL_APP_REGISTRY: true
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        USE_EXTERNAL_BLOBSTORE: "true"
+    - task: run-external-blobstore-validation-test
+      file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        EXTERNAL_BLOBSTORE: incluster
+      input_mapping:
+        pool-lock: ready-pool
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+    on_failure:
+      do:
+      - task: write-pr-check-failure-comment
+        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+        input_mapping:
+          pull-request: cf-for-k8s-pr-all-branches-and-forks
+      - put: cf-for-k8s-pr-all-branches-and-forks
+        params:
+          path: cf-for-k8s-pr-all-branches-and-forks
+          status: failure
+          context: external-blobstore
+          comment_file: pull-request-comment/comment
+    on_success:
+      put: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        path: cf-for-k8s-pr-all-branches-and-forks
+        status: success
+        context: external-blobstore
+    ensure:
+      do:
+      - task: delete-cf
+        file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      - task: delete-minio
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: relintdockerhubpushbot/cf-for-k8s-ci
+          inputs:
+          - name: cf-for-k8s-ci
+          - name: pool-lock
+          params:
+            GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+            GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          run:
+            path: /bin/bash
+            args:
+            - -ec
+            - |
+              source cf-for-k8s-ci/ci/helpers/gke.sh
+              cluster_name="$(cat pool-lock/name)"
+              gcloud_auth "${cluster_name}"
+              helm uninstall -n external-blobstore minio
+              kubectl delete namespace external-blobstore
+        input_mapping:
+          pool-lock: ready-pool
+      - put: destroy-pool
+        params:
+          add: ready-pool
+      - put: ready-pool
+        params:
+          remove: ready-pool
 - name: validate-pr-on-newest-k8s-kind
   public: true
   plan:

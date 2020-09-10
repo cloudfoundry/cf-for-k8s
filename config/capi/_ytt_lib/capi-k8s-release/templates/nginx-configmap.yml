@@ -28,10 +28,12 @@ data:
       }
 
       server {
-          # TODO: get TLS working
-          # include nginx_server_mtls.conf;
-
           listen 80;
+
+          # Prevent access to internal endpoints
+          location ~ /(internal|staging)/ {
+            return 403 'Forbidden';
+          }
 
           # TODO: move to a separate file and `include` like capi-release?
           # proxy and log all CC traffic
@@ -45,7 +47,6 @@ data:
             proxy_connect_timeout       10;
             proxy_pass                  http://cloud_controller;
           }
-
           location @cc_uploads {
             proxy_pass http://cloud_controller;
           }
@@ -64,6 +65,21 @@ data:
 
             upload_pass_args on;
             upload_pass_form_field "^resources$";
+          }
+      }
+
+      server {
+          listen 9023;
+
+          location /internal/v4/ {
+            access_log  /cloud_controller_ng/nginx-access.log;
+            proxy_buffering             off;
+            proxy_set_header            Host $host;
+            proxy_set_header            X-Real_IP $remote_addr;
+            proxy_set_header            X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_redirect              off;
+            proxy_connect_timeout       10;
+            proxy_pass http://cloud_controller;
           }
       }
     }

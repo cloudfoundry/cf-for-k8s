@@ -14,6 +14,11 @@ remove_resource_requirements: true
 use_first_party_jwt_tokens: true
 EOT
 
+echo "Uploading cf-for-k8s repo..."
+gcloud beta compute \
+  scp --recurse cf-for-k8s ${user_host}:/tmp/kind/ --compress \
+  --zone "us-central1-a" > /dev/null
+
 echo "Uploading cf-install-values.yml..."
 gcloud beta compute \
   scp cf-install-values/cf-install-values.yml ${user_host}:/tmp \

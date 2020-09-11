@@ -124,6 +124,24 @@ resources:
       bucket: relint-k8s-cluster-state
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
+- name: terraform-s3
+  type: terraform
+  source:
+    env_name: aws-s3
+    backend_type: gcs
+    backend_config:
+      bucket: relint-k8s-cluster-state
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
+
+- name: cf-for-k8s-s3-terraform-templates
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+      - deploy/s3/terraform/**
+
 jobs:
 - name: run-unit-tests
   public: true

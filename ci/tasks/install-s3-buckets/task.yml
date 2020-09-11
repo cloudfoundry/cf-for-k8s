@@ -1,0 +1,25 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+inputs:
+  - name: cf-for-k8s-ci
+  - name: tf-vars
+    optional: true
+  - name: terraform-s3
+    optional: true
+
+params:
+  AWS_ACCESS_KEY_ID: 
+  AWS_SECRET_ACCESS_KEY: 
+  AWS_REGION:
+
+outputs:
+  - name: blobstore-metadata
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/install-s3-buckets/task.sh

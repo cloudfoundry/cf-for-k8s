@@ -34,6 +34,13 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
 
+- name: runtime-ci
+  type: git
+  icon: github
+  source:
+    branch: master
+    uri: https://github.com/cloudfoundry/runtime-ci.git
+
 - name: ready-pool
   type: pool
   icon: pool
@@ -62,6 +69,7 @@ jobs:
       - get: cf-for-k8s-master
         trigger: true
       - get: cf-for-k8s-ci
+      - get: runtime-ci
 
     - put: ready-pool
       params: {acquire: true}

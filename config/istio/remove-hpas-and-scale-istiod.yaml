@@ -10,4 +10,4 @@
 ---
 spec:
   #@overlay/match missing_ok=True
-  replicas: #@ data.values.istio.istiod.replicas
+  replicas: 1

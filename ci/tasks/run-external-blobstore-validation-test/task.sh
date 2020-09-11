@@ -26,6 +26,7 @@ gcloud_auth "${cluster_name}"
 CF_VARS=$(cat blobstore-metadata/blobstore-values.yaml)
 
 ENDPOINT=$(yq -r '.blobstore.endpoint' <<< "$CF_VARS")
+HOSTNAME=$(echo $ENDPOINT | cut -d'/' -f3)
 ACCESS_KEY=$(yq -r '.blobstore.access_key_id' <<< "$CF_VARS")
 SECRET_ACCESS_KEY=$(yq -r '.blobstore.secret_access_key' <<< "$CF_VARS")
 BUCKET=$(yq -r '.blobstore.resource_directory_key' <<< "$CF_VARS")
@@ -50,10 +51,13 @@ curl -k https://${APP_NAME}.apps.${DNS_DOMAIN}
 echo "Confirmed that app is available"
 
 if [ ${EXTERNAL_BLOBSTORE} == "incluster" ];then
-  HOSTNAME=$(echo $ENDPOINT | cut -d'/' -f3)
   ENV="MC_HOST_minio=http://$ACCESS_KEY:$SECRET_ACCESS_KEY@$HOSTNAME"
 
   CC_PACKAGES_KEY=$(kubectl --namespace=cf-system run "minio-client-$SUFFIX" -i --quiet --rm --labels "release=cf-blobstore,app.kubernetes.io/name=cf-api-server" --restart=Never --image=$IMAGE --env=$ENV --overrides='{"apiVersion":"v1","metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}' -- ls --recursive --json minio/$BUCKET/ | jq -r '.key')
+elif [ ${EXTERNAL_BLOBSTORE} == "s3" ];then
+  ENV="MC_HOST_minio=https://$ACCESS_KEY:$SECRET_ACCESS_KEY@$HOSTNAME"
+
+  CC_PACKAGES_KEY=$(kubectl run "minio-client-$SUFFIX" -i --quiet --rm --restart=Never --image=$IMAGE --env=$ENV -- ls --recursive --json minio/$BUCKET/ | jq -r '.key')
 else
   echo "You need to specifiy EXTERNAL_BLOBSTORE"
   exit 1

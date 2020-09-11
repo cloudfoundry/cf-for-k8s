@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: Remove istio config template...
-      sha: 50b099c0aa2f172fd69e1a5bfc9af200bec7ef11
+      commitTitle: remove sha step from upgrade image in pipeline...
+      sha: 5037925b2fe04f693d0308d9efc3be83aebfa9a0
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

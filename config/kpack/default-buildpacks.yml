@@ -43,11 +43,9 @@ spec:
   - group:
     - id: paketo-community/ruby
   - group:
-    - id: paketo-community/python
+    - id: paketo-buildpacks/dotnet-core
     - id: paketo-buildpacks/procfile
       optional: true
-  - group:
-    - id: paketo-buildpacks/java
   - group:
     - id: paketo-buildpacks/nodejs
     - id: paketo-buildpacks/procfile
@@ -57,7 +55,7 @@ spec:
     - id: paketo-buildpacks/procfile
       optional: true
   - group:
-    - id: paketo-buildpacks/dotnet-core
+    - id: paketo-community/python
     - id: paketo-buildpacks/procfile
       optional: true
   - group:
@@ -65,12 +63,14 @@ spec:
     - id: paketo-buildpacks/procfile
       optional: true
   - group:
+    - id: paketo-buildpacks/nginx
+    - id: paketo-buildpacks/procfile
+      optional: true
+  - group:
     - id: paketo-buildpacks/httpd
     - id: paketo-buildpacks/procfile
       optional: true
   - group:
-    - id: paketo-buildpacks/nginx
-    - id: paketo-buildpacks/procfile
-      optional: true
+    - id: paketo-buildpacks/java
   - group:
     - id: paketo-buildpacks/procfile

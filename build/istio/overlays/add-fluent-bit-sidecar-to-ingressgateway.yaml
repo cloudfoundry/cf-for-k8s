@@ -16,6 +16,7 @@ spec:
         image: #@ data.values.fluentbit.image
         resources:
           limits:
+            cpu: 100m
             memory: 100Mi
           requests:
             cpu: 10m

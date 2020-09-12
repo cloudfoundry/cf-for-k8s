@@ -1,0 +1,11 @@
+#@data/values
+---
+#! These are data values to parameterize the generated istio installation on its own.
+#! The output of the build is a static template.
+#! These values cannot be changed later when rendering cf-for-k8s templates.
+#! Values related to CF should NOT be in this file.
+
+istio_version: 1.6.4
+
+fluentbit:
+  image: gcr.io/cf-networking-images/cf-k8s-networking/fluentbit@sha256:9d0f364a682b1903b1230d836d2270f86f29b2904ea5b2b8ee3ea9132a9ab9d7

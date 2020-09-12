@@ -1,19 +1,21 @@
-#@ load("@ytt:overlay", "overlay")
-
 #@ load("@ytt:data", "data")
+
+#@ def build_version():
+#@   return "1.6.4"
+#@ end
 
 ---
 kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: restart-workloads
-  namespace: #@ data.values.workloadsNamespace
+  namespace: #@ data.values.workloads_namespace
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: restart-workloads
-  namespace: #@ data.values.workloadsNamespace
+  namespace: #@ data.values.workloads_namespace
 rules:
   - apiGroups: ["apps", "extensions"]
     resources: ["statefulsets"]
@@ -26,7 +28,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: restart-workloads
-  namespace: #@ data.values.workloadsNamespace
+  namespace: #@ data.values.workloads_namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -34,7 +36,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: restart-workloads
-    namespace: #@ data.values.workloadsNamespace
+    namespace: #@ data.values.workloads_namespace
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -58,15 +60,15 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: restart-workloads
-    namespace: #@ data.values.workloadsNamespace
+    namespace: #@ data.values.workloads_namespace
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: #@ "restart-workloads-for-istio" + data.values.istioVersion
-  namespace: #@ data.values.workloadsNamespace
+  name: #@ "restart-workloads-for-istio" + build_version()
+  namespace: #@ data.values.workloads_namespace
   labels:
-    cloudfoundry.org/istio_version: #@ data.values.istioVersion
+    cloudfoundry.org/istio_version: #@ build_version()
 spec:
   backoffLimit: 2
   template:
@@ -78,7 +80,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: roll
-          image: #@ data.values.upgradeSidecars.image
+          image: gcr.io/cf-networking-images/cf-k8s-networking/upgrade-sidecars@sha256:8cef1082ec0eb1d2e2f78c9b668065ce106de775cec929c745ca0e7f20a4c8fd
           env:
           - name: ISTIO_VERSION
-            value: #@ data.values.istioVersion
+            value: #@ build_version()

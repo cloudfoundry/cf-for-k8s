@@ -119,5 +119,3 @@ images:
   nginx:
   statsd_exporter:
   package_image_uploader:
-kbld:
-  destination:

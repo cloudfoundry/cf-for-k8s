@@ -15,8 +15,8 @@ app_domains:
 cf_admin_password: cfadminpassword
 
 #! The blobstore secret key shared between CAPI and the blobstore.
-cf_blobstore:
-  secret_key: the_blobstore_secret_key
+blobstore:
+  secret_access_key: the_blobstore_secret_key
 
 #! The admin password for operators to access the database.
 cf_db:

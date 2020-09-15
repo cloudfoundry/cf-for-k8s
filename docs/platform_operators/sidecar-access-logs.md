@@ -58,7 +58,6 @@ The access log contains the following fields for duration in milliseconds
 
 - `upstream_service_time`: The time from when the sidecar sends a request to the app to when it receives a response from the app
 - `duration`: The time from when the sidecar receives a request from the gateway to when it sends a response to the gateway
-  to the last byte out
 - `response_duration`: The time from when the sidecar receives a request from the gateway to when it receives a response from the app
 - `response_tx_duration`: The time a response spends in the sidecar
 

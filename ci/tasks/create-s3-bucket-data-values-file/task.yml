@@ -22,4 +22,4 @@ outputs:
   - name: blobstore-metadata
 
 run:
-  path: cf-for-k8s-ci/ci/tasks/install-s3-buckets/task.sh
+  path: cf-for-k8s-ci/ci/tasks/create-s3-bucket-data-values-file/task.sh

@@ -1,4 +1,4 @@
-#!/bin/bash -eux
+#!/bin/bash -eu
 
 BUCKET_PACKAGES="$(jq -r '.bucket_packages' terraform-s3/metadata)"
 BUCKET_DROPLETS="$(jq -r '.bucket_droplets' terraform-s3/metadata)"

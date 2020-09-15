@@ -34,7 +34,7 @@ export PATH=/tmp/kind/bin:/tmp/kind/go/bin:$PATH
 CF_VALUES=/tmp/cf-install-values.yml
 CF_RENDERED=/tmp/cf-rendered.yml
 cd /tmp/kind/cf-for-k8s
-ytt -f config -f \$CF_VALUES > \$CF_RENDERED
+ytt -f config -f ci/tasks/install-cf-on-kind/only-nodejs-builder-overlay.yml -f \$CF_VALUES > \$CF_RENDERED
 
 kapp deploy -f \$CF_RENDERED -a cf -y
 EOT

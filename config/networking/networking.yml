@@ -1,12 +1,12 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
+#@ load("/namespaces.star", "system_namespace", "workloads_namespace")
 
 #@ def networking_values():
-systemNamespace: #@ data.values.system_namespace
-workloadsNamespace: #@ data.values.workloads_namespace
+systemNamespace: #@ system_namespace()
+workloadsNamespace: #@ workloads_namespace()
 #@ end
 
 #@ networking = library.get("cf-k8s-networking")
 --- #@ template.replace(networking.with_data_values(networking_values()).eval())
-

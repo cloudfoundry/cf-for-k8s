@@ -1,15 +1,16 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
+#@ load("/namespaces.star", "workloads_namespace")
 
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: #@ data.values.workloads_namespace
+  name: #@ workloads_namespace()
   annotations:
     kapp.k14s.io/change-rule.cf-workloads-namespace: "delete before deleting cf-k8s-networking/routecontroller"
   labels:
-    name: #@ data.values.workloads_namespace
+    name: #@ workloads_namespace()
 
 #! the following overlay ensures the cf-workloads namespace is deleted before the routecontroller
 #@ cr = overlay.subset({"kind":"ClusterRole","metadata":{"name":"routecontroller"}})

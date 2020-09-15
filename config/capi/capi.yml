@@ -4,6 +4,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
+#@ load("/namespaces.star", "system_namespace", "workloads_namespace", "workloads_staging_namespace")
 
 #@ def capi_host():
 #@   if len(data.values.capi.database.host) > 0:
@@ -14,9 +15,9 @@
 #@ end
 
 #@ def capi_values():
-system_namespace: #@ data.values.system_namespace
-workloads_namespace: #@ data.values.workloads_namespace
-staging_namespace: #@ data.values.staging_namespace
+system_namespace: #@ system_namespace()
+workloads_namespace: #@ workloads_namespace()
+staging_namespace: #@ workloads_staging_namespace()
 system_domain: #@ data.values.system_domain
 app_domains:
 #@ for/end domain in data.values.app_domains:
@@ -69,16 +70,16 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: cf-api-external-virtual-service
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   hosts:
   - #@ "api." + data.values.system_domain
   gateways:
-  - #@ data.values.system_namespace + "/istio-ingressgateway"
+  - #@ system_namespace() + "/istio-ingressgateway"
   http:
   - route:
     - destination:
-        host: #@ "capi." + data.values.system_namespace + ".svc.cluster.local"
+        host: #@ "capi." + system_namespace() + ".svc.cluster.local"
         port:
           number: 80
 
@@ -87,7 +88,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: capi-database-password
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   password: #@ data.values.capi.database.password
@@ -96,7 +97,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: capi-blobstore-secret-key
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   password: #@ data.values.blobstore.secret_access_key
@@ -105,7 +106,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: cf-api-controllers-client-secret
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   password: #@ data.values.capi.cf_api_controllers_client_secret
@@ -114,7 +115,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: cloud-controller-username-lookup-client-secret
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   password: #@ data.values.capi.cc_username_lookup_client_secret
@@ -123,7 +124,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: capi-database-encryption-key-secret
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   password: #@ data.values.capi.database.encryption_key

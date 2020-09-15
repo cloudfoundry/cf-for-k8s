@@ -1,5 +1,4 @@
 #@ def gateway(system_domain, app_domains, system_namespace, workloads_namespace, https_only):
-
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:

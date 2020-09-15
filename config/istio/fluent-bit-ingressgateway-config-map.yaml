@@ -1,4 +1,5 @@
 #@ load("@ytt:data", "data")
+#@ load("/namespaces.star", "system_namespace", "workloads_namespace")
 
 ---
 apiVersion: v1
@@ -33,7 +34,7 @@ data:
     [OUTPUT]
         Name forward
         Match istio-ingressgateway
-        Host fluentd-forwarder-ingress.(@= data.values.system_namespace @)
+        Host fluentd-forwarder-ingress.(@= system_namespace() @)
         Port 24224
   parsers.conf : |-
     [PARSER]

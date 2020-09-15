@@ -47,13 +47,14 @@ These values would simply be mapped down to the underlying component’s k8s yam
 
 ### Alternative #2 - K8s yaml as an API
 
-Under this alternative we would do nothing to expose specific K8s properties and instead publicize that the operator can implement their own overlays. 
+Under this alternative we would do nothing to expose specific K8s properties and instead publicize that the operator can implement their own overlays to 
+achieve the scaling characteristics that they desire. 
 
 #### Pros
 - No additional scaling properties needed 
 - Prevents the mirror API problem
 - Open; allows the operator to overlay anything.  If it is K8s API, it can be overlayed
-    - Possibly better for an open source product that is trying to be as widely applicable as possible
+    - Good approach for OSS
 - Uses the YTT toolchain in the way it is recommended to be used
 - Forward compatible;  as K8s API changes cf-for-k8s doesn’t have to expose more and more properties
 - Still allows us to offer properties in future (after receiving feedback) but those properties can be more opinionated in order to prevent the mirror API problem
@@ -70,52 +71,46 @@ Under this alternative we would do nothing to expose specific K8s properties and
 
 Under this alternative we would provide a scale property allowing cf-for-k8s to either be scaled, or not.
 
-When not set cf-for-k8s deploys with replicas: 1 and small requests/limits.  When set (small?) cf-for-k8s deploys with replicas: >= 2 and larger requests/limits sufficient to satisfy our first stage scale requirements of 100 AIs
+When not set (local/dev) cf-for-k8s deploys with replicas: 1 and small requests/limits.  When set (to small) cf-for-k8s deploys with replicas: >= 2 and larger requests/limits sufficient to satisfy our first stage scale requirements of 100 AIs
 
 This would require a couple of scaling overlays in cf-for-k8s config/.
 
 #### Pros
 - Simple for the operator, they simply have to provide a value in their cf-values file to obtain a cf-for-k8s deployment that is scaled
 - Shields the operator from the K8s API and overlays until they want to run cf-for-k8s at large scale in which case presumably they should be familiar enough with k8s to allow them to run a large-scale deployments and by implication to write ytt overlays
-- This avoids the mirror API problem as we are adopting a very opinionated configuration interface
-- Uses the YTT toolchain in the way it is recommended to be used
+- This avoids the mirror API problem as we are adopting an opinionated configuration interface
 - Forward compatible;  as K8s API changes cf-for-k8s doesn’t have to expose more and more properties
-- Provide one, probably two scaling overlays that vendors can piggyback on 
+- Provides scale overlays that vendors can piggyback on 
 
 #### Cons
-- Do we really know what scale: true means?
-    - Presumably it means HA but we haven’t yet tested/achieved uptime of the control plane, just apps atm.  Should a deployment be scaled to replicas:2?  Or replicas:3?  Does this also require an HA k8s cluster?
-        - We should work with community members to determine appropriate values to satisfy first stage scale requirements
-- We will have to test both of these configurations to some degree
-    - But that could just be overlays "unit tests", at least initially
+- Is a single scale configuration option of `small` even useful on its own?  
+- Does providing a scale option leave us open for supporting auto-scaling later on?    
 
 ### Alternative #4 - T-shirt sizes
 
-Under this alternative we would provide scale properties: none, small and large.
+Under this alternative we would provide scale properties: none, small, medium and large.
 
-“None” would be in support of the developer edition and would deploy cf-for-k8s with replicas: 1 and small request/limits accordingly .  When small or large is chosen we would deploy a cf-for-k8s with increasing large replica and resource settings.
+“None” would be in support of the developer edition and would deploy cf-for-k8s with replicas: 1 and small request/limits accordingly .  When small...large is chosen we would deploy a cf-for-k8s with increasing large replica and resource settings.
 
 #### Pros
 - Simple for the operator, they simply have to provide a value in their cf values file to obtain a cf-for-k8s deployment that is scaled to some level
 - Shields the operator from the K8s API and overlays until they want to run cf-for-k8s at large scale in which case presumably they should be familiar enough with k8s to allow them to run large-scale deployments and by implication to write ytt overlays
 - This avoids the mirror API problem as we are adopting an opinionated configuration interface
-- Uses the YTT toolchain in the way it is recommended to be used
 - Forward compatible;  as K8s API changes cf-for-k8s doesn’t have to expose more and more properties
-- Provide one, probably two scaling overlays that vendors can piggyback on 
+- Provides scaling overlays that vendors can piggyback on 
 
 #### Cons
-- How do we determine what the scaled options are?
-    - We should work with community members to determine appropriate values for each option that satisfy our first and second stage scale requirements
-- We will have to test all of these configurations to some degree
-    - But that could just be overlays "unit tests", at least initially
+- Do we understand what small, medium and large actually means?  
+- Does providing scale options leave us open for supporting auto-scaling later on?    
 
 ## Unknowns
 
 ## Conclusions
-There is a strong desire to simply not mirror the k8s API through the cf-for-k8s config interface as this is basically what an YTT overlay are for.  We know from experience
-that this approach is problematic over time.  This rules of Alternative #1.  At the same time there is a strong desire to not expose users to overlays either, 
-unless absolutely necessary.  This rules out Alternative #2.
+There is a desire to simply not mirror the k8s API through the cf-for-k8s config interface as this is basically what an YTT overlay are for.  This approach is problematic over time.  At the same time there is a desire to not expose users to overlays either, 
+unless absolutely necessary.  But perhaps it is ok for 1.0?
 
-We therefore believe Alternative #3 or #4 is the best alternative for us for 1.0 release.  Most of the time the operator is protected from having to write overlays.
-At the same time they provide a scaling overlay for downstream vendors to base their scaling interfaces on.   We prefer #3 over #4 as our intention, for 1.0, is to
-support kick-the-tyres and small production deployments only. 
+If not then that leaves Alt #3 or #4 and we think we lean towards #3.
+
+Feedback welcome please.
+
+ 

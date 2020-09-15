@@ -19,6 +19,11 @@ gcloud beta compute \
   scp --recurse cf-for-k8s ${user_host}:/tmp/kind/ --compress \
   --zone "us-central1-a" > /dev/null
 
+echo "Replacing CI directory..."
+gcloud beta compute \
+  scp --recurse cf-for-k8s-ci/ci ${user_host}:/tmp/kind/cf-for-k8s/ --compress \
+  --zone "us-central1-a" > /dev/null
+
 echo "Uploading cf-install-values.yml..."
 gcloud beta compute \
   scp cf-install-values/cf-install-values.yml ${user_host}:/tmp \

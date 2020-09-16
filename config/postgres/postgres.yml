@@ -21,7 +21,7 @@ kind: Namespace
 metadata:
   name: cf-db
   labels:
-    name: cf-db
+    cf-for-k8s.cloudfoundry.org/cf-db-ns: ""
 
 ---
 apiVersion: v1

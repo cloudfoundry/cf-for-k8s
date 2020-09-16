@@ -726,16 +726,12 @@ jobs:
         APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
         USE_EXTERNAL_BLOBSTORE: "true"
 
-    - task: run-external-blobstore-validation-test
-      file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        EXTERNAL_BLOBSTORE: "incluster"
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
-        pool-lock: ready-pool
         cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        SMOKE_TEST_SKIP_SSL: false
 
     on_failure:
       do:

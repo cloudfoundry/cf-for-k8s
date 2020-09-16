@@ -43,16 +43,6 @@ ccdb:
   database: #@ data.values.capi.database.name
   ca_cert: #@ data.values.capi.database.ca_cert
 
-eirini:
-  serverCerts:
-    secretName: eirini-internal-tls-certs
-
-apiServer:
-  opi:
-    client_cert: #@ data.values.internal_certificate.crt
-    client_key: #@ data.values.internal_certificate.key
-    ca: #@ data.values.internal_certificate.ca
-
 uaa:
   serverCerts:
     secretName: uaa-certs

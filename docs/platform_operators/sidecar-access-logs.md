@@ -6,7 +6,7 @@ Traffic flows through the sidecar containers on sidecar enabled pods, which
 prints access logs to stdout. For example, this is how you might view them for your apps:
 
 ```
-kubectl logs my-app -c istio-proxy -n cf-workloads
+kubectl logs app-pod -c istio-proxy -n cf-workloads
 ```
 
 Any namespace with the label `istio-injection=enabled` will add a sidecar

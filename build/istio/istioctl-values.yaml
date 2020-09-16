@@ -39,6 +39,7 @@ spec:
     sidecarInjectorWebhook:
       rewriteAppHTTPProbe: true
     meshConfig:
+      accessLogEncoding: 'JSON'
       enableAutoMtls: true
       accessLogFile: "/dev/stdout"
       accessLogFormat: >-
@@ -78,6 +79,4 @@ spec:
         }
     global:
       controlPlaneSecurityEnabled: true
-      proxy:
-        accessLogEncoding: 'JSON'
 

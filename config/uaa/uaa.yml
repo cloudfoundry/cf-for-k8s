@@ -132,7 +132,7 @@ oauth:
       authorities: scim.userids
       authorized-grant-types: client_credentials
     cf_api_controllers:
-      authorities: cloud_controller.write,cloud_controller.update_build_state
+      authorities: cloud_controller.write,cloud_controller.read,cloud_controller.update_build_state,cloud_controller.admin_read_only
       authorized-grant-types: client_credentials
   #@overlay/match missing_ok=True
   user:

@@ -16,6 +16,7 @@ var _ = Describe("UAA", func() {
 	BeforeEach(func() {
 		templates = []string{
 			pathToFile("config/uaa"),
+			pathToFile("config/namespaces.star"),
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),
 		}
 	})

@@ -2,7 +2,7 @@
 #@ load("/namespaces.star", "workloads_namespace")
 
 #@ def build_version():
-#@   return "1.6.4"
+#@   return "1.7.1"
 #@ end
 
 ---

@@ -5,7 +5,7 @@
 #! These values cannot be changed later when rendering cf-for-k8s templates.
 #! Values related to CF should NOT be in this file.
 
-istio_version: 1.6.4
+istio_version: 1.7.1
 
 fluentbit:
   image: gcr.io/cf-networking-images/cf-k8s-networking/fluentbit@sha256:636813e4dfa80d615ecba1667d2e0f94c28096010bc190e177134b46e1e03eea

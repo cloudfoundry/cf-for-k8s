@@ -1,0 +1,7 @@
+Currently, when a user creates a route the Cloud Controller creates a route resource as defined by [Route CRD](https://docs.google.com/document/d/1DF7eTBut1I74w_sVaQ4eeF74iQes1nG3iUv7iJ7E35U/edit#heading=h.1z6hvc8yon6k) writes it to the K8s API.
+The Route Controller reads the route resource from the Kubernetes API.
+Once the Route Controller reads the route resource it creates istio services and virtual services and writes them to the K8s API. Istiod then reads the virtual services and services from the K8s API.
+
+Operators are welcome to "peek into the system" and view the route resource. However, we treat it as an implementation detail and consider the Route CRD subject to change in the future. 
+We do not support the route resource for any uscases apart from the one described above. 
+

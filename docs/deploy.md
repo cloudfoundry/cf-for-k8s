@@ -1,16 +1,18 @@
 # Deploying Cloud Foundry on a Kubernetes cluster
 
-- [Prerequisites](#prerequisites)
-  - [Required Tools](#required-tools)
-  - [Kubernetes Cluster Requirements](#kubernetes-cluster-requirements)
-  - [Setup an OCI-compliant registry](#setup-an-oci-compliant-registry)
-- [Steps to deploy](#steps-to-deploy)
-  - [Option A - Use the included hack-script to generate the install values](#option-a---use-the-included-hack-script-to-generate-the-install-values)
-  - [Option B - Create the install values by hand](#option-b---create-the-install-values-by-hand)
-- [Validate the deployment](#validate-the-deployment)
-- [Delete the cf-for-k8s deployment](#delete-the-cf-for-k8s-deployment)
-- [Additional Resources](#additional-resources)
-- [Roadmap and milestones](#roadmap-and-milestones)
+* [Prerequisites](#prerequisites)
+  + [Required Tools](#required-tools)
+  + [Kubernetes Cluster Requirements](#kubernetes-cluster-requirements)
+  + [Setup an OCI-compliant registry](#setup-an-oci-compliant-registry)
+* [Steps to deploy](#steps-to-deploy)
+    - [Option A - Use the included hack-script to generate the install values(#option-a---use-the-included-hack-script-to-generate-the-install-values)
+    - [Option B - Create the install values by hand](#option-b---create-the-install-values-by-hand)
+* [Validate the deployment](#validate-the-deployment)
+* [Delete the cf-for-k8s deployment](#delete-the-cf-for-k8s-deployment)
+* [Additional resources](#additional-resources)
+* [Roadmap and milestones](#roadmap-and-milestones)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ## Prerequisites
 

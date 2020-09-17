@@ -125,6 +125,7 @@ jobs:
     - in_parallel:
       - get: cf-for-k8s-master
       - get: cf-for-k8s-ci
+      - get: runtime-ci
       - get: weekday-pm
         trigger: true
 

@@ -100,7 +100,7 @@ EOF
 
   echo "Installing CF CLI..."
   retry 5 curl -Lo ./cf.tgz "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v7&source=github"
-  tar xf cf.tgz cf
+  tar xf cf.tgz cf cf7
   rm cf.tgz
   cf --version
 

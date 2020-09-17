@@ -56,7 +56,7 @@ data:
   .dockerconfigjson: #@ base64.encode(json.encode({"auths": {data.values.app_registry.hostname: docker_creds}}))
 
 #@ def events():
-cc_internal_api: #@ "http://capi.{}.svc.cluster.local:80".format(data.values.system_namespace)
+cc_internal_api: #@ "http://capi.{}.svc.cluster.local:9023".format(data.values.system_namespace)
 #@ end
 
 #@ def opi():

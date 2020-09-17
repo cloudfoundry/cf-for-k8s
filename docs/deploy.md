@@ -43,8 +43,8 @@ To deploy cf-for-k8s as is, the cluster should:
 To be able to push source-code based apps to your cf-for-k8s installation, you will need to add OCI compliant registry (e.g. hub.docker.com) to the configuration.
 
 [hub.docker.com](https://hub.docker.com/) is pretty easy to get started
-  1. Create an account in [hub.docker.com](https://hub.docker.com/). Note down the user name and password you used during signup.
-  1. Create a repository in your account. Note down the repository name.
+  1. Create an account in [hub.docker.com](https://hub.docker.com/). Note down the **username** and **password** you used during signup. You will use them in deployment steps below.
+  1. Create a repository in your account. Note down the **repository** name.
 
 ## Steps to deploy
 
@@ -82,7 +82,7 @@ To be able to push source-code based apps to your cf-for-k8s installation, you w
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
       - **IMPORTANT** Your certificates must include a subject alternative name entry for the internal `*.cf-system.svc.cluster.local` domain in addition to your chosen external domain.
 
-1. Configure access to the dockerhub registry in `cf-values.yml` that you setup in the above section [Setup docker registry](#setup-a-docker-registry)
+1. Copy the following configuration to add the dockerhub registry in `${TMP_DIR}/cf-values.yml`. 
 
       ```yml
 
@@ -94,8 +94,7 @@ To be able to push source-code based apps to your cf-for-k8s installation, you w
 
       ```
 
-      1. Update `<my_username>` with your docker username.
-      1. Update `<my_password>` with your docker password.
+      Update `<my_username>` and `<my_password>` with your docker username and password that you created in the above section [Setup docker registry](#setup-a-docker-registry).
 
 1. Run the following commands to install Cloud Foundry on your Kubernetes cluster.
 
@@ -171,38 +170,20 @@ To be able to push source-code based apps to your cf-for-k8s installation, you w
    ```console
    cf push test-node-app -p tests/smoke/assets/test-node-app
    ```
+   
+   You should she the following output from the above command
 
    ```console
    Pushing app test-node-app to org test-org / space test-space as admin...
    Getting app info...
    Creating app with these attributes...
-
-   name: test-node-app
-   path: /Users/pivotal/workspace/cf-for-k8s/tests/smoke/assets/test-node-app
-   routes: test-node-app.<cf-domain>
-
-   Creating app test-node-app...
-   Mapping routes...
-   Comparing local files to remote cache...
-   Packaging files to upload...
-   Uploading files...
-
-   .... logs omitted for brevity
-
-
-   Waiting for app to start...
-
-   name: test-node-app
-   requested state: started
-   isolation segment: placeholder
-   routes: test-node-app.<cf-domain>
-   last uploaded: Tue 17 Mar 19:24:21 PDT 2020
-   stack:
-   buildpacks:
-
+    
+   ... omitted for brevity ...
+    
    type: web
    instances: 1/1
    memory usage: 1024M
+   routes: test-node-app.<cf-domain>
    state since cpu memory disk details
    #0 running 2020-03-18T02:24:51Z 0.0% 0 of 1G 0 of 1G
    ```
@@ -212,10 +193,10 @@ To be able to push source-code based apps to your cf-for-k8s installation, you w
 1. Validate the app is reachable over **https**
 
    ```console
-   # for self-signed certs, use -k to allow insecure server connections when using SSL
-   curl -k https://test-node-app.<cf-domain>
+   curl -Lk https://test-node-app.<cf-domain>
    ```
 
+   You should she the following output
    ```console
    Hello World
    ```
@@ -225,7 +206,6 @@ To be able to push source-code based apps to your cf-for-k8s installation, you w
 You can delete the cf-for-k8s deployment by running the following command.
 
    ```console
-   # Assuming that you ran `kapp deploy -a cf...`
    kapp delete -a cf
    ```
 

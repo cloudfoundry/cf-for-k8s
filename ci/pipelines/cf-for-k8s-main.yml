@@ -12,9 +12,9 @@ groups:
   - promote-master-deliver-stories
   - run-unit-tests
   - branch-freshness
-- name: cats-on-k8s
+- name: cats
   jobs:
-  - validate-cats-on-cf-for-k8s
+  - run-cats
 
 #! Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
@@ -252,7 +252,7 @@ jobs:
       params:
         remove: ready-pool
 
-- name: validate-cats-on-cf-for-k8s
+- name: run-cats
   public: true
   plan:
     - in_parallel:
@@ -282,10 +282,12 @@ jobs:
         DOMAIN: k8s-dev.relint.rocks
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
 
-    - task: cats-on-k8s
-      file: cf-for-k8s-ci/ci/tasks/cats-on-cf-for-k8s/task.yml
+    - task: run-cats
+      file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
+      params:
+        INCLUDE_APPS: true
 
     - task: delete-cf
       input_mapping:

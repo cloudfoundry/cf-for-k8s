@@ -18,10 +18,12 @@
 
 You need the following CLIs on your system to be able to run the script:
 
-- [`cf cli`](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) (v6.50+)
-- [`kapp`](https://k14s.io/#install)
-- [`ytt`](https://k14s.io/#install)
+- `ytt` [install link](https://k14s.io/#install) [github repo](https://github.com/k14s/ytt)
+  - cf-for-k8s uses `ytt` to create and maintain reusable YAML templates. You can visit the ytt [playground](https://get-ytt.io/) to learn more about its templating features.
+- `kapp` [install link](https://k14s.io/#install) [github repo](https://github.com/k14s/kapp)
+  - cf-for-k8s uses `kapp` to manage its lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit until all resources are deployed and their status is running. See all options by running `kapp help`.
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [`cf cli`](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) (v7+)
 
 > Make sure that your Kubernetes config (e.g, `~/.kube/config`) is pointing to the cluster you intend to deploy cf-for-k8s to.
 
@@ -33,8 +35,7 @@ To deploy cf-for-k8s as is, the cluster should:
 - have a minimum of 5 nodes
 - have a minimum of 4 CPU, 15GB memory per node
 - support `LoadBalancer` services
-- support `metrics-server`
-  - most IaaSes come with `metrics-server`, but if yours does not come (for example, if you are using `kind`), you will need to include `add_metrics_server_components: true` in your values file.
+- most IaaSes come with `metrics-server`, but if yours does not come with one (for example, if you are using `kind`), you will need to include `add_metrics_server_components: true` in your values file.
 - defines a default StorageClass
   - requires [additional config on vSphere](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/storageclass.html), for example
 
@@ -88,7 +89,7 @@ Currently, we test the following two container registries:
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
       - **IMPORTANT** Your certificates must include a subject alternative name entry for the internal `*.cf-system.svc.cluster.local` domain in addition to your chosen external domain.
 
-1. Configure an external app registry:
+1. Provide your credentials to an external app registry:
 
       1. To configure Dockerhub.com, add the following registry config block to the end of `cf-values.yml` file:
 
@@ -233,8 +234,8 @@ Use the following resources to enable additional features in cf-for-k8s:
 
 - [Setup ingress certs with letsencrypt](platform_operators/setup-ingress-certs-with-letsencrypt.md)
 - [Setup static loadbalancer IP](platform_operators/setup-static-loadbalancer-ip.md)
-- [Setup an external database](platform_operators/external-databases.md)
+- [Setup an external database](platform_operators/external-databases.md), which we recommend for Production environments
 - [Setup an external blobstore](platform_operators/external-blobstore.md)
 
 ## Roadmap and milestones
-Please take a moment to review the [roadmap](https://github.com/cloudfoundry/cf-for-k8s/projects/4) and our upcoming [milestones](https://github.com/cloudfoundry/cf-for-k8s/milestones). Feel free to ask questions or submit new feature requests or issues.
+You can find the project roadmap (github project) [here](https://github.com/cloudfoundry/cf-for-k8s/projects/4) and our upcoming milestones [here]](https://github.com/cloudfoundry/cf-for-k8s/milestones). Feel free to ask questions in the [#cf-for-k8s channel](https://cloudfoundry.slack.com/archives/CH9LF6V1P) in the CloudFoundry slack or submit new feature requests or issues on this repo.

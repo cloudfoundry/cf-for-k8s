@@ -26,7 +26,7 @@ spec:
   buildImage:
     image: "gcr.io/paketo-buildpacks/build@sha256:5afae0d51c85bc7b4a353e8114b4da3bf0f179af9f92e01ffaeec8907e881fbf"
   runImage:
-    image: "gcr.io/paketo-buildpacks/run@sha256:4fa474173e66b34c4fbff6cfaaa2cd8e2cd809071c85ea763a1c9aae8f1510d8"
+    image: "gcr.io/paketo-buildpacks/run@sha256:e67c02db1db3db154ae0b20a642fc9f0e7503bed916155cebec31e4bcb08a8c2"
 
 ---
 apiVersion: experimental.kpack.pivotal.io/v1alpha1

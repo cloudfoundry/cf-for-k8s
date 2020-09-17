@@ -8,4 +8,4 @@
 istio_version: 1.6.4
 
 fluentbit:
-  image: gcr.io/cf-networking-images/cf-k8s-networking/fluentbit@sha256:9d0f364a682b1903b1230d836d2270f86f29b2904ea5b2b8ee3ea9132a9ab9d7
+  image: gcr.io/cf-networking-images/cf-k8s-networking/fluentbit@sha256:ab83257aa8ed5c09ef6fd9eb75184752200eec2abafaa4e7f0dfcdc4a57040aa

@@ -3,15 +3,14 @@
 - [Prerequisites](#prerequisites)
   - [Required Tools](#required-tools)
   - [Kubernetes Cluster Requirements](#kubernetes-cluster-requirements)
-  - [IaaS Requirements](#iaas-requirements)
-  - [Requirements for pushing source-code based apps to Cloud Foundry foundation](#requirements-for-pushing-source-code-based-apps-to-cloud-foundry-foundation)
-- [Known Issues](#knownissues)
+  - [Setup docker registry](#setup-a-docker-registry)
 - [Steps to deploy](#steps-to-deploy)
   - [Option A - Use the included hack-script to generate the install values](#option-a---use-the-included-hack-script-to-generate-the-install-values)
   - [Option B - Create the install values by hand](#option-b---create-the-install-values-by-hand)
 - [Validate the deployment](#validate-the-deployment)
 - [Delete the cf-for-k8s deployment](#delete-the-cf-for-k8s-deployment)
 - [Additional Resources](#additional-resources)
+- [Roadmap and milestones](#roadmap-and-milestones)
 
 ## Prerequisites
 
@@ -28,11 +27,9 @@ You need the following CLIs on your system to be able to run the script:
 
 ### Kubernetes Cluster Requirements
 
-:exclamation: This project is in its early stages of development and hence the resource requirements are subject to change in the future. This document and the release notes will be updated accordingly. :exclamation:
-
 To deploy cf-for-k8s as is, the cluster should:
 
-- be running Kubernetes version within range 1.16.x to 1.18.x
+- be running Kubernetes version within range 1.16.x to 1.17.x
 - have a minimum of 5 nodes
 - have a minimum of 4 CPU, 15GB memory per node
 - support `LoadBalancer` services
@@ -41,33 +38,13 @@ To deploy cf-for-k8s as is, the cluster should:
 - defines a default StorageClass
   - requires [additional config on vSphere](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/storageclass.html), for example
 
-### Requirements for pushing source-code based apps to Cloud Foundry foundation
+### Setup a docker registry
 
 To be able to push source-code based apps to your cf-for-k8s installation, you will need to add OCI compliant registry (e.g. hub.docker.com) to the configuration.
 
-> Under the hood, cf-for-k8s uses Cloud Native buildpacks to detect and build the app source code into an oci compliant image and pushes the app image to the registry. Though cf-for-k8s has been tested with Google Container Registry and Dockerhub.com, it should work for any external OCI compliant registry.
-
-Currently, we have tested the following two container registries:
-
-- Docker Hub:
+[hub.docker.com](https://hub.docker.com/) is pretty easy to get started
   1. Create an account in [hub.docker.com](https://hub.docker.com/). Note down the user name and password you used during signup.
   1. Create a repository in your account. Note down the repository name.
-
-- Google Container Registry:
-  1. Create a GCP Service Account with `Storage/Storage Admin` role.
-  1. Create a Service Key JSON and download it to the machine from which you will install cf-for-k8s (referred to, below, as `path-to-kpack-gcr-service-account`).
-
-## <a name='knownissues'></a> Known Issues
-This project is in its early stages of development and hence there are features missing. For a list of the known issues, take a look at the [GitHub issues tagged 'known-issue'](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aissue+is%3Aopen+label%3Aknown-issue).
-
-
-### Requirements to use an external database
-
-cf-for-k8s can be configured to [use an external database](platform_operators/external-databases.md).
-
-### Requirements to use an external blobstore
-
-cf-for-k8s can be configured to [use an external blobstore](platform_operators/external-blobstore.md).
 
 ## Steps to deploy
 
@@ -105,13 +82,7 @@ cf-for-k8s can be configured to [use an external blobstore](platform_operators/e
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
       - **IMPORTANT** Your certificates must include a subject alternative name entry for the internal `*.cf-system.svc.cluster.local` domain in addition to your chosen external domain.
 
-1. To enable Cloud Native buildpacks feature, configure access to an external registry in `cf-values.yml`:
-
-   You can choose any of the cloud provider container registries, such as [hub.docker.com](https://hub.docker.com/), [Google container registry](https://cloud.google.com/container-registry), [Azure container registry](https://azure.microsoft.com/en-us/services/container-registry/) and so on. Below are examples for dockerhub or google container registry.
-
-   1. To configure Dockerhub.com
-
-      Add the following registry config block to the end of `cf-values.yml` file.
+1. To enable Cloud Native buildpacks feature, configure access to an external dockerhub registry in `cf-values.yml` you setup above in the section **Setup a a docker registry**
 
       ```yml
 
@@ -126,36 +97,19 @@ cf-for-k8s can be configured to [use an external blobstore](platform_operators/e
       1. Update `<my_username>` with your docker username.
       1. Update `<my_password>` with your docker password.
 
-   1. To configure a Google Container Registry, add the following registry config block to the end of `cf-values.yml` file.
-
-      ```yml
-      app_registry:
-        hostname: gcr.io
-        repository_prefix: gcr.io/<gcp_project_id>/cf-workloads
-        username: _json_key
-        password: |
-          <contents_of_service_account_json>
-      ```
-
-      1. Update the `gcp_project_id` portion to your GCP Project Id.
-      1. Change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON.
-
 1. Run the following commands to install Cloud Foundry on your Kubernetes cluster.
 
       i. Render the final K8s template to raw K8s configuration
       ```console
       ytt -f config -f ${TMP_DIR}/cf-values.yml > ${TMP_DIR}/cf-for-k8s-rendered.yml
       ```
-      > cf-for-k8s uses [ytt](https://github.com/k14s/ytt) to create and maintain reusable YAML templates. You can visit the ytt [playground](https://get-ytt.io/) to learn more about its templating features.
-      > In the above command, `ytt` can take a folder e.g. `config` or file via `-f`. See all options by running `ytt help`.
 
       ii. Install using `kapp` and pass the above K8s configuration file
       ```console
       kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
       ```
-      > cf-for-k8s uses [kapp](https://github.com/k14s/kapp) to manage its lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit untill all resources are installed and their status is running. See all options by running `kapp help`.
 
-   Once you run the command, it should take about 10 minutes depending on your cluster bandwidth, size. `kapp` will provide updates on pending resource creations in the cluster and will wait until all resources are created and running. Here is a sample snippet from `kapp` output:
+   Once you run the command, it should take about ~5-7 minutes depending on your cluster bandwidth, size. `kapp` will provide updates on pending resource creations in the cluster and will wait until all resources are created and running. Here is a sample snippet from `kapp` output:
 
    ```console
    4:08:19PM: ---- waiting on 1 changes [0/1 done] ----
@@ -280,3 +234,8 @@ Use the following resources to enable additional features in cf-for-k8s.
 
 - [Setup ingress certs with letsencrypt](platform_operators/setup-ingress-certs-with-letsencrypt.md)
 - [Setup static loadbalancer IP](platform_operators/setup-static-loadbalancer-ip.md)
+- [Setup an external database](platform_operators/external-databases.md)
+
+## Roadmap and milestones
+Please take a moment to review the [roadmap](https://github.com/cloudfoundry/cf-for-k8s/projects/4) and our upcoming [milestones](https://github.com/cloudfoundry/cf-for-k8s/milestones). Feel free to ask questions or submit new feature requests or issues.
+

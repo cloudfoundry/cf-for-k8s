@@ -93,7 +93,7 @@ jobs:
       input_mapping:
         cf-for-k8s: cf-for-k8s-last-valid-commit
 
-    - task: install-cf-master
+    - task: upgrade-cf-to-master
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
         pool-lock: ready-pool
@@ -108,7 +108,7 @@ jobs:
         EMIT_UPTIMER_METRICS_TO_WAVEFRONT: true
         WAVEFRONT_API_KEY: ((wavefront_ci_service_account))
         WAVEFRONT_API_ENDPOINT: "https://vmwareprod.wavefront.com/report"
-        SOURCE_PIPELINE: upgrade-tests
+        SOURCE_PIPELINE: upgrade-from-last-valid
 
     - in_parallel:
         - task: run-smoke-tests

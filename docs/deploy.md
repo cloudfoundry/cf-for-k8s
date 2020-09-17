@@ -82,7 +82,7 @@ To be able to push source-code based apps to your cf-for-k8s installation, you w
    1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
       - **IMPORTANT** Your certificates must include a subject alternative name entry for the internal `*.cf-system.svc.cluster.local` domain in addition to your chosen external domain.
 
-1. To enable Cloud Native buildpacks feature, configure access to an external dockerhub registry in `cf-values.yml` you setup above in the section **Setup a a docker registry**
+1. Configure access to the dockerhub registry in `cf-values.yml` that you setup in the above section [Setup docker registry](#setup-a-docker-registry)
 
       ```yml
 

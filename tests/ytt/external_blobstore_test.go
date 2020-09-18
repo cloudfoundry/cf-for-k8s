@@ -9,7 +9,7 @@ import (
 var _ = Describe("External Blobstore", func() {
 
 	var ctx RenderingContext
-	var data map[string]string
+	var data map[string]interface{}
 	var templates []string
 
 	BeforeEach(func() {
@@ -26,7 +26,7 @@ var _ = Describe("External Blobstore", func() {
 	Context("disabled", func() {
 
 		BeforeEach(func() {
-			data = map[string]string{
+			data = map[string]interface{}{
 				"blobstore.endpoint":          "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000",
 				"blobstore.access_key_id":     "F4k3nuGo2PLQzN9ETk9VbNYx",
 				"blobstore.secret_access_key": "F4k3zsYvUUaVDlsWtFM1EJyH",
@@ -46,7 +46,7 @@ var _ = Describe("External Blobstore", func() {
 	Context("enabled", func() {
 
 		BeforeEach(func() {
-			data = map[string]string{
+			data = map[string]interface{}{
 				"blobstore.endpoint":                "https://s3.eu-central-1.amazonaws.com/",
 				"blobstore.region":                  "eu-central-1",
 				"blobstore.access_key_id":           "nuGo2PLQzN9ETk9VbNYxF4k3",

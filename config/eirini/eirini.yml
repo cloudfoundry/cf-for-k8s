@@ -40,7 +40,9 @@ spec:
       podSelector:
         matchLabels:
           istio: ingressgateway
-
+    - namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/contour-system-ns: ""
 #! Add Secret to allow K8s to download app images from the provided registry
 #! https://github.com/cloudfoundry/cf-for-k8s/issues/74
 #! may want to keep this in sync with https://github.com/cloudfoundry-incubator/eirini-release/blob/master/helm/cf/templates/registry-secret.yaml

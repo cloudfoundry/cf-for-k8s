@@ -32,6 +32,7 @@ spec:
       containers:
       - name: routecontroller
         image: #@ data.values.routecontroller.image
+        imagePullPolicy: Always
         resources:
           limits:
             cpu: 100m

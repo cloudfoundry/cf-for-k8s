@@ -2,7 +2,7 @@
 
 #@ daemonset = overlay.subset({"kind": "DaemonSet", "metadata":{"name":"istio-ingressgateway"}})
 #@ deployment = overlay.subset({"kind": "Deployment", "metadata":{"name":"istio-ingressgateway"}})
-#@overlay/match by=overlay.or_op(deployment, daemonset),expects=1
+#@overlay/match by=overlay.or_op(deployment, daemonset),expects="0+"
 ---
 #@overlay/match
 spec:

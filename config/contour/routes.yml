@@ -1,0 +1,66 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+#@ load("/namespaces.star", "system_namespace", "workloads_namespace")
+
+#! this secret contains the certificate/key combo used for the external system domain
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cf-system-cert
+  namespace: #@ system_namespace()
+  annotations:
+    kapp.k14s.io/change-rule.envoy: "upsert before upserting projectcontour/envoy"
+data:
+  tls.key: #@ data.values.system_certificate.key
+  tls.crt: #@ data.values.system_certificate.crt
+type: kubernetes.io/tls
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cf-workloads-cert
+  namespace: #@ workloads_namespace()
+  annotations:
+    kapp.k14s.io/change-rule.envoy: "upsert before upserting projectcontour/envoy"
+data:
+  tls.key: #@ data.values.workloads_certificate.key
+  tls.crt: #@ data.values.workloads_certificate.crt
+type: kubernetes.io/tls
+
+#! the following overlay ensures the above Secret is created before the ingressgateway Deployment since we're not using SDS
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"envoy"}}),expects="0+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-group: projectcontour/envoy
+
+
+#@ def route(name, host, service, port):
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: #@ name
+  namespace: #@ system_namespace()
+spec:
+  virtualhost:
+    fqdn: #@ host + "." + data.values.system_domain
+    tls:
+      secretName: cf-system-cert-ver-1
+  routes:
+    - conditions:
+      - prefix: /
+      services:
+        - name: #@ service
+          port: #@ port
+#@ end
+
+--- #@ route("cf-api-external-virtual-service", "api", "capi", 80)
+--- #@ route("log-cache-external-virtual-service", "log-cache", "log-cache", 8083)
+--- #@ route("login", "login", "uaa", 8080)
+--- #@ route("loginwild", "*.login", "uaa", 8080)
+--- #@ route("uaa", "uaa", "uaa", 8080)
+--- #@ route("uaawild", "*.uaa", "uaa", 8080)

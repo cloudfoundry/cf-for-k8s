@@ -17,7 +17,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: 8aab2b2ff7b1814b4e5c5e7856cd5c5a72af97ff
+      ref: xxx-mikes-contour-spike
     includePaths:
     - config/*
     - config/crd/**/*

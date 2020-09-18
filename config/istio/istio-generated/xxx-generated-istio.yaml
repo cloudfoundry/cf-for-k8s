@@ -6760,17 +6760,6 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-    app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.7.1
-    istio: ingressgateway
-    release: istio
-  name: istio-ingressgateway-service-account
-  namespace: istio-system
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
     app: istio-reader
     cloudfoundry.org/istio_version: 1.7.1
     release: istio
@@ -8429,282 +8418,6 @@ webhooks:
   sideEffects: None
 ---
 apiVersion: apps/v1
-kind: DaemonSet
-metadata:
-  annotations:
-    kbld.k14s.io/images: |
-      - Metas:
-        - Tag: 1.7.1
-          Type: resolved
-          URL: gcr.io/cf-routing/proxyv2:1.7.1
-        URL: gcr.io/cf-routing/proxyv2@sha256:196c444fb59d1bb0f612c378691071c53b1157503e0a0772bc43192b160a0255
-  labels:
-    app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.7.1
-    istio: ingressgateway
-    release: istio
-  name: istio-ingressgateway
-  namespace: istio-system
-spec:
-  selector:
-    matchLabels:
-      app: istio-ingressgateway
-      istio: ingressgateway
-  template:
-    metadata:
-      annotations:
-        prometheus.io/path: /stats/prometheus
-        prometheus.io/port: "15090"
-        prometheus.io/scrape: "true"
-        sidecar.istio.io/inject: "false"
-      labels:
-        app: istio-ingressgateway
-        chart: gateways
-        cloudfoundry.org/istio_version: 1.7.1
-        heritage: Tiller
-        istio: ingressgateway
-        release: istio
-        service.istio.io/canonical-name: istio-ingressgateway
-        service.istio.io/canonical-revision: latest
-    spec:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - preference:
-              matchExpressions:
-              - key: kubernetes.io/arch
-                operator: In
-                values:
-                - amd64
-            weight: 2
-          - preference:
-              matchExpressions:
-              - key: kubernetes.io/arch
-                operator: In
-                values:
-                - ppc64le
-            weight: 2
-          - preference:
-              matchExpressions:
-              - key: kubernetes.io/arch
-                operator: In
-                values:
-                - s390x
-            weight: 2
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/arch
-                operator: In
-                values:
-                - amd64
-                - ppc64le
-                - s390x
-      containers:
-      - args:
-        - proxy
-        - router
-        - --domain
-        - $(POD_NAMESPACE).svc.cluster.local
-        - --proxyLogLevel=warning
-        - --proxyComponentLogLevel=misc:error
-        - --log_output_level=default:info
-        - --serviceCluster
-        - istio-ingressgateway
-        - --trust-domain=cluster.local
-        env:
-        - name: JWT_POLICY
-          value: third-party-jwt
-        - name: PILOT_CERT_PROVIDER
-          value: istiod
-        - name: CA_ADDR
-          value: istiod.istio-system.svc:15012
-        - name: NODE_NAME
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: spec.nodeName
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.name
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-        - name: INSTANCE_IP
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: status.podIP
-        - name: HOST_IP
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: status.hostIP
-        - name: SERVICE_ACCOUNT
-          valueFrom:
-            fieldRef:
-              fieldPath: spec.serviceAccountName
-        - name: CANONICAL_SERVICE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.labels['service.istio.io/canonical-name']
-        - name: CANONICAL_REVISION
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.labels['service.istio.io/canonical-revision']
-        - name: ISTIO_META_WORKLOAD_NAME
-          value: istio-ingressgateway
-        - name: ISTIO_META_OWNER
-          value: kubernetes://apis/apps/v1/namespaces/istio-system/deployments/istio-ingressgateway
-        - name: ISTIO_META_MESH_ID
-          value: cluster.local
-        - name: ISTIO_META_ROUTER_MODE
-          value: sni-dnat
-        - name: ISTIO_META_CLUSTER_ID
-          value: Kubernetes
-        - name: TERMINATION_DRAIN_DURATION_SECONDS
-          value: "60"
-        image: gcr.io/cf-routing/proxyv2@sha256:196c444fb59d1bb0f612c378691071c53b1157503e0a0772bc43192b160a0255
-        lifecycle:
-          preStop:
-            exec:
-              command:
-              - /bin/bash
-              - -c
-              - sleep 20
-        name: istio-proxy
-        ports:
-        - containerPort: 15021
-        - containerPort: 8080
-          hostPort: 80
-        - containerPort: 8443
-          hostPort: 443
-        - containerPort: 15443
-        - containerPort: 15090
-          name: http-envoy-prom
-          protocol: TCP
-        readinessProbe:
-          failureThreshold: 30
-          httpGet:
-            path: /healthz/ready
-            port: 15021
-            scheme: HTTP
-          initialDelaySeconds: 1
-          periodSeconds: 2
-          successThreshold: 1
-          timeoutSeconds: 1
-        resources:
-          limits:
-            cpu: 2000m
-            memory: 1024Mi
-          requests:
-            cpu: 100m
-            memory: 128Mi
-        securityContext:
-          allowPrivilegeEscalation: false
-          capabilities:
-            drop:
-            - ALL
-          privileged: false
-          readOnlyRootFilesystem: true
-        volumeMounts:
-        - mountPath: /etc/istio/proxy
-          name: istio-envoy
-        - mountPath: /etc/istio/config
-          name: config-volume
-        - mountPath: /var/run/secrets/istio
-          name: istiod-ca-cert
-        - mountPath: /var/run/secrets/tokens
-          name: istio-token
-          readOnly: true
-        - mountPath: /var/run/ingress_gateway
-          name: gatewaysdsudspath
-        - mountPath: /etc/istio/pod
-          name: podinfo
-        - mountPath: /etc/istio/ingressgateway-certs
-          name: ingressgateway-certs
-          readOnly: true
-        - mountPath: /etc/istio/ingressgateway-ca-certs
-          name: ingressgateway-ca-certs
-          readOnly: true
-      - image: gcr.io/cf-networking-images/cf-k8s-networking/fluentbit@sha256:636813e4dfa80d615ecba1667d2e0f94c28096010bc190e177134b46e1e03eea
-        name: fluent-bit
-        resources:
-          limits:
-            cpu: 100m
-            memory: 100Mi
-          requests:
-            cpu: 10m
-            memory: 10Mi
-        volumeMounts:
-        - mountPath: /fluent-bit/etc
-          name: fluent-bit-config
-        - mountPath: /var/log
-          name: varlog
-        - mountPath: /var/lib/docker/containers
-          name: dockercontainers
-          readOnly: true
-      securityContext:
-        fsGroup: 1337
-        runAsGroup: 1337
-        runAsNonRoot: true
-        runAsUser: 1337
-      serviceAccountName: istio-ingressgateway-service-account
-      terminationGracePeriodSeconds: 80
-      volumes:
-      - configMap:
-          name: istio-ca-root-cert
-        name: istiod-ca-cert
-      - downwardAPI:
-          items:
-          - fieldRef:
-              fieldPath: metadata.labels
-            path: labels
-          - fieldRef:
-              fieldPath: metadata.annotations
-            path: annotations
-        name: podinfo
-      - emptyDir: {}
-        name: istio-envoy
-      - emptyDir: {}
-        name: gatewaysdsudspath
-      - name: istio-token
-        projected:
-          sources:
-          - serviceAccountToken:
-              audience: istio-ca
-              expirationSeconds: 43200
-              path: istio-token
-      - configMap:
-          name: istio
-          optional: true
-        name: config-volume
-      - name: ingressgateway-certs
-        secret:
-          optional: true
-          secretName: istio-ingressgateway-certs
-      - name: ingressgateway-ca-certs
-        secret:
-          optional: true
-          secretName: istio-ingressgateway-ca-certs
-      - configMap:
-          name: ingressgateway-fluent-bit-forwarder-config
-        name: fluent-bit-config
-      - hostPath:
-          path: /var/log
-        name: varlog
-      - hostPath:
-          path: /var/lib/docker/containers
-        name: dockercontainers
-  updateStrategy:
-    rollingUpdate:
-      maxUnavailable: 1
----
-apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
@@ -8869,25 +8582,6 @@ metadata:
   annotations:
     kapp.k14s.io/update-strategy: fallback-on-replace
   labels:
-    app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.7.1
-    istio: ingressgateway
-    release: istio
-  name: istio-ingressgateway
-  namespace: istio-system
-spec:
-  minAvailable: 1
-  selector:
-    matchLabels:
-      app: istio-ingressgateway
-      istio: ingressgateway
----
-apiVersion: policy/v1beta1
-kind: PodDisruptionBudget
-metadata:
-  annotations:
-    kapp.k14s.io/update-strategy: fallback-on-replace
-  labels:
     app: istiod
     cloudfoundry.org/istio_version: 1.7.1
     istio: pilot
@@ -8901,24 +8595,6 @@ spec:
     matchLabels:
       app: istiod
       istio: pilot
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.7.1
-    release: istio
-  name: istio-ingressgateway-sds
-  namespace: istio-system
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - get
-  - watch
-  - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -8952,22 +8628,6 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.7.1
-    release: istio
-  name: istio-ingressgateway-sds
-  namespace: istio-system
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: istio-ingressgateway-sds
-subjects:
-- kind: ServiceAccount
-  name: istio-ingressgateway-service-account
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  labels:
     app: pilot
     cloudfoundry.org/istio_version: 1.7.1
     release: istio
@@ -8981,29 +8641,6 @@ subjects:
 - kind: ServiceAccount
   name: istiod-service-account
   namespace: istio-system
----
-apiVersion: autoscaling/v2beta1
-kind: HorizontalPodAutoscaler
-metadata:
-  labels:
-    app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.7.1
-    istio: ingressgateway
-    release: istio
-  name: istio-ingressgateway
-  namespace: istio-system
-spec:
-  maxReplicas: 1
-  metrics:
-  - resource:
-      name: cpu
-      targetAverageUtilization: 80
-    type: Resource
-  minReplicas: 1
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: istio-ingressgateway
 ---
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
@@ -9027,37 +8664,6 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: istiod
----
-apiVersion: v1
-kind: Service
-metadata:
-  annotations: null
-  labels:
-    app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.7.1
-    istio: ingressgateway
-    release: istio
-  name: istio-ingressgateway
-  namespace: istio-system
-spec:
-  externalTrafficPolicy: Local
-  ports:
-  - name: status-port
-    port: 15021
-    targetPort: 15021
-  - name: http2
-    port: 80
-    targetPort: 8080
-  - name: https
-    port: 443
-    targetPort: 8443
-  - name: tls
-    port: 15443
-    targetPort: 15443
-  selector:
-    app: istio-ingressgateway
-    istio: ingressgateway
-  type: LoadBalancer
 ---
 apiVersion: v1
 kind: Service
@@ -9105,4 +8711,4 @@ metadata:
   namespace: istio-system
 spec:
   mtls:
-    mode: STRICT
+    mode: PERMISSIVE

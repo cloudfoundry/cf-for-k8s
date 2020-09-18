@@ -8,7 +8,7 @@ spec:
   components:
     ingressGateways:
       - name: istio-ingressgateway
-        enabled: true
+        enabled: false
         k8s:
           hpaSpec:
             minReplicas: 1

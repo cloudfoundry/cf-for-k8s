@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: 'Merge pull request #69 from cloudfoundry/checkDeadLinks...'
-      sha: 8aab2b2ff7b1814b4e5c5e7856cd5c5a72af97ff
+      commitTitle: create httpproxies in routecontroller
+      sha: 6a9c18f793d82752e80359d7bf002dd379173eac
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

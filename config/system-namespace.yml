@@ -1,9 +1,10 @@
 #@ load("@ytt:data", "data")
+#@ load("/namespaces.star", "system_namespace")
 
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: #@ data.values.system_namespace
+  name: #@ system_namespace()
   labels:
     cf-for-k8s.cloudfoundry.org/cf-system-ns: ""

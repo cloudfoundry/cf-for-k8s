@@ -1,5 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
+#@ load("/namespaces.star", "system_namespace", "workloads_namespace")
 
 #! this secret contains the certificate/key combo used for the external system domain
 ---
@@ -37,7 +38,7 @@ metadata:
 
 #! this gateway is used to expose CF services in the cluster, externally
 #@ load("gateway.lib.yml", "gateway")
---- #@ gateway(data.values.system_domain, data.values.app_domains, data.values.system_namespace, data.values.workloads_namespace, data.values.gateway.https_only)
+--- #@ gateway(data.values.system_domain, data.values.app_domains, system_namespace(), workloads_namespace(), data.values.gateway.https_only)
 
 #! This will set overlay a static IP for the istio load balancer.
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "istio-ingressgateway"}})

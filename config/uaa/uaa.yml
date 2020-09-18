@@ -4,6 +4,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
+#@ load("/namespaces.star", "system_namespace")
 
 #@ def uaa_db_host():
 #@   if len(data.values.uaa.database.host) > 0:
@@ -47,7 +48,7 @@ database:
 ca_certs:
   -  #@ data.values.uaa.database.ca_cert
 
-namespace: #@ data.values.system_namespace
+namespace: #@ system_namespace()
 
 jwt:
   policy:
@@ -159,7 +160,7 @@ issuer:
 zones:
   internal:
     hostnames:
-    - #@ "uaa." + data.values.system_namespace + ".svc.cluster.local"
+    - #@ "uaa." + system_namespace() + ".svc.cluster.local"
 
 #@overlay/match missing_ok=True
 #@overlay/match-child-defaults missing_ok=True
@@ -222,7 +223,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: uaa-external-virtual-service
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   hosts:
   - #@ "uaa." + data.values.system_domain
@@ -230,11 +231,11 @@ spec:
   - #@ "login." + data.values.system_domain
   - #@ "*.login." + data.values.system_domain
   gateways:
-  - #@ data.values.system_namespace + "/istio-ingressgateway"
+  - #@ system_namespace() + "/istio-ingressgateway"
   http:
   - route:
     - destination:
-        host: #@ "uaa." + data.values.system_namespace + ".svc.cluster.local"
+        host: #@ "uaa." + system_namespace() + ".svc.cluster.local"
         port:
           number: 8080
 
@@ -243,7 +244,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: uaa-certs
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 data:
   uaa.key: #@ data.values.internal_certificate.key
@@ -262,7 +263,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: #@ secret_name
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   client_credentials.yml: #@ yaml.encode(uaa_client_credential_data(client_name, credential))
@@ -283,7 +284,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: uaa-cf-admin-user-credentials
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   cf_admin_user_credentials.yml: #@ yaml.encode(uaa_cf_admin_user_credentials())

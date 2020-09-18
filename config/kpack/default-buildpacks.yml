@@ -1,4 +1,5 @@
 #@ load("@ytt:data", "data")
+#@ load("/namespaces.star", "workloads_staging_namespace")
 
 ---
 apiVersion: experimental.kpack.pivotal.io/v1alpha1
@@ -33,7 +34,7 @@ apiVersion: experimental.kpack.pivotal.io/v1alpha1
 kind: CustomBuilder
 metadata:
   name: cf-default-builder
-  namespace: #@ data.values.staging_namespace
+  namespace: #@ workloads_staging_namespace()
 spec:
   tag: #@ "{}/cf-default-builder".format(data.values.app_registry.repository_prefix)
   serviceAccount: cc-kpack-registry-service-account

@@ -1,12 +1,13 @@
 #@ load("@ytt:data", "data")
+#@ load("/namespaces.star", "system_namespace", "workloads_namespace")
 
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Sidecar
 metadata:
   name: default
-  namespace: #@ data.values.workloads_namespace
+  namespace: #@ workloads_namespace()
 spec:
   egress:
   - hosts:
-    - #@ data.values.system_namespace + "/*"
+    - #@ system_namespace() + "/*"

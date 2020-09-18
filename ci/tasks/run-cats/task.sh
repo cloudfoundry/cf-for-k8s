@@ -15,21 +15,21 @@ echo '{}' | jq \
 --arg cf_admin_password "${CF_ADMIN_PASSWORD}" \
 --argjson cf_push_timeout "${CF_PUSH_TIMEOUT}" \
 --argjson default_timeout "${DEFAULT_TIMEOUT}" \
---arg skip_ssl_validation "${SKIP_SSL_VALIDATION}" \
---arg include_apps "${INCLUDE_APPS}" \
---arg include_backend_compatability "${INCLUDE_BACKEND_COMPATABILITY}" \
---arg include_deployments "${INCLUDE_DEPLOYMENTS}" \
---arg include_detect "${INCLUDE_DETECT}" \
---arg include_docker "${INCLUDE_DOCKER}" \
---arg include_internet_dependent "${INCLUDE_INTERNET_DEPENDENT}" \
---arg include_docker_registry "${INCLUDE_DOCKER_REGISTRY}" \
---arg include_route_services "${INCLUDE_ROUTE_SERVICES}" \
---arg include_routing "${INCLUDE_ROUTING}" \
---arg include_service_discovery "${INCLUDE_SERVICE_DISCOVERY}" \
---arg include_service_instance_sharing "${INCLUDE_SERVICE_INSTANCE_SHARING}" \
---arg include_services "${INCLUDE_SERVICES}" \
---arg include_tasks "${INCLUDE_TASKS}" \
---arg include_v3 "${INCLUDE_V3}" \
+--argjson skip_ssl_validation "${SKIP_SSL_VALIDATION}" \
+--argjson include_apps "${INCLUDE_APPS}" \
+--argjson include_backend_compatability "${INCLUDE_BACKEND_COMPATABILITY}" \
+--argjson include_deployments "${INCLUDE_DEPLOYMENTS}" \
+--argjson include_detect "${INCLUDE_DETECT}" \
+--argjson include_docker "${INCLUDE_DOCKER}" \
+--argjson include_internet_dependent "${INCLUDE_INTERNET_DEPENDENT}" \
+--argjson include_docker_registry "${INCLUDE_DOCKER_REGISTRY}" \
+--argjson include_route_services "${INCLUDE_ROUTE_SERVICES}" \
+--argjson include_routing "${INCLUDE_ROUTING}" \
+--argjson include_service_discovery "${INCLUDE_SERVICE_DISCOVERY}" \
+--argjson include_service_instance_sharing "${INCLUDE_SERVICE_INSTANCE_SHARING}" \
+--argjson include_services "${INCLUDE_SERVICES}" \
+--argjson include_tasks "${INCLUDE_TASKS}" \
+--argjson include_v3 "${INCLUDE_V3}" \
 '{
   "api": $cf_api_url,
   "admin_user": "admin",

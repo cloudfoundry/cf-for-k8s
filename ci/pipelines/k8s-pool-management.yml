@@ -46,21 +46,21 @@ resources:
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     location: America/Los_Angeles
 
-- name: every-5-minutes-off-hours
+- name: every-4-minutes-off-hours
   type: time
   icon: clock-outline
   source:
-    interval: 5m
+    interval: 4m
     start: 7:00 PM
     stop: 7:00 AM
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     location: America/Los_Angeles
 
-- name: every-5-minutes-weekends
+- name: every-4-minutes-weekends
   type: time
   icon: clock-outline
   source:
-    interval: 5m
+    interval: 4m
     days: [Saturday, Sunday]
     location: America/Los_Angeles
 
@@ -170,9 +170,9 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-develop-ci
-    - get: every-5-minutes-off-hours
+    - get: every-4-minutes-off-hours
       trigger: true
-    - get: every-5-minutes-weekends
+    - get: every-4-minutes-weekends
       trigger: true
     - get: pool-repo
   - try:

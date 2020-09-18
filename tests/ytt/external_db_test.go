@@ -9,7 +9,7 @@ import (
 var _ = Describe("External DB", func() {
 
 	var ctx RenderingContext
-	var data map[string]string
+	var data map[string]interface{}
 	var templates []string
 
 	BeforeEach(func() {
@@ -26,7 +26,7 @@ var _ = Describe("External DB", func() {
 	Context("disabled", func() {
 
 		BeforeEach(func() {
-			data = map[string]string{
+			data = map[string]interface{}{
 				"cf_db.admin_password":   "vz9o2hbkh6x7ztnd6ua6",
 				"capi.database.password": "9v5ljlmxje8uv32gwl5q",
 				"uaa.database.password":  "yevxad9e0pvgc8l6osnt",
@@ -48,7 +48,7 @@ var _ = Describe("External DB", func() {
 	Context("enabled", func() {
 
 		BeforeEach(func() {
-			data = map[string]string{
+			data = map[string]interface{}{
 				"cf_db.admin_password":   "vz9o2hbkh6x7ztnd6ua6",
 				"capi.database.password": "9v5ljlmxje8uv32gwl5q",
 				"uaa.database.password":  "yevxad9e0pvgc8l6osnt",

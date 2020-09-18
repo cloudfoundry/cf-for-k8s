@@ -5,6 +5,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
+#@ load("/namespaces.star", "system_namespace", "workloads_namespace")
 
 #@ eirini = library.get("eirini")
 --- #@ template.replace(eirini.eval())
@@ -14,7 +15,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: eirini-internal-tls-certs
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 data:
   tls.crt: #@ data.values.internal_certificate.crt
   tls.key: #@ data.values.internal_certificate.key
@@ -26,7 +27,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: allow-app-ingress-from-ingressgateway
-  namespace: #@ data.values.workloads_namespace
+  namespace: #@ workloads_namespace()
 spec:
   podSelector: {}
   policyTypes:
@@ -48,7 +49,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: app-registry-credentials
-  namespace: #@ data.values.workloads_namespace
+  namespace: #@ workloads_namespace()
 type: kubernetes.io/dockerconfigjson
 data:
   #@ docker_auth = base64.encode("{}:{}".format(data.values.app_registry.username, data.values.app_registry.password))
@@ -56,7 +57,7 @@ data:
   .dockerconfigjson: #@ base64.encode(json.encode({"auths": {data.values.app_registry.hostname: docker_creds}}))
 
 #@ def events():
-cc_internal_api: #@ "http://capi.{}.svc.cluster.local:80".format(data.values.system_namespace)
+cc_internal_api: #@ "http://capi.{}.svc.cluster.local:9023".format(system_namespace())
 #@ end
 
 #@ def opi():

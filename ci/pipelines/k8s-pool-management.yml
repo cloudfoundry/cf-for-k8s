@@ -51,7 +51,7 @@ resources:
   icon: clock-outline
   source:
     interval: 5m
-    start: 5:00 PM
+    start: 7:00 PM
     stop: 7:00 AM
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     location: America/Los_Angeles
@@ -79,7 +79,7 @@ resources:
   source:
     start: 3:00 PM
     stop: 7:00 PM
-    days: [Friday]
+    days: [Tuesday, Friday]
     location: America/Los_Angeles
 
 - name: cf-for-k8s-gke-terraform-templates

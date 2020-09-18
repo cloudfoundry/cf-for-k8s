@@ -8,7 +8,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/capi-k8s-release
-      ref: 7f2ceb55e07af35da0b830b25e7322994ef5b879
+      ref: secure-cf-api-internal-endpoints-174455375
     includePaths:
     - templates/**/*
     - values/**/*
@@ -17,7 +17,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: move-istio-to-cf-for-k8s
+      ref: 94b0430716f9321f9fef4d5ffaafdc21cce0044c
     includePaths:
     - config/*
     - config/crd/**/*
@@ -41,7 +41,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/uaa
-      ref: v74.24.0
+      ref: v74.25.0
     includePaths:
     - k8s/templates/**/*
 # the components in this section below are handled by their corresponding build scripts

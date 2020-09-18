@@ -6,7 +6,7 @@ Traffic flows through the sidecar containers on sidecar enabled pods, which
 prints access logs to stdout. For example, this is how you might view them for your apps:
 
 ```
-kubectl logs my-app -c istio-proxy -n cf-workloads
+kubectl logs app-pod -c istio-proxy -n cf-workloads
 ```
 
 Any namespace with the label `istio-injection=enabled` will add a sidecar
@@ -58,7 +58,6 @@ The access log contains the following fields for duration in milliseconds
 
 - `upstream_service_time`: The time from when the sidecar sends a request to the app to when it receives a response from the app
 - `duration`: The time from when the sidecar receives a request from the gateway to when it sends a response to the gateway
-  to the last byte out
 - `response_duration`: The time from when the sidecar receives a request from the gateway to when it receives a response from the app
 - `response_tx_duration`: The time a response spends in the sidecar
 

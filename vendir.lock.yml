@@ -2,14 +2,14 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: images.yml updated by CI...
-      sha: 7f2ceb55e07af35da0b830b25e7322994ef5b879
+      commitTitle: prevent access to internal cf-api endpoints...
+      sha: 282418aa63f4cb4e724087c414973e00538bf783
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: remove sha step from upgrade image in pipeline...
-      sha: 5037925b2fe04f693d0308d9efc3be83aebfa9a0
+      commitTitle: 'ci: deploy latest networking is optional with flag...'
+      sha: 94b0430716f9321f9fef4d5ffaafdc21cce0044c
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:
@@ -24,8 +24,8 @@ directories:
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:
   - git:
-      commitTitle: Update UAA image reference in k8s deployment template to 74.24.0
-      sha: d507f815eb767c31c1f77276445ef512c676935f
+      commitTitle: Update UAA image reference in k8s deployment template to 74.25.0
+      sha: 54ca09337a00d5dffabc8ca64b1a440c630f95b5
     path: .
   path: config/uaa/_ytt_lib/uaa
 - contents:

@@ -1,4 +1,5 @@
 #@ load("@ytt:data", "data")
+#@ load("/namespaces.star", "workloads_staging_namespace")
 
 ---
 apiVersion: experimental.kpack.pivotal.io/v1alpha1
@@ -24,16 +25,16 @@ metadata:
 spec:
   id: "org.cloudfoundry.stacks.cflinuxfs3"
   buildImage:
-    image: "gcr.io/paketo-buildpacks/build@sha256:84f7b60192e69036cb363b2fc7d9834cff69dcbcf7aaf8c058d986fdee6941c3"
+    image: "gcr.io/paketo-buildpacks/build@sha256:f7cf765f9f26e0188218d92c069e02af58a80448f419782d9bec37beb4cb1ece"
   runImage:
-    image: "gcr.io/paketo-buildpacks/run@sha256:84f7b60192e69036cb363b2fc7d9834cff69dcbcf7aaf8c058d986fdee6941c3"
+    image: "gcr.io/paketo-buildpacks/run@sha256:06a082106d349955e8b72d6f73310d701c74ac0a40aaf5cbe44662927d39f7c5"
 
 ---
 apiVersion: experimental.kpack.pivotal.io/v1alpha1
 kind: CustomBuilder
 metadata:
   name: cf-default-builder
-  namespace: #@ data.values.staging_namespace
+  namespace: #@ workloads_staging_namespace()
 spec:
   tag: #@ "{}/cf-default-builder".format(data.values.app_registry.repository_prefix)
   serviceAccount: cc-kpack-registry-service-account

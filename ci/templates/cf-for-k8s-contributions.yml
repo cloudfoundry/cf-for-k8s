@@ -35,6 +35,9 @@ groups:
 - name: buildpacks
   jobs:
     - bump-buildpacks
+- name: stack
+  jobs:
+    - bump-stack
 
 resource_types:
 - name: pull-request
@@ -188,6 +191,14 @@ resources:
   source:
     repository: #@ "gcr.io/paketo-{}/{}".format(source, bpname)
 #@   end
+#@ end
+
+#@ for stackname in ['build', 'run']:
+- name: #@ "{}-image".format(stackname)
+  type: docker-image
+  source:
+    repository: #@ "gcr.io/paketo-buildpacks/{}".format(stackname)
+    tag: full-cnb-cf
 #@ end
 
 jobs:
@@ -715,16 +726,12 @@ jobs:
         APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
         USE_EXTERNAL_BLOBSTORE: "true"
 
-    - task: run-external-blobstore-validation-test
-      file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        EXTERNAL_BLOBSTORE: "incluster"
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
-        pool-lock: ready-pool
         cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        SMOKE_TEST_SKIP_SSL: false
 
     on_failure:
       do:
@@ -1408,3 +1415,55 @@ jobs:
     - put: ready-pool
       params:
         remove: ready-pool
+
+- name: bump-stack
+  public: true
+  plan:
+  - in_parallel:
+#@ for stackname in ['build', 'run']:
+    - get: #@ "{}-image".format(stackname)
+      trigger: true
+#@ end
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+
+  - put: ready-pool
+    params:
+      acquire: true
+
+  - do:
+    - task: bump-stack
+      file: cf-for-k8s-ci/ci/tasks/bump-stack/task.yml
+
+    - task: validate-stack
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bumped
+        pool-lock: ready-pool
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        DOMAIN: k8s-dev.relint.rocks
+
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-bumped
+      params:
+        SMOKE_TEST_SKIP_SSL: false
+
+    - put: cf-for-k8s-develop
+      params:
+        repository: cf-for-k8s-bumped
+        rebase: true
+
+    ensure:
+      do:
+      - put: destroy-pool
+        params:
+          add: ready-pool
+
+      - put: ready-pool
+        params:
+          remove: ready-pool

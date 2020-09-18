@@ -10,12 +10,13 @@ import (
 var _ = Describe("UAA", func() {
 
 	var ctx RenderingContext
-	var data map[string]string
+	var data map[string]interface{}
 	var templates []string
 
 	BeforeEach(func() {
 		templates = []string{
 			pathToFile("config/uaa"),
+			pathToFile("config/namespaces.star"),
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),
 		}
 	})
@@ -27,7 +28,7 @@ var _ = Describe("UAA", func() {
 	Context("given a database configuration", func() {
 
 		BeforeEach(func() {
-			data = map[string]string{
+			data = map[string]interface{}{
 				"system_namespace":"cf-system",
 				"uaa.database.port": "9999",
 				"uaa.database.name": "some-name",

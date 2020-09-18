@@ -28,7 +28,7 @@ CF_VARS=$(cat blobstore-metadata/blobstore-values.yaml)
 ENDPOINT=$(yq -r '.blobstore.endpoint' <<< "$CF_VARS")
 ACCESS_KEY=$(yq -r '.blobstore.access_key_id' <<< "$CF_VARS")
 SECRET_ACCESS_KEY=$(yq -r '.blobstore.secret_access_key' <<< "$CF_VARS")
-BUCKET=$(yq -r '.blobstore.package_directory_key' <<< "$CF_VARS")
+BUCKET=$(yq -r '.blobstore.resource_directory_key' <<< "$CF_VARS")
 SUFFIX=$(openssl rand -hex 12)
 
 IMAGE="minio/mc"

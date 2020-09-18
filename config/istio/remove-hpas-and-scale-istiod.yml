@@ -1,0 +1,13 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ load("@ytt:data", "data")
+
+#@overlay/match by=overlay.subset({"kind":"HorizontalPodAutoscaler"}), expects="1+"
+#@overlay/remove
+---
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"istiod"}}),expects=1
+---
+spec:
+  #@overlay/match missing_ok=True
+  replicas: 1

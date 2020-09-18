@@ -7,10 +7,13 @@ image_resource:
     repository: relintdockerhubpushbot/cf-for-k8s-ci
 
 inputs:
-- name: cf-for-k8s
 - name: cf-for-k8s-ci
-- name: env-metadata
-- name: cf-acceptance-tests
+- name: cf-for-k8s-develop
+- name: build-image
+- name: run-image
+
+outputs:
+- name: cf-for-k8s-bumped
 
 run:
-  path: cf-for-k8s-ci/ci/tasks/cats-on-cf-for-k8s/task.sh
+  path: cf-for-k8s-ci/ci/tasks/bump-stack/task.sh

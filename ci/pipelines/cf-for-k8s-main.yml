@@ -12,9 +12,9 @@ groups:
   - promote-master-deliver-stories
   - run-unit-tests
   - branch-freshness
-- name: cats-on-k8s
+- name: cats
   jobs:
-  - validate-cats-on-cf-for-k8s
+  - run-cats
 
 #! Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
@@ -252,7 +252,7 @@ jobs:
       params:
         remove: ready-pool
 
-- name: validate-cats-on-cf-for-k8s
+- name: run-cats
   public: true
   plan:
     - in_parallel:
@@ -282,10 +282,12 @@ jobs:
         DOMAIN: k8s-dev.relint.rocks
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
 
-    - task: cats-on-k8s
-      file: cf-for-k8s-ci/ci/tasks/cats-on-cf-for-k8s/task.yml
+    - task: run-cats
+      file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
+      params:
+        INCLUDE_APPS: true
 
     - task: delete-cf
       input_mapping:
@@ -483,24 +485,12 @@ jobs:
         DOMAIN: k8s-dev.relint.rocks
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
 
-    - in_parallel:
-      - task: run-smoke-test
-        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-        params:
-          SMOKE_TEST_SKIP_SSL: false
-        input_mapping:
-          cf-for-k8s: cf-for-k8s-develop
-
-      - task: run-external-blobstore-validation-test
-        file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
-        params:
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          EXTERNAL_BLOBSTORE: "incluster"
-        input_mapping:
-          pool-lock: ready-pool
-          cf-for-k8s: cf-for-k8s-develop
+    - task: run-smoke-test
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      params:
+        SMOKE_TEST_SKIP_SSL: false
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
 
     - task: delete-cf
       input_mapping:

@@ -1,7 +1,8 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
-#@ load("/postgres/postgres.star", "cfdb_enabled")
 #@ load("/minio/minio.star", "minio_enabled")
+#@ load("/namespaces.star", "system_namespace", "workloads_staging_namespace")
+#@ load("/postgres/postgres.star", "cfdb_enabled")
 
 #@ def database_egress():
 to:
@@ -30,14 +31,14 @@ metadata:
   #@overlay/match missing_ok=True
   labels:
     #@overlay/match missing_ok=True
-    name: #@ data.values.staging_namespace
+    name: #@ workloads_staging_namespace()
 
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: default-deny-ingress
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   podSelector: {}
   policyTypes:
@@ -71,7 +72,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: allow-istio-control-plane
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   podSelector: {}
   ingress:
@@ -138,7 +139,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: allow-dns-egress
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   podSelector: {}
   egress:
@@ -248,7 +249,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: uaa
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Ingress
@@ -289,7 +290,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: cf-api-server
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Ingress
@@ -319,6 +320,16 @@ spec:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
     - podSelector:
         matchLabels:
+          app: log-cache
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    ports:
+      - protocol: TCP
+        port: 80
+  - from:
+    - podSelector:
+        matchLabels:
           name: eirini-task-reporter
       namespaceSelector:
         matchLabels:
@@ -329,12 +340,9 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-    - podSelector:
-        matchLabels:
-          app: log-cache
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    ports:
+    - protocol: TCP
+      port: 9023  
   egress:
   - {}
 ---
@@ -342,7 +350,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: cf-api-deployment-updater-eirini
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Egress
@@ -362,7 +370,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: cf-api-deployment-updater
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Egress
@@ -377,7 +385,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: cf-api-clock-eirini
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Egress
@@ -397,7 +405,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: cf-api-clock
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Egress
@@ -411,7 +419,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: cf-api-worker
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Egress
@@ -425,7 +433,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: ccdb-migrate
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Egress
@@ -491,7 +499,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: eirini
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Ingress
@@ -532,7 +540,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: eirini-events
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   podSelector:
     matchLabels:
@@ -547,7 +555,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: eirini-task-reporter
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   podSelector:
     matchLabels:
@@ -562,7 +570,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: eirini-controller
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   podSelector:
     matchLabels:
@@ -577,7 +585,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: eirini-instance-index-env-injector
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   podSelector:
     matchLabels:
@@ -594,7 +602,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: cf-api-controllers
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Egress
@@ -608,7 +616,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: routecontroller
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Egress
@@ -622,7 +630,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: log-cache
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Ingress
@@ -663,7 +671,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: metric-proxy
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Ingress
@@ -686,7 +694,7 @@ kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
   name: fluentd
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   policyTypes:
   - Ingress

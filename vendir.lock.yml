@@ -34,11 +34,6 @@ directories:
       - v74.27.0
     path: .
   path: config/uaa/_ytt_lib/uaa
-      url: https://api.github.com/repos/pivotal/kpack/releases/27343776
-    path: github.com/pivotal/kpack
-  - manual: {}
-    path: quarks-secret
-  path: config/_ytt_lib
 - contents:
   - githubRelease:
       url: https://api.github.com/repos/pivotal/kpack/releases/30225354

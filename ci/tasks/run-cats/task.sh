@@ -13,8 +13,8 @@ echo '{}' | jq \
 --arg cf_api_url "api.${DNS_DOMAIN}" \
 --arg cf_apps_url "apps.${DNS_DOMAIN}" \
 --arg cf_admin_password "${CF_ADMIN_PASSWORD}" \
---arg cf_push_timeout "${CF_PUSH_TIMEOUT}" \
---arg default_timeout "${DEFAULT_TIMEOUT}" \
+--argjson cf_push_timeout "${CF_PUSH_TIMEOUT}" \
+--argjson default_timeout "${DEFAULT_TIMEOUT}" \
 --arg skip_ssl_validation "${SKIP_SSL_VALIDATION}" \
 --arg include_apps "${INCLUDE_APPS}" \
 --arg include_backend_compatability "${INCLUDE_BACKEND_COMPATABILITY}" \

@@ -27,8 +27,12 @@ data:
   tls.key: #@ data.values.workloads_certificate.key
   tls.crt: #@ data.values.workloads_certificate.crt
 
-#! the following overlay ensures the above Secret is created before the ingressgateway Deployment since we're not using SDS
-#@overlay/match by=overlay.subset({"kind":"DaemonSet","metadata":{"name":"istio-ingressgateway"}})
+#! the following overlay ensures the above Secret is created before the ingressgateway since we're not using SDS
+#! ingressgateway can be either a Deployment or a DaemonSet
+#@ deployment = overlay.subset({"kind": "Deployment", "metadata":{"name":"istio-ingressgateway"}})
+#@ daemonset = overlay.subset({"kind": "DaemonSet", "metadata":{"name":"istio-ingressgateway"}})
+#@ match_ingress_gateway=overlay.or_op(deployment, daemonset)
+#@overlay/match by=match_ingress_gateway
 ---
 metadata:
   #@overlay/match missing_ok=True

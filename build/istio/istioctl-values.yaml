@@ -15,7 +15,7 @@ spec:
             maxReplicas: 1
           service:
             externalTrafficPolicy: Local
-            ports: # TODO: remove when https://github.com/istio/istio/issues/24432 fixed
+            ports: #! TODO: remove when https://github.com/istio/istio/issues/24432 fixed
             - name: status-port
               port: 15021
               targetPort: 15021

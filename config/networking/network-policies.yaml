@@ -330,6 +330,12 @@ spec:
   - from:
     - podSelector:
         matchLabels:
+          name: eirini
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
           name: eirini-task-reporter
       namespaceSelector:
         matchLabels:

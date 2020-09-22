@@ -8,7 +8,7 @@
 #!
 #! See https://github.com/pivotal/kpack/issues/473 for more details.
 
-#@overlay/match by=overlay.subset({"kind": "CustomBuilder","metadata":{"name":"cf-default-builder"}})
+#@overlay/match by=overlay.subset({"kind": "Builder","metadata":{"name":"cf-default-builder"}})
 ---
 spec:
   #@overlay/replace

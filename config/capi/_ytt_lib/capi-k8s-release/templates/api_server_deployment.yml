@@ -21,7 +21,6 @@ spec:
       annotations:
         prometheus.io/scrape: 'true'
         prometheus.io/port: '9102'
-        traffic.sidecar.istio.io/excludeInboundPorts: "9102"
       labels:
         app.kubernetes.io/name: cf-api-server
     spec:
@@ -30,17 +29,22 @@ spec:
       containers:
         - name: cf-api-server
           image: #@ data.values.images.ccng
-          command:
-          - /cloud_controller_ng/bin/cloud_controller
-          - -c
-          - #@ ccng_config_mount_path
-          - -s
-          - #@ ccng_secrets_mount_path
+          #! TODO: temporary override while CI is backed up
+          command: [ "/cnb/lifecycle/launcher", "bin/cloud_controller",
+                     "-c", "/config/cloud_controller_ng.yml",
+                     "-s", "/config/secrets.yml" ]
+          env:
+          - name: CLOUD_CONTROLLER_NG_CONFIG
+            value: #@ ccng_config_mount_path
+          - name: CLOUD_CONTROLLER_NG_SECRETS
+            value: #@ ccng_secrets_mount_path
           imagePullPolicy: Always
           resources:
             requests:
+              cpu: 500m
               memory: 300Mi
             limits:
+              cpu: 1000m
               memory: 1.2Gi
           volumeMounts:
           - #@ template.replace(shared_config_volume_mounts())
@@ -48,9 +52,6 @@ spec:
             mountPath: /data/cloud_controller_ng
           - name: nginx-uploads
             mountPath: /tmp/uploads
-          #@ if/end data.values.uaa.serverCerts.secretName:
-          - name: uaa-certs
-            mountPath: /config/uaa/certs
           #@ if/end data.values.eirini.serverCerts.secretName:
           - name: eirini-certs
             mountPath: /config/eirini/certs
@@ -60,8 +61,7 @@ spec:
         - name: cf-api-local-worker
           image: #@ data.values.images.ccng
           imagePullPolicy: Always
-          command: ["/usr/local/bin/bundle"]
-          args: ["exec", "rake", "jobs:local"]
+          command: [ "/cnb/process/local-worker" ]
           env:
           - name: CLOUD_CONTROLLER_NG_CONFIG
             value: #@ ccng_config_mount_path
@@ -69,8 +69,10 @@ spec:
             value: #@ ccng_secrets_mount_path
           resources:
             requests:
+              cpu: 100m
               memory: 300Mi
             limits:
+              cpu: 500m
               memory: 1.2Gi
           volumeMounts:
           - #@ template.replace(shared_config_volume_mounts())
@@ -84,8 +86,6 @@ spec:
         - name: package-image-uploader
           image: #@ data.values.images.package_image_uploader
           imagePullPolicy: Always
-          securityContext:
-            runAsUser: 0
           readinessProbe:
             tcpSocket:
               port: 8080
@@ -113,6 +113,13 @@ spec:
             httpGet:
               port: 80
               path: "/healthz"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 300Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
           volumeMounts:
           - name: nginx
             mountPath: /etc/nginx
@@ -128,6 +135,13 @@ spec:
           - containerPort: 9102
           image: #@ data.values.images.statsd_exporter
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 300Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
       serviceAccountName: cf-api-server-service-account
       volumes:
       - #@ template.replace(shared_config_volumes())
@@ -138,10 +152,6 @@ spec:
           name: nginx
       - name: nginx-logs
         emptyDir: {}
-      #@ if/end data.values.uaa.serverCerts.secretName:
-      - name: uaa-certs
-        secret:
-          secretName: #@ data.values.uaa.serverCerts.secretName
       #@ if/end data.values.eirini.serverCerts.secretName:
       - name: eirini-certs
         secret:

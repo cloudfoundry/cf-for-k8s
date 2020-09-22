@@ -8,7 +8,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/capi-k8s-release
-      ref: secure-cf-api-internal-endpoints-174455375
+      ref: upgrade-kpack-0.1.2-174413920
     includePaths:
     - templates/**/*
     - values/**/*
@@ -44,16 +44,20 @@ directories:
       ref: v74.25.0
     includePaths:
     - k8s/templates/**/*
+- path: config/kpack/_ytt_lib/kpack
+  contents:
+  - path: .
+    githubRelease:
+      slug: pivotal/kpack
+      tag: v0.1.2
+      disableAutoChecksumValidation: true
+    includePaths:
+    - release-*.yaml
 # the components in this section below are handled by their corresponding build scripts
 # the manual param tells vendir to not override/touch the contents of these directories
 - path: config/eirini/_ytt_lib
   contents:
   - path: eirini
-    manual: {}
-
-- path: config/kpack/_ytt_lib
-  contents:
-  - path: kpack
     manual: {}
 
 - path: config/minio/_ytt_lib

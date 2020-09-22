@@ -35,8 +35,6 @@ spec:
           value: cf_api_controllers
         - name: CF_API_HOST
           value: #@ "http://capi.{}.svc.cluster.local".format(data.values.system_namespace)
-        - name: STAGING_NAMESPACE
-          value: #@ data.values.staging_namespace
         - name: WORKLOADS_NAMESPACE
           value: #@ data.values.workloads_namespace
         resources:
@@ -60,7 +58,7 @@ kind: ClusterRole
 metadata:
   name: cf-api-controllers
 rules:
-- apiGroups: ["build.pivotal.io"]
+- apiGroups: ["kpack.io"]
   resources: ["images", "builds", "builds/status", "images/status"]
   verbs: ["get", "watch", "list"]
 ---

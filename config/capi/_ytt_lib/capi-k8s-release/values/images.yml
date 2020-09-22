@@ -1,11 +1,9 @@
 #@data/values
 ---
 images:
-  ccng: cloudfoundry/cloud-controller-ng@sha256:cacb91272670f98a1135c0964719bca02befc75f063477afa5bb2d70a5c3b8e7
-  cf_api_controllers: cloudfoundry/cf-api-controllers@sha256:9cd6557f411c42b2bafe8487f63fae608f0dafd9f56c4268de8ec6fcd88ff7d9
+  ccng: gcr.io/cf-capi-arya/dev-ccng@sha256:fda89ac251d0b0aa6185b4b46d42a11113fafff4a6aa2fbc99c4227fc14f35b9
+  cf_api_controllers: gcr.io/cf-capi-arya/dev-controllers@sha256:7e63bb428b1bb713a5358c0feb67ae9d04feba216153570e68853257220d05a6
   cf_autodetect_builder: cloudfoundry/cnb:0.0.94-bionic@sha256:5b03a853e636b78c44e475bbc514e2b7b140cc41cca8ab907e9753431ae8c0b0
-  nginx: cloudfoundry/capi-nginx@sha256:980f50e190cbff72d23300bc422da23faa888271c2d07ac3abaa65af55a5316a
-  package_image_uploader: cloudfoundry/cf-api-package-image-uploader@sha256:aae727a0960d10ce644035dee7041f7e882c7c58a37992252002ce7c95d8804d
+  nginx: cloudfoundry/capi-nginx@sha256:25997cca011ed0761955754a68931f7b1694e487bffba73c6ac8dbcd084f5dee
+  package_image_uploader: gcr.io/cf-capi-arya/dev-package-image-uploader@sha256:1119b111ede474c1a89ef7c0ba917940e29761162593f71981a119e6b90d5a51
   statsd_exporter: oratos/statsd_exporter:v0.15.0@sha256:10a64dc4ad0a3e3fe88372f0481dea5c02595c38d168617836a99a649d3ac407
-kbld:
-  destination: null

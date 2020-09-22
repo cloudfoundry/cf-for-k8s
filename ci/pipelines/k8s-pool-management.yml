@@ -337,10 +337,11 @@ jobs:
         - |
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
-          region = "((ci_k8s_gcp_project_region))"
+          region = "us-central1"
+          zone = "us-central1-a"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat destroy-cluster/name)"
-          env_dns_domain = "$(cat building-cluster/name).${DOMAIN}"
+          env_dns_domain = "$(cat destroy-cluster/name).${DOMAIN}"
           dns_zone_name = "k8s-dev-relint-rocks"
           EOT
   - put: terraform

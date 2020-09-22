@@ -25,9 +25,9 @@ metadata:
 spec:
   id: "org.cloudfoundry.stacks.cflinuxfs3"
   buildImage:
-    image: "gcr.io/paketo-buildpacks/build@sha256:f7cf765f9f26e0188218d92c069e02af58a80448f419782d9bec37beb4cb1ece"
+    image: "gcr.io/paketo-buildpacks/build@sha256:048f9b3378ecefbd0b49f3447a722c211a380ec04e14d7ed534aa6b6a5027814"
   runImage:
-    image: "gcr.io/paketo-buildpacks/run@sha256:06a082106d349955e8b72d6f73310d701c74ac0a40aaf5cbe44662927d39f7c5"
+    image: "gcr.io/paketo-buildpacks/run@sha256:ec12dcb02483952babe783eb7a3b7850d25b0f1d6a684afa40ed4b4aa9fd46c5"
 
 ---
 apiVersion: experimental.kpack.pivotal.io/v1alpha1

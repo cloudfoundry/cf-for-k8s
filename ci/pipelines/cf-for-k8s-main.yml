@@ -195,6 +195,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - task: install-cf
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
@@ -259,6 +263,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - task: install-cf
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
@@ -316,6 +324,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - task: install-postgres
     file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
@@ -427,6 +439,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - task: install-minio
     file: cf-for-k8s-ci/ci/tasks/install-minio/task.yml
@@ -519,6 +535,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - task: initialize-rds
     file: cf-for-k8s-ci/ci/tasks/initialize-rds/task.yml

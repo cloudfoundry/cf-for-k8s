@@ -8,7 +8,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/capi-k8s-release
-      ref: upgrade-kpack-0.1.2-174413920
+      ref: 9d0a09f667b0d57891af6873d9f77fa0a9c67bc0
     includePaths:
     - templates/**/*
     - values/**/*

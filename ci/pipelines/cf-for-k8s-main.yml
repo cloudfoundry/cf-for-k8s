@@ -288,6 +288,7 @@ jobs:
         cf-for-k8s: cf-for-k8s-develop
       params:
         INCLUDE_APPS: true
+        INCLUDE_ROUTING: true
 
     - task: delete-cf
       input_mapping:

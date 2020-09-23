@@ -75,6 +75,11 @@ jobs:
     params:
       acquire: true
 
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   - task: install-cf-last-valid-commit
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:

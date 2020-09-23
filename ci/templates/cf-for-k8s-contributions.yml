@@ -347,6 +347,11 @@ jobs:
     params:
       acquire: true
 
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   - do:
     - task: install-cf-develop
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
@@ -471,6 +476,11 @@ jobs:
     params:
       acquire: true
 
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   - do:
     - task: install-postgres
       file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
@@ -583,6 +593,11 @@ jobs:
     params:
       acquire: true
 
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   - do:
     - task: initialize-rds
       file: cf-for-k8s-ci/ci/tasks/initialize-rds/task.yml
@@ -689,6 +704,12 @@ jobs:
   - put: ready-pool
     params:
       acquire: true
+
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   - do:
     - task: install-minio
       params:
@@ -754,6 +775,7 @@ jobs:
           GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
           GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
           GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
       - task: delete-minio
         config:
           platform: linux
@@ -780,9 +802,11 @@ jobs:
               kubectl delete namespace external-blobstore
         input_mapping:
           pool-lock: ready-pool
+
       - put: destroy-pool
         params:
           add: ready-pool
+
       - put: ready-pool
         params:
           remove: ready-pool
@@ -1233,6 +1257,11 @@ jobs:
     params:
       acquire: true
 
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   #! TODO reduce duplication of this bump release task
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
@@ -1370,6 +1399,11 @@ jobs:
     params:
       acquire: true
 
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   - task: bump-buildpacks
     file: cf-for-k8s-ci/ci/tasks/bump-buildpacks/task.yml
 
@@ -1420,6 +1454,11 @@ jobs:
   - put: ready-pool
     params:
       acquire: true
+
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
 
   - do:
     - task: bump-stack

@@ -13,6 +13,14 @@ groups:
   - deploy-long-lived-node-app
   - upgrade-long-lived-env-to-latest-master
 
+# Extract common platform and image_resource details so task configs can be more concise
+x-config: &common-task-config
+  platform: linux
+  image_resource:
+    type: docker-image
+    source:
+      repository: relintdockerhubpushbot/cf-for-k8s-ci
+
 resource_types:
 - name: terraform
   type: docker-image
@@ -36,7 +44,7 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
-      - ci/**
+    - ci/**
 
 - name: runtime-ci
   type: git
@@ -109,137 +117,113 @@ resources:
     pool: cf-for-k8s-stability
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
 
-# Extract common platform and image_resource details so task configs can be more concise
-x-config: &common-task-config
-  platform: linux
-  image_resource:
-    type: docker-image
-    source:
-      repository: relintdockerhubpushbot/cf-for-k8s-ci
-
 jobs:
 - name: validate-values-rotation-redeploy
   serial: true
   public: true
   plan:
-    - in_parallel:
-      - get: cf-for-k8s-master
-      - get: cf-for-k8s-ci
-      - get: runtime-ci
-      - get: weekday-pm
-        trigger: true
+  - in_parallel:
+    - get: cf-for-k8s-master
+    - get: cf-for-k8s-ci
+    - get: runtime-ci
+    - get: weekday-pm
+      trigger: true
 
-    - put: ready-pool
-      params: {acquire: true}
+  - put: ready-pool
+    params:
+      acquire: true
 
-    - task: fresh-install-cf
-      input_mapping:
-        pool-lock: ready-pool
-      config:
-        <<: *common-task-config
-        inputs:
-          - name: cf-for-k8s-master
-          - name: cf-for-k8s-ci
-          - name: pool-lock
-        outputs:
-          - name: env-metadata
-        params:
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-          DOMAIN: k8s-dev.relint.rocks
-        run:
-          path: /bin/bash
-          args:
-            - -ec
-            - |
-              source cf-for-k8s-ci/ci/helpers/gke.sh
-              cluster_name="$(cat pool-lock/name)"
-              gcloud_auth "${cluster_name}"
-
-              DNS_DOMAIN="${cluster_name}.${DOMAIN}"
-
-              echo "Generating install values..."
-              cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-              echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
-
-              echo "Installing CF..."
-              kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
-
-              bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
-              echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
-              grep -E "db_admin_password|capi_db_password|uaa_db_password|blobstore_secret_key|cf_admin_password" "/tmp/${cluster_name}.${DOMAIN}/cf-vars.yaml" > env-metadata/cf-vars.yaml
-
-    - task: push-test-app
-      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-      params:
-        APP_NAME: jp-node-app
-        VERIFY_EXISTING_APP: false
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-master
-
-    - task: upgrade-cf-new-values
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-master
-        pool-lock: ready-pool
+  - task: fresh-install-cf
+    input_mapping:
+      pool-lock: ready-pool
+    config:
+      <<: *common-task-config
+      inputs:
+      - name: cf-for-k8s-master
+      - name: cf-for-k8s-ci
+      - name: pool-lock
+      outputs:
+      - name: env-metadata
       params:
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
         DOMAIN: k8s-dev.relint.rocks
-        UPGRADE: true
-        UPTIMER: true
-        EMIT_UPTIMER_METRICS_TO_WAVEFRONT: true
-        WAVEFRONT_API_KEY: ((wavefront_ci_service_account))
-        WAVEFRONT_API_ENDPOINT: "https://vmwareprod.wavefront.com/report"
-        SOURCE_PIPELINE: values-rotation-redeploy
-    - in_parallel:
-        - task: run-smoke-tests
-          file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-master
-          params:
-            SMOKE_TEST_SKIP_SSL: false
-        - task: verify-existing-app
-          file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-          params:
-            APP_NAME: jp-node-app
-            VERIFY_EXISTING_APP: true
-          input_mapping:
-            cf-for-k8s: cf-for-k8s-master
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          cluster_name="$(cat pool-lock/name)"
+          gcloud_auth "${cluster_name}"
 
-    - task: delete-cf
-      input_mapping:
-        pool-lock: ready-pool
-      config:
-        <<: *common-task-config
-        inputs:
-          - name: cf-for-k8s-ci
-          - name: pool-lock
+          DNS_DOMAIN="${cluster_name}.${DOMAIN}"
+
+          echo "Generating install values..."
+          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
+
+          echo "Installing CF..."
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+
+          bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
+          grep -E "db_admin_password|capi_db_password|uaa_db_password|blobstore_secret_key|cf_admin_password" "/tmp/${cluster_name}.${DOMAIN}/cf-vars.yaml" > env-metadata/cf-vars.yaml
+
+  - task: push-test-app
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-master
+    params:
+      APP_NAME: jp-node-app
+      VERIFY_EXISTING_APP: false
+
+  - task: upgrade-cf-new-values
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-master
+      pool-lock: ready-pool
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
+      UPGRADE: true
+      UPTIMER: true
+      EMIT_UPTIMER_METRICS_TO_WAVEFRONT: true
+      WAVEFRONT_API_KEY: ((wavefront_ci_service_account))
+      WAVEFRONT_API_ENDPOINT: "https://vmwareprod.wavefront.com/report"
+      SOURCE_PIPELINE: values-rotation-redeploy
+
+  - in_parallel:
+      - task: run-smoke-tests
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-master
         params:
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        run:
-          path: /bin/bash
-          args:
-            - -ec
-            - |
-              source cf-for-k8s-ci/ci/helpers/gke.sh
-              cluster_name="$(cat pool-lock/name)"
-              gcloud_auth "${cluster_name}"
+          SMOKE_TEST_SKIP_SSL: false
 
-              kapp delete -a cf --yes
+      - task: verify-existing-app
+        file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-master
+        params:
+          APP_NAME: jp-node-app
+          VERIFY_EXISTING_APP: true
 
-    - put: destroy-pool
-      params:
-        add: ready-pool
+  - task: delete-cf
+    file: ci/tasks/delete-cf/task.yml
+    input_mapping:
+      pool-lock: ready-pool
 
-    - put: ready-pool
-      params:
-        remove: ready-pool
+  - put: destroy-pool
+    params:
+      add: ready-pool
 
+  - put: ready-pool
+    params:
+      remove: ready-pool
 
 - name: install-and-smoketest-sli
   serial: true
@@ -254,30 +238,12 @@ jobs:
   - put: stability-pool
     params:
       acquire: true
+
   - do:
     - task: delete-cf
+      file: ci/tasks/delete-cf/task.yml
       input_mapping:
         pool-lock: stability-pool
-      config:
-        <<: *common-task-config
-        inputs:
-        - name: cf-for-k8s-ci
-        - name: pool-lock
-        params:
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        run:
-          path: /bin/bash
-          args:
-          - -ec
-          - |
-            source cf-for-k8s-ci/ci/helpers/gke.sh
-
-            cluster_name="$(cat pool-lock/name)"
-            gcloud_auth "${cluster_name}"
-
-            kapp delete -a cf --yes
 
     - task: install-cf
       input_mapping:
@@ -320,34 +286,15 @@ jobs:
 
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      params:
-        SMOKE_TEST_SKIP_SSL: false
       input_mapping:
         cf-for-k8s: cf-for-k8s-master
+      params:
+        SMOKE_TEST_SKIP_SSL: false
 
     - task: delete-cf
+      file: ci/tasks/delete-cf/task.yml
       input_mapping:
         pool-lock: stability-pool
-      config:
-        <<: *common-task-config
-        inputs:
-        - name: cf-for-k8s-ci
-        - name: pool-lock
-        params:
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        run:
-          path: /bin/bash
-          args:
-          - -ec
-          - |
-            source cf-for-k8s-ci/ci/helpers/gke.sh
-
-            cluster_name="$(cat pool-lock/name)"
-            gcloud_auth "${cluster_name}"
-
-            kapp delete -a cf --yes
 
     ensure:
       try:
@@ -472,120 +419,121 @@ jobs:
       repository: relint-envs-updated
       rebase: true
 
-
 - name: manual-redeploy-long-lived-env-with-latest-master
   serial: true
   serial_groups: [long-lived-env]
   public: true
   plan:
-    - in_parallel:
-        - get: cf-for-k8s-master
-        - get: cf-for-k8s-ci
-        - get: relint-envs
-        - get: terraform-long-lived-sli
+  - in_parallel:
+    - get: cf-for-k8s-master
+    - get: cf-for-k8s-ci
+    - get: relint-envs
+    - get: terraform-long-lived-sli
 
-    - task: delete-cf
-      config:
-        <<: *common-task-config
-        inputs:
-          - name: cf-for-k8s-ci
-        params:
-          CLUSTER_NAME: long-lived-sli
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        run:
-          path: /bin/bash
-          args:
-            - -ec
-            - |
-              source cf-for-k8s-ci/ci/helpers/gke.sh
-              gcloud_auth "${CLUSTER_NAME}"
-
-              kapp delete -a cf --yes
-
-    - task: install-cf
-      input_mapping:
-        pool-lock: stability-pool
-        terraform: terraform-long-lived-sli
-      config:
-        <<: *common-task-config
-        inputs:
-          - name: cf-for-k8s-master
-          - name: cf-for-k8s-ci
-          - name: relint-envs
-          - name: terraform
-        outputs:
-          - name: env-metadata
-          - name: relint-envs-updated
-        params:
-          CLUSTER_NAME: long-lived-sli
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        run:
-          path: /bin/bash
-          args:
-            - -ec
-            - |
-              source cf-for-k8s-ci/ci/helpers/gke.sh
-              gcloud_auth "${CLUSTER_NAME}"
-
-              export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
-
-              echo "replacing repository prefix with repo whose images are not cleaned up"
-              export long_lived_repository_prefix="gcr.io/$( bosh interpolate gcp-service-account.json --path=/project_id )/cf-workloads-long-lived"
-              echo "Generating install values..."
-              cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-              sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
-              sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
-
-              sed -i.bak "s=\(repository_prefix:\).*$=\1 $long_lived_repository_prefix=" cf-install-values.yml
-              echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
-
-              echo "Installing CF..."
-              kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
-
-              echo "((ll_dep_cf_admin_pass))" > env-metadata/cf-admin-password.txt
-              echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
-
-              source cf-for-k8s-ci/ci/helpers/env-git.sh
-              commit-long-lived-sli-cf-vars
-
-    - put: relint-envs
+  - task: delete-cf
+    config:
+      <<: *common-task-config
+      inputs:
+      - name: cf-for-k8s-ci
       params:
-        repository: relint-envs-updated
-        rebase: true
+        CLUSTER_NAME: long-lived-sli
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          gcloud_auth "${CLUSTER_NAME}"
+
+          kapp delete -a cf --yes
+
+  - task: install-cf
+    input_mapping:
+      pool-lock: stability-pool
+      terraform: terraform-long-lived-sli
+    config:
+      <<: *common-task-config
+      inputs:
+      - name: cf-for-k8s-master
+      - name: cf-for-k8s-ci
+      - name: relint-envs
+      - name: terraform
+      outputs:
+      - name: env-metadata
+      - name: relint-envs-updated
+      params:
+        CLUSTER_NAME: long-lived-sli
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          source cf-for-k8s-ci/ci/helpers/gke.sh
+          gcloud_auth "${CLUSTER_NAME}"
+
+          export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
+
+          echo "replacing repository prefix with repo whose images are not cleaned up"
+          export long_lived_repository_prefix="gcr.io/$( bosh interpolate gcp-service-account.json --path=/project_id )/cf-workloads-long-lived"
+          echo "Generating install values..."
+          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
+          sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
+
+          sed -i.bak "s=\(repository_prefix:\).*$=\1 $long_lived_repository_prefix=" cf-install-values.yml
+          echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
+
+          echo "Installing CF..."
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+
+          echo "((ll_dep_cf_admin_pass))" > env-metadata/cf-admin-password.txt
+          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
+
+          source cf-for-k8s-ci/ci/helpers/env-git.sh
+          commit-long-lived-sli-cf-vars
+
+  - put: relint-envs
+    params:
+      repository: relint-envs-updated
+      rebase: true
 
 - name: deploy-long-lived-node-app
   serial: true
   serial_groups: [long-lived-env]
   public: true
   plan:
-    - in_parallel:
-        - get: cf-for-k8s-master
-          passed: [ manual-redeploy-long-lived-env-with-latest-master ]
-          trigger: true
-        - get: cf-for-k8s-ci
-    - task: get-env-metadata
-      config:
-        <<: *common-task-config
-        outputs:
-          - name: env-metadata
-        params:
-          CLUSTER_NAME: long-lived-sli
-        run:
-          path: /bin/bash
-          args:
-            - -ec
-            - |
-              export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
-              echo "((ll_dep_cf_admin_pass))" > env-metadata/cf-admin-password.txt
-              echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
-    - task: push-test-app
-      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+  - in_parallel:
+    - get: cf-for-k8s-master
+      passed: [ manual-redeploy-long-lived-env-with-latest-master ]
+      trigger: true
+    - get: cf-for-k8s-ci
+
+  - task: get-env-metadata
+    config:
+      <<: *common-task-config
+      outputs:
+      - name: env-metadata
       params:
-        APP_NAME: long-lived-node-app
-        VERIFY_EXISTING_APP: false
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        CLUSTER_NAME: long-lived-sli
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
+          echo "((ll_dep_cf_admin_pass))" > env-metadata/cf-admin-password.txt
+          echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
+
+  - task: push-test-app
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-master
+    params:
+      APP_NAME: long-lived-node-app
+      VERIFY_EXISTING_APP: false

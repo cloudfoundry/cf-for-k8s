@@ -134,7 +134,7 @@ jobs:
       acquire: true
 
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
 
@@ -218,7 +218,7 @@ jobs:
           VERIFY_EXISTING_APP: true
 
   - task: delete-cf
-    file: ci/tasks/delete-cf/task.yml
+    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     input_mapping:
       pool-lock: ready-pool
 
@@ -245,13 +245,13 @@ jobs:
       acquire: true
 
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: stability-pool
 
   - do:
     - task: delete-cf
-      file: ci/tasks/delete-cf/task.yml
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
       input_mapping:
         pool-lock: stability-pool
 
@@ -302,7 +302,7 @@ jobs:
         SMOKE_TEST_SKIP_SSL: false
 
     - task: delete-cf
-      file: ci/tasks/delete-cf/task.yml
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
       input_mapping:
         pool-lock: stability-pool
 

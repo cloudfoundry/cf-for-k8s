@@ -305,7 +305,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-master
       trigger: true
@@ -335,7 +335,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - get: cf-for-k8s-pr-develop
     trigger: true
     version: every
@@ -358,7 +358,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -406,7 +406,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: runtime-ci
     - get: cf-for-k8s-pr-all-branches-and-forks
@@ -457,7 +457,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -477,7 +477,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - do:
@@ -583,7 +583,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -603,7 +603,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - do:
@@ -697,7 +697,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -718,7 +718,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - do:
@@ -807,7 +807,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -827,7 +827,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - do:
@@ -935,7 +935,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -1032,7 +1032,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-pr-all-branches-and-forks
       trigger: true
@@ -1129,7 +1129,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1164,7 +1164,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1264,7 +1264,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1364,7 +1364,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1378,7 +1378,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - task: bump-release-onto-develop
@@ -1464,7 +1464,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1506,7 +1506,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1540,7 +1540,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1640,7 +1640,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1740,7 +1740,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1754,7 +1754,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - task: bump-release-onto-develop
@@ -1840,7 +1840,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1882,7 +1882,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -1916,7 +1916,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2016,7 +2016,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2116,7 +2116,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2130,7 +2130,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - task: bump-release-onto-develop
@@ -2216,7 +2216,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2258,7 +2258,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2292,7 +2292,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2392,7 +2392,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2492,7 +2492,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2506,7 +2506,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - task: bump-release-onto-develop
@@ -2592,7 +2592,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2634,7 +2634,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2668,7 +2668,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2768,7 +2768,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2868,7 +2868,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -2882,7 +2882,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - task: bump-release-onto-develop
@@ -2968,7 +2968,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3010,7 +3010,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3044,7 +3044,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3144,7 +3144,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3244,7 +3244,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3258,7 +3258,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - task: bump-release-onto-develop
@@ -3344,7 +3344,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
@@ -3386,7 +3386,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: ruby-buildpack
       trigger: true
@@ -3410,7 +3410,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - task: bump-buildpacks
@@ -3457,7 +3457,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git ab17201de5708dc04d94a5e7e4df5b7290eff015 ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 27ea7237fb1a224ecec2b39699aada04a797543f ci/templates/cf-for-k8s-contributions.yml \e[31mdirty\e[0m
   - in_parallel:
     - get: build-image
       trigger: true
@@ -3469,7 +3469,7 @@ jobs:
     params:
       acquire: true
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
   - do:

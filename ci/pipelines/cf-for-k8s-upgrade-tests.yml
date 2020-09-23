@@ -76,7 +76,7 @@ jobs:
       acquire: true
 
   - task: display-cluster-info
-    file: ci/tasks/display-gke-cluster-info/task.yml
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
 
@@ -133,7 +133,7 @@ jobs:
         cf-for-k8s: cf-for-k8s-master
 
   - task: delete-cf
-    file: ci/tasks/delete-cf/task.yml
+    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     input_mapping:
       pool-lock: ready-pool
 

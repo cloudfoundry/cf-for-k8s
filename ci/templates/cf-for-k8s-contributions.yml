@@ -351,6 +351,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - do:
     - task: install-cf-develop
@@ -480,6 +484,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - do:
     - task: install-postgres
@@ -597,6 +605,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - do:
     - task: initialize-rds
@@ -709,6 +721,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - do:
     - task: install-minio
@@ -1261,6 +1277,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   #! TODO reduce duplication of this bump release task
   - task: bump-release-onto-develop
@@ -1403,6 +1423,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - task: bump-buildpacks
     file: cf-for-k8s-ci/ci/tasks/bump-buildpacks/task.yml
@@ -1459,6 +1483,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - do:
     - task: bump-stack

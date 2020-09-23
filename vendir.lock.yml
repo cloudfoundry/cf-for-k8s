@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Temporarily use image we built ourselves...
-      sha: e3449f8ecfb6dc3b7b29bf0bbdfdc38e25f78373
+      commitTitle: images.yml updated by CI...
+      sha: 55d974641474c68db77f2f60d1ca3ccbdef2ab17
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:

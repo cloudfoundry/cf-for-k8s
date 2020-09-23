@@ -246,7 +246,7 @@ jobs:
     - get: cf-for-k8s-gke-terraform-templates
 
   - task: delete-cf
-    file: ci/tasks/delete-cf/task.yml
+    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     input_mapping:
       pool-lock: stability-pool
 

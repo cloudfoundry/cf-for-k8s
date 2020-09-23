@@ -191,6 +191,11 @@ jobs:
     params:
       acquire: true
 
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   - task: install-cf
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
@@ -250,6 +255,11 @@ jobs:
     params:
       acquire: true
 
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   - task: install-cf
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
@@ -301,6 +311,11 @@ jobs:
   - put: ready-pool
     params:
       acquire: true
+
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
 
   - task: install-postgres
     file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
@@ -408,6 +423,11 @@ jobs:
     params:
       acquire: true
 
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   - task: install-minio
     file: cf-for-k8s-ci/ci/tasks/install-minio/task.yml
     input_mapping:
@@ -494,6 +514,11 @@ jobs:
   - put: ready-pool
     params:
       acquire: true
+
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
 
   - task: initialize-rds
     file: cf-for-k8s-ci/ci/tasks/initialize-rds/task.yml

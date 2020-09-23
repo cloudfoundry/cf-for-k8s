@@ -133,6 +133,11 @@ jobs:
     params:
       acquire: true
 
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+
   - task: fresh-install-cf
     input_mapping:
       pool-lock: ready-pool
@@ -238,6 +243,11 @@ jobs:
   - put: stability-pool
     params:
       acquire: true
+
+  - task: display-cluster-info
+    file: ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: stability-pool
 
   - do:
     - task: delete-cf

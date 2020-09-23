@@ -13,9 +13,10 @@ see "Running Smoke Tests" in [community/PREPARING-FOR-DEVELOPMENT.md](/community
 ## Directory structure
 
 - `config/` includes all necessary configuration for CF
-  - `_ytt_lib/` includes unmodified configuration fetched from components' repos (controlled via `/vendir.yml`)
-  - `values.yml` specifies all possible data values used
-  - `*.yml` includes configuration to glue components together
+  - `<component>/*.yml` cf-for-k8s specific configuration of component
+  - `<component>/_ytt_lib/` unmodified configuration fetched from components' repos (controlled via `/vendir.yml`)
+  - `values/00-values.yml` specifies all possible data values used
+  - `*.yml` configuration that glue components together
 - `build/` includes building instructions for components that do not provide plain YAML or ytt templates
   - this directory is only used by cf-for-k8s maintainers
   - `build.sh` in each sub-directory has specific build instructions

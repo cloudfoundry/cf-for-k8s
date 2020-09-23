@@ -45,7 +45,7 @@ spec:
   requiredDropCapabilities:
   - ALL
   runAsUser:
-    rule: RunAsAny
+    rule: MustRunAsNonRoot
   seLinux:
     rule: RunAsAny
   supplementalGroups:
@@ -163,6 +163,39 @@ apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
   annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+  name: eirini-instance-index-env-injector
+spec:
+  allowPrivilegeEscalation: false
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  hostIPC: false
+  hostNetwork: false
+  hostPID: false
+  privileged: false
+  readOnlyRootFilesystem: false
+  requiredDropCapabilities:
+  - ALL
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  volumes:
+  - configMap
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default,runtime/default
     seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
   name: cf-workloads-staging-psp
@@ -181,7 +214,7 @@ spec:
   requiredDropCapabilities:
   - ALL
   runAsUser:
-    rule: RunAsAny
+    rule: MustRunAsNonRoot
   seLinux:
     rule: RunAsAny
   supplementalGroups:
@@ -253,6 +286,12 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: eirini-instance-index-env-injector
+  namespace: cf-system
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   name: opi
   namespace: cf-system
 ---
@@ -277,12 +316,15 @@ data:
     eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
     ca_path: "/etc/eirini/secrets/eirini-client.ca"
   events.yml: |
-    app_namespace: cf-workloads
     cc_internal_api: "https://capi.cf-system.svc.cluster.local:9023"
     cc_tls_disabled: false
     cc_cert_path: "/etc/eirini/secrets/cc.crt"
     cc_key_path: "/etc/eirini/secrets/cc.key"
     cc_ca_path: "/etc/eirini/secrets/cc.ca"
+  instance-index-env-injector.yml: |
+    service_name: instance-index-env-injector
+    service_namespace: cf-system
+    service_port: 8443
   metrics.yml: |
     app_namespace: cf-workloads
     loggregator_address: "doppler-doppler.cf-system.svc.cluster.local:8082"
@@ -295,9 +337,9 @@ data:
       registry_address: "registry.not-used:443"
       registry_secret_name: app-registry-credentials
       eirini_address: "https://eirini-opi.cf-system.svc.cluster.local:8085"
-      downloader_image: eirini/recipe-downloader@sha256:29ad8eb7ea8d19723d6a3129f6bc3a3db2dc65e12bf0ec3a9df7a21110cf01c6
-      executor_image: eirini/recipe-executor@sha256:792cd50172fad8beae01a09aef27cf66356949d43c04b3a2c84d723a7f24e862
-      uploader_image: eirini/recipe-uploader@sha256:8869f8be894654726b8206062ebcc90bbbb7ad1daac2ac5bffa2e587f95fbcd6
+      downloader_image: eirini/recipe-downloader@sha256:422c5c26b28ab8cf409566f4605510ff7bdd304ef02b84962320440c434c5899
+      executor_image: eirini/recipe-executor@sha256:e77644a5e09a702414c8efc1c31776b77ff1e9fba01a85924ae5efe32e7af38a
+      uploader_image: eirini/recipe-uploader@sha256:8b2a0143b192854db809f1247a70e48381918e91e270dd0446597c3ab4099243
 
       cc_uploader_secret_name: secrets-2.16.4-2
       cc_uploader_cert_path: cc-server-crt
@@ -335,15 +377,24 @@ data:
     eirini_key_path: "/etc/eirini/secrets/eirini-client.key"
     ca_path: "/etc/eirini/secrets/eirini-client.ca"
   task-reporter.yml: |
-    app_namespace: cf-workloads
     cc_tls_disabled: false
-    cc_cert_path: "/etc/eirini/secrets/cc.crt"
     cc_cert_path: "/etc/eirini/secrets/cc.crt"
     cc_key_path: "/etc/eirini/secrets/cc.key"
     ca_path: "/etc/eirini/secrets/cc.ca"
 kind: ConfigMap
 metadata:
   name: eirini
+  namespace: cf-system
+---
+apiVersion: v1
+data:
+  instance-index-env-injector.yml: |
+    service_name: instance-index-env-injector
+    service_namespace: cf-system
+    service_port: 8443
+kind: ConfigMap
+metadata:
+  name: instance-index-env-injector
   namespace: cf-system
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -391,6 +442,7 @@ spec:
                 type: integer
               diskMB:
                 format: int64
+                minimum: 1
                 type: integer
               env:
                 additionalProperties:
@@ -459,6 +511,8 @@ spec:
                       type: string
                   type: object
                 type: array
+            required:
+            - diskMB
             type: object
           status:
             properties:
@@ -701,6 +755,34 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  name: eirini-events-clusterrole
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - events
+  verbs:
+  - get
+  - list
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: eirini-instance-index-env-injector
+rules:
+- apiGroups:
+  - admissionregistration.k8s.io
+  resources:
+  - mutatingwebhookconfigurations
+  verbs:
+  - create
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
   name: eirini-task-reporter
 rules:
 - apiGroups:
@@ -715,6 +797,7 @@ rules:
   resources:
   - pods
   verbs:
+  - get
   - watch
   - list
 - apiGroups:
@@ -751,10 +834,23 @@ subjects:
   name: opi
   namespace: cf-system
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: eirini-events-cluster-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: eirini-events-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: eirini-events
+  namespace: cf-system
+---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: eirini-events
+  name: eirini-events-nodes-policy
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -762,6 +858,19 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: eirini-events
+  namespace: cf-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: eirini-instance-index-env-injector
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: eirini-instance-index-env-injector
+subjects:
+- kind: ServiceAccount
+  name: eirini-instance-index-env-injector
   namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -825,25 +934,6 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: eirini-events
-  namespace: cf-workloads
-rules:
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  verbs:
-  - list
-- apiGroups:
-  - events.k8s.io
-  resources:
-  - pods
-  verbs:
-  - list
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
   name: eirini-events-psp
   namespace: cf-system
 rules:
@@ -855,6 +945,29 @@ rules:
   - podsecuritypolicies
   verbs:
   - use
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: eirini-instance-index-env-injector-psp
+  namespace: cf-system
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - eirini-instance-index-env-injector
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -928,21 +1041,18 @@ subjects:
   name: opi
   namespace: cf-system
 - kind: ServiceAccount
-  name: eirini-rootfs-patcher
-  namespace: cf-system
-- kind: ServiceAccount
   name: eirini-secret-smuggler
   namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: eirini-events
-  namespace: cf-workloads
+  name: eirini-events-psp
+  namespace: cf-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: eirini-events
+  name: eirini-events-psp
 subjects:
 - kind: ServiceAccount
   name: eirini-events
@@ -951,15 +1061,15 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: eirini-events-psp
+  name: eirini-instance-index-env-injector-psp
   namespace: cf-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: eirini-events-psp
+  name: eirini-instance-index-env-injector-psp
 subjects:
 - kind: ServiceAccount
-  name: eirini-events
+  name: eirini-instance-index-env-injector
   namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -993,6 +1103,20 @@ subjects:
 apiVersion: v1
 kind: Service
 metadata:
+  name: instance-index-env-injector
+  namespace: cf-system
+spec:
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: 8443
+  selector:
+    name: instance-index-env-injector
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: eirini
   namespace: cf-system
 spec:
@@ -1008,10 +1132,7 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas:
-        - Type: preresolved
-          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-opi@sha256:1f08f8ca4e6981034043612159f7268e43e84a9d5d000c6c88f802c54fc5d265
-        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-opi@sha256:1f08f8ca4e6981034043612159f7268e43e84a9d5d000c6c88f802c54fc5d265
+      null
   name: eirini
   namespace: cf-system
 spec:
@@ -1025,21 +1146,26 @@ spec:
         name: eirini
     spec:
       containers:
-      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-opi@sha256:1f08f8ca4e6981034043612159f7268e43e84a9d5d000c6c88f802c54fc5d265
+      - image: index.docker.io/eirini/opi@sha256:658f14a51c0a77fbc685f867a54ca56504993f299c43d1a63de757206484506b
         imagePullPolicy: Always
         name: opi
         ports:
         - containerPort: 8085
           name: https
         resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
           requests:
             cpu: 20m
             memory: 20Mi
         volumeMounts:
-        - mountPath: /workspace/jobs/opi/config
+        - mountPath: /etc/eirini/config
           name: config-map-volume
-        - mountPath: /workspace/jobs/opi/secrets
-          name: cf-secrets
+        - mountPath: /etc/cf-api/certs
+          name: cc-certs
+        - mountPath: /etc/eirini/certs
+          name: eirini-certs
       dnsPolicy: ClusterFirst
       securityContext:
         runAsNonRoot: true
@@ -1051,32 +1177,35 @@ spec:
             path: opi.yml
           name: eirini
         name: config-map-volume
-      - name: cf-secrets
+      - name: cc-certs
         projected:
           sources:
           - secret:
               items:
               - key: tls.crt
-                path: cc.crt
+                path: tls.crt
               - key: tls.key
-                path: cc.key
+                path: tls.key
               name: eirini-internal-tls-certs
           - secret:
               items:
               - key: tls.ca
-                path: cc.ca
+                path: ca.crt
               name: eirini-internal-tls-certs
+      - name: eirini-certs
+        projected:
+          sources:
           - secret:
               items:
               - key: tls.crt
-                path: eirini-server.crt
+                path: tls.crt
               - key: tls.key
-                path: eirini-server.key
+                path: tls.key
               name: eirini-internal-tls-certs
           - secret:
               items:
               - key: tls.ca
-                path: eirini.ca
+                path: ca.crt
               name: eirini-internal-tls-certs
 ---
 apiVersion: apps/v1
@@ -1084,10 +1213,7 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas:
-        - Type: preresolved
-          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-controller@sha256:a0caba94d99cb89511dbe68c3360ac7177f39cd42d8ee7d4990306ea105d8c58
-        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-controller@sha256:a0caba94d99cb89511dbe68c3360ac7177f39cd42d8ee7d4990306ea105d8c58
+      null
   name: eirini-controller
   namespace: cf-system
 spec:
@@ -1100,18 +1226,19 @@ spec:
         name: eirini-controller
     spec:
       containers:
-      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-controller@sha256:a0caba94d99cb89511dbe68c3360ac7177f39cd42d8ee7d4990306ea105d8c58
+      - image: index.docker.io/eirini/eirini-controller@sha256:8bce7ed08c3914edee916012e0277012d8d3a54e90bc563bc822c2006d26cf7d
         imagePullPolicy: Always
         name: eirini-controller
         resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
           requests:
             cpu: 15m
             memory: 15Mi
         volumeMounts:
         - mountPath: /etc/eirini/config
           name: config-map-volume
-        - mountPath: /etc/eirini/secrets
-          name: cf-secrets
       dnsPolicy: ClusterFirst
       securityContext:
         runAsNonRoot: true
@@ -1123,26 +1250,13 @@ spec:
             path: eirini-controller.yml
           name: eirini
         name: config-map-volume
-      - name: cf-secrets
-        secret:
-          items:
-          - key: tls.crt
-            path: eirini-client.crt
-          - key: tls.key
-            path: eirini-client.key
-          - key: tls.ca
-            path: eirini-client.ca
-          secretName: eirini-internal-tls-certs
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas:
-        - Type: preresolved
-          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:b9e2218b95aa2557b5d85a1c31c6a0b4a60156a78afaea56ceac1bbe7787996a
-        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:b9e2218b95aa2557b5d85a1c31c6a0b4a60156a78afaea56ceac1bbe7787996a
+      null
   name: eirini-events
   namespace: cf-system
 spec:
@@ -1155,17 +1269,20 @@ spec:
         name: eirini-events
     spec:
       containers:
-      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:b9e2218b95aa2557b5d85a1c31c6a0b4a60156a78afaea56ceac1bbe7787996a
+      - image: index.docker.io/eirini/event-reporter@sha256:8971db664d1ccfe7df0f624ebaa71c14f90181fb2f29d0cbbc5275f08b208ff1
         imagePullPolicy: Always
         name: event-reporter
         resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
           requests:
             cpu: 15m
             memory: 15Mi
         volumeMounts:
-        - mountPath: /etc/eirini/config
+        - mountPath: /etc/eirini-event-reporter/config
           name: config-map-volume
-        - mountPath: /etc/eirini/secrets
+        - mountPath: /etc/cf-api/certs
           name: cf-secrets
       dnsPolicy: ClusterFirst
       securityContext:
@@ -1184,14 +1301,14 @@ spec:
           - secret:
               items:
               - key: tls.crt
-                path: cc.crt
+                path: tls.crt
               - key: tls.key
-                path: cc.key
+                path: tls.key
               name: eirini-internal-tls-certs
           - secret:
               items:
               - key: tls.ca
-                path: cc.ca
+                path: ca.crt
               name: eirini-internal-tls-certs
 ---
 apiVersion: apps/v1
@@ -1199,10 +1316,54 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas:
-        - Type: preresolved
-          URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter@sha256:142847a256db48e0590a23b74b78d6e2086dc8913019e5b6b8050d4a9255f37f
-        URL: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter@sha256:142847a256db48e0590a23b74b78d6e2086dc8913019e5b6b8050d4a9255f37f
+      null
+  name: instance-index-env-injector
+  namespace: cf-system
+spec:
+  selector:
+    matchLabels:
+      name: instance-index-env-injector
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+      labels:
+        name: instance-index-env-injector
+    spec:
+      containers:
+      - image: index.docker.io/eirini/instance-index-env-injector@sha256:b33fe1df8112c59f5cac6a3a73a063b31c1089ac3bf76e5091de34103432111f
+        imagePullPolicy: Always
+        name: instance-index-env-injector
+        ports:
+        - containerPort: 8443
+          name: https
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 20m
+            memory: 20Mi
+        volumeMounts:
+        - mountPath: /etc/eirini/config
+          name: config-map-volume
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: eirini-instance-index-env-injector
+      volumes:
+      - configMap:
+          items:
+          - key: instance-index-env-injector.yml
+            path: instance-index-env-injector.yml
+          name: eirini
+        name: config-map-volume
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      null
   name: eirini-task-reporter
   namespace: cf-system
 spec:
@@ -1215,10 +1376,13 @@ spec:
         name: eirini-task-reporter
     spec:
       containers:
-      - image: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter@sha256:142847a256db48e0590a23b74b78d6e2086dc8913019e5b6b8050d4a9255f37f
+      - image: index.docker.io/eirini/task-reporter@sha256:4c105c94d1dad2c9e81ad440335d5561c32e2822372643f55c70d5cff9d5603f
         imagePullPolicy: Always
         name: task-reporter
         resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
           requests:
             cpu: 15m
             memory: 15Mi
@@ -1248,3 +1412,8 @@ spec:
           - key: tls.ca
             path: cc.ca
           secretName: eirini-internal-tls-certs
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: eirini-x-mutating-hook

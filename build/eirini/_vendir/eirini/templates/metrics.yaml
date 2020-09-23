@@ -54,6 +54,9 @@ spec:
           mountPath: /etc/eirini/secrets
         resources:
           requests:
-            cpu: 15m
-            memory: 15Mi
+            cpu: {{ .Values.kube.resources.metrics.requests.cpu }}
+            memory: {{ .Values.kube.resources.metrics.requests.memory }}
+          limits:
+            cpu: {{ .Values.kube.resources.metrics.limits.cpu }}
+            memory: {{ .Values.kube.resources.metrics.limits.memory }}
 {{- end }}

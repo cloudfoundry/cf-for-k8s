@@ -234,6 +234,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - put: destroy-pool
     params:
@@ -295,6 +299,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - put: destroy-pool
     params:
@@ -385,6 +393,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - task: delete-postgres
     input_mapping:
@@ -480,6 +492,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - task: delete-minio
     input_mapping:
@@ -587,6 +603,10 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     input_mapping:
       pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - in_parallel:
     - do:

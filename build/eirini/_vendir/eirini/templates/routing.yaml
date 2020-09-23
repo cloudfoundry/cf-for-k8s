@@ -43,8 +43,11 @@ spec:
           mountPath: /etc/eirini/
         resources:
           requests:
-            cpu: 30m
-            memory: 45Mi
+            cpu: {{ .Values.kube.resources.routing.requests.cpu }}
+            memory: {{ .Values.kube.resources.routing.requests.memory }}
+          limits:
+            cpu: {{ .Values.kube.resources.routing.limits.cpu }}
+            memory: {{ .Values.kube.resources.routing.limits.memory }}
       - name: route-pod-informer
         {{- if .Values.opi.route_pod_informer_image }}
         image: {{ .Values.opi.route_pod_informer_image }}:{{ .Values.opi.image_tag }}

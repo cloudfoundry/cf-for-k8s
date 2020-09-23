@@ -56,8 +56,7 @@ spec:
   hostIPC: false
   hostPID: false
   runAsUser:
-    # we use non-numeric user ID, so K8s can't verify if it is root or not
-    rule: 'RunAsAny'
+    rule: 'MustRunAsNonRoot'
   seLinux:
     # This policy assumes the nodes are using AppArmor rather than SELinux.
     rule: 'RunAsAny'

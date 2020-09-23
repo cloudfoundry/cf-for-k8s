@@ -92,9 +92,6 @@ subjects:
   name: opi
   namespace: {{ .Release.Namespace }}
 - kind: ServiceAccount
-  name: eirini-rootfs-patcher
-  namespace: {{ .Release.Namespace }}
-- kind: ServiceAccount
   name: eirini-secret-smuggler
   namespace: {{ .Release.Namespace }}
 ---

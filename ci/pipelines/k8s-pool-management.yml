@@ -25,7 +25,7 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
-      - ci/**
+    - ci/**
 
 - name: terraform
   type: terraform
@@ -153,6 +153,7 @@ jobs:
     - get: every-2-minutes
       trigger: true
     - get: pool-repo
+
   - try:
       task: check-pool-size
       file: cf-for-k8s-develop-ci/ci/tasks/check-pool-size/task.yml
@@ -175,6 +176,7 @@ jobs:
     - get: every-4-minutes-weekends
       trigger: true
     - get: pool-repo
+
   - try:
       task: check-pool-size
       file: cf-for-k8s-develop-ci/ci/tasks/check-pool-size/task.yml
@@ -193,8 +195,10 @@ jobs:
   - get: building-pool-trigger
     version: every
     trigger: true
+
   - put: building-pool
-    params: {acquire: true}
+    params:
+      acquire: true
 
 - name: create-cluster
   plan:
@@ -206,6 +210,7 @@ jobs:
       trigger: true
     - get: pool-repo
     - get: cf-for-k8s-gke-terraform-templates
+
   - task: create-tf-vars-file
     config:
       platform: linux
@@ -233,12 +238,14 @@ jobs:
           env_dns_domain = "$(cat building-cluster/name).${DOMAIN}"
           dns_zone_name = "k8s-dev-relint-rocks"
           EOT
+
   - put: terraform
     params:
       terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
       env_name_file: building-cluster/name
       delete_on_failure: true
       var_files: [ tf-vars/input.tfvars ]
+
   - task: write-metadata-to-lock-file
     config:
       platform: linux
@@ -257,9 +264,11 @@ jobs:
         - |
           cp -v building-cluster/name ready-cluster/name
           cp -v terraform/metadata ready-cluster/metadata
+
   - put: ready-pool
     params:
       add: ready-cluster
+
   - put: building-pool
     params:
       remove: building-cluster
@@ -270,6 +279,7 @@ jobs:
     - get: after-7pm
       trigger: true
     - get: pool-repo
+
   - task: delete-unclaimed
     # this moves everything from ready/unclaimed to destroy/unclaimed
     config:
@@ -295,6 +305,7 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git commit -m'Destroying unclaimed K8s dev pool environments'
           fi
+
   - put: pool-repo
     params:
       repository: updated-pool-repo
@@ -305,8 +316,10 @@ jobs:
   - get: destroy-pool-trigger
     version: every
     trigger: true
+
   - put: destroy-pool
-    params: {acquire: true}
+    params:
+      acquire: true
 
 - name: destroy-cluster
   plan:
@@ -317,6 +330,7 @@ jobs:
       passed: [acquire-lock-for-destroy-cluster]
       trigger: true
     - get: cf-for-k8s-gke-terraform-templates
+
   - task: create-tf-vars-file
     config:
       platform: linux
@@ -344,6 +358,7 @@ jobs:
           env_dns_domain = "$(cat destroy-cluster/name).${DOMAIN}"
           dns_zone_name = "k8s-dev-relint-rocks"
           EOT
+
   - put: terraform
     params:
       terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
@@ -352,8 +367,10 @@ jobs:
       var_files: [ tf-vars/input.tfvars ]
     get_params:
       action: destroy
+
   - put: destroy-pool
-    params: {remove: destroy-cluster}
+    params:
+      remove: destroy-cluster
 
 - name: post-to-slack
   plan:
@@ -361,6 +378,7 @@ jobs:
     - get: tues-fri-afternoon
       trigger: true
     - get: pool-repo
+
   - task: generate-list-of-claimed-envs
     config:
       platform: linux
@@ -368,9 +386,9 @@ jobs:
         type: docker-image
         source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
       inputs:
-        - name: pool-repo
+      - name: pool-repo
       outputs:
-        - name: message
+      - name: message
       run:
         path: /bin/bash
         args:
@@ -434,6 +452,7 @@ jobs:
 
           echo "Message:"
           cat "${output_file}"
+
   - put: relint-private-slack
     params:
       text_file: message/message.txt

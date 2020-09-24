@@ -294,6 +294,7 @@ jobs:
     params:
       INCLUDE_APPS: true
       INCLUDE_ROUTING: true
+      INCLUDE_DETECT: true
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml

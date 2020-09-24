@@ -1,16 +1,17 @@
 # Deploying Cloud Foundry on a Kubernetes cluster
 
-* [Prerequisites](#prerequisites)
-  + [Required Tools](#required-tools)
-  + [Kubernetes Cluster Requirements](#kubernetes-cluster-requirements)
-  + [Setup an OCI-compliant registry](#setup-an-oci-compliant-registry)
-* [Steps to deploy](#steps-to-deploy)
-    - [Option A - Use the included hack-script to generate the install values(#option-a---use-the-included-hack-script-to-generate-the-install-values)
-    - [Option B - Create the install values by hand](#option-b---create-the-install-values-by-hand)
-* [Validate the deployment](#validate-the-deployment)
-* [Delete the cf-for-k8s deployment](#delete-the-cf-for-k8s-deployment)
-* [Additional resources](#additional-resources)
-* [Roadmap and milestones](#roadmap-and-milestones)
+- [Prerequisites](#prerequisites)
+  * [Required Tools](#required-tools)
+  * [Kubernetes Cluster Requirements](#kubernetes-cluster-requirements)
+  * [Container Registry Requirements](#container-registry-requirements)
+  * [Setup an OCI-compliant registry](#setup-an-oci-compliant-registry)
+- [Steps to deploy](#steps-to-deploy)
+    + [Option A - Use the included hack-script to generate the install values](#option-a---use-the-included-hack-script-to-generate-the-install-values)
+    + [Option B - Create the install values by hand](#option-b---create-the-install-values-by-hand)
+- [Validate the deployment](#validate-the-deployment)
+- [Delete the cf-for-k8s deployment](#delete-the-cf-for-k8s-deployment)
+- [Additional resources](#additional-resources)
+- [Roadmap and milestones](#roadmap-and-milestones)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -41,9 +42,13 @@ To deploy cf-for-k8s as is, the cluster should:
 - defines a default StorageClass
   - requires [additional config on vSphere](https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/storageclass.html), for example
 
+### Container Registry Requirements
+
+To deploy cf-for-k8s as is, you will need to provide an OCI-compliant registry.
+
 ### Setup an OCI-compliant registry
 
-To be able to push source-code based apps to your cf-for-k8s installation, you will need to add OCI compliant registry (for example, hub.docker.com) to the configuration. You can choose any of the cloud provider container registries, such as [hub.docker.com](https://hub.docker.com/), [Google container registry](https://cloud.google.com/container-registry) or [Azure container registry](https://azure.microsoft.com/en-us/services/container-registry/).
+You must provide a container registry.  You can choose any of the cloud provider registries, such as [hub.docker.com](https://hub.docker.com/), [Google container registry](https://cloud.google.com/container-registry) or [Azure container registry](https://azure.microsoft.com/en-us/services/container-registry/).
 
 Currently, we test the following two container registries:
 

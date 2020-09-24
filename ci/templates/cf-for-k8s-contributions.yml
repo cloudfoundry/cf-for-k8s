@@ -71,6 +71,14 @@ resources:
     paths:
       - ci/**
 
+- name: cf-acceptance-tests
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-acceptance-tests
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+
 - name: weekday-pm
   type: time
   icon: clock-outline
@@ -1414,6 +1422,7 @@ jobs:
 #@ end
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
+    - get: cf-acceptance-tests
 
   - put: ready-pool
     params:
@@ -1431,7 +1440,7 @@ jobs:
   - task: bump-buildpacks
     file: cf-for-k8s-ci/ci/tasks/bump-buildpacks/task.yml
 
-  - task: validate-buildpacks
+  - task: install-cf
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-bumped
@@ -1442,12 +1451,12 @@ jobs:
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
       DOMAIN: k8s-dev.relint.rocks
 
-  - task: run-smoke-tests
-    file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+  - task: run-cats-detect-suite
+    file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
     input_mapping:
-      cf-for-k8s: cf-for-k8s-bumped
+      cf-for-k8s: cf-for-k8s-develop
     params:
-      SMOKE_TEST_SKIP_SSL: false
+      INCLUDE_DETECT: true
 
   - put: cf-for-k8s-develop
     params:

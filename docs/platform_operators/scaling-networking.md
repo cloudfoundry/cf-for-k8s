@@ -1,9 +1,10 @@
 # Scaling Networking
 
 ## Local Development
-If you would like to scale the networking components of cf-for-k8s to accommodate
-for local development on a laptop, simply deploy following the deployment docs.
-By default, cf-for-k8s is shipped for a kick-the-tires experience.
+If you would like cf-for-k8s to be right-sized for local development on a laptop, 
+you can ignore this page and follow the regular deployment docs as by default
+cf-for-k8s is configured for a small footprint deployment. This documentation
+describes how to scale the cf-for-k8s networking components for production use cases.
 
 ## Larger Scale Deployments
 If you would like to scale up the networking components for a larger scale

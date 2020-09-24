@@ -1454,7 +1454,7 @@ jobs:
   - task: run-cats-detect-suite
     file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
     input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
+      cf-for-k8s: cf-for-k8s-bumped
     params:
       INCLUDE_DETECT: true
 

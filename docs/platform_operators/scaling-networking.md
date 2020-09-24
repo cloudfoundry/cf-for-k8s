@@ -13,6 +13,9 @@ environment, simply:
 1. Adjust the values to your liking
 1. Append `-f scaling-networking.yml` to the ytt command you run for deployment
 
+The number of ingressgateway replicas depends on load profile of your cluster. 
+The number istiod replicas depends istiod replicas the number of application instances.
+
 ```
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:json", "json")

@@ -8300,7 +8300,7 @@ data:
           "excludeIPRanges": "",
           "excludeInboundPorts": "",
           "excludeOutboundPorts": "",
-          "holdApplicationUntilProxyStarts": false,
+          "holdApplicationUntilProxyStarts": true,
           "image": "proxyv2",
           "includeIPRanges": "*",
           "logLevel": "warning",

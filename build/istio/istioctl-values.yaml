@@ -79,4 +79,6 @@ spec:
         }
     global:
       controlPlaneSecurityEnabled: true
+      proxy:
+        holdApplicationUntilProxyStarts: true
 

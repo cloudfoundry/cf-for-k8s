@@ -9,7 +9,7 @@ to:
 #@ if cfdb_enabled():
 - namespaceSelector:
     matchLabels:
-      name: cf-db
+      cf-for-k8s.cloudfoundry.org/cf-db-ns: ""
   podSelector:
     matchLabels:
       release: cf-db
@@ -474,7 +474,7 @@ spec:
           cloudfoundry.org/source_type: STG
       namespaceSelector:
         matchLabels:
-          name: #@ workloads_staging_namespace()
+          cf-for-k8s.cloudfoundry.org/cf-workloads-staging-ns: ""
     - namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""

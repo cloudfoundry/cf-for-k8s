@@ -1,7 +1,7 @@
 # Scaling Networking
 
 ## Local Development
-If you would like cf-for-k8s to be right-sized for local development on a laptop, 
+If you would like cf-for-k8s to be right-sized for local development on a laptop,
 you can ignore this page and follow the regular deployment docs as by default
 cf-for-k8s is configured for a small footprint deployment. This documentation
 describes how to scale the cf-for-k8s networking components for production use cases.
@@ -13,8 +13,14 @@ environment, simply:
 1. Adjust the values to your liking
 1. Append `-f scaling-networking.yml` to the ytt command you run for deployment
 
-The number of ingressgateway replicas depends on load profile of your cluster. 
-The number istiod replicas depends istiod replicas the number of application instances.
+The number of ingressgateway replicas depends on load profile of your cluster.
+
+The number istiod replicas depends on the number of application instances.
+
+We recommend two routecontrollers for high availability, but you likely won't
+need more than that.
+
+Sidecar resource usage depends on the load profile of your AIs.
 
 ```
 #@ load("@ytt:overlay", "overlay")
@@ -22,11 +28,11 @@ The number istiod replicas depends istiod replicas the number of application ins
 
 #! Modify these values to adjust scaling characteristics
 
-#@ ingress_replicas = 2
-#@ ingress_cpu_request = "1"
-#@ ingress_cpu_limit = "2"
-#@ ingress_mem_request = "1Gi"
-#@ ingress_mem_limit = "2Gi"
+#@ ingress_gateway_replicas = 2
+#@ ingress_gateway_cpu_request = "1"
+#@ ingress_gateway_cpu_limit = "2"
+#@ ingress_gateway_mem_request = "1Gi"
+#@ ingress_gateway_mem_limit = "2Gi"
 
 #@ istiod_replicas = 2
 #@ istiod_cpu_request = "1"
@@ -74,7 +80,7 @@ data:
 kind: Deployment
 spec:
   #@overlay/match missing_ok=True
-  replicas: #@ ingress_replicas
+  replicas: #@ ingress_gateway_replicas
   template:
     spec:
       containers:
@@ -83,11 +89,11 @@ spec:
         #@overlay/match missing_ok=True
         resources:
           limits:
-            cpu: #@ ingress_cpu_limit
-            memory: #@ ingress_mem_limit
+            cpu: #@ ingress_gateway_cpu_limit
+            memory: #@ ingress_gateway_mem_limit
           requests:
-            cpu: #@ ingress_cpu_request
-            memory: #@ ingress_mem_request
+            cpu: #@ ingress_gateway_cpu_request
+            memory: #@ ingress_gateway_mem_request
 
 #@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"istiod"}}),expects=1
 ---

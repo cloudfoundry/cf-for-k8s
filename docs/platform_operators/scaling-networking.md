@@ -22,7 +22,7 @@ need more than that.
 
 Sidecar resource usage depends on the load profile of your AIs.
 
-```
+```yaml
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:json", "json")
 

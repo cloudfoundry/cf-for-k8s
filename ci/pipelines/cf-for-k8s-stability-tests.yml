@@ -566,4 +566,5 @@ jobs:
       cf-for-k8s: cf-for-k8s-master
     params:
       APP_NAME: long-lived-node-app
+      APP_INSTANCES: 2
       VERIFY_EXISTING_APP: false

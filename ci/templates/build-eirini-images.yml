@@ -1,0 +1,102 @@
+#@ load("@ytt:data", "data")
+
+#@ image_list = [ "opi", "event-reporter", "eirini-controller", "metrics-collector", "route-collector", "route-pod-informer", "route-statefulset-informer", "staging-reporter", "task-reporter" ]
+#@ eirini_tag = 1.9.0
+---
+resources:
+- name: eirini
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry-incubator/eirini.git
+    branch: #@ eirini_tag
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+
+#@ for img in image_list:
+- name: #@ "cf-for-k8s-eirini-{}".format(img)
+  type: registry-image
+  source:
+    repository: #@ "relintdockerhubpushbot/cf-for-k8s-eirini-{}".format(img)
+    username: ((dockerhub_username))
+    password: ((dockerhub_password))
+    tag: #@ eirini_tag
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
+#@ end
+
+jobs:
+#@ for img in image_list:
+- name: #@ "build-{}".format(img)
+  plan:
+  - get: component
+    resource: #@ data.values.component
+  - task: rev-parse
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: bitnami/git
+      inputs:
+      - name: component
+      outputs:
+      - name: revision
+      run:
+        path: /bin/bash
+        args:
+        - -c
+        - |
+          pushd component
+            git rev-parse HEAD > ../revision/revision
+            git describe --tags > ../revision/tag
+          popd > /dev/null
+  - task: #@ "build-{}".format(img)
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: vito/oci-build-task
+      inputs:
+      - name: component
+      - name: revision
+      outputs:
+      - name: image
+      caches:
+      - path: cache
+      run:
+        path: /bin/sh
+        args:
+        - -c
+        - |
+          export BUILD_ARG_GIT_SHA="$(cat revision/revision)"
+          ls -R
+          build
+
+      params:
+        DOCKERFILE: #@ "./component/docker/{}/Dockerfile".format(img)
+        CONTEXT: ./component/
+  - task: #@ "deplab-{}".format(img)
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source:
+          repository: pivotalcfreleng/tas-for-k8s-ci # CHANGE ME
+      inputs:
+      - name: component
+      - name: image
+      outputs:
+      - name: deplab-image
+      run:
+        path: /bin/sh
+        args:
+        - -c
+        - |
+          deplab --image-tar image/image.tar \
+            --git component \
+            --output-tar deplab-image/image.tar
+  - put: #@ img
+    params:
+      image: deplab-image/image.tar
+#@ end

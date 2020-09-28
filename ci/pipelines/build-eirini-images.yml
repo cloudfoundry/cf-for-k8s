@@ -14,74 +14,65 @@ resources:
   type: registry-image
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-eirini-opi
-    username: ((dockerhub_username))
-    password: ((dockerhub_password))
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
     tag: 1.9.0
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 - name: cf-for-k8s-eirini-event-reporter
   type: registry-image
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter
-    username: ((dockerhub_username))
-    password: ((dockerhub_password))
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
     tag: 1.9.0
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 - name: cf-for-k8s-eirini-eirini-controller
   type: registry-image
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-eirini-eirini-controller
-    username: ((dockerhub_username))
-    password: ((dockerhub_password))
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
     tag: 1.9.0
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 - name: cf-for-k8s-eirini-metrics-collector
   type: registry-image
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-eirini-metrics-collector
-    username: ((dockerhub_username))
-    password: ((dockerhub_password))
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
     tag: 1.9.0
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 - name: cf-for-k8s-eirini-route-collector
   type: registry-image
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-eirini-route-collector
-    username: ((dockerhub_username))
-    password: ((dockerhub_password))
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
     tag: 1.9.0
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 - name: cf-for-k8s-eirini-route-pod-informer
   type: registry-image
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-eirini-route-pod-informer
-    username: ((dockerhub_username))
-    password: ((dockerhub_password))
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
     tag: 1.9.0
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 - name: cf-for-k8s-eirini-route-statefulset-informer
   type: registry-image
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-eirini-route-statefulset-informer
-    username: ((dockerhub_username))
-    password: ((dockerhub_password))
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
     tag: 1.9.0
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 - name: cf-for-k8s-eirini-staging-reporter
   type: registry-image
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-eirini-staging-reporter
-    username: ((dockerhub_username))
-    password: ((dockerhub_password))
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
     tag: 1.9.0
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 - name: cf-for-k8s-eirini-task-reporter
   type: registry-image
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter
-    username: ((dockerhub_username))
-    password: ((dockerhub_password))
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
     tag: 1.9.0
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 jobs:
 - name: build-opi
   plan:
@@ -96,7 +87,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 63cd9e9b9e5ae8acc33745d21f5c6658303de594 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git bd98c3705e6660c3f91d7b4f42cf24f95d7b58b0 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - task: rev-parse
     config:
@@ -181,7 +172,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 63cd9e9b9e5ae8acc33745d21f5c6658303de594 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git bd98c3705e6660c3f91d7b4f42cf24f95d7b58b0 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - task: rev-parse
     config:
@@ -266,7 +257,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 63cd9e9b9e5ae8acc33745d21f5c6658303de594 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git bd98c3705e6660c3f91d7b4f42cf24f95d7b58b0 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - task: rev-parse
     config:
@@ -351,7 +342,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 63cd9e9b9e5ae8acc33745d21f5c6658303de594 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git bd98c3705e6660c3f91d7b4f42cf24f95d7b58b0 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - task: rev-parse
     config:
@@ -436,7 +427,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 63cd9e9b9e5ae8acc33745d21f5c6658303de594 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git bd98c3705e6660c3f91d7b4f42cf24f95d7b58b0 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - task: rev-parse
     config:
@@ -521,7 +512,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 63cd9e9b9e5ae8acc33745d21f5c6658303de594 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git bd98c3705e6660c3f91d7b4f42cf24f95d7b58b0 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - task: rev-parse
     config:
@@ -606,7 +597,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 63cd9e9b9e5ae8acc33745d21f5c6658303de594 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git bd98c3705e6660c3f91d7b4f42cf24f95d7b58b0 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - task: rev-parse
     config:
@@ -691,7 +682,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 63cd9e9b9e5ae8acc33745d21f5c6658303de594 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git bd98c3705e6660c3f91d7b4f42cf24f95d7b58b0 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - task: rev-parse
     config:
@@ -776,7 +767,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 63cd9e9b9e5ae8acc33745d21f5c6658303de594 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git bd98c3705e6660c3f91d7b4f42cf24f95d7b58b0 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - task: rev-parse
     config:

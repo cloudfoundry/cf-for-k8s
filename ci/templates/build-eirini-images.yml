@@ -16,10 +16,9 @@ resources:
   type: registry-image
   source:
     repository: #@ "relintdockerhubpushbot/cf-for-k8s-eirini-{}".format(img)
-    username: ((dockerhub_username))
-    password: ((dockerhub_password))
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
     tag: #@ eirini_tag
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 #@ end
 
 jobs:

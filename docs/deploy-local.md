@@ -64,7 +64,7 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
 1. Start minikube using the docker driver:
 
    ```console
-   minikube start --cpus=4 --memory=8g --kubernetes-version=1.16.8 --driver=docker
+   minikube start --cpus=6 --memory=8g --kubernetes-version=1.16.8 --driver=docker
    ```
 
 1. Enable metrics-server.
@@ -79,16 +79,17 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
    minikube ip
    ```
 
-   - The domain used for the installation will use this IP with the following format `<minikube ip>.nip.io`.
+   - The domain used for the installation will use this IP with the following format `<minikube ip>.nip.io`.  For example if `minikube ip` returns `127.0.0.1` then you domain would be `127.0.0.1.nip.io`
 
 1. Use minikube tunnel to expose the LoadBalancer service for the ingress
    gateway:
 
    ```console
-   minikube tunnel
+   sudo minikube tunnel
    ```
 
    - This should be run in a separate terminal as this will block.
+   - `sudo` give capabilities to the tunnel ahead of time to open ports 80 and 443 (required to communicate)
    - The `kapp deploy` command will not exit successfully until this command is
      run to allow minikube to create the LoadBalancer service.
 
@@ -97,9 +98,13 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
    - Use `<minikube ip>.nip.io` as the domain for the installation. This means that you do not have to
      configure DNS for the domain.
 
+   - Make sure you provide an OCI-compliant app registry in your install values file.
+
    - Make sure the following values are included in your install values file:
    ```yaml
    remove_resource_requirements: true
+   enable_automount_service_account_token: true
+   use_first_party_jwt_tokens: true
    ```
 
 1. You will be able to target your CF CLI to point to the new CF instance

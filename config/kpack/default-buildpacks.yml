@@ -25,7 +25,7 @@ metadata:
 spec:
   id: "org.cloudfoundry.stacks.cflinuxfs3"
   buildImage:
-    image: "gcr.io/paketo-buildpacks/build@sha256:048f9b3378ecefbd0b49f3447a722c211a380ec04e14d7ed534aa6b6a5027814"
+    image: "gcr.io/paketo-buildpacks/build@sha256:07f221b78d8704d918d9dd1248038cd6473d9fb32650bb7def145fc7c29bd612"
   runImage:
     image: "gcr.io/paketo-buildpacks/run@sha256:ec12dcb02483952babe783eb7a3b7850d25b0f1d6a684afa40ed4b4aa9fd46c5"
 

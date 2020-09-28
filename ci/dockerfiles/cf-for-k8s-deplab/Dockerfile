@@ -1,9 +1,6 @@
-FROM curlimages/curl
-
-USER root
+FROM bash:latest
 
 # deplab
-RUN curl --retry 3 --retry-delay 3 \
-    https://github.com/vmware-tanzu/dependency-labeler/releases/download/1.5.0-build.3/deplab-linux-amd64 \
-    --output /usr/local/bin/deplab && \
+RUN wget \
+	https://github.com/vmware-tanzu/dependency-labeler/releases/download/1.5.0-build.3/deplab-linux-amd64 -O /usr/local/bin/deplab && \
     chmod +x /usr/local/bin/deplab

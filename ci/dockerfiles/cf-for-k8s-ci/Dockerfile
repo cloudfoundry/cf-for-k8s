@@ -62,9 +62,4 @@ RUN wget --tries=3 -O cf.tgz "https://packages.cloudfoundry.org/stable?release=l
     chmod +x /usr/local/bin/cf && \
     /usr/local/bin/cf --version
 
-# deplab
-RUN curl -L https://github.com/vmware-tanzu/dependency-labeler/releases/download/1.5.0-build.3/deplab-linux-amd64 \
-    --output /usr/local/bin/deplab && \
-    chmod +x /usr/local/bin/deplab
-
 RUN rm -rf /tmp/*

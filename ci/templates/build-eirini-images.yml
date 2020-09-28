@@ -1,6 +1,6 @@
 #@ load("@ytt:data", "data")
 
-#@ image_list = [ "opi", "event-reporter", "eirini-controller", "metrics-collector", "route-collector", "route-pod-informer", "route-statefulset-informer", "staging-reporter", "task-reporter" ]
+#@ image_list = [ "opi", "event-reporter", "eirini-controller", "task-reporter", "instance-index-env-injector" ]
 #@ eirini_tag = "1.9.0"
 ---
 resources:

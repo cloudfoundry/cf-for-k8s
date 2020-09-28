@@ -47,15 +47,15 @@ resources:
     paths:
     - ci/dockerfiles/cf-for-k8s-ci/Dockerfile
 
-    - name: cf-for-k8s-deplab-dockerfile
-      type: git
-      icon: github
-      source:
-        branch: develop
-        uri: git@github.com:cloudfoundry/cf-for-k8s
-        private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
-        paths:
-        - ci/dockerfiles/cf-for-k8s-deplab/Dockerfile
+- name: cf-for-k8s-deplab-dockerfile
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - ci/dockerfiles/cf-for-k8s-deplab/Dockerfile
 
 - name: weekly
   type: time

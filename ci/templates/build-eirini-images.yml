@@ -26,8 +26,7 @@ jobs:
 #@ for img in image_list:
 - name: #@ "build-{}".format(img)
   plan:
-  - get: component
-    resource: #@ data.values.component
+  - get: eirini
   - task: rev-parse
     config:
       platform: linux
@@ -36,7 +35,7 @@ jobs:
         source:
           repository: bitnami/git
       inputs:
-      - name: component
+      - name: eirini
       outputs:
       - name: revision
       run:
@@ -44,7 +43,7 @@ jobs:
         args:
         - -c
         - |
-          pushd component
+          pushd eirini
             git rev-parse HEAD > ../revision/revision
             git describe --tags > ../revision/tag
           popd > /dev/null
@@ -57,7 +56,7 @@ jobs:
         source:
           repository: vito/oci-build-task
       inputs:
-      - name: component
+      - name: eirini
       - name: revision
       outputs:
       - name: image
@@ -73,8 +72,8 @@ jobs:
           build
 
       params:
-        DOCKERFILE: #@ "./component/docker/{}/Dockerfile".format(img)
-        CONTEXT: ./component/
+        DOCKERFILE: #@ "./eirini/docker/{}/Dockerfile".format(img)
+        CONTEXT: ./eirini/
   - task: #@ "deplab-{}".format(img)
     privileged: true
     config:
@@ -82,9 +81,9 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          repository: pivotalcfreleng/tas-for-k8s-ci # CHANGE ME
+          repository: relintdockerhubpushbot/cf-for-k8s-ci
       inputs:
-      - name: component
+      - name: eirini
       - name: image
       outputs:
       - name: deplab-image
@@ -94,7 +93,7 @@ jobs:
         - -c
         - |
           deplab --image-tar image/image.tar \
-            --git component \
+            --git eirini \
             --output-tar deplab-image/image.tar
   - put: #@ img
     params:

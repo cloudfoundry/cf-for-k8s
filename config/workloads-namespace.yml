@@ -10,7 +10,7 @@ metadata:
   annotations:
     kapp.k14s.io/change-rule.cf-workloads-namespace: "delete before deleting cf-k8s-networking/routecontroller"
   labels:
-    name: #@ workloads_namespace()
+    cf-for-k8s.cloudfoundry.org/cf-workloads-ns: ""
 
 #! the following overlay ensures the cf-workloads namespace is deleted before the routecontroller
 #@ cr = overlay.subset({"kind":"ClusterRole","metadata":{"name":"routecontroller"}})

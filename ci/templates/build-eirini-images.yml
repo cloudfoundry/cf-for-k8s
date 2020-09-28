@@ -1,7 +1,7 @@
 #@ load("@ytt:data", "data")
 
 #@ image_list = [ "opi", "event-reporter", "eirini-controller", "metrics-collector", "route-collector", "route-pod-informer", "route-statefulset-informer", "staging-reporter", "task-reporter" ]
-#@ eirini_tag = 1.9.0
+#@ eirini_tag = "1.9.0"
 ---
 resources:
 - name: eirini
@@ -81,7 +81,7 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          repository: relintdockerhubpushbot/cf-for-k8s-ci
+          repository: relintdockerhubpushbot/cf-for-k8s-deplab
       inputs:
       - name: eirini
       - name: image
@@ -95,7 +95,7 @@ jobs:
           deplab --image-tar image/image.tar \
             --git eirini \
             --output-tar deplab-image/image.tar
-  - put: #@ img
+  - put: #@ "cf-for-k8s-eirini-{}".format(img)
     params:
       image: deplab-image/image.tar
 #@ end

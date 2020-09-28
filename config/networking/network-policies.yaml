@@ -71,7 +71,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-istio-control-plane
+  name: only-allow-istio-control-plane
   namespace: #@ system_namespace()
 spec:
   podSelector: {}
@@ -93,7 +93,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-istio-control-plane
+  name: only-allow-istio-control-plane
   namespace: cf-db
 spec:
   podSelector: {}
@@ -116,7 +116,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-istio-control-plane
+  name: only-allow-istio-control-plane
   namespace: cf-blobstore
 spec:
   podSelector: {}

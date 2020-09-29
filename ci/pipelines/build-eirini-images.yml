@@ -10,6 +10,13 @@ resources:
     uri: git@github.com:cloudfoundry-incubator/eirini.git
     branch: 1.9.0
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+- name: eirini-release
+  type: github-release
+  icon: github
+  source:
+    owner: cloudfoundry-incubator
+    repository: eirini-release
+    access_token: ((cf_deployment_release_bot_access_token))
 - name: cf-for-k8s-eirini-opi
   type: registry-image
   source:
@@ -59,8 +66,10 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 5c847b4c8ace12a27137ec56606321127c4eace7 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 85228baffd607dac652170a20c282715a05e105f ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
+  - get: eirini-release
+    trigger: true
   - task: rev-parse
     config:
       platform: linux
@@ -144,8 +153,10 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 5c847b4c8ace12a27137ec56606321127c4eace7 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 85228baffd607dac652170a20c282715a05e105f ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
+  - get: eirini-release
+    trigger: true
   - task: rev-parse
     config:
       platform: linux
@@ -229,8 +240,10 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 5c847b4c8ace12a27137ec56606321127c4eace7 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 85228baffd607dac652170a20c282715a05e105f ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
+  - get: eirini-release
+    trigger: true
   - task: rev-parse
     config:
       platform: linux
@@ -314,8 +327,10 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 5c847b4c8ace12a27137ec56606321127c4eace7 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 85228baffd607dac652170a20c282715a05e105f ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
+  - get: eirini-release
+    trigger: true
   - task: rev-parse
     config:
       platform: linux
@@ -399,8 +414,10 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 5c847b4c8ace12a27137ec56606321127c4eace7 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 85228baffd607dac652170a20c282715a05e105f ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
+  - get: eirini-release
+    trigger: true
   - task: rev-parse
     config:
       platform: linux

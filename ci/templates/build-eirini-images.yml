@@ -11,6 +11,14 @@ resources:
     branch: #@ eirini_tag
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 
+- name: eirini-release
+  type: github-release
+  icon: github
+  source:
+    owner: cloudfoundry-incubator
+    repository: eirini-release
+    access_token: ((cf_deployment_release_bot_access_token))
+
 #@ for img in image_list:
 - name: #@ "cf-for-k8s-eirini-{}".format(img)
   type: registry-image
@@ -26,6 +34,8 @@ jobs:
 - name: #@ "build-{}".format(img)
   plan:
   - get: eirini
+  - get: eirini-release
+    trigger: true
   - task: rev-parse
     config:
       platform: linux

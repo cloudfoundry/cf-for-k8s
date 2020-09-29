@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path"
 	"strings"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 
 	"github.com/cloudfoundry-incubator/cf-test-helpers/cf"
 	"github.com/cloudfoundry-incubator/cf-test-helpers/generator"
+	"github.com/otiai10/copy"
 )
 
 const NamePrefix = "cf-for-k8s-smoke"
@@ -85,12 +87,11 @@ var _ = Describe("Smoke Tests", func() {
 			Eventually(session).Should(Exit(0))
 		}
 
-		It("creates a routable app pod in Kubernetes from a source-based app", func() {
-
+		expectSuccessfulPush := func(sourceLocation string) {
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
-			cfPush := cf.Cf("push", appName, "-p", "assets/test-node-app", "--no-route")
+			cfPush := cf.Cf("push", appName, "-p", sourceLocation, "--no-route")
 			Eventually(cfPush).Should(Exit(0))
 			mapRoute(appName)
 
@@ -113,6 +114,33 @@ var _ = Describe("Smoke Tests", func() {
 				cfLogs := cf.Cf("logs", appName, "--recent")
 				return string(cfLogs.Wait().Out.Contents())
 			}, 2*time.Minute, 2*time.Second).Should(ContainSubstring("Console output from test-node-app"))
+		}
+
+		When("app source is < 64k", func() {
+			It("creates a routable app pod in Kubernetes from a source-based app", func() {
+				expectSuccessfulPush("assets/test-node-app")
+			})
+		})
+
+		When("app source is > 64k", func() {
+			var tempdir string
+			BeforeEach(func() {
+				var err error
+				tempdir, err = ioutil.TempDir("", "cf-for-k8s-smoke-test-big-app")
+				Expect(err).NotTo(HaveOccurred())
+				Expect(copy.Copy("assets/test-node-app", tempdir)).To(Succeed())
+				bigFileName := path.Join(tempdir, "a-big-file.txt")
+				bigFileContent := []byte(strings.Repeat("na", 32*1024) + " batman")
+				Expect(ioutil.WriteFile(bigFileName, bigFileContent, 0o600)).To(Succeed())
+			})
+
+			It("creates a routable app pod in Kubernetes from a source-based app", func() {
+				expectSuccessfulPush(tempdir)
+			})
+
+			AfterEach(func() {
+				Expect(os.RemoveAll(tempdir)).To(Succeed())
+			})
 		})
 	})
 })

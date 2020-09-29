@@ -35,6 +35,9 @@ blobstore:
   buildpack_directory_key: #@ data.values.blobstore.buildpack_directory_key
   aws_signature_version: #@ data.values.blobstore.aws_signature_version
 
+cc:
+  log_level: #@ data.values.capi.log_level
+
 ccdb:
   adapter: #@ data.values.capi.database.adapter
   host: #@ capi_host()

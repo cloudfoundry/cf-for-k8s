@@ -46,6 +46,7 @@ capi:
     name: cloud_controller
     #! Plain text ca certificate if tls should be used
     ca_cert: ""
+  log_level: info
 
 uaa:
   database:

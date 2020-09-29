@@ -3,7 +3,8 @@
 | system_domain | your system domain | Yes | no value | `system.cf.example.com` | |
 | app_domains | list of app domains | Yes | no value | ["apps.cf.example.com"] | |
 | cf_admin_password | password for admin user in plain text | Yes | no value | 2fK2zLXPgvmsESrB87sADZQvdLeY5Kv4 | |
-| istio_static_ip | reserved static ip for istio LoadBalancer | No | no value | "192.168.0.0" | |
+| load_balancer.enable | Enable IaaS provisioned load balancer | No | true |  |  |
+| load_balancer.static_ip | reserved static ip for LoadBalancer | No | no value | "192.168.0.0" | |
 | system_certificate.crt | Base64-encoded certificate for the wildcard - subdomain of the system domain | Yes | no value | CN=*.system.cf.example.com |  |
 | system_certificate.key | Base64-encoded private key for the system certificate | Yes | no value |  |  |
 | system_certificate.ca | Base64-encoded CA certificate used to sign the system certifcate | Yes | no value |  |  |
@@ -32,7 +33,6 @@
 | app_registry.password | Image registry password | Yes | no value | Foobrizzle |  |
 | remove_resource_requirements | Remove resource requirements for use on smaller environments | No | false |  |  |
 | add_metrics_server_components | Deploy metrics server for clusters that do not include them by default | No | false |  |  |
-| enable_load_balancer | Enable IaaS provisioned load balancer | No | true |  |  |
 | use_external_dns_for_wildcard | Enable external-dns integration on the system ingress Service | No | false |  | |
 | enable_automount_service_account_token |  | No | false |  |  |
 | metrics_server_prefer_internal_kubelet_address |  | No | false |  |  |

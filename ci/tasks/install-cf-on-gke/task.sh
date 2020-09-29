@@ -21,11 +21,11 @@ if [[ -d pool-lock ]]; then
     exit 1
   fi
   cluster_name="$(cat pool-lock/name)"
-  istio_static_ip="$(jq -r '.lb_static_ip' pool-lock/metadata)"
+  load_balancer_static_ip="$(jq -r '.lb_static_ip' pool-lock/metadata)"
 elif [[ -d tf-vars ]]; then
   if [[ -d terraform ]]; then
     cluster_name="$(cat tf-vars/env-name.txt)"
-    istio_static_ip="$(jq -r '.lb_static_ip' terraform/metadata)"
+    load_balancer_static_ip="$(jq -r '.lb_static_ip' terraform/metadata)"
   else
     echo "You must provide both tf-vars and terraform inputs together"
     exit 1
@@ -64,7 +64,8 @@ else
   cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-values.yml
 fi
 
-echo "istio_static_ip: ${istio_static_ip}" >> cf-values.yml
+echo "load_balancer:" >> cf-values.yml
+echo "  static_ip: ${load_balancer_static_ip}" >> cf-values.yml
 password="$(bosh interpolate --path /cf_admin_password cf-values.yml)"
 
 echo "Installing CF..."

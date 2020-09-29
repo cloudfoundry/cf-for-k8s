@@ -33,6 +33,23 @@ Here are a few we find valuable:
 * `envoy_cluster_upstream_rq_<http status code>` (integer) -- Number of requests
   that had that status code (i.e. `200`, `404`, `503`)
 
+## Gateway Health Metrics
+
+There are a few metrics available that are useful in determining the health of
+the ingressgateways.
+
+* `envoy_server_uptime{pod_name=~"istio-ingressgateway-.*"}`
+* `envoy_server_live{pod_name=~"istio-ingressgateway-.*"}`
+* `envoy_server_state{pod_name=~"istio-ingressgateway-.*"}`
+  * This metric has values:
+    0: live
+    1: draining
+    2: pre-initializing
+    3: initializing
+
+You can learn more about these metrics in the [envoy
+documentation](https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/statistics#server%5C)
+
 ## General resource metrics that may be valuable
 
 As you might expect, data and control plane components emit the standard set of

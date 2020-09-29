@@ -2,15 +2,18 @@ apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.22.0
 overrides:
-  - image: eirini/opi@sha256:c7c60d73c89db5c1a74019b86db0fb93686ed5572984411f1d4a027681aec457
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-opi@sha256:1f08f8ca4e6981034043612159f7268e43e84a9d5d000c6c88f802c54fc5d265
+  - image: eirini/opi@sha256:658f14a51c0a77fbc685f867a54ca56504993f299c43d1a63de757206484506b
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-opi@sha256:4a438c75a0b923a6f043d8f60052c9f3c079768e1a9557d2aa42956ca134be47
     preresolved: true
-  - image: eirini/event-reporter@sha256:62a30205593b22dfb954dfe803c0e01866e4ac08717ec3089c4c32aec2f00457
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:b9e2218b95aa2557b5d85a1c31c6a0b4a60156a78afaea56ceac1bbe7787996a
+  - image: eirini/event-reporter@sha256:8971db664d1ccfe7df0f624ebaa71c14f90181fb2f29d0cbbc5275f08b208ff1
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:e001382be607454912e7310e19b0e02545a68694a92888b5ffd98399efd2d251
     preresolved: true
-  - image: eirini/eirini-controller@sha256:142c4f335d8a117300eac610accd7183a0bfa5c793594deee5487b9af95f3a33
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-controller@sha256:a0caba94d99cb89511dbe68c3360ac7177f39cd42d8ee7d4990306ea105d8c58
+  - image: eirini/eirini-controller@sha256:8bce7ed08c3914edee916012e0277012d8d3a54e90bc563bc822c2006d26cf7d
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-eirini-controller@sha256:67c0749667d926270c55a627b7c1af47bbbfdf49981b098cc3a153f2a098208e
     preresolved: true
-  - image: eirini/task-reporter@sha256:23e081f0875c40f59526aa2f3bc77cd25c26776d840b2e6e49c4b0f2cbf5a04a
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter@sha256:142847a256db48e0590a23b74b78d6e2086dc8913019e5b6b8050d4a9255f37f
+  - image: eirini/task-reporter@sha256:4c105c94d1dad2c9e81ad440335d5561c32e2822372643f55c70d5cff9d5603f
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter@sha256:82a8b38ee4d3c1eb924b7356fe5d1f9493a9c47d0b63dbecc4eef4d982402e03
+    preresolved: true
+  - image: eirini/instance-index-env-injector@sha256:b33fe1df8112c59f5cac6a3a73a063b31c1089ac3bf76e5091de34103432111f
+    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-instance-index-env-injector@sha256:e0dffee2efbe7cba308fc9adf247ef9b232260becc801bf67c75f8c81d4af3af
     preresolved: true

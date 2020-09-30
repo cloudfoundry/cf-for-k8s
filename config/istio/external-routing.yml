@@ -1,3 +1,4 @@
+#@ load("@ytt:base64", "base64")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 #@ load("/namespaces.star", "system_namespace", "workloads_namespace")
@@ -12,8 +13,8 @@ metadata:
   annotations:
     kapp.k14s.io/change-rule.istio-ingressgateway: "upsert before upserting istio.io/ingressgateway"
 data:
-  tls.key: #@ data.values.system_certificate.key
-  tls.crt: #@ data.values.system_certificate.crt
+  tls.key: #@ base64.encode(data.values.system_certificate.key)
+  tls.crt: #@ base64.encode(data.values.system_certificate.crt)
 
 ---
 apiVersion: v1
@@ -24,8 +25,8 @@ metadata:
   annotations:
     kapp.k14s.io/change-rule.istio-ingressgateway: "upsert before upserting istio.io/ingressgateway"
 data:
-  tls.key: #@ data.values.workloads_certificate.key
-  tls.crt: #@ data.values.workloads_certificate.crt
+  tls.key: #@ base64.encode(data.values.workloads_certificate.key)
+  tls.crt: #@ base64.encode(data.values.workloads_certificate.crt)
 
 #! the following overlay ensures the above Secret is created before the ingressgateway Deployment since we're not using SDS
 #@overlay/match by=overlay.subset({"kind":"DaemonSet","metadata":{"name":"istio-ingressgateway"}})

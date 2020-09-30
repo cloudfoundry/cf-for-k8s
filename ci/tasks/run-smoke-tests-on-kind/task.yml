@@ -9,7 +9,7 @@ image_resource:
 inputs:
 - name: cf-for-k8s
 - name: cf-for-k8s-ci
-- name: cf-install-values
+- name: env-metadata
 - name: terraform
 
 params:

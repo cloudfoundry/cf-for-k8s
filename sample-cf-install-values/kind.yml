@@ -1,0 +1,35 @@
+#@data/values
+---
+system_domain: "vcap.me"
+app_domains:
+#@overlay/append
+- "apps.vcap.me"
+
+add_metrics_server_components: true
+enable_automount_service_account_token: true
+enable_load_balancer: false
+metrics_server_prefer_internal_kubelet_address: true
+remove_resource_requirements: true
+use_first_party_jwt_tokens: true
+
+load_balancer:
+  enable: false
+
+#! Notes about X.509 certificates:
+#! - the certificates and keys are base64 encoded
+#! - all of the certs should have KeyUsage that includes server and client authentication
+
+#! certificate, private key, and certificate authority used to identify the CF installation (i.e. the ingress gateway).
+#! - should be valid for *.vcap.me
+system_certificate:
+  crt: ingress_gateway_certificate
+  key: ingress_gateway_private_key
+  ca: ingress_gateway_certificate_ca
+
+#! certificate, private key, and certificate authority used to identify the CF installation (i.e. the ingress gateway).
+#! - should be valid for *.apps.vcap.me
+#! - may be the system cert, as long as the system cert is valid for the apps domain as well
+workloads_certificate:
+  crt: workload_certificate
+  key: workload_private_key
+  ca: workload_certificate_ca

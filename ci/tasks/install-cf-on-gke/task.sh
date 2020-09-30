@@ -1,4 +1,9 @@
-#!/bin/bash -eu
+#!/bin/bash
+set -euo pipefail
+
+source cf-for-k8s-ci/ci/helpers/generate-values.sh
+source cf-for-k8s-ci/ci/helpers/gke.sh
+source cf-for-k8s-ci/ci/helpers/uptimer-config.sh
 
 if [[ -z "${DOMAIN}" ]]; then
   echo "DOMAIN must be specified"
@@ -11,9 +16,6 @@ echo "External Registry: ${USE_EXTERNAL_APP_REGISTRY}"
 echo "Upgrade: ${UPGRADE}"
 echo "Uptimer: ${UPTIMER}"
 echo -e "\n"
-
-source cf-for-k8s-ci/ci/helpers/gke.sh
-source cf-for-k8s-ci/ci/helpers/uptimer-config.sh
 
 if [[ -d pool-lock ]]; then
   if [[ -d tf-vars ]]; then
@@ -39,46 +41,39 @@ gcloud_auth "${cluster_name}"
 DNS_DOMAIN="${cluster_name}.${DOMAIN}"
 
 if [[ "${UPGRADE}" == "true" ]]; then
-  echo "Copying bosh vars store from latest install"
+  echo "Copying bosh vars store from previous install..."
   mkdir -p "/tmp/${DNS_DOMAIN}"
   cp env-metadata/cf-vars.yaml "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
   echo "NOTE: the values we're currently not rotating are:"
   cat env-metadata/cf-vars.yaml | yq -r 'keys'
-  echo "(we're also not testing rotating our app_registry credentials)"
+  echo "(we are also not testing rotating our app_registry credentials)"
   echo ""
   echo "Generating install values with cf-vars..."
 else
   echo "Generating install values..."
 fi
 
-if [[ "${USE_EXTERNAL_APP_REGISTRY}" == "true" ]]; then
-  cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" > cf-values.yml
-cat <<EOT >> cf-values.yml
-app_registry:
-  hostname: ${APP_REGISTRY_HOSTNAME}
-  repository_prefix: ${APP_REGISTRY_REPOSITORY_PREFIX}
-  username: ${APP_REGISTRY_USERNAME}
-  password: ${APP_REGISTRY_PASSWORD}
-EOT
-else
-  cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-values.yml
-fi
+generate_values > cf-install-values.yml
+cf-for-k8s/hack/generate-internal-values.sh -v cf-install-values.yml > cf-internal-values.yml
 
-echo "load_balancer:" >> cf-values.yml
-echo "  static_ip: ${load_balancer_static_ip}" >> cf-values.yml
-password="$(bosh interpolate --path /cf_admin_password cf-values.yml)"
+echo "load_balancer:" >> cf-install-values.yml
+echo "  static_ip: ${load_balancer_static_ip}" >> cf-install-values.yml
+password="$(bosh interpolate --path /cf_admin_password cf-internal-values.yml)"
 
 echo "Installing CF..."
 rendered_yaml="/tmp/rendered.yml"
 additional_args=""
+
 if [[ "${USE_EXTERNAL_DB}" == "true" ]]; then
   additional_args="-f db-metadata/db-values.yaml"
 fi
+
 if [[ "${USE_EXTERNAL_BLOBSTORE}" == "true" ]]; then
   additional_args+="-f blobstore-metadata/blobstore-values.yaml"
 fi
 
-ytt -f cf-for-k8s/config -f cf-values.yml $additional_args > ${rendered_yaml}
+ytt -f cf-for-k8s/config -f cf-install-values.yml -f cf-internal-values.yml ${additional_args} > ${rendered_yaml}
+
 if [[ "${UPTIMER}" == "true" ]]; then
   echo "Running with uptimer"
   write_uptimer_deploy_config "${password}" "${rendered_yaml}"
@@ -94,6 +89,7 @@ if [[ "${UPTIMER}" == "true" ]]; then
     source runtime-ci/tasks/shared-functions
     push_uptimer_metrics_to_wavefront "${SOURCE_PIPELINE}" "${UPTIMER_RESULT_FILE_PATH}"
   fi
+
   if [[ "$uptimer_exit_code" != "0" ]]; then
     exit 1
   fi

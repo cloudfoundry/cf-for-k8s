@@ -69,11 +69,12 @@ app_registry:
   username: ""
   password: ""
 
-remove_resource_requirements: false
 add_metrics_server_components: false
-use_external_dns_for_wildcard: false
 enable_automount_service_account_token: false
+enable_load_balancer: true
 metrics_server_prefer_internal_kubelet_address: false
+remove_resource_requirements: false
+use_external_dns_for_wildcard: false
 use_first_party_jwt_tokens: false
 
 #! configuration for the CF blobstore

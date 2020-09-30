@@ -6,8 +6,6 @@
   * [Container Registry Requirements](#container-registry-requirements)
   * [Setup an OCI-compliant registry](#setup-an-oci-compliant-registry)
 - [Steps to deploy](#steps-to-deploy)
-    + [Option A - Use the included hack-script to generate the install values](#option-a---use-the-included-hack-script-to-generate-the-install-values)
-    + [Option B - Create the install values by hand](#option-b---create-the-install-values-by-hand)
 - [Validate the deployment](#validate-the-deployment)
 - [Delete the cf-for-k8s deployment](#delete-the-cf-for-k8s-deployment)
 - [Additional resources](#additional-resources)
@@ -68,34 +66,21 @@ Currently, we test the following two container registries:
    ```console
    git clone https://github.com/cloudfoundry/cf-for-k8s.git
    cd cf-for-k8s
-   TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
+   VALUES_DIR=<your-values-dir-path> ; mkdir -p ${VALUES_DIR}
    ```
 
 1. Create a "CF Installation Values" file and configure it<a name="cf-values"></a>:
 
-   You can either: a) auto-generate the installation values or b) create the values by yourself.
+     1. Clone one of the sample values files from the `sample-cf-install-values` directory to use as a starting point.
 
-   #### Option A - Use the included hack-script to generate the install values
+        ```console
+        cp sample-cf-install-values/kind.yml ${VALUES_DIR}/cf-values.yml
+        ```
 
-   >  **NOTE:** The script requires the [BOSH CLI](https://bosh.io/docs/cli-v2-install/#install) in installed on your machine. The BOSH CLI is an handy tool to generate self signed certs and passwords.
-
-   ```console
-   ./hack/generate-values.sh -d <cf-domain> > ${TMP_DIR}/cf-values.yml
-   ```
-
-   Replace `<cf-domain>` with _your_ registered DNS domain name for your CF installation.
-
-   #### Option B - Create the install values by hand
-
-   1. Clone file `sample-cf-install-values.yml` from this directory as a starting point.
-
-      ```console
-      cp sample-cf-install-values.yml ${TMP_DIR}/cf-values.yml
-      ```
-
-   1. Open the file and change the `system_domain` and `app_domain` to your desired domain address.
-   1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
-      - **IMPORTANT** Your certificates must include a subject alternative name entry for the internal `*.cf-system.svc.cluster.local` domain in addition to your chosen external domain.
+     1. Open the file and change the `system_domain` and `app_domain` to your desired domain address.
+     1. Generate certificates for the above domains and paste them in `crt`, `key`, `ca` values
+        - **IMPORTANT** Your certificates must include a subject alternative name entry for the internal `*.cf-system.svc.cluster.local` domain in addition to your chosen external domain.
+     1. Adjust the other configuration flags as appropriate for your cluster.
 
 1. Provide your credentials to an external app registry:
 
@@ -125,18 +110,26 @@ Currently, we test the following two container registries:
 
          Update the `gcp_project_id` portion to your GCP Project ID and change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON.
 
+1. Generate an "Internal Installation Values" file:
+
+   >  **NOTE:** The script requires the [BOSH CLI](https://bosh.io/docs/cli-v2-install/#install) in installed on your machine. The BOSH CLI is an handy tool to generate self signed certs and passwords.
+
+   ```console
+   ./hack/generate-internal-values.sh --values-file ${VALUES_DIR}/cf-values.yml > ${VALUES_DIR}/cf-internal-values.yml
+   ```
+
 1. Run the following commands to install Cloud Foundry on your Kubernetes cluster:
 
       i. Render the final K8s template to raw K8s configuration
 
          ```console
-         ytt -f config -f ${TMP_DIR}/cf-values.yml > ${TMP_DIR}/cf-for-k8s-rendered.yml
+         ytt -f config -f ${VALUES_DIR}/cf-values.yml -f ${VALUES_DIR}/cf-internal-values.yml > ${VALUES_DIR}/cf-for-k8s-rendered.yml
          ```
 
       ii. Install using `kapp` and pass the above K8s configuration file
 
          ```console
-         kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
+         kapp deploy -a cf -f ${VALUES_DIR}/cf-for-k8s-rendered.yml
          ```
 
    Once you run the command, it should take about 10 minutes or less, depending on your cluster bandwidth and size. `kapp` will provide updates on pending resource creations in the cluster and will wait until all resources are created and running. Here is a sample snippet from `kapp` output:
@@ -179,11 +172,11 @@ Currently, we test the following two container registries:
 
    Replace `<cf-domain>` with your desired domain address.
 
-1. Login using the admin credentials for key `cf_admin_password` in `${TMP_DIR}/cf-values.yml`:
+1. Login using the admin credentials for key `cf_admin_password` in `${VALUES_DIR}/cf-values.yml`:
 
    ```console
    cf auth admin <cf-values.yml.cf-admin_password>
-   # or using yq: cf auth admin "$(yq -r '.cf_admin_password' ${TMP_DIR}/cf-values.yml)"
+   # or using yq: cf auth admin "$(yq -r '.cf_admin_password' ${VALUES_DIR}/cf-values.yml)"
    ```
 
 1. Create an org/space for your app:

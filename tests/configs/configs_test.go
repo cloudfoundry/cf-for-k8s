@@ -17,9 +17,10 @@ import (
 
 var _ = Describe("Configs", func() {
 	var (
-		args          []string
-		repoDir       string
-		templatedPath string = "/tmp/cf-for-k8s.yml"
+		args               []string
+		repoDir            string
+		internalValuesPath string = "/tmp/internal-values.yml"
+		templatedPath      string = "/tmp/cf-for-k8s.yml"
 	)
 
 	BeforeEach(func() {
@@ -28,31 +29,30 @@ var _ = Describe("Configs", func() {
 
 		repoDir = filepath.Dir(filepath.Dir(currentDirectory))
 
-		command := exec.Command(filepath.Join(repoDir, "hack", "generate-values.sh"),
-			"--cf-domain", "dummy-domain",
+		By("generating internal values")
+		command := exec.Command(filepath.Join(repoDir, "hack", "generate-internal-values.sh"),
+			"--values-file", filepath.Join(repoDir, "sample-cf-install-values", "kind.yml"),
 		)
-		valuesFile, err := os.Create("/tmp/dummy-domain-values.yml")
+		internalValuesFile, err := os.Create(internalValuesPath)
 		Expect(err).NotTo(HaveOccurred())
-		defer valuesFile.Close()
-		command.Stdout = valuesFile
+		defer internalValuesFile.Close()
+		command.Stdout = internalValuesFile
 
 		err = command.Start()
 		Expect(err).NotTo(HaveOccurred())
 
-		print("generating fake values...")
 		err = command.Wait()
 		Expect(err).NotTo(HaveOccurred())
 
-		print(" [done]\n")
-
+		By("rendering templates")
 		args = []string{
 			"-f", "../../config",
-			"-f", "/tmp/dummy-domain-values.yml",
+			"-f", internalValuesPath,
+			"-f", filepath.Join(repoDir, "sample-cf-install-values", "kind.yml"),
 		}
 
 		outfile, err := os.Create(templatedPath)
 		Expect(err).NotTo(HaveOccurred())
-
 		defer outfile.Close()
 
 		command = exec.Command("ytt", args...)

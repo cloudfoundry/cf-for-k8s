@@ -9,13 +9,9 @@ Usage:
   $(basename "$0")
 
 flags:
-  -d, --cf-domain
-      (required) Root DNS domain name for the CF install
-      (e.g. if CF API at api.inglewood.k8s-dev.relint.rocks, cf-domain = inglewood.k8s-dev.relint.rocks)
-
-  -g, --gcr-service-account-json
-      (optional) Filepath to the GCP Service Account JSON describing a service account
-      that has permissions to write to the project's container repository.
+  -v, --values-file
+      (required) Path to your "external" values file
+      (see the sample-cf-install-values directory for examples)
 
   -s, --silence-hack-warning
       (optional) Omit hack script warning message.
@@ -31,21 +27,12 @@ fi
 while [[ $# -gt 0 ]]; do
   i=$1
   case $i in
-  -d=* | --cf-domain=*)
-    DOMAIN="${i#*=}"
+  -v=* | --values-file=*)
+    VALUES_FILE="${i#*=}"
     shift
     ;;
-  -d | --cf-domain)
-    DOMAIN="${2}"
-    shift
-    shift
-    ;;
-  -g=* | --gcr-service-account-json=*)
-    GCP_SERVICE_ACCOUNT_JSON_FILE="${i#*=}"
-    shift
-    ;;
-  -g | --gcr-service-account-json)
-    GCP_SERVICE_ACCOUNT_JSON_FILE="${2}"
+  -v | --values-file)
+    VALUES_FILE="${2}"
     shift
     shift
     ;;
@@ -67,16 +54,16 @@ if [[ -z ${SILENCE_HACK_WARNING:=} ]]; then
   may change at any time without notice." 1>&2
 fi
 
-if [[ -z ${DOMAIN:=} ]]; then
-  echo "Missing required flag: -d / --cf-domain" >&2
+if [[ -z ${VALUES_FILE:=} ]]; then
+  echo "Missing required flag: -v / --values-file" >&2
   exit 1
 fi
 
-if [[ -n ${GCP_SERVICE_ACCOUNT_JSON_FILE:=} ]]; then
-  if [[ ! -r ${GCP_SERVICE_ACCOUNT_JSON_FILE} ]]; then
-    echo "Error: Unable to read GCP service account JSON from file: ${GCP_SERVICE_ACCOUNT_JSON_FILE}" >&2
-    exit 1
-  fi
+DOMAIN="$(yq -r '.system_domain' "${VALUES_FILE}")"
+
+if [[ -z ${DOMAIN:=} ]]; then
+  echo "Unable to extract system_domain from the specified values file" >&2
+  exit 1
 fi
 
 VARS_FILE="/tmp/${DOMAIN}/cf-vars.yaml"
@@ -114,24 +101,6 @@ variables:
   options:
     is_ca: true
     common_name: ca
-- name: system_certificate
-  type: certificate
-  options:
-    ca: default_ca
-    common_name: "*.${DOMAIN}"
-    alternative_names:
-    - "*.login.${DOMAIN}"
-    - "*.${DOMAIN}"
-    - "*.uaa.${DOMAIN}"
-    extended_key_usage:
-    - server_auth
-- name: workloads_certificate
-  type: certificate
-  options:
-    ca: default_ca
-    common_name: "*.apps.${DOMAIN}"
-    extended_key_usage:
-    - server_auth
 - name: internal_certificate
   type: certificate
   options:
@@ -140,13 +109,11 @@ variables:
     extended_key_usage:
     - client_auth
     - server_auth
-
 - name: uaa_jwt_policy_signing_key
   type: certificate
   options:
     ca: default_ca
     common_name: uaa_jwt_policy_signing_key
-
 - name: uaa_login_service_provider
   type: certificate
   options:
@@ -158,10 +125,6 @@ EOF
 cat <<EOF
 #@data/values
 ---
-system_domain: "${DOMAIN}"
-app_domains:
-#@overlay/append
-- "apps.${DOMAIN}"
 cf_admin_password: $(bosh interpolate ${VARS_FILE} --path=/cf_admin_password)
 
 blobstore:
@@ -176,18 +139,6 @@ capi:
   database:
     password: $(bosh interpolate ${VARS_FILE} --path=/capi_db_password)
     encryption_key: $(bosh interpolate ${VARS_FILE} --path=/capi_db_encryption_key)
-
-system_certificate:
-  #! This certificates and keys are base64 encoded and should be valid for *.system.cf.example.com
-  crt: $(bosh interpolate ${VARS_FILE} --path=/system_certificate/certificate | base64 | tr -d '\n')
-  key: $(bosh interpolate ${VARS_FILE} --path=/system_certificate/private_key | base64 | tr -d '\n')
-  ca: $(bosh interpolate ${VARS_FILE} --path=/system_certificate/ca | base64 | tr -d '\n')
-
-workloads_certificate:
-  #! This certificates and keys are base64 encoded and should be valid for *.apps.cf.example.com
-  crt: $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/certificate | base64 | tr -d '\n')
-  key: $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/private_key | base64 | tr -d '\n')
-  ca: $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/ca | base64 | tr -d '\n')
 
 internal_certificate:
   #! This certificates and keys are base64 encoded and should be valid for *.cf-system.svc.cluster.local
@@ -212,29 +163,3 @@ $(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/private_key
 $(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/certificate | sed -e 's#^#        #')
   login_secret: $(bosh interpolate "${VARS_FILE}" --path=/uaa_login_secret)
 EOF
-
-if [[ -n "${GCP_SERVICE_ACCOUNT_JSON_FILE:=}" ]]; then
-  cat <<EOF
-
-app_registry:
-  hostname: gcr.io
-  repository_prefix: gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON_FILE} --path=/project_id )/cf-workloads
-  username: _json_key
-  password: |
-$(cat ${GCP_SERVICE_ACCOUNT_JSON_FILE} | sed -e 's/^/    /')
-EOF
-
-fi
-
-if [[ -n "${K8S_ENV:-}" ]] ; then
-    k8s_env_path=$HOME/workspace/relint-ci-pools/k8s-dev/ready/claimed/"$K8S_ENV"
-    if [[ -f "$k8s_env_path" ]] ; then
-	      ip_addr=$(jq -r .lb_static_ip < "$k8s_env_path")
-        echo 1>&2 "Detected \$K8S_ENV environment var; writing \"load_balancer.static_ip: $ip_addr\" entry to end of output"
-        echo "
-load_balancer:
-  enable: true
-  static_ip: $ip_addr
-"
-    fi
-fi

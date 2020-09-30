@@ -15,8 +15,8 @@ export GO111MODULE=on
 export SMOKE_TEST_API_ENDPOINT="https://api.vcap.me"
 export SMOKE_TEST_APPS_DOMAIN=apps.vcap.me
 export SMOKE_TEST_USERNAME=admin
-# The yq command to interpolate the CF admin password needs to run on the Concourse worker
-export SMOKE_TEST_PASSWORD="$(yq -r '.cf_admin_password' cf-install-values/cf-install-values.yml)"
+# The cat command to retrieve the CF admin password needs to run on the Concourse worker
+export SMOKE_TEST_PASSWORD="$(cat env-metadata/cf-admin-password.txt)"
 export SMOKE_TEST_SKIP_SSL=true
 /tmp/kind/cf-for-k8s/hack/run-smoke-tests.sh
 EOT

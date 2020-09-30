@@ -127,22 +127,26 @@ jobs:
           args:
           - -ec
           - |
+            source cf-for-k8s-master/ci/helpers/generate-values.sh
+
             export KUBECONFIG=kube-config.yml
             cluster_name="$(cat terraform/name)"
-            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+            export GCP_SERVICE_ACCOUNT_JSON_FILE="${PWD}/gcp-service-account.json"
+            echo '((ci_k8s_gcp_service_account_json))' > "${GCP_SERVICE_ACCOUNT_JSON_FILE}"
             jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
             export DNS_DOMAIN="azure-$(cat terraform/name).((ci_k8s_root_domain))"
 
             echo "Generating install values..."
-            cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+            generate_values > cf-install-values.yml
             echo "load_balancer:" >> cf-install-values.yml
             echo "  static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
+            cf-for-k8s-master/hack/generate-internal-values.sh --values-file cf-install-values.yml > cf-internal-values.yml
 
             echo "Installing CF..."
-            kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+            kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml -f cf-internal-values.yml) -y
 
-            bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+            bosh interpolate --path /cf_admin_password cf-internal-values.yml > env-metadata/cf-admin-password.txt
             echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
             bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
 

@@ -12,6 +12,12 @@ releases:
   github_org: cloudfoundry
   vendir_github_release: true
   build_dir: ""
+- name: cf-k8s-networking
+  github_release: false
+  github_branch: release-candidate
+  github_uri: git@github.com:cloudfoundry/cf-k8s-networking
+  vendir_github_release: false
+  build_dir: ""
 - name: eirini-release
   github_release: true
   github_org: cloudfoundry-incubator

@@ -231,6 +231,7 @@ jobs:
       passed: [add-stability-cluster-lock]
       trigger: true
     - get: cf-for-k8s-gke-terraform-templates
+    - get: cf-for-k8s-ci
 
   - task: create-tf-vars-file
     file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
@@ -280,6 +281,7 @@ jobs:
       params:
         claim: stability
     - get: cf-for-k8s-gke-terraform-templates
+    - get: cf-for-k8s-ci
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
@@ -437,6 +439,7 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-rds-terraform-templates
+
   - task: create-rds-tf-vars-file
     file: cf-for-k8s-ci/ci/tasks/create-rds-tf-vars-file/task.yml
     params:

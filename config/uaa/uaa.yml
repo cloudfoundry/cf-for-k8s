@@ -1,3 +1,4 @@
+#@ load("@ytt:base64", "base64")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
 #@ load("@ytt:overlay", "overlay")
@@ -246,8 +247,8 @@ metadata:
   namespace: #@ system_namespace()
 type: Opaque
 data:
-  uaa.key: #@ data.values.internal_certificate.key
-  uaa.crt: #@ data.values.internal_certificate.crt
+  uaa.key: #@ base64.encode(data.values.internal_certificate.key)
+  uaa.crt: #@ base64.encode(data.values.internal_certificate.crt)
 
 #@ def uaa_client_credential_data(client_name, credential):
 oauth:

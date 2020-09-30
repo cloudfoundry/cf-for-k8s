@@ -8,8 +8,10 @@ app_domains: []
 #! password for admin user in plain text
 cf_admin_password:
 
-#! reserved static ip for istio LoadBalancer
-istio_static_ip: ""
+#! reserved static ip for LoadBalancer
+load_balancer:
+  enable: true
+  static_ip: ""
 
 system_certificate:
   #! Base64-encoded certificate for the wildcard
@@ -69,7 +71,6 @@ app_registry:
 
 remove_resource_requirements: false
 add_metrics_server_components: false
-enable_load_balancer: true
 use_external_dns_for_wildcard: false
 enable_automount_service_account_token: false
 metrics_server_prefer_internal_kubelet_address: false

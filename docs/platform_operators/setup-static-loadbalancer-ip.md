@@ -22,10 +22,12 @@ At end of this setup, you will be able to install cf-for-k8s with a static IP. Y
 
 The following instructions assume you have created `cf-install-values.yml`. You have the option of doing this before you install cf-for-k8s or after you installed cf-for-k8s on a cluster.
 
-1. Add `istio_static_ip` key and the reserved IP to your `cf-install-values.yml`
+1. Add `load_balancer.static_ip` key and the reserved IP to your `cf-install-values.yml`
 
     ```yaml
-    istio_static_ip: "<reserved ip address>"
+    load_balancer:
+      enable: true
+      static_ip: "<reserved ip address>"
     ```
 
 1. Follow the instructions from deploy doc to generate the final deploy yml using `ytt` and then `kapp` deploy cf-for-k8s to your cluster.

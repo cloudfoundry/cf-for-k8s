@@ -51,10 +51,12 @@ In addition to the Kubernetes version requirement in [Deploying CF for K8s](depl
    ```yaml
    add_metrics_server_components: true
    enable_automount_service_account_token: true
-   enable_load_balancer: false
    metrics_server_prefer_internal_kubelet_address: true
    remove_resource_requirements: true
    use_first_party_jwt_tokens: true
+   
+   load_balancer:
+     enable: false
    ```
 
 1. Once the `kapp deploy` succeeds, you should be able to run `cf api api.vcap.me --skip-ssl-validation`, etc

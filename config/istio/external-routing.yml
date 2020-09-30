@@ -43,8 +43,8 @@ metadata:
 #! This will set overlay a static IP for the istio load balancer.
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "istio-ingressgateway"}})
 ---
-#@ if data.values.istio_static_ip:
+#@ if data.values.load_balancer.static_ip:
 spec:
   #@overlay/match missing_ok=True
-  loadBalancerIP: #@ data.values.istio_static_ip
+  loadBalancerIP: #@ data.values.load_balancer.static_ip
 #@ end

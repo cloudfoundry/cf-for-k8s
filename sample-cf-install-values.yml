@@ -107,8 +107,10 @@ app_registry:
 
 remove_resource_requirements: true
 add_metrics_server_components: true
-enable_load_balancer: false
 use_external_dns_for_wildcard: true
 enable_automount_service_account_token: true
 metrics_server_prefer_internal_kubelet_address: true
 use_first_party_jwt_tokens: true
+
+load_balancer:
+  enable: false

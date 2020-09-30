@@ -8,10 +8,12 @@ cf-for-k8s/hack/generate-values.sh -d vcap.me -g gcp-service-account.json > cf-i
 cat <<EOT >> cf-install-values/cf-install-values.yml
 add_metrics_server_components: true
 enable_automount_service_account_token: true
-enable_load_balancer: false
 metrics_server_prefer_internal_kubelet_address: true
 remove_resource_requirements: true
 use_first_party_jwt_tokens: true
+
+load_balancer:
+  enable: false
 EOT
 
 echo "Uploading cf-for-k8s repo..."

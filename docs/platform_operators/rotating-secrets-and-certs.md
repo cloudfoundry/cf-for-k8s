@@ -1,3 +1,9 @@
+# Rotating Secrets
+Most secrets in cf-for-k8s can be rotated by simply changing the values in your `cf-values.yml` file and running a standard deploy using ytt and kapp. The rotation is complete when the kapp deploy succeeds.
+
+## Exceptions
+As of September 2020, it is currently not possible to rotate `app_registry` credentials. Future work on this will be tracked by https://www.pivotaltracker.com/story/show/173090115
+
 ## Rotating Ingress Certificates
 To rotate the application domain certificate or system domain certificate, you
 can do the following:

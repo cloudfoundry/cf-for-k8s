@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: 'ci: deploy latest networking is optional with flag...'
-      sha: 94b0430716f9321f9fef4d5ffaafdc21cce0044c
+      commitTitle: 'ci: don''t consider cf deployed until the api can be targeted...'
+      sha: 68b2328307cad2e42b5a48f4181c6b9c4aaf3dd0
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

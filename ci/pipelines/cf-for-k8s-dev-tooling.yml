@@ -245,7 +245,7 @@ jobs:
       - name: tf-vars
       params:
         SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
-        DOMAIN: k8s-dev.relint.rocks
+        DOMAIN: cf-for-k8s.relint.rocks
       run:
         path: /bin/bash
         args:
@@ -258,7 +258,7 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat stability-pool/name)"
           env_dns_domain = "$(cat stability-pool/name).${DOMAIN}"
-          dns_zone_name = "k8s-dev-relint-rocks"
+          dns_zone_name = "cf-for-k8s-relint-rocks"
           EOT
 
   - put: terraform

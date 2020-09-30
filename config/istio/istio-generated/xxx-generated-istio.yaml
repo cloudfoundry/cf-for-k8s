@@ -8631,7 +8631,7 @@ spec:
         - mountPath: /etc/istio/ingressgateway-ca-certs
           name: ingressgateway-ca-certs
           readOnly: true
-      - image: gcr.io/cf-networking-images/cf-k8s-networking/fluentbit@sha256:636813e4dfa80d615ecba1667d2e0f94c28096010bc190e177134b46e1e03eea
+      - image: gcr.io/cf-networking-images/cf-k8s-networking/fluentbit@sha256:8e962f21b7475fad33c37019b748ea5a99fcd1c2eb5030161561c087948331e9
         name: fluent-bit
         resources:
           limits:

@@ -31,6 +31,7 @@ ACCESS_KEY=$(yq -r '.blobstore.access_key_id' <<< "$CF_VARS")
 SECRET_ACCESS_KEY=$(yq -r '.blobstore.secret_access_key' <<< "$CF_VARS")
 BUCKET=$(yq -r '.blobstore.resource_directory_key' <<< "$CF_VARS")
 SUFFIX=$(openssl rand -hex 12)
+TMP=$(mktemp -d -t smoke-XXXXXXXXXX)
 
 IMAGE="minio/mc"
 
@@ -45,7 +46,10 @@ cf create-space space
 cf target -o org -s space
 
 echo "Pushing ${APP_NAME}"
-cf push ${APP_NAME} -p cf-for-k8s/tests/smoke/assets/test-node-app
+trap "{ rm -rf $TMP; }" EXIT
+cp -R cf-for-k8s/tests/smoke/assets/test-node-app/* $TMP
+dd if=/dev/urandom of=$TMP/a-big-file bs=64k count=1
+cf push ${APP_NAME} -p $TMP
 echo "Verify availability of ${APP_NAME}"
 curl -k https://${APP_NAME}.apps.${DNS_DOMAIN}
 echo "Confirmed that app is available"

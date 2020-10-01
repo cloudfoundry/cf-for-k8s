@@ -1,4 +1,44 @@
 #@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+#@ aggregate_drain_config = ""
+
+#@ for drain in data.values.app_log_destinations:
+#@   if hasattr(drain, "insecure_disable_tls_validation") and hasattr(drain, "transport") and drain.insecure_disable_tls_validation and drain.transport == "tcp":
+#@     assert.fail("transport: tcp and insecure_disable_tls_validation cannot be set for the same app log destination")
+#@   end
+
+#@   if hasattr(drain, "transport") and drain.transport != "tcp" and drain.transport != "tls":
+#@     assert.fail("Unsupported transport: only tcp or tls are allowed")
+#@   end
+
+#@   aggregate_drain_config = aggregate_drain_config + "<store ignore_error>\n"
+#@   aggregate_drain_config = aggregate_drain_config + "  @type syslog_rfc5424\n"
+#@   aggregate_drain_config = aggregate_drain_config + "  host " + drain.host + "\n"
+#@   aggregate_drain_config = aggregate_drain_config + "  port " + str(drain.port) + "\n"
+
+#@   if hasattr(drain, "transport"):
+#@     aggregate_drain_config = aggregate_drain_config + "  transport " + drain.transport + "\n"
+#@   else:
+#@     aggregate_drain_config = aggregate_drain_config + "  transport tls\n"
+#@   end
+
+#@   if hasattr(drain, "insecure_disable_tls_validation") and drain.insecure_disable_tls_validation:
+#@     aggregate_drain_config = aggregate_drain_config + "  insecure true\n"
+#@   end
+
+#@   aggregate_drain_config = aggregate_drain_config + "  <format>\n"
+#@   aggregate_drain_config = aggregate_drain_config + "    @type syslog_rfc5424\n"
+#@   aggregate_drain_config = aggregate_drain_config + "    proc_id_field instance_id\n"
+#@   aggregate_drain_config = aggregate_drain_config + "    app_name_field app_id\n"
+#@   aggregate_drain_config = aggregate_drain_config + "    structured_data_field structured_data\n"
+#@   aggregate_drain_config = aggregate_drain_config + "  </format>\n"
+#@   aggregate_drain_config = aggregate_drain_config + "  <buffer>\n"
+#@   aggregate_drain_config = aggregate_drain_config + "    @type memory\n"
+#@   aggregate_drain_config = aggregate_drain_config + "    flush_mode immediate\n"
+#@   aggregate_drain_config = aggregate_drain_config + "    flush_thread_count 8\n"
+#@   aggregate_drain_config = aggregate_drain_config + "  </buffer>\n"
+#@   aggregate_drain_config = aggregate_drain_config + "</store>\n"
+#@ end
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -6,6 +46,8 @@ metadata:
   name: fluentd-config
   namespace: #@ data.values.system_namespace
 data:
+  aggregate_drains.conf: #@ aggregate_drain_config
+  #@yaml/text-templated-strings
   fluentd.conf: |
     # Inputs
     <source>
@@ -17,10 +59,12 @@ data:
     <source>
       @type tail
       @id in_tail_container_logs
-      path /var/log/containers/*.log
+      path /var/log/containers/*_cf-workloads_*.log,/var/log/containers/*_cf-workloads-staging_*.log
+      exclude_path /var/log/containers/*istio*.log,/var/log/containers/*fluentd*.log
       pos_file /var/log/fluentd-containers.log.pos
       tag kubernetes.*
       refresh_interval 1
+      read_from_head true
       <parse>
         @type multi_format
         <pattern>
@@ -33,25 +77,30 @@ data:
           time_format %Y-%m-%dT%H:%M:%S.%N%:z
         </pattern>
       </parse>
-      read_from_head true
     </source>
 
-    # Filters
-    <match kubernetes.var.log.containers.fluentd**>
-      @type null
-    </match>
+    # expose metrics in prometheus format
+    <source>
+      @type prometheus
+      bind 0.0.0.0
+      port (@= data.values.fluentd.prometheus.port @)
+      metrics_path (@= data.values.fluentd.prometheus.path @)
+    </source>
+
+    <source>
+      @type prometheus_output_monitor
+      interval 10
+      <labels>
+        hostname ${hostname}
+      </labels>
+    </source>
 
     <filter kubernetes.**>
       @type kubernetes_metadata
-    </filter>
-
-    <filter kubernetes.**>
-      @type grep
-
-      <exclude>
-        key $.kubernetes.container_name
-        pattern /.*istio.*/
-      </exclude>
+      skip_container_metadata true
+      skip_master_url true
+      skip_namespace_metadata true
+      watch false
     </filter>
 
     <filter kubernetes.**>
@@ -59,7 +108,7 @@ data:
       enable_ruby
       <record>
         app_id ${record.dig("kubernetes", "labels", "cloudfoundry_org/app_guid")}
-        instance_id ${record["kubernetes"]["pod_id"]}
+        instance_id ${record.dig("kubernetes","pod_id")}
         structured_data \[tags@47450 source_type="${record.dig("kubernetes", "labels", "cloudfoundry_org/source_type") == "APP" ? record.dig("kubernetes", "labels", "cloudfoundry_org/source_type") + "/PROC/" + record.dig("kubernetes", "labels", "cloudfoundry_org/process_type")&.upcase : record.dig("kubernetes", "labels", "cloudfoundry_org/source_type")}"\]
       </record>
     </filter>
@@ -81,19 +130,24 @@ data:
     </filter>
 
     <match **>
-      @type syslog_rfc5424
-      host log-cache-syslog
-      port 8082
-      transport tcp
-      <format>
+      @type copy
+      <store ignore_error>
         @type syslog_rfc5424
-        proc_id_field instance_id
-        app_name_field app_id
-        structured_data_field structured_data
-      </format>
+        host log-cache-syslog
+        port 8082
+        transport tcp
+        <format>
+          @type syslog_rfc5424
+          proc_id_field instance_id
+          app_name_field app_id
+          structured_data_field structured_data
+        </format>
 
-      <buffer>
-        @type memory
-        flush_mode immediate
-      </buffer>
+        <buffer>
+          @type memory
+          flush_mode immediate
+          flush_thread_count 8
+        </buffer>
+      </store>
+      @include /fluentd/etc/aggregate_drains.conf
     </match>

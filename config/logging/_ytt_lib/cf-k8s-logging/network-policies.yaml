@@ -1,0 +1,100 @@
+#@ load("@ytt:data", "data")
+
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: uaa-log-cache
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Ingress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: uaa
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: log-cache
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: cf-api-server-log-cache
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Ingress
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cf-api-server
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: log-cache
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    ports:
+      - protocol: TCP
+        port: 80
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: log-cache-network-policy
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app: log-cache
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          istio: ingressgateway
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app: fluentd
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: uaa
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-server
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: fluentd-network-policy
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Egress
+  podSelector:
+    matchLabels:
+      app: fluentd
+  egress:
+  - {}

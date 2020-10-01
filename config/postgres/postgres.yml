@@ -1,5 +1,4 @@
 #@ load("@ytt:assert", "assert")
-#@ load("@ytt:base64", "base64")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
 #@ load("@ytt:overlay", "overlay")
@@ -29,11 +28,11 @@ kind: Secret
 metadata:
   name: cf-db-admin-secret
   namespace: cf-db
-data:
+stringData:
   #@ if len(data.values.cf_db.admin_password) == 0:
   #@  assert.fail("cf_db.admin_password cannot be empty")
   #@ end
-  postgresql-password: #@ base64.encode(data.values.cf_db.admin_password)
+  postgresql-password: #@ data.values.cf_db.admin_password
 
 ---
 apiVersion: v1
@@ -41,23 +40,23 @@ kind: Secret
 metadata:
   name: cf-db-credentials
   namespace: cf-db
-data:
+stringData:
   #@ if len(data.values.capi.database.user) == 0:
   #@  assert.fail("capi.database.user cannot be empty")
   #@ end
-  ccdb-username: #@ base64.encode(data.values.capi.database.user)
+  ccdb-username: #@ data.values.capi.database.user
   #@ if len(data.values.capi.database.password) == 0:
   #@  assert.fail("capi.database.password cannot be empty")
   #@ end
-  ccdb-password: #@ base64.encode(data.values.capi.database.password)
+  ccdb-password: #@ data.values.capi.database.password
   #@ if len(data.values.uaa.database.user) == 0:
   #@  assert.fail("uaa.database.user cannot be empty")
   #@ end
-  uaadb-username: #@ base64.encode(data.values.uaa.database.user)
+  uaadb-username: #@ data.values.uaa.database.user
   #@ if len(data.values.uaa.database.password) == 0:
   #@  assert.fail("uaa.database.password cannot be empty")
   #@ end
-  uaadb-password: #@ base64.encode(data.values.uaa.database.password)
+  uaadb-password: #@ data.values.uaa.database.password
 
 #@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"cf-db-postgresql-init-scripts"}})
 ---

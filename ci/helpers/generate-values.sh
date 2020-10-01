@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-DOMAIN=${DNS_DOMAIN}
-VARS_FILE="/tmp/${DOMAIN}/cf-vars.yaml"
-
 function generate_values() {
+  DOMAIN=${DNS_DOMAIN}
+  VARS_FILE="/tmp/${DOMAIN}/cf-vars.yaml"
+
   # Make sure bosh binary exists
   bosh --version >/dev/null
 

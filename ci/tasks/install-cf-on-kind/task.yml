@@ -23,6 +23,7 @@ params:
   METRICS_SERVER_PREFER_INTERNAL_KUBELET_ADDRESS: true
   REMOVE_RESOURCE_REQUIREMENTS: true
   USE_FIRST_PARTY_JWT_TOKENS: true
+  DNS_DOMAIN: vcap.me
 
 run:
   path: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.sh

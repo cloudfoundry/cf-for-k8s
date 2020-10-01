@@ -1,6 +1,6 @@
 #@ load("@ytt:overlay", "overlay")
 
-#! This overlays are required to make Istio compatible with kapp deploy
+#! These overlays are required to make Istio compatible with kapp deploy
 
 #! remove empty caBundle key to avoid having kapp consider it
 #! as a change from what cluster automatically fills in

@@ -33,6 +33,7 @@
 | app_registry.password | Image registry password | Yes | no value | Foobrizzle |  |
 | remove_resource_requirements | Remove resource requirements for use on smaller environments | No | false |  |  |
 | add_metrics_server_components | Deploy metrics server for clusters that do not include them by default | No | false |  |  |
+| allow_prometheus_metrics_access | Allows any Prometheus server scrape access to metrics endpoints | No | false |  |  |
 | use_external_dns_for_wildcard | Enable external-dns integration on the system ingress Service | No | false |  | |
 | enable_automount_service_account_token |  | No | false |  |  |
 | metrics_server_prefer_internal_kubelet_address |  | No | false |  |  |

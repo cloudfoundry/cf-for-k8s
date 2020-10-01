@@ -8,8 +8,8 @@ data:
   uaa.yml:
 
 internal_certificate:
-  key:
-  crt:
+  key: internal-cert-key
+  crt: internal-cert
 
 uaa:
   login:

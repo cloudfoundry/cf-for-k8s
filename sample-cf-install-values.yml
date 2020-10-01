@@ -35,7 +35,7 @@ gateway:
   https_only: true
 
 #! Notes about X.509 certificates:
-#! - the certificates and keys are base64 encoded
+#! - all of the certs should include the common name in the list of subject alternative names
 #! - all of the certs should have KeyUsage that includes server and client authentication
 
 #! certificate, private key, and certificate authority used to identify the CF installation (i.e. the ingress gateway).
@@ -68,7 +68,6 @@ uaa:
   admin_client_secret: uaaadminclientsecret
   #! JWT policy configuration
   jwt_policy:
-    #! This private key should NOT be base64 encoded
     signing_key: jwt_policy_signing_key
   #! Encyption key for encrypting data stored in the database
   encryption_key:
@@ -76,7 +75,6 @@ uaa:
   #! Configuration for UAA's SAML provider
   login:
     service_provider:
-      #! This certificate/key should NOT be base64 encoded
       key: login_service_provider_key
       certificate: login_service_provider_certificate
 

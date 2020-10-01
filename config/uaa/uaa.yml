@@ -245,7 +245,7 @@ metadata:
   name: uaa-certs
   namespace: #@ system_namespace()
 type: Opaque
-data:
+stringData:
   uaa.key: #@ data.values.internal_certificate.key
   uaa.crt: #@ data.values.internal_certificate.crt
 

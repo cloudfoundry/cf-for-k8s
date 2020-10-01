@@ -14,21 +14,21 @@ load_balancer:
   static_ip: ""
 
 system_certificate:
-  #! Base64-encoded certificate for the wildcard
-  #! subdomain of the system domain (e.g., CN=*.system.cf.example.com)
+  #! Certificate for the wildcard subdomain of the system domain
+  #! For example, CN=*.system.cf.example.com
   crt: ""
-  #! Base64-encoded private key for the system certificate
+  #! Private key for the system certificate
   key: ""
-  #! Base64-encoded CA certificate used to sign the system certifcate
+  #! CA certificate used to sign the system certifcate
   ca: ""
 
 workloads_certificate:
-  #! Base64-encoded certificate for the wildcard
-  #! subdomain of the system domain (e.g., CN=*.apps.cf.example.com)
+  #! Certificate for the wildcard subdomain of the apps domain
+  #! For example, CN=*.apps.cf.example.com
   crt: ""
-  #! Base64-encoded private key for the workloads certificate
+  #! Private key for the workloads certificate
   key: ""
-  #! Base64-encoded CA certificate used to sign the workloads certifcate
+  #! CA certificate used to sign the workloads certifcate
   ca: ""
 
 #! When true, automatically upgrades incoming HTTP connections to HTTPS

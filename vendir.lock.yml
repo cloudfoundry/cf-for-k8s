@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: 'ci: don''t consider cf deployed until the api can be targeted...'
-      sha: 68b2328307cad2e42b5a48f4181c6b9c4aaf3dd0
+      commitTitle: 'ci: fix pr body...'
+      sha: 9f4dd3bc8ec146a2f0d66e3077d13cb2c0fdbda7
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

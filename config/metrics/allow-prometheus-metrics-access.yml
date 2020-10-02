@@ -1,0 +1,15 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if data.values.allow_prometheus_metrics_access:
+#! Removes Istio-proxy access restriction towards Prometheus metrics endpoint/port.
+#! Allows any Prometheus or other component to scrape the metrics endpoint.
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"metric-proxy"}}), expects=1
+---
+spec:
+  template:
+    metadata:
+      annotations:
+        #@overlay/match missing_ok=True
+        traffic.sidecar.istio.io/excludeInboundPorts: "9090"
+#@ end

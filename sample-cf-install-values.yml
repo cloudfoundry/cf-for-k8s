@@ -105,6 +105,7 @@ app_registry:
 
 remove_resource_requirements: true
 add_metrics_server_components: true
+allow_prometheus_metrics_access: true
 use_external_dns_for_wildcard: true
 enable_automount_service_account_token: true
 metrics_server_prefer_internal_kubelet_address: true

@@ -1,0 +1,5 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+add_metrics_server_components:
+metrics_server_prefer_internal_kubelet_address:

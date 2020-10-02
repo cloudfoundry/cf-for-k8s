@@ -1,4 +1,5 @@
 #@data/values
+#@overlay/match-child-defaults missing_ok=True
 ---
 blobstore:
   endpoint: ""

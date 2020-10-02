@@ -1,4 +1,3 @@
-#@ load("@ytt:base64", "base64")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
 #@ load("@ytt:overlay", "overlay")
@@ -26,9 +25,12 @@ metadata:
 
 #@overlay/match by=overlay.subset({"kind": "Secret", "metadata": {"name": "cf-blobstore-minio"}})
 ---
+#@overlay/match missing_ok=True
+stringData:
+  accesskey: #@ must_exist(data.values, "blobstore.access_key_id")
+  secretkey: #@ must_exist(data.values, "blobstore.secret_access_key")
+#@overlay/remove
 data:
-  accesskey: #@ base64.encode(must_exist(data.values, "blobstore.access_key_id"))
-  secretkey: #@ base64.encode(must_exist(data.values, "blobstore.secret_access_key"))
 
 --- #@ template.replace(overlay.apply(library.get("minio").eval(), add_cf_blobstore_namespace()))
 

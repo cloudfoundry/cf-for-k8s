@@ -5,12 +5,12 @@
 | cf_admin_password | password for admin user in plain text | Yes | no value | 2fK2zLXPgvmsESrB87sADZQvdLeY5Kv4 | |
 | load_balancer.enable | Enable IaaS provisioned load balancer | No | true |  |  |
 | load_balancer.static_ip | reserved static ip for LoadBalancer | No | no value | "192.168.0.0" | |
-| system_certificate.crt | Base64-encoded certificate for the wildcard - subdomain of the system domain | Yes | no value | CN=*.system.cf.example.com |  |
-| system_certificate.key | Base64-encoded private key for the system certificate | Yes | no value |  |  |
-| system_certificate.ca | Base64-encoded CA certificate used to sign the system certifcate | Yes | no value |  |  |
-| workloads_certificate.crt | Base64-encoded certificate for the wildcard - subdomain of the system domain | Yes | no value | CN=*.apps.cf.example.com |  |
-| workloads_certificate.key | Base64-encoded private key for the workloads certificate | Yes | no value |  |  |
-| workloads_certificate.ca | Base64-encoded CA certificate used to sign the workloads certifcate | Yes | no value |  |  |
+| system_certificate.crt | Certificate for the wildcard - subdomain of the system domain | Yes | no value | CN=*.system.cf.example.com |  |
+| system_certificate.key | Private key for the system certificate | Yes | no value |  |  |
+| system_certificate.ca | CA certificate used to sign the system certifcate | Yes | no value |  |  |
+| workloads_certificate.crt | Certificate for the wildcard - subdomain of the system domain | Yes | no value | CN=*.apps.cf.example.com |  |
+| workloads_certificate.key | Private key for the workloads certificate | Yes | no value |  |  |
+| workloads_certificate.ca | CA certificate used to sign the workloads certifcate | Yes | no value |  |  |
 | gateway.https_only | When true, automatically upgrades incoming HTTP connections to HTTPS gateway | Yes | true |  |  |
 | capi.database.adapter | database adapter for use by capi | Yes | no value | postgres | mysql |
 | capi.database.encryption_key | key used to encrypt database records at rest | Yes | no value | YqEgP7KxSjUmQTSX9drTkQLye8wrqrP4 |  |

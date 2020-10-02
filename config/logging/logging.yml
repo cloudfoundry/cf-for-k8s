@@ -1,7 +1,5 @@
-#@ load("@ytt:base64", "base64")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
-#@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("/namespaces.star", "system_namespace")
 
@@ -12,4 +10,3 @@ system_namespace: #@ system_namespace()
 
 #@ logging = library.get("cf-k8s-logging")
 --- #@ template.replace(logging.with_data_values(logging_values()).eval())
-

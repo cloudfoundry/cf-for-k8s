@@ -1,4 +1,3 @@
-#@ load("@ytt:data", "data")
 #@ load("/namespaces.star", "workloads_namespace")
 
 #@ def build_version():

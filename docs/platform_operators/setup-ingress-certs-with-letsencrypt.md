@@ -38,11 +38,6 @@ _acme-challenge.SYS_DOMAIN.	TXT    kyfxzsAirB79lsk173jkdlamxiryqloy
 dig _acme-challenge.$SYS_DOMAIN TXT
 ```
 5. In the certbot console, press enter once the TXT change is propagated to nameservers. `certbot` will verify that you own the server and create the necessary files.
-6. Base64 encode the generated fullchain cert and private key and then remove the line breaks
-```
-openssl base64 -in /tmp/certbot/cfg/live/$SYS_DOMAIN/fullchain.pem | tr -d '\n' > /tmp/sys-fullchain.pem
-openssl base64 -in /tmp/certbot/cfg/live/$SYS_DOMAIN/privkey.pem | tr -d '\n' > /tmp/sys-privkey.pem
-```
 
 ### Apps domain
 Let's now create apps domain certs
@@ -63,11 +58,6 @@ certbot --server https://acme-v02.api.letsencrypt.org/directory -d "*.$APPS_DOMA
 # example of the TXT in your DNS
 _acme-challenge.$APPS_DOMAIN.	TXT    kyfxzsAirB79lsk173jkdlamxiryqloy
 ```
-4. Base64 encode the generated fullchain cert and private key and then remove the line breaks
-```
-openssl base64 -in /tmp/certbot/cfg/live/$APPS_DOMAIN/fullchain.pem | tr -d '\n' > /tmp/apps-fullchain.pem
-openssl base64 -in /tmp/certbot/cfg/live/$APPS_DOMAIN/privkey.pem | tr -d '\n' > /tmp/apps-privkey.pem
-```
 
 ### Update cf-values yaml
 The following instructions assume you have created `cf-install-values.yml`. Please ensure to copy the file contents into the variables as is.
@@ -77,8 +67,8 @@ The following instructions assume you have created `cf-install-values.yml`. Plea
     Lookup `system_certificate` in `cf-install-values.yml`. You should config variables `crt`, `key` and `ca`. Follow the instructions below,
     ```yaml
     system_certificate:
-      crt: <replace this with the contents of the file /tmp/sys-fullchain.pem>
-      key: <replace this with the contents of the file /tmp/sys-privkey.pem>
+      crt: <replace this with the contents of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/fullchain.pem>
+      key: <replace this with the contents of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/privkey.pem>
       ca: "" #! replace whatever old value with empty string
     ```
     Your final output for `system_certificate` will look something like
@@ -94,8 +84,8 @@ The following instructions assume you have created `cf-install-values.yml`. Plea
    The `workloads_certificate` has sub-keys `crt`, `key`, `ca` under it.
    ```yaml
    workloads_certificate:
-      crt: <replace this with the contents of the file /tmp/apps-fullchain.pem>
-      key: <replace this with the contents of the file /tmp/apps-privkey.pem>
+      crt: <replace this with the contents of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/fullchain.pem>
+      key: <replace this with the contents of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/privkey.pem>
       ca: "" #! replace whatever old value with empty string
    ```
 

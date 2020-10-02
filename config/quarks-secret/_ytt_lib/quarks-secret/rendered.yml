@@ -5,6 +5,68 @@ metadata:
   name: cf-quarks-secret
   namespace: cf-system
 ---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: quarkssecrets.quarks.cloudfoundry.org
+spec:
+  conversion:
+    strategy: None
+  group: quarks.cloudfoundry.org
+  names:
+    kind: QuarksSecret
+    listKind: QuarksSecretList
+    plural: quarkssecrets
+    shortNames:
+    - qsec
+    - qsecs
+    singular: quarkssecret
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              copies:
+                description: A list of namespaced names where to copy generated secrets
+                items:
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
+                type: array
+              request:
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+              secretLabels:
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+              secretName:
+                description: The name of the generated secret
+                minLength: 1
+                type: string
+              type:
+                description: 'What kind of secret to generate: password, certificate,
+                  ssh, rsa, basic-auth'
+                minLength: 1
+                type: string
+            required:
+            - secretName
+            - type
+            type: object
+          status:
+            properties:
+              generated:
+                type: boolean
+              lastReconcile:
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
@@ -37,14 +99,6 @@ rules:
   - certificatesigningrequests/approval
   verbs:
   - create
-  - update
-- apiGroups:
-  - apiextensions.k8s.io
-  resources:
-  - customresourcedefinitions
-  verbs:
-  - create
-  - get
   - update
 - apiGroups:
   - ""
@@ -117,10 +171,9 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: v1.0.692
-          Type: resolved
-          URL: cloudfoundry/quarks-secret:v1.0.692
-        URL: index.docker.io/cloudfoundry/quarks-secret@sha256:4636fde42cd678823daea530f465389e3e92740b8fdfe6a6dca45aec838b37cd
+        - Type: preresolved
+          URL: index.docker.io/cloudfoundry/quarks-secret@sha256:c8eca9268cfd1c66966ccfd2dab7151067fdeca483bad62865affe04a09980a4
+        URL: index.docker.io/cloudfoundry/quarks-secret@sha256:c8eca9268cfd1c66966ccfd2dab7151067fdeca483bad62865affe04a09980a4
   name: cf-quarks-secret
   namespace: cf-system
 spec:
@@ -138,7 +191,7 @@ spec:
         - quarks-secret
         env:
         - name: APPLY_CRD
-          value: "true"
+          value: "false"
         - name: LOG_LEVEL
           value: debug
         - name: MAX_WORKERS
@@ -157,7 +210,7 @@ spec:
               fieldPath: metadata.name
         - name: OPERATOR_NAME
           value: quarks-secret
-        image: index.docker.io/cloudfoundry/quarks-secret@sha256:4636fde42cd678823daea530f465389e3e92740b8fdfe6a6dca45aec838b37cd
+        image: index.docker.io/cloudfoundry/quarks-secret@sha256:c8eca9268cfd1c66966ccfd2dab7151067fdeca483bad62865affe04a09980a4
         imagePullPolicy: IfNotPresent
         name: quarks-secret
         ports:

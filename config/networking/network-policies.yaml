@@ -492,6 +492,23 @@ spec:
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
+  name: quarks
+  namespace: #@ system_namespace()
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      name: quarks-secret
+  ingress:
+  - {}
+  egress:
+  - {}
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
   name: eirini
   namespace: #@ system_namespace()
 spec:

@@ -7,3 +7,5 @@ image:
 
 global:
   monitoredID: cf-quarks-secret
+
+applyCRD: false

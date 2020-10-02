@@ -179,7 +179,6 @@ capi:
   cf_api_backup_metadata_generator_client_secret: $(bosh interpolate ${VARS_FILE} --path=/cf_api_backup_metadata_generator_client_secret)
   database:
     password: $(bosh interpolate ${VARS_FILE} --path=/capi_db_password)
-    encryption_key: $(bosh interpolate ${VARS_FILE} --path=/capi_db_encryption_key)
 
 system_certificate:
   #! This certificates and keys should be valid for *.system.cf.example.com

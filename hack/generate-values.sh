@@ -130,6 +130,8 @@ variables:
   options:
     ca: default_ca
     common_name: "*.apps.${DOMAIN}"
+    alternative_names:
+    - "*.apps.${DOMAIN}"
     extended_key_usage:
     - server_auth
 - name: internal_certificate
@@ -137,6 +139,8 @@ variables:
   options:
     ca: default_ca
     common_name: "*.cf-system.svc.cluster.local"
+    alternative_names:
+    - "*.cf-system.svc.cluster.local"
     extended_key_usage:
     - client_auth
     - server_auth

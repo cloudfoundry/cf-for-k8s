@@ -267,12 +267,6 @@ spec:
           cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
     - podSelector:
         matchLabels:
-          app: log-cache
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-    - podSelector:
-        matchLabels:
           app.kubernetes.io/name: cf-api-server
       namespaceSelector:
         matchLabels:
@@ -318,12 +312,6 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-    - podSelector:
-        matchLabels:
-          app: log-cache
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
     ports:
       - protocol: TCP
         port: 80
@@ -348,7 +336,7 @@ spec:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
     ports:
     - protocol: TCP
-      port: 9023  
+      port: 9023
   egress:
   - {}
 ---
@@ -635,47 +623,6 @@ spec:
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: log-cache
-  namespace: #@ system_namespace()
-spec:
-  policyTypes:
-  - Ingress
-  - Egress
-  podSelector:
-    matchLabels:
-      app: log-cache
-  ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          istio: ingressgateway
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
-    - podSelector:
-        matchLabels:
-          app: fluentd
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-  egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: uaa
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-    - podSelector:
-        matchLabels:
-          app.kubernetes.io/name: cf-api-server
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
----
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
   name: metric-proxy
   namespace: #@ system_namespace()
 spec:
@@ -704,7 +651,6 @@ metadata:
 spec:
   policyTypes:
   - Ingress
-  - Egress
   podSelector:
     matchLabels:
       app: fluentd
@@ -740,5 +686,3 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
-  egress:
-  - {}

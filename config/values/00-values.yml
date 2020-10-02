@@ -5,6 +5,7 @@ system_domain:
 #! list of app domains, e.g., ["apps.cf.example.com"]
 app_domains: []
 
+app_log_destinations: []
 #! password for admin user in plain text
 cf_admin_password:
 

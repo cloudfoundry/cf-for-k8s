@@ -101,8 +101,6 @@ variables:
   type: password
 - name: uaa_login_secret
   type: password
-- name: uaa_admin_client_secret
-  type: password
 - name: uaa_encryption_key_passphrase
   type: password
 - name: cf_api_controllers_client_secret
@@ -210,7 +208,6 @@ $(bosh interpolate ${VARS_FILE} --path=/internal_certificate/ca | grep -Ev '^$' 
 uaa:
   database:
     password: $(bosh interpolate ${VARS_FILE} --path=/uaa_db_password)
-  admin_client_secret: $(bosh interpolate ${VARS_FILE} --path=/uaa_admin_client_secret)
   jwt_policy:
     signing_key: |
 $(bosh interpolate "${VARS_FILE}" --path=/uaa_jwt_policy_signing_key/private_key | grep -Ev '^$' | sed -e 's/^/      /')

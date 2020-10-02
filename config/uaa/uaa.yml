@@ -34,7 +34,7 @@
 
 #@ def uaa_values():
 admin:
-  client_secret: #@ data.values.uaa.admin_client_secret
+  client_secret: "TODO"
 
 database:
   url: #@ uaa_db_jdbc_url()
@@ -251,6 +251,11 @@ type: Opaque
 stringData:
   uaa.key: #@ data.values.internal_certificate.key
   uaa.crt: #@ data.values.internal_certificate.crt
+
+#! Remove UAA-templated admin client-secret so we can generate the credential w/ Quarks
+#@overlay/match by=overlay.subset({"kind":"Secret", "metadata":{"name":"uaa-admin-client-credentials"}})
+#@overlay/remove
+---
 
 #@ def uaa_client_credential_data(client_name, credential):
 oauth:

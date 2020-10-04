@@ -60,15 +60,17 @@ _acme-challenge.$APPS_DOMAIN.	TXT    kyfxzsAirB79lsk173jkdlamxiryqloy
 ```
 
 ### Update cf-values yaml
-The following instructions assume you have created `cf-install-values.yml`. Please ensure to copy the file contents into the variables as is.
+The following instructions assume you have created `cf-install-values.yml`. Please ensure to base64 the 4 files that were created in above steps into the variables below.
+
+> Example of how to base64: `cat /tmp/certbot/cfg/live/$SYS_DOMAIN/fullchain.pem | base64`
 
 1. **Update system certificate values**
 
     Lookup `system_certificate` in `cf-install-values.yml`. You should config variables `crt`, `key` and `ca`. Follow the instructions below,
     ```yaml
     system_certificate:
-      crt: <replace this with the contents of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/fullchain.pem>
-      key: <replace this with the contents of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/privkey.pem>
+      crt: <replace this with the base64 of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/fullchain.pem>
+      key: <replace this with the base64 of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/privkey.pem>
       ca: "" #! replace whatever old value with empty string
     ```
     Your final output for `system_certificate` will look something like
@@ -84,8 +86,8 @@ The following instructions assume you have created `cf-install-values.yml`. Plea
    The `workloads_certificate` has sub-keys `crt`, `key`, `ca` under it.
    ```yaml
    workloads_certificate:
-      crt: <replace this with the contents of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/fullchain.pem>
-      key: <replace this with the contents of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/privkey.pem>
+      crt: <replace this with the base64 of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/fullchain.pem>
+      key: <replace this with the base64 of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/privkey.pem>
       ca: "" #! replace whatever old value with empty string
    ```
 

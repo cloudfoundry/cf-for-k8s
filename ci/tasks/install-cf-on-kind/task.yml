@@ -12,11 +12,17 @@ inputs:
 - name: terraform
 
 outputs:
-- name: cf-install-values
+- name: env-metadata
 
 params:
-  GCP_KEY: ~
-  GCP_PROJECT_NAME: ~
+  GCP_KEY:
+  GCP_PROJECT_NAME:
+  ADD_METRICS_SERVER_COMPONENTS: true
+  ENABLE_AUTOMOUNT_SERVICE_ACCOUNT_TOKEN: true
+  ENABLE_LOAD_BALANCER: false
+  METRICS_SERVER_PREFER_INTERNAL_KUBELET_ADDRESS: true
+  REMOVE_RESOURCE_REQUIREMENTS: true
+  USE_FIRST_PARTY_JWT_TOKENS: true
 
 run:
   path: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.sh

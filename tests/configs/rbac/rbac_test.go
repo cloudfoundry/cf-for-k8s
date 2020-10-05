@@ -19,45 +19,53 @@ import (
 
 var _ = Describe("RBac", func() {
 	var (
-		args          []string
-		repoDir       string
-		outfile       *os.File
-		templatedPath string = "/tmp/cf-for-k8s.yml"
+		args               []string
+		repoDir            string
+		outfile            *os.File
+		internalValuesPath string = "/tmp/internal-values.yml"
+		templatedPath      string = "/tmp/cf-for-k8s.yml"
 	)
+
 	BeforeEach(func() {
 		currentDirectory, err := os.Getwd()
+		Expect(err).NotTo(HaveOccurred())
+
 		repoDir = filepath.Dir(filepath.Dir(filepath.Dir(currentDirectory)))
 
-		command := exec.Command(filepath.Join(repoDir, "hack", "generate-values.sh"),
-			"--cf-domain", "dummy-domain",
+		By("generating internal values")
+		command := exec.Command(filepath.Join(repoDir, "hack", "generate-internal-values.sh"),
+			"--values-file", filepath.Join(repoDir, "sample-cf-install-values", "kind.yml"),
 		)
-		valuesFile, err := os.Create("/tmp/dummy-domain-values-1.yml")
+		internalValuesFile, err := os.Create(internalValuesPath)
 		Expect(err).NotTo(HaveOccurred())
-		defer valuesFile.Close()
-		command.Stdout = valuesFile
+		defer internalValuesFile.Close()
+		command.Stdout = internalValuesFile
 
 		err = command.Start()
 		Expect(err).NotTo(HaveOccurred())
 
-		print("generating fake values...")
-		command.Wait()
-		print(" [done]\n")
+		err = command.Wait()
+		Expect(err).NotTo(HaveOccurred())
 
+		By("rendering templates")
 		args = []string{
 			"-f", "../../../config",
-			"-f", "/tmp/dummy-domain-values-1.yml",
+			"-f", internalValuesPath,
+			"-f", filepath.Join(repoDir, "sample-cf-install-values", "kind.yml"),
 		}
 		outfile, err = os.Create(templatedPath)
 		Expect(err).NotTo(HaveOccurred())
 		defer outfile.Close()
+
 		command = exec.Command("ytt", args...)
 		session, err := Start(command, outfile, GinkgoWriter)
 		Expect(err).NotTo(HaveOccurred())
+
 		Eventually(session, 20*time.Second).Should(Exit(0),
 			fmt.Sprintf("ytt failed on base with output %s", session.Err.Contents()))
 	})
-	Describe("permissions", func() {
 
+	Describe("permissions", func() {
 		It("should not include cluster-admin", func() {
 			output, err := ioutil.ReadFile(outfile.Name())
 			Expect(err).ToNot(HaveOccurred())
@@ -65,7 +73,7 @@ var _ = Describe("RBac", func() {
 			Expect(containsClusterAdmin).To(BeFalse())
 		})
 
-		It("cluster roles should not contain wildcard for the core api group", func(){
+		It("cluster roles should not contain wildcard for the core api group", func() {
 			command := exec.Command("yq", `select(.kind == "ClusterRole") | .rules[] | select(.apiGroups[] == "")`, outfile.Name())
 			session, err := Start(command, nil, GinkgoWriter)
 			Expect(err).NotTo(HaveOccurred())
@@ -87,7 +95,7 @@ var _ = Describe("RBac", func() {
 			}
 		})
 
-		It("disallows escalating permissions via rbac.authorization.k8s.io clusterroles", func(){
+		It("disallows escalating permissions via rbac.authorization.k8s.io clusterroles", func() {
 			command := exec.Command("yq", `select(.kind == "ClusterRole") | .rules[] | select(.apiGroups[] == "rbac.authorization.k8s.io")`, outfile.Name())
 			session, err := Start(command, nil, GinkgoWriter)
 			Expect(err).NotTo(HaveOccurred())
@@ -105,13 +113,12 @@ var _ = Describe("RBac", func() {
 				if err != nil {
 					log.Fatal(err)
 				}
-				denyList := []string {"*", "create", "update", "patch"}
+				denyList := []string{"*", "create", "update", "patch"}
 				for _, deniedVerb := range denyList {
 					Expect(rule.Verbs).NotTo(ContainElement(deniedVerb))
 				}
 			}
 		})
-
 	})
 })
 

@@ -15,4 +15,3 @@ if [[ ${SMOKE_TEST_SKIP_SSL} != "true" ]]; then
 fi
 
 cf-for-k8s/hack/run-smoke-tests.sh
-

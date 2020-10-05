@@ -164,20 +164,23 @@ jobs:
         - -ec
         - |
           source cf-for-k8s-ci/ci/helpers/gke.sh
+          source cf-for-k8s-master/ci/helpers/generate-values.sh
+
           cluster_name="$(cat pool-lock/name)"
           gcloud_auth "${cluster_name}"
 
           DNS_DOMAIN="${cluster_name}.${DOMAIN}"
 
           echo "Generating install values..."
-          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          generate_values > cf-install-values.yml
           echo "load_balancer:" >> cf-install-values.yml
           echo "  static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
+          cf-for-k8s-master/hack/generate-internal-values.sh --values-file cf-install-values.yml > cf-internal-values.yml
 
           echo "Installing CF..."
-          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml -f cf-internal-values.yml) -y
 
-          bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+          bosh interpolate --path /cf_admin_password cf-internal-values.yml > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
           grep -E "db_admin_password|capi_db_password|uaa_db_password|blobstore_secret_key|cf_admin_password" "/tmp/${cluster_name}.${DOMAIN}/cf-vars.yaml" > env-metadata/cf-vars.yaml
 
@@ -293,6 +296,7 @@ jobs:
           - -ec
           - |
             source cf-for-k8s-ci/ci/helpers/gke.sh
+            source cf-for-k8s-master/ci/helpers/generate-values.sh
 
             cluster_name="$(cat pool-lock/name)"
             gcloud_auth "${cluster_name}"
@@ -301,15 +305,16 @@ jobs:
             cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
             echo "Generating install values..."
-            cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+            generate_values > cf-install-values.yml
             echo "load_balancer:" >> cf-install-values.yml
             echo "  static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
+            cf-for-k8s-master/hack/generate-internal-values.sh --values-file cf-install-values.yml > cf-internal-values.yml
 
             echo "Installing CF..."
-            kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+            kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml -f cf-internal-values.yml) -y
 
             bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
-            bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+            bosh interpolate --path /cf_admin_password cf-internal-values.yml > env-metadata/cf-admin-password.txt
             echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
     - task: run-smoke-test
@@ -422,27 +427,30 @@ jobs:
         - -ec
         - |
           source cf-for-k8s-ci/ci/helpers/gke.sh
+          source cf-for-k8s-master/ci/helpers/generate-values.sh
+
           gcloud_auth "${CLUSTER_NAME}"
 
           export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
 
-          echo "replacing repository prefix with repo whose images are not cleaned up"
-          export long_lived_repository_prefix="gcr.io/$( bosh interpolate gcp-service-account.json --path=/project_id )/cf-workloads-long-lived"
+          echo "Replacing repository prefix with repo whose images are not cleaned up..."
+          export long_lived_repository_prefix="gcr.io/$( bosh interpolate "${GCP_SERVICE_ACCOUNT_JSON_FILE}" --path=/project_id )/cf-workloads-long-lived"
 
           echo "Using cf-vars from relint-envs/k8s-environments/long-lived-sli/cf-vars.yaml..."
           mkdir -p "/tmp/${DNS_DOMAIN}"
           cp relint-envs/k8s-environments/long-lived-sli/cf-vars.yaml "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
 
           echo "Generating install values..."
-          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          generate_values > cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
           sed -i.bak "s=\(repository_prefix:\).*$=\1 $long_lived_repository_prefix=" cf-install-values.yml
           echo "load_balancer:" >> cf-install-values.yml
           echo "  static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
+          cf-for-k8s-master/hack/generate-internal-values.sh --values-file cf-install-values.yml > cf-internal-values.yml
 
           echo "Installing CF..."
-          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml -f cf-internal-values.yml) -y
 
           source cf-for-k8s-ci/ci/helpers/env-git.sh
           commit-long-lived-sli-cf-vars
@@ -508,23 +516,26 @@ jobs:
         - -ec
         - |
           source cf-for-k8s-ci/ci/helpers/gke.sh
+          source cf-for-k8s-master/ci/helpers/generate-values.sh
+
           gcloud_auth "${CLUSTER_NAME}"
 
           export DNS_DOMAIN="${CLUSTER_NAME}.((ci_k8s_root_domain))"
 
-          echo "replacing repository prefix with repo whose images are not cleaned up"
-          export long_lived_repository_prefix="gcr.io/$( bosh interpolate gcp-service-account.json --path=/project_id )/cf-workloads-long-lived"
+          echo "Replacing repository prefix with repo whose images are not cleaned up..."
+          export long_lived_repository_prefix="gcr.io/$( bosh interpolate "${GCP_SERVICE_ACCOUNT_JSON_FILE}" --path=/project_id )/cf-workloads-long-lived"
+
           echo "Generating install values..."
-          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          generate_values > cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
-
           sed -i.bak "s=\(repository_prefix:\).*$=\1 $long_lived_repository_prefix=" cf-install-values.yml
           echo "load_balancer:" >> cf-install-values.yml
           echo "  static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
+          cf-for-k8s-master/hack/generate-internal-values.sh --values-file cf-install-values.yml > cf-internal-values.yml
 
           echo "Installing CF..."
-          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml -f cf-internal-values.yml) -y
 
           echo "((ll_dep_cf_admin_pass))" > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt

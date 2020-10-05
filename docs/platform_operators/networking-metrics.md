@@ -73,7 +73,7 @@ sum(irate(envoy_cluster_upstream_rq_503{namespace="istio-system"}[1m]))
 ```
 
 ## Gateway Health Metrics
-Monitoring the self-reported state of the ingress-gateways is on way to
+Monitoring the self-reported state of the ingress-gateways is one way to
 determine the health of the ingress-gateways. The relevant metrics for that
 monitoring are:
 

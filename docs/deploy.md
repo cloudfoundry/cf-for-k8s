@@ -37,6 +37,8 @@ To deploy cf-for-k8s as is, the cluster should:
 - be running Kubernetes version within range 1.16.x to 1.19.x
 - have a minimum of 5 nodes
 - have a minimum of 4 CPU, 15GB memory per node
+- if PodSecurityPolicies are enforced on the cluster, [pods must be allowed to
+  have `NET_ADMIN` and `NET_RAW` capabilities](https://istio.io/latest/docs/ops/deployment/requirements/#required-pod-capabilities)
 - have a CNI plugin (Container Network Interface plugin) that supports network policies (otherwise, the NetworkPolicy resources applied by cf-for-k8s will have no effect)
 - support `LoadBalancer` services
 - most IaaSes come with `metrics-server`, but if yours does not come with one (for example, if you are using `kind`), you will need to include `add_metrics_server_components: true` in your values file.

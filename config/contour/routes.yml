@@ -11,7 +11,7 @@ metadata:
   namespace: #@ system_namespace()
   annotations:
     kapp.k14s.io/change-rule.envoy: "upsert before upserting projectcontour/envoy"
-data:
+stringData:
   tls.key: #@ data.values.system_certificate.key
   tls.crt: #@ data.values.system_certificate.crt
 type: kubernetes.io/tls
@@ -24,7 +24,7 @@ metadata:
   namespace: #@ workloads_namespace()
   annotations:
     kapp.k14s.io/change-rule.envoy: "upsert before upserting projectcontour/envoy"
-data:
+stringData:
   tls.key: #@ data.values.workloads_certificate.key
   tls.crt: #@ data.values.workloads_certificate.crt
 type: kubernetes.io/tls
@@ -49,7 +49,7 @@ spec:
   virtualhost:
     fqdn: #@ host + "." + data.values.system_domain
     tls:
-      secretName: cf-system-cert-ver-1
+      secretName: cf-system-cert
   routes:
     - conditions:
       - prefix: /

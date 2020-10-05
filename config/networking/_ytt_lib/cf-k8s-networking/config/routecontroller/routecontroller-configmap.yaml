@@ -15,3 +15,4 @@ metadata:
 data:
   ISTIO_GATEWAY_NAME: #@ data.values.systemNamespace + "/istio-ingressgateway"
   RESYNC_INTERVAL: "900"
+  CONTOUR_TLS_SECRET_NAME: cf-workloads-cert

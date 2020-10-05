@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: create httpproxies in routecontroller
-      sha: 6a9c18f793d82752e80359d7bf002dd379173eac
+      commitTitle: make Contour TLS secret name configurable
+      sha: 855cb8bd6f54f4bce06d5f5c26c3dc486687e98f
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

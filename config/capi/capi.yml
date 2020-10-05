@@ -42,6 +42,7 @@ ccdb:
   port: #@ data.values.capi.database.port
   user: #@ data.values.capi.database.user
   password_secret_name: capi-database-password
+  encryption_key_secret_name: capi-database-encryption-key-secret
   database: #@ data.values.capi.database.name
   ca_cert: #@ data.values.capi.database.ca_cert
 

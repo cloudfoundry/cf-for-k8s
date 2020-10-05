@@ -18,6 +18,7 @@ ccdb:
   database: cloud_controller
   host: capi-database-postgresql
   password_secret_name:
+  encryption_key_secret_name: capi-database-encryption-key-secret
   port: 5432
   user: cloud_controller
   ca_cert: null

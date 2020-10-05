@@ -2,8 +2,8 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: images.yml updated by CI...
-      sha: d84e4bfe8e85a8a37e13b122b38a771e62f5e535
+      commitTitle: Use k8s secret for db_encryption_key and database_encryption...
+      sha: e61fc855257ad1ee5ef12bf47a88d0a9dce7dacb
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:

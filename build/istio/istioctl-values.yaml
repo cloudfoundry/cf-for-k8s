@@ -40,7 +40,7 @@ spec:
       rewriteAppHTTPProbe: true
     meshConfig:
       accessLogEncoding: 'JSON'
-      enablePrometheusMerge: true
+      enablePrometheusMerge: false
       enableAutoMtls: true
       accessLogFile: "/dev/stdout"
       accessLogFormat: >-

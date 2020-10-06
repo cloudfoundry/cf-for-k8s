@@ -7756,7 +7756,7 @@ data:
           address: zipkin.istio-system:9411
     disableMixerHttpReports: true
     enableAutoMtls: true
-    enablePrometheusMerge: true
+    enablePrometheusMerge: false
     rootNamespace: istio-system
     trustDomain: cluster.local
   meshNetworks: 'networks: {}'
@@ -8453,9 +8453,6 @@ spec:
   template:
     metadata:
       annotations:
-        prometheus.io/path: /stats/prometheus
-        prometheus.io/port: "15090"
-        prometheus.io/scrape: "true"
         sidecar.istio.io/inject: "false"
       labels:
         app: istio-ingressgateway
@@ -8733,8 +8730,6 @@ spec:
   template:
     metadata:
       annotations:
-        prometheus.io/port: "15014"
-        prometheus.io/scrape: "true"
         sidecar.istio.io/inject: "false"
       labels:
         app: istiod

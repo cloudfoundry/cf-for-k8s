@@ -7,8 +7,8 @@ resources:
 - name: eirini
   type: git
   source:
-    uri: git@github.com:cloudfoundry-incubator/eirini.git
-    branch: 1.9.0
+    uri: git@github.com:Birdrock/eirini.git
+    branch: 1.9.0-backport-stop-hardcoding-uid-2000
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 - name: eirini-release
   type: github-release
@@ -66,7 +66,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 85228baffd607dac652170a20c282715a05e105f ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 6abae6fcfdc78c97176a5b0053c7241d5f28b9b2 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - get: eirini-release
     trigger: true
@@ -153,7 +153,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 85228baffd607dac652170a20c282715a05e105f ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 6abae6fcfdc78c97176a5b0053c7241d5f28b9b2 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - get: eirini-release
     trigger: true
@@ -240,7 +240,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 85228baffd607dac652170a20c282715a05e105f ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 6abae6fcfdc78c97176a5b0053c7241d5f28b9b2 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - get: eirini-release
     trigger: true
@@ -327,7 +327,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 85228baffd607dac652170a20c282715a05e105f ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 6abae6fcfdc78c97176a5b0053c7241d5f28b9b2 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - get: eirini-release
     trigger: true
@@ -414,7 +414,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 85228baffd607dac652170a20c282715a05e105f ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 6abae6fcfdc78c97176a5b0053c7241d5f28b9b2 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - get: eirini-release
     trigger: true

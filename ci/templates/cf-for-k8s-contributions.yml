@@ -192,7 +192,7 @@ resources:
       bucket: relint-k8s-cluster-state
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
-#@ for source, bpnames in [['community', ['ruby', 'python']], ['buildpacks', ['java', 'nodejs', 'go', 'dotnet-core', 'php', 'procfile']]]:
+#@ for source, bpnames in [['community', ['python']], ['buildpacks', ['ruby', 'java', 'nodejs', 'go', 'dotnet-core', 'php', 'procfile']]]:
 #@   for bpname in bpnames:
 - name: #@ "{}-buildpack".format(bpname)
   type: docker-image

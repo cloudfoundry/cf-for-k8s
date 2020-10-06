@@ -9,4 +9,4 @@ spec:
     - group:
       #@overlay/match by=overlay.index(0)
       #@overlay/remove
-      - id: paketo-community/ruby
+      - id: paketo-buildpacks/ruby

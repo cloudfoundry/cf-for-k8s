@@ -12,7 +12,7 @@ PHP_SHA=`cat php-buildpack/digest`
 PROCFILE_SHA=`cat procfile-buildpack/digest`
 
 pushd cf-for-k8s-develop
-  sed -i "s|^  - image: gcr.io/paketo-community/ruby@.*$|  - image: gcr.io/paketo-community/ruby@${RUBY_SHA}| w /dev/stdout" config/kpack/default-buildpacks.yml
+  sed -i "s|^  - image: gcr.io/paketo-buildpacks/ruby@.*$|  - image: gcr.io/paketo-buildpacks/ruby@${RUBY_SHA}| w /dev/stdout" config/kpack/default-buildpacks.yml
   sed -i "s|^  - image: gcr.io/paketo-community/python@.*$|  - image: gcr.io/paketo-community/python@${PYTHON_SHA}| w /dev/stdout" config/kpack/default-buildpacks.yml
   sed -i "s|^  - image: gcr.io/paketo-buildpacks/java@.*$|  - image: gcr.io/paketo-buildpacks/java@${JAVA_SHA}| w /dev/stdout" config/kpack/default-buildpacks.yml
   sed -i "s|^  - image: gcr.io/paketo-buildpacks/nodejs@.*$|  - image: gcr.io/paketo-buildpacks/nodejs@${NODEJS_SHA}| w /dev/stdout" config/kpack/default-buildpacks.yml

@@ -23,8 +23,8 @@ one certificate.
 In your `cf-values.yaml`, you will need to update the following property:
 ```
 capi:
-	database:
-		encryption_key: [KEY]
+  database:
+    encryption_key: [KEY]
 ```
 
 Enter a secure value for [KEY] and redeploy. This may cause api unavailability 

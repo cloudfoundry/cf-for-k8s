@@ -7,8 +7,8 @@ resources:
 - name: eirini
   type: git
   source:
-    uri: git@github.com:cloudfoundry-incubator/eirini.git
-    branch: #@ eirini_tag
+    uri: git@github.com:Birdrock/eirini.git
+    branch: 1.9.0-backport-stop-hardcoding-uid-2000
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 
 - name: eirini-release

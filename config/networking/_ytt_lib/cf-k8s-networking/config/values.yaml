@@ -2,15 +2,11 @@
 ---
 #! Default values for cf-k8s-networking.
 #! This is a YTT-formatted file.
-
-istioVersion: 1.6.4
 systemNamespace: cf-system
 workloadsNamespace: cf-workloads
 
 routecontroller:
-  image: gcr.io/cf-networking-images/cf-k8s-networking/routecontroller@sha256:8ef88e0dcaa5228c2b325cf5296ff31666bd3e7525e994f4495ba4e8fc052ac8
-upgradeSidecars:
-  image: gcr.io/cf-networking-images/cf-k8s-networking/upgrade-sidecars@sha256:2e4253fd217138652a19dbd4d93cf925e70e18a3c3dc640d72d88580fddcb090
+  image: gcr.io/cf-networking-images/cf-k8s-networking/routecontroller@sha256:4b65f377a956f2f427809295aac6b5a6ec03db4c5977570e70173c8064d8deb8
 
 service:
   externalPort: 80

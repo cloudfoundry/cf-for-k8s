@@ -10,6 +10,6 @@ import (
 
 func TestSmoke(t *testing.T) {
 	RegisterFailHandler(Fail)
-	SetDefaultEventuallyTimeout(5 * time.Minute)
+	SetDefaultEventuallyTimeout(10 * time.Minute)
 	RunSpecs(t, "Smoke Tests Suite")
 }

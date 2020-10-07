@@ -15,6 +15,7 @@ inputs:
 
 params:
   APP_NAME:
+  APP_INSTANCES: 1
   VERIFY_EXISTING_APP:
 
 run:

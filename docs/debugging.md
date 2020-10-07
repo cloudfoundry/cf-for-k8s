@@ -1,5 +1,22 @@
 # Debugging
 
+## Staging app and tracing logs hangs
+
+If you see `cf push` or smoketests hang here:
+```
+...
+Waiting for API to complete processing files...
+
+Staging app and tracing logs...
+
+```
+### Possible problems:
+
+#### 1. You may be using the v6 cf-cli, which is not supported
+
+**Next steps:**
+Update to the v7 cf-cli: https://github.com/cloudfoundry/cli/wiki/V7-CLI-Installation-Guide
+
 ## Error staging application
 
 If you see the following error:

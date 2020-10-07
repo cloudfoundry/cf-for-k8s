@@ -1,0 +1,25 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if data.values.remove_resource_requirements:
+#! remove resource requirements to allow installation on smaller environments
+#@ for/end kind in ["Deployment", "DaemonSet"]:
+#@overlay/match by=overlay.subset({"kind": kind}),expects="1+"
+---
+spec:
+  template:
+    metadata:
+      #@overlay/match missing_ok=True
+      annotations:
+        #@overlay/match missing_ok=True
+        sidecar.istio.io/proxyCPU: "0m"
+        #@overlay/match missing_ok=True
+        sidecar.istio.io/proxyMemory: "0M"
+    spec:
+      containers:
+      #@overlay/match by=overlay.all,expects="1+"
+      -
+        #@overlay/replace
+        #@overlay/match missing_ok=True
+        resources: {}
+#@ end

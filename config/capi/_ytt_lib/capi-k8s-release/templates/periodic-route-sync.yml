@@ -1,0 +1,10 @@
+#@ load("@ytt:data", "data")
+
+---
+apiVersion: apps.cloudfoundry.org/v1alpha1
+kind: PeriodicSync
+metadata:
+  name: cf-api-periodic-route-sync
+  namespace: #@ data.values.system_namespace
+spec:
+  period_seconds: 15

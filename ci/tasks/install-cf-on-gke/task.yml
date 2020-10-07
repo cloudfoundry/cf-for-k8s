@@ -9,6 +9,8 @@ image_resource:
 inputs:
   - name: cf-for-k8s-ci
   - name: cf-for-k8s
+  - name: runtime-ci
+    optional: true
   - name: pool-lock
     optional: true
   - name: tf-vars
@@ -19,12 +21,14 @@ inputs:
     optional: true
   - name: db-metadata
     optional: true
+  - name: blobstore-metadata
+    optional: true
 
 params:
   GCP_SERVICE_ACCOUNT_JSON:
   GCP_PROJECT_NAME:
   GCP_PROJECT_ZONE:
-  DOMAIN: k8s-dev.relint.rocks
+  DOMAIN:
   USE_EXTERNAL_APP_REGISTRY: false
   APP_REGISTRY_HOSTNAME:
   APP_REGISTRY_REPOSITORY_PREFIX:
@@ -32,11 +36,14 @@ params:
   APP_REGISTRY_PASSWORD:
   UPGRADE: false
   UPTIMER: false
+  EMIT_UPTIMER_METRICS_TO_WAVEFRONT: false
+  WAVEFRONT_API_KEY:
+  WAVEFRONT_API_ENDPOINT:
   USE_EXTERNAL_DB: false
+  USE_EXTERNAL_BLOBSTORE: false
 
 outputs:
   - name: env-metadata
-  - name: uptimer-result
 
 run:
   path: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.sh

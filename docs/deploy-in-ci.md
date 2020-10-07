@@ -22,12 +22,6 @@ The following scripts are designed to be executable in a CI system, as well as l
   kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
   ```
 
-- Update the wildcard entry for the given domain with the correct load-balancer IP address (if you are using Google Cloud DNS).
-
-   ```console
-  ./hack/update-gcp-dns.sh <cf-domain> <dns-zone-name>
-   ```
-
 - Run the smoke test suite against your CF for K8s installation.
 
    ```console

@@ -5,29 +5,36 @@ system_domain:
 #! list of app domains, e.g., ["apps.cf.example.com"]
 app_domains: []
 
+app_log_destinations: []
 #! password for admin user in plain text
 cf_admin_password:
 
-#! reserved static ip for istio LoadBalancer
-istio_static_ip: ""
+#! reserved static ip for LoadBalancer
+load_balancer:
+  enable: true
+  static_ip: ""
 
 system_certificate:
-  #! Base64-encoded certificate for the wildcard
-  #! subdomain of the system domain (e.g., CN=*.system.cf.example.com)
+  #! Certificate for the wildcard subdomain of the system domain
+  #! For example, CN=*.system.cf.example.com
   crt: ""
-  #! Base64-encoded private key for the system certificate
+  #! Private key for the system certificate
   key: ""
-  #! Base64-encoded CA certificate used to sign the system certifcate
+  #! CA certificate used to sign the system certifcate
   ca: ""
 
 workloads_certificate:
-  #! Base64-encoded certificate for the wildcard
-  #! subdomain of the system domain (e.g., CN=*.apps.cf.example.com)
+  #! Certificate for the wildcard subdomain of the apps domain
+  #! For example, CN=*.apps.cf.example.com
   crt: ""
-  #! Base64-encoded private key for the workloads certificate
+  #! Private key for the workloads certificate
   key: ""
-  #! Base64-encoded CA certificate used to sign the workloads certifcate
+  #! CA certificate used to sign the workloads certifcate
   ca: ""
+
+#! When true, automatically upgrades incoming HTTP connections to HTTPS
+gateway:
+  https_only: true
 
 capi:
   database:
@@ -42,6 +49,7 @@ capi:
     name: cloud_controller
     #! Plain text ca certificate if tls should be used
     ca_cert: ""
+  log_level: info
 
 uaa:
   database:
@@ -61,3 +69,23 @@ app_registry:
   repository_prefix: ""
   username: ""
   password: ""
+
+remove_resource_requirements: false
+add_metrics_server_components: false
+allow_prometheus_metrics_access: false
+use_external_dns_for_wildcard: false
+enable_automount_service_account_token: false
+metrics_server_prefer_internal_kubelet_address: false
+use_first_party_jwt_tokens: false
+
+#! configuration for the CF blobstore
+blobstore:
+  endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
+  region: "''"
+  access_key_id: "admin"
+  secret_access_key: ""
+  package_directory_key: "cc-packages"
+  droplet_directory_key: "cc-droplets"
+  resource_directory_key: "cc-resources"
+  buildpack_directory_key: "cc-buildpacks"
+  aws_signature_version: "2"

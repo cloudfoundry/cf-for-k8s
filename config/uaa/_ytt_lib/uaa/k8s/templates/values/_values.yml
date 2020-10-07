@@ -32,7 +32,16 @@ database:
 jwt:
   policy:
     activeKeyId: ~
-    keys: []
+    keys: {}
+
+login:
+  saml:
+    activeKeyId: ~
+    keys: {}
+
+encryption:
+  active_key_label: ~
+  encryption_keys: []
 
 smtp:
   host: ~

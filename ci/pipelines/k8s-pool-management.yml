@@ -25,7 +25,7 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
-      - ci/**
+    - ci/**
 
 - name: terraform
   type: terraform
@@ -36,31 +36,31 @@ resources:
       prefix: k8s-dev
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
-- name: every-5-minutes
+- name: every-2-minutes
   type: time
   icon: clock-outline
   source:
-    interval: 5m
+    interval: 2m
     start: 7:00 AM
     stop: 5:00 PM
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     location: America/Los_Angeles
 
-- name: every-5-minutes-off-hours
+- name: every-4-minutes-off-hours
   type: time
   icon: clock-outline
   source:
-    interval: 5m
-    start: 5:00 PM
+    interval: 4m
+    start: 7:00 PM
     stop: 7:00 AM
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     location: America/Los_Angeles
 
-- name: every-5-minutes-weekends
+- name: every-4-minutes-weekends
   type: time
   icon: clock-outline
   source:
-    interval: 5m
+    interval: 4m
     days: [Saturday, Sunday]
     location: America/Los_Angeles
 
@@ -79,7 +79,7 @@ resources:
   source:
     start: 3:00 PM
     stop: 7:00 PM
-    days: [Friday]
+    days: [Tuesday, Friday]
     location: America/Los_Angeles
 
 - name: cf-for-k8s-gke-terraform-templates
@@ -108,6 +108,7 @@ resources:
 
 - name: building-pool-trigger
   type: pool-trigger
+  check_every: 10s
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
     branch: master
@@ -147,10 +148,12 @@ resources:
 jobs:
 - name: check-pool-size
   plan:
-  - get: cf-for-k8s-develop-ci
-  - get: every-5-minutes
-    trigger: true
-  - get: pool-repo
+  - in_parallel:
+    - get: cf-for-k8s-develop-ci
+    - get: every-2-minutes
+      trigger: true
+    - get: pool-repo
+
   - try:
       task: check-pool-size
       file: cf-for-k8s-develop-ci/ci/tasks/check-pool-size/task.yml
@@ -166,12 +169,14 @@ jobs:
 
 - name: check-pool-size-after-hours
   plan:
-  - get: cf-for-k8s-develop-ci
-  - get: every-5-minutes-off-hours
-    trigger: true
-  - get: every-5-minutes-weekends
-    trigger: true
-  - get: pool-repo
+  - in_parallel:
+    - get: cf-for-k8s-develop-ci
+    - get: every-4-minutes-off-hours
+      trigger: true
+    - get: every-4-minutes-weekends
+      trigger: true
+    - get: pool-repo
+
   - try:
       task: check-pool-size
       file: cf-for-k8s-develop-ci/ci/tasks/check-pool-size/task.yml
@@ -190,8 +195,10 @@ jobs:
   - get: building-pool-trigger
     version: every
     trigger: true
+
   - put: building-pool
-    params: {acquire: true}
+    params:
+      acquire: true
 
 - name: create-cluster
   plan:
@@ -203,6 +210,7 @@ jobs:
       trigger: true
     - get: pool-repo
     - get: cf-for-k8s-gke-terraform-templates
+
   - task: create-tf-vars-file
     config:
       platform: linux
@@ -215,6 +223,7 @@ jobs:
       - name: tf-vars
       params:
         SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+        DOMAIN: k8s-dev.relint.rocks
       run:
         path: /bin/bash
         args:
@@ -226,15 +235,17 @@ jobs:
           zone = "us-central1-a"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat building-cluster/name)"
-          env_dns_domain = "$(cat building-cluster/name).k8s-dev.relint.rocks"
+          env_dns_domain = "$(cat building-cluster/name).${DOMAIN}"
           dns_zone_name = "k8s-dev-relint-rocks"
           EOT
+
   - put: terraform
     params:
       terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
       env_name_file: building-cluster/name
       delete_on_failure: true
       var_files: [ tf-vars/input.tfvars ]
+
   - task: write-metadata-to-lock-file
     config:
       platform: linux
@@ -253,18 +264,22 @@ jobs:
         - |
           cp -v building-cluster/name ready-cluster/name
           cp -v terraform/metadata ready-cluster/metadata
+
   - put: ready-pool
     params:
       add: ready-cluster
+
   - put: building-pool
     params:
       remove: building-cluster
 
 - name: spin-down-after-hours
   plan:
-  - get: after-7pm
-    trigger: true
-  - get: pool-repo
+  - in_parallel:
+    - get: after-7pm
+      trigger: true
+    - get: pool-repo
+
   - task: delete-unclaimed
     # this moves everything from ready/unclaimed to destroy/unclaimed
     config:
@@ -290,6 +305,7 @@ jobs:
           if [[ -n "$(git status --porcelain)" ]]; then
             git commit -m'Destroying unclaimed K8s dev pool environments'
           fi
+
   - put: pool-repo
     params:
       repository: updated-pool-repo
@@ -300,8 +316,10 @@ jobs:
   - get: destroy-pool-trigger
     version: every
     trigger: true
+
   - put: destroy-pool
-    params: {acquire: true}
+    params:
+      acquire: true
 
 - name: destroy-cluster
   plan:
@@ -312,6 +330,7 @@ jobs:
       passed: [acquire-lock-for-destroy-cluster]
       trigger: true
     - get: cf-for-k8s-gke-terraform-templates
+
   - task: create-tf-vars-file
     config:
       platform: linux
@@ -324,6 +343,7 @@ jobs:
       - name: tf-vars
       params:
         SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+        DOMAIN: k8s-dev.relint.rocks
       run:
         path: /bin/bash
         args:
@@ -331,12 +351,14 @@ jobs:
         - |
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
-          region = "((ci_k8s_gcp_project_region))"
+          region = "us-central1"
+          zone = "us-central1-a"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat destroy-cluster/name)"
-          env_dns_domain = "$(cat building-cluster/name).k8s-dev.relint.rocks"
+          env_dns_domain = "$(cat destroy-cluster/name).${DOMAIN}"
           dns_zone_name = "k8s-dev-relint-rocks"
           EOT
+
   - put: terraform
     params:
       terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
@@ -345,14 +367,18 @@ jobs:
       var_files: [ tf-vars/input.tfvars ]
     get_params:
       action: destroy
+
   - put: destroy-pool
-    params: {remove: destroy-cluster}
+    params:
+      remove: destroy-cluster
 
 - name: post-to-slack
   plan:
-  - get: tues-fri-afternoon
-    trigger: true
-  - get: pool-repo
+  - in_parallel:
+    - get: tues-fri-afternoon
+      trigger: true
+    - get: pool-repo
+
   - task: generate-list-of-claimed-envs
     config:
       platform: linux
@@ -360,9 +386,9 @@ jobs:
         type: docker-image
         source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
       inputs:
-        - name: pool-repo
+      - name: pool-repo
       outputs:
-        - name: message
+      - name: message
       run:
         path: /bin/bash
         args:
@@ -426,6 +452,7 @@ jobs:
 
           echo "Message:"
           cat "${output_file}"
+
   - put: relint-private-slack
     params:
       text_file: message/message.txt

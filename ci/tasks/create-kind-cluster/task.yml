@@ -7,7 +7,9 @@ image_resource:
     repository: relintdockerhubpushbot/cf-for-k8s-ci
 
 inputs:
+  # Used to determine the config for the kind cluster
 - name: cf-for-k8s
+  # Used as the task file source
 - name: cf-for-k8s-ci
 - name: terraform
 

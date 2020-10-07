@@ -1,0 +1,19 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+capi:
+  database:
+    name: ""
+    host: ""
+    user: "admin"
+    password: ""
+
+uaa:
+  database:
+    name: ""
+    host: ""
+    user: "admin"
+    password: ""
+
+cf_db:
+  admin_password: ""

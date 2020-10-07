@@ -15,8 +15,8 @@ app_domains:
 cf_admin_password: cfadminpassword
 
 #! The blobstore secret key shared between CAPI and the blobstore.
-cf_blobstore:
-  secret_key: the_blobstore_secret_key
+blobstore:
+  secret_access_key: the_blobstore_secret_key
 
 #! The admin password for operators to access the database.
 cf_db:
@@ -30,8 +30,12 @@ capi:
     password: ccdb_password
     encryption_key: ccdb_encryption_key
 
+#! When true, automatically upgrades incoming HTTP connections to HTTPS
+gateway:
+  https_only: true
+
 #! Notes about X.509 certificates:
-#! - the certificates and keys are base64 encoded
+#! - all of the certs should include the common name in the list of subject alternative names
 #! - all of the certs should have KeyUsage that includes server and client authentication
 
 #! certificate, private key, and certificate authority used to identify the CF installation (i.e. the ingress gateway).
@@ -56,50 +60,6 @@ internal_certificate:
   key: &key internal_private_key
   ca: internal_certificate_ca
 
-#! Log Cache CA certificate and private key
-#! - the common name needs to be log-cache-ca
-log_cache_ca:
-  crt: log_cache_ca_certificate
-  key: log_cache_ca_private_key
-
-#! Certificate and private key for the Log Cache server
-#! - these are used for both server and client mTLS interactions within Log Cache
-#! - the common name needs to be log-cache
-log_cache:
-  crt: log_cache_certificate
-  key: log_cache_private_key
-
-#! Certificate and private key for the metrics component of Log Cache
-#! - these are used for both server and client mTLS interactions within Log Cache
-#! - the common name needs to be log-cache-metrics
-log_cache_metrics:
-  crt: log_cache_metrics_certificate
-  key: log_cache_metrics_private_key
-
-#! Certificate and private key for the gateway component of Log Cache
-#! - these are used for both server and client mTLS interactions within Log Cache
-#! - the common name needs to be log-cache-gateway
-#! - the alternative_names list should include localhost
-log_cache_gateway:
-  crt: log_cache_gateway_certificate
-  key: log_cache_gateway_private_key
-
-#! Certificate and private key for the syslog component of Log Cache
-#! - these are used for both server and client mTLS interactions within Log Cache
-#! - the common name needs to be log-cache-syslog
-log_cache_syslog:
-  crt: log_cache_syslog_certificate
-  key: log_cache_syslog_private_key
-
-metric_proxy:
-  ca:
-    crt: *crt
-    key: *key
-  cert:
-    #! This certificate should be valid for metric-proxy.cf-system.svc.cluster.local
-    crt: *crt
-    key: *key
-
 uaa:
   database:
     #! The db password shared between UAA and the database.
@@ -108,7 +68,6 @@ uaa:
   admin_client_secret: uaaadminclientsecret
   #! JWT policy configuration
   jwt_policy:
-    #! This private key should NOT be base64 encoded
     signing_key: jwt_policy_signing_key
   #! Encyption key for encrypting data stored in the database
   encryption_key:
@@ -116,7 +75,6 @@ uaa:
   #! Configuration for UAA's SAML provider
   login:
     service_provider:
-      #! This certificate/key should NOT be base64 encoded
       key: login_service_provider_key
       certificate: login_service_provider_certificate
 
@@ -124,23 +82,34 @@ uaa:
 #! Example below is for docker hub. For other registry examples, see below.
 
 app_registry:
-   hostname: https://index.docker.io/v1/
-   #! often times this is just your `docker_user`
-   repository_prefix: <docker_hub_repository>
-   username: <docker_user>
-   password: <docker_password>
+  hostname: https://index.docker.io/v1/
+  #! often times this is just your `docker_user`
+  repository_prefix: <docker_hub_repository>
+  username: <docker_user>
+  password: <docker_password>
 
 #! example below is for a Google container registry. Make sure to remove other registry blocks if you intend to use GCR
 #! app_registry:
-#!  hostname: gcr.io
-#!  repository_prefix: <gcr.io/gcp_project_id/cf-workloads>
-#!  username: _json_key
-#!  password: |
-#!    contents_of_service_account_json
+#!   hostname: gcr.io
+#!   repository_prefix: <gcr.io/gcp_project_id/cf-workloads>
+#!   username: _json_key
+#!   password: |
+#!     contents_of_service_account_json
 
 #! example below is for a Azure container registry. Make sure to remove other registry blocks if you intend to use ACR
 #! app_registry:
-#!  hostname: <registry-name>.azurecr.io
-#!  repository_prefix: <registry-name>.azurecr.io
-#!  username: <username>
-#!  password: <password>
+#!   hostname: <registry-name>.azurecr.io
+#!   repository_prefix: <registry-name>.azurecr.io
+#!   username: <username>
+#!   password: <password>
+
+remove_resource_requirements: true
+add_metrics_server_components: true
+allow_prometheus_metrics_access: true
+use_external_dns_for_wildcard: true
+enable_automount_service_account_token: true
+metrics_server_prefer_internal_kubelet_address: true
+use_first_party_jwt_tokens: true
+
+load_balancer:
+  enable: false

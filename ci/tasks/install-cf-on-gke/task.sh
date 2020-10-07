@@ -1,5 +1,10 @@
 #!/bin/bash -eu
 
+if [[ -z "${DOMAIN}" ]]; then
+  echo "DOMAIN must be specified"
+  exit 1
+fi
+
 echo "Installation Configuration"
 echo "=========================="
 echo "External Registry: ${USE_EXTERNAL_APP_REGISTRY}"
@@ -16,11 +21,11 @@ if [[ -d pool-lock ]]; then
     exit 1
   fi
   cluster_name="$(cat pool-lock/name)"
-  istio_static_ip="$(jq -r '.lb_static_ip' pool-lock/metadata)"
+  load_balancer_static_ip="$(jq -r '.lb_static_ip' pool-lock/metadata)"
 elif [[ -d tf-vars ]]; then
   if [[ -d terraform ]]; then
     cluster_name="$(cat tf-vars/env-name.txt)"
-    istio_static_ip="$(jq -r '.lb_static_ip' terraform/metadata)"
+    load_balancer_static_ip="$(jq -r '.lb_static_ip' terraform/metadata)"
   else
     echo "You must provide both tf-vars and terraform inputs together"
     exit 1
@@ -50,16 +55,17 @@ if [[ "${USE_EXTERNAL_APP_REGISTRY}" == "true" ]]; then
   cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" > cf-values.yml
 cat <<EOT >> cf-values.yml
 app_registry:
-   hostname: ${APP_REGISTRY_HOSTNAME}
-   repository_prefix: ${APP_REGISTRY_REPOSITORY_PREFIX}
-   username: ${APP_REGISTRY_USERNAME}
-   password: ${APP_REGISTRY_PASSWORD}
+  hostname: ${APP_REGISTRY_HOSTNAME}
+  repository_prefix: ${APP_REGISTRY_REPOSITORY_PREFIX}
+  username: ${APP_REGISTRY_USERNAME}
+  password: ${APP_REGISTRY_PASSWORD}
 EOT
 else
   cf-for-k8s/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-values.yml
 fi
 
-echo "istio_static_ip: ${istio_static_ip}" >> cf-values.yml
+echo "load_balancer:" >> cf-values.yml
+echo "  static_ip: ${load_balancer_static_ip}" >> cf-values.yml
 password="$(bosh interpolate --path /cf_admin_password cf-values.yml)"
 
 echo "Installing CF..."
@@ -68,13 +74,29 @@ additional_args=""
 if [[ "${USE_EXTERNAL_DB}" == "true" ]]; then
   additional_args="-f db-metadata/db-values.yaml"
 fi
+if [[ "${USE_EXTERNAL_BLOBSTORE}" == "true" ]]; then
+  additional_args+="-f blobstore-metadata/blobstore-values.yaml"
+fi
 
 ytt -f cf-for-k8s/config -f cf-values.yml $additional_args > ${rendered_yaml}
 if [[ "${UPTIMER}" == "true" ]]; then
   echo "Running with uptimer"
   write_uptimer_deploy_config "${password}" "${rendered_yaml}"
   mkdir -p uptimer-result
-  uptimer -configFile /tmp/uptimer-config.json -resultFile uptimer-result/result.json
+  UPTIMER_RESULT_FILE_PATH="uptimer-result/result.json"
+  set +e
+  uptimer -useBuildpackDetection=true -configFile=/tmp/uptimer-config.json -resultFile=${UPTIMER_RESULT_FILE_PATH}
+  uptimer_exit_code=$?
+  set -e
+
+  if [[ "${EMIT_UPTIMER_METRICS_TO_WAVEFRONT}" == "true" ]]; then
+    echo "Emitting uptimer metrics"
+    source runtime-ci/tasks/shared-functions
+    push_uptimer_metrics_to_wavefront "${SOURCE_PIPELINE}" "${UPTIMER_RESULT_FILE_PATH}"
+  fi
+  if [[ "$uptimer_exit_code" != "0" ]]; then
+    exit 1
+  fi
 else
   kapp deploy -a cf -f ${rendered_yaml} -y
 fi

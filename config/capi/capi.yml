@@ -1,9 +1,8 @@
-#@ load("@ytt:assert", "assert")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
-#@ load("@ytt:yaml", "yaml")
+#@ load("/namespaces.star", "system_namespace", "workloads_namespace", "workloads_staging_namespace")
 
 #@ def capi_host():
 #@   if len(data.values.capi.database.host) > 0:
@@ -14,9 +13,9 @@
 #@ end
 
 #@ def capi_values():
-system_namespace: #@ data.values.system_namespace
-workloads_namespace: #@ data.values.workloads_namespace
-staging_namespace: #@ data.values.staging_namespace
+system_namespace: #@ system_namespace()
+workloads_namespace: #@ workloads_namespace()
+staging_namespace: #@ workloads_staging_namespace()
 system_domain: #@ data.values.system_domain
 app_domains:
 #@ for/end domain in data.values.app_domains:
@@ -24,48 +23,37 @@ app_domains:
 - #@ domain
 
 blobstore:
-  endpoint: "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000"
-  region: "''"
-  access_key_id: "admin"
-  secret_access_key: #@ data.values.cf_blobstore.secret_key
-  package_directory_key: cc-packages
-  droplet_directory_key: cc-droplets
-  resource_directory_key: cc-resources
-  buildpack_directory_key: cc-buildpacks
+  endpoint: #@ data.values.blobstore.endpoint
+  region: #@ data.values.blobstore.region
+  access_key_id: #@ data.values.blobstore.access_key_id
+  secret_access_key_secret_name: capi-blobstore-secret-key
+  package_directory_key: #@ data.values.blobstore.package_directory_key
+  droplet_directory_key: #@ data.values.blobstore.droplet_directory_key
+  resource_directory_key: #@ data.values.blobstore.resource_directory_key
+  buildpack_directory_key: #@ data.values.blobstore.buildpack_directory_key
+  aws_signature_version: #@ data.values.blobstore.aws_signature_version
+
+cc:
+  log_level: #@ data.values.capi.log_level
 
 ccdb:
   adapter: #@ data.values.capi.database.adapter
   host: #@ capi_host()
   port: #@ data.values.capi.database.port
   user: #@ data.values.capi.database.user
-  password: #@ data.values.capi.database.password
+  password_secret_name: capi-database-password
+  encryption_key_secret_name: capi-database-encryption-key-secret
   database: #@ data.values.capi.database.name
   ca_cert: #@ data.values.capi.database.ca_cert
-
-eirini:
-  serverCerts:
-    secretName: eirini-internal-tls-certs
-
-apiServer:
-  opi:
-    client_cert: #@ data.values.internal_certificate.crt
-    client_key: #@ data.values.internal_certificate.key
-    ca: #@ data.values.internal_certificate.ca
-
-metric_proxy:
-  ca:
-    secret_name: #@ data.values.metric_proxy.ca.secret_name
-  cert:
-    secret_name: #@ data.values.metric_proxy.cert.secret_name
 
 uaa:
   serverCerts:
     secretName: uaa-certs
   clients:
     cloud_controller_username_lookup:
-      secret: #@ data.values.capi.cc_username_lookup_client_secret
+      secret_name: cloud-controller-username-lookup-client-secret
     cf_api_controllers:
-      secret: #@ data.values.capi.cf_api_controllers_client_secret
+      secret_name: cf-api-controllers-client-secret
 
 kpack:
   registry:
@@ -84,16 +72,16 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: cf-api-external-virtual-service
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 spec:
   hosts:
   - #@ "api." + data.values.system_domain
   gateways:
-  - #@ data.values.system_namespace + "/istio-ingressgateway"
+  - #@ system_namespace() + "/istio-ingressgateway"
   http:
   - route:
     - destination:
-        host: #@ "capi." + data.values.system_namespace + ".svc.cluster.local"
+        host: #@ "capi." + system_namespace() + ".svc.cluster.local"
         port:
           number: 80
 
@@ -102,7 +90,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: capi-database-password
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   password: #@ data.values.capi.database.password
@@ -111,16 +99,16 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: capi-blobstore-secret-key
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
-  password: #@ data.values.cf_blobstore.secret_key
+  password: #@ data.values.blobstore.secret_access_key
 ---
 apiVersion: v1
 kind: Secret
 metadata:
   name: cf-api-controllers-client-secret
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   password: #@ data.values.capi.cf_api_controllers_client_secret
@@ -129,7 +117,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: cloud-controller-username-lookup-client-secret
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   password: #@ data.values.capi.cc_username_lookup_client_secret
@@ -138,7 +126,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: capi-database-encryption-key-secret
-  namespace: #@ data.values.system_namespace
+  namespace: #@ system_namespace()
 type: Opaque
 stringData:
   password: #@ data.values.capi.database.encryption_key

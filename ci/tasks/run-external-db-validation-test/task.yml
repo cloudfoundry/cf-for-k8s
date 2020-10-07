@@ -1,0 +1,28 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+inputs:
+- name: cf-for-k8s
+- name: cf-for-k8s-ci
+- name: pool-lock
+  optional: true
+- name: tf-vars
+  optional: true
+- name: terraform
+  optional: true
+- name: db-metadata
+
+params:
+  GCP_SERVICE_ACCOUNT_JSON:
+  GCP_PROJECT_NAME:
+  GCP_PROJECT_ZONE:
+  EXTERNAL_DB: "rds"
+  PGPASSWORD:
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.sh

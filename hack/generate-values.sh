@@ -130,6 +130,8 @@ variables:
   options:
     ca: default_ca
     common_name: "*.apps.${DOMAIN}"
+    alternative_names:
+    - "*.apps.${DOMAIN}"
     extended_key_usage:
     - server_auth
 - name: internal_certificate
@@ -137,6 +139,8 @@ variables:
   options:
     ca: default_ca
     common_name: "*.cf-system.svc.cluster.local"
+    alternative_names:
+    - "*.cf-system.svc.cluster.local"
     extended_key_usage:
     - client_auth
     - server_auth
@@ -152,65 +156,6 @@ variables:
   options:
     ca: default_ca
     common_name: uaa_login_service_provider
-
-- name: log_cache_ca
-  type: certificate
-  options:
-    is_ca: true
-    common_name: log-cache-ca
-
-- name: log_cache
-  type: certificate
-  options:
-    ca: log_cache_ca
-    common_name: log-cache
-    extended_key_usage:
-    - client_auth
-    - server_auth
-
-- name: log_cache_syslog
-  type: certificate
-  options:
-    ca: log_cache_ca
-    common_name: log-cache-syslog
-    extended_key_usage:
-    - client_auth
-    - server_auth
-
-- name: log_cache_metrics
-  type: certificate
-  options:
-    ca: log_cache_ca
-    common_name: log-cache-metrics
-    extended_key_usage:
-    - client_auth
-    - server_auth
-
-- name: log_cache_gateway
-  type: certificate
-  options:
-    ca: log_cache_ca
-    common_name: log-cache-gateway
-    alternative_names:
-    - localhost
-    extended_key_usage:
-    - client_auth
-    - server_auth
-
-- name: metric_proxy_ca
-  type: certificate
-  options:
-    is_ca: true
-    common_name: metric-proxy-ca
-
-- name: metric_proxy
-  type: certificate
-  options:
-    ca: metric_proxy_ca
-    common_name: metric-proxy
-    extended_key_usage:
-    - client_auth
-    - server_auth
 EOF
 ) >/dev/null
 
@@ -223,8 +168,8 @@ app_domains:
 - "apps.${DOMAIN}"
 cf_admin_password: $(bosh interpolate ${VARS_FILE} --path=/cf_admin_password)
 
-cf_blobstore:
-  secret_key: $(bosh interpolate ${VARS_FILE} --path=/blobstore_secret_key)
+blobstore:
+  secret_access_key: $(bosh interpolate ${VARS_FILE} --path=/blobstore_secret_key)
 
 cf_db:
   admin_password: $(bosh interpolate ${VARS_FILE} --path=/db_admin_password)
@@ -237,50 +182,31 @@ capi:
     encryption_key: $(bosh interpolate ${VARS_FILE} --path=/capi_db_encryption_key)
 
 system_certificate:
-  #! This certificates and keys are base64 encoded and should be valid for *.system.cf.example.com
-  crt: $(bosh interpolate ${VARS_FILE} --path=/system_certificate/certificate | base64 | tr -d '\n')
-  key: $(bosh interpolate ${VARS_FILE} --path=/system_certificate/private_key | base64 | tr -d '\n')
-  ca: $(bosh interpolate ${VARS_FILE} --path=/system_certificate/ca | base64 | tr -d '\n')
+  #! This certificates and keys should be valid for *.system.cf.example.com
+  crt: |
+$(bosh interpolate ${VARS_FILE} --path=/system_certificate/certificate | grep -Ev '^$' | sed -e 's/^/    /')
+  key: |
+$(bosh interpolate ${VARS_FILE} --path=/system_certificate/private_key | grep -Ev '^$' | sed -e 's/^/    /')
+  ca: |
+$(bosh interpolate ${VARS_FILE} --path=/system_certificate/ca | grep -Ev '^$' | sed -e 's/^/    /')
 
 workloads_certificate:
-  #! This certificates and keys are base64 encoded and should be valid for *.apps.cf.example.com
-  crt: $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/certificate | base64 | tr -d '\n')
-  key: $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/private_key | base64 | tr -d '\n')
-  ca: $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/ca | base64 | tr -d '\n')
+  #! This certificates and keys should be valid for *.apps.cf.example.com
+  crt: |
+$(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/certificate | grep -Ev '^$' | sed -e 's/^/    /')
+  key: |
+$(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/private_key | grep -Ev '^$' | sed -e 's/^/    /')
+  ca: |
+$(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/ca | grep -Ev '^$' | sed -e 's/^/    /')
 
 internal_certificate:
-  #! This certificates and keys are base64 encoded and should be valid for *.cf-system.svc.cluster.local
-  crt: $(bosh interpolate ${VARS_FILE} --path=/internal_certificate/certificate | base64 | tr -d '\n')
-  key: $(bosh interpolate ${VARS_FILE} --path=/internal_certificate/private_key | base64 | tr -d '\n')
-  ca: $(bosh interpolate ${VARS_FILE} --path=/internal_certificate/ca | base64 | tr -d '\n')
-
-log_cache_ca:
-  crt: $(bosh interpolate ${VARS_FILE} --path=/log_cache_ca/certificate | base64 | tr -d '\n')
-  key: $(bosh interpolate ${VARS_FILE} --path=/log_cache_ca/private_key | base64 | tr -d '\n')
-
-log_cache:
-  crt: $(bosh interpolate ${VARS_FILE} --path=/log_cache/certificate | base64 | tr -d '\n')
-  key: $(bosh interpolate ${VARS_FILE} --path=/log_cache/private_key | base64 | tr -d '\n')
-
-log_cache_metrics:
-  crt: $(bosh interpolate ${VARS_FILE} --path=/log_cache_metrics/certificate | base64 | tr -d '\n')
-  key: $(bosh interpolate ${VARS_FILE} --path=/log_cache_metrics/private_key | base64 | tr -d '\n')
-
-log_cache_gateway:
-  crt: $(bosh interpolate ${VARS_FILE} --path=/log_cache_gateway/certificate | base64 | tr -d '\n')
-  key: $(bosh interpolate ${VARS_FILE} --path=/log_cache_gateway/private_key | base64 | tr -d '\n')
-
-log_cache_syslog:
-  crt: $(bosh interpolate ${VARS_FILE} --path=/log_cache_syslog/certificate | base64 | tr -d '\n')
-  key: $(bosh interpolate ${VARS_FILE} --path=/log_cache_syslog/private_key | base64 | tr -d '\n')
-
-metric_proxy:
-  ca:
-    crt: $( bosh interpolate ${VARS_FILE} --path=/metric_proxy_ca/certificate | base64 | tr -d '\n' )
-    key: $( bosh interpolate ${VARS_FILE} --path=/metric_proxy_ca/private_key | base64 | tr -d '\n' )
-  cert:
-    crt: $( bosh interpolate ${VARS_FILE} --path=/metric_proxy/certificate | base64 | tr -d '\n' )
-    key: $( bosh interpolate ${VARS_FILE} --path=/metric_proxy/private_key | base64 | tr -d '\n' )
+  #! This certificates and keys should be valid for *.cf-system.svc.cluster.local
+  crt: |
+$(bosh interpolate ${VARS_FILE} --path=/internal_certificate/certificate | grep -Ev '^$' | sed -e 's/^/    /')
+  key: |
+$(bosh interpolate ${VARS_FILE} --path=/internal_certificate/private_key | grep -Ev '^$' | sed -e 's/^/    /')
+  ca: |
+$(bosh interpolate ${VARS_FILE} --path=/internal_certificate/ca | grep -Ev '^$' | sed -e 's/^/    /')
 
 uaa:
   database:
@@ -288,15 +214,15 @@ uaa:
   admin_client_secret: $(bosh interpolate ${VARS_FILE} --path=/uaa_admin_client_secret)
   jwt_policy:
     signing_key: |
-$(bosh interpolate "${VARS_FILE}" --path=/uaa_jwt_policy_signing_key/private_key | sed -e 's#^#      #')
+$(bosh interpolate "${VARS_FILE}" --path=/uaa_jwt_policy_signing_key/private_key | grep -Ev '^$' | sed -e 's/^/      /')
   encryption_key:
     passphrase: $(bosh interpolate "${VARS_FILE}" --path=/uaa_encryption_key_passphrase)
   login:
     service_provider:
       key: |
-$(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/private_key | sed -e 's#^#        #')
+$(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/private_key | grep -Ev '^$' | sed -e 's/^/        /')
       certificate: |
-$(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/certificate | sed -e 's#^#        #')
+$(bosh interpolate "${VARS_FILE}" --path=/uaa_login_service_provider/certificate | grep -Ev '^$' | sed -e 's/^/        /')
   login_secret: $(bosh interpolate "${VARS_FILE}" --path=/uaa_login_secret)
 EOF
 
@@ -308,7 +234,7 @@ app_registry:
   repository_prefix: gcr.io/$( bosh interpolate ${GCP_SERVICE_ACCOUNT_JSON_FILE} --path=/project_id )/cf-workloads
   username: _json_key
   password: |
-$(cat ${GCP_SERVICE_ACCOUNT_JSON_FILE} | sed -e 's/^/    /')
+$(cat ${GCP_SERVICE_ACCOUNT_JSON_FILE} | grep -Ev '^$' | sed -e 's/^/    /')
 EOF
 
 fi
@@ -317,9 +243,11 @@ if [[ -n "${K8S_ENV:-}" ]] ; then
     k8s_env_path=$HOME/workspace/relint-ci-pools/k8s-dev/ready/claimed/"$K8S_ENV"
     if [[ -f "$k8s_env_path" ]] ; then
 	      ip_addr=$(jq -r .lb_static_ip < "$k8s_env_path")
-        echo 1>&2 "Detected \$K8S_ENV environment var; writing \"istio_static_ip: $ip_addr\" entry to end of output"
+        echo 1>&2 "Detected \$K8S_ENV environment var; writing \"load_balancer.static_ip: $ip_addr\" entry to end of output"
         echo "
-istio_static_ip: $ip_addr
+load_balancer:
+  enable: true
+  static_ip: $ip_addr
 "
     fi
 fi

@@ -1,0 +1,14 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if data.values.use_external_dns_for_wildcard:
+#@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "istio-ingressgateway"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    external-dns.alpha.kubernetes.io/hostname: #@ "*." + data.values.system_domain
+    #@overlay/match missing_ok=True
+    external-dns.alpha.kubernetes.io/ttl: "10"
+#@ end

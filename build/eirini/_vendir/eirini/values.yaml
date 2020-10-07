@@ -18,6 +18,8 @@ opi:
   cc_api:
     serviceName: "api"
     tls_disabled: false
+    protocol: https
+    port: 9023
 
   tls:
     opiCapiClient:
@@ -69,10 +71,6 @@ opi:
       server:
         secretName: "secrets-2.16.4-2"
         caPath: "internal-ca-cert"
-
-  rootfsPatcher:
-    enable: true
-    timeout: 2m
 
   routing:
     enable: true
@@ -133,9 +131,69 @@ env:
   # used to get bits service URL if it is load balanced and not behind ingress
   DOMAIN: ~
 
-# used to construct bits service URL if it is not load balanced and does not behind ingress
 kube:
+  # used to construct bits service URL if it is not load balanced and does not behind ingress
   external_ips: []
+  resources:
+    opi:
+      requests:
+        cpu: 20m
+        memory: 20Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
+    eirini_controller:
+      requests:
+        cpu: 15m
+        memory: 15Mi
+      limits:
+        cpu: 100m
+        memory: 200Mi
+    events:
+      requests:
+        cpu: 15m
+        memory: 15Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
+    task_reporter:
+      requests:
+        cpu: 15m
+        memory: 15Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
+    instance_index_env_injector:
+      requests:
+        cpu: 20m
+        memory: 20Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
+    metrics:
+      requests:
+        cpu: 15m
+        memory: 15Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
+    routing:
+      requests:
+        cpu: 30m
+        memory: 45Mi
+      limits:
+        cpu: 200m
+        memory: 300Mi
+    staging:
+      requests:
+        cpu: 15m
+        memory: 15Mi
+      limits:
+        cpu: 100m
+        memory: 100Mi
+
 
 global:
   rootfs_version: v75.0.0
+
+instanceIndexEnvInjector: {}

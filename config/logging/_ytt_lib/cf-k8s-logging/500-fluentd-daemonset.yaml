@@ -15,6 +15,10 @@ spec:
     metadata:
       labels:
         app: fluentd
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: #@ data.values.fluentd.prometheus.path
+        prometheus.io/port: #@ data.values.fluentd.prometheus.port
     spec:
       serviceAccountName: fluentd-service-account
       tolerations:
@@ -25,11 +29,16 @@ spec:
         image: #@ data.values.images.fluent
         ports:
         - containerPort: 24224
+        env:
+        #@ if/end data.values.debug:
+          - name: "FLUENTD_FLAGS"
+            value: "-vvv"
         resources:
           limits:
-            memory: 200Mi
+            cpu: 1
+            memory: 600Mi
           requests:
-            cpu: 100m
+            cpu: 200m
             memory: 200Mi
         volumeMounts:
         - name: fluentd-config
@@ -40,9 +49,6 @@ spec:
           mountPath: /var/vcap/store
         - name: dockercontainers
           mountPath: /var/lib/docker/containers
-        - mountPath: /ca
-          name: ca
-          readOnly: true
       terminationGracePeriodSeconds: 30
       volumes:
       - name: fluentd-config
@@ -57,6 +63,3 @@ spec:
       - name: dockercontainers
         hostPath:
           path: /var/lib/docker/containers
-      - name: ca
-        secret:
-          secretName: log-cache-ca

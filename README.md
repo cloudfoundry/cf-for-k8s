@@ -14,7 +14,7 @@ Please read [CONTRIBUTING.md](community/CONTRIBUTING.md) for details on the proc
 If you're looking to get started today, you can explore the [good first issue](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22) labelled issues in cf-for-k8s repository. 
 
 ## Built with
-cf-for-k8s is built on top of well known Kubernetes projects like,
+cf-for-k8s is built on top of well known Kubernetes projects like:
 - [istio](https://github.com/istio/istio)
 - [envoy](https://github.com/envoyproxy/envoy) 
 - [fluentd](https://www.fluentd.org/)
@@ -37,7 +37,7 @@ This project is licensed under the APACHE LICENSE-2.0 - see the [LICENSE.md](LIC
 
 ## CI Pipelines
 
-This project includes a test suite that makes use of Concourse pipelines, which can be found [here](https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s).
+This project includes a test suite that makes use of Concourse pipelines, which can be found [here](https://release-integration.ci.cf-app.com).
 
 ## Have a question or feedback, reach out to us
 

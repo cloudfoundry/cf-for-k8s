@@ -1,0 +1,78 @@
+#! Documentation for Istio ports https://istio.io/docs/ops/deployment/requirements/#ports-used-by-istio
+#! The following ports are exposed by the istiod and ingressgateway services
+#@ grpc_xds = 15010 #! Istiod XDS and CA services (plaintext)
+#@ https_dns = 15012 #! Istiod XDS and CA services (TLS)
+#@ https_webhook = 15017 #! Istiod Webhooks
+#@ https_monitoring = 15014 #! Istiod Control plane monitoring (Prometheus)
+#@ dns = 15053 #! Istiod dns UDP
+#@ dns_tls = 15053 #! Istiod dns tls TCP
+
+#@ def istio_ns_selector():
+namespaceSelector:
+  matchLabels:
+    cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+#@ end
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-istio-system-ingress
+  namespace: istio-system
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-within-istio-system
+  namespace: istio-system
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - #@ istio_ns_selector()
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: istiod-network-policy
+  namespace: istio-system
+spec:
+  podSelector:
+    matchLabels:
+      app: istiod
+  policyTypes:
+  - Ingress
+  ingress:
+  - ports:
+    - port: #@ grpc_xds
+    - port: #@ https_dns
+    - port: #@ https_webhook
+    - port: #@ https_monitoring
+    - port: #@ dns
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingressgateway-network-policy
+  namespace: istio-system
+spec:
+  podSelector:
+    matchLabels:
+      app: istio-ingressgateway
+  policyTypes:
+  - Ingress
+  ingress:
+  - ports:
+    - port: 80
+    - port: 443
+    - port: 8080
+    - port: 8443

@@ -28,13 +28,14 @@ spec:
         imagePullPolicy: Always
         resources:
           requests:
-            cpu: 15m
-            memory: 15Mi
+            cpu: {{ .Values.kube.resources.eirini_controller.requests.cpu }}
+            memory: {{ .Values.kube.resources.eirini_controller.requests.memory }}
+          limits:
+            cpu: {{ .Values.kube.resources.eirini_controller.limits.cpu }}
+            memory: {{ .Values.kube.resources.eirini_controller.limits.memory }}
         volumeMounts:
         - name: config-map-volume
           mountPath: /etc/eirini/config
-        - name: cf-secrets
-          mountPath: /etc/eirini/secrets
       volumes:
         - name: config-map-volume
           configMap:
@@ -42,14 +43,4 @@ spec:
             items:
             - key: eirini-controller.yml
               path: eirini-controller.yml
-        - name: cf-secrets
-          secret:
-            secretName: "{{ .Values.opi.lrpController.tls.secretName }}"
-            items:
-            - key: "{{ .Values.opi.lrpController.tls.certPath }}"
-              path: eirini-client.crt
-            - key: "{{ .Values.opi.lrpController.tls.keyPath }}"
-              path: eirini-client.key
-            - key: "{{ .Values.opi.lrpController.tls.caPath }}"
-              path: eirini-client.ca
 {{- end }}

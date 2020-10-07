@@ -1,0 +1,52 @@
+#@ load("/namespaces.star", "system_namespace", "workloads_namespace")
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingressgateway-fluent-bit-forwarder-config
+  namespace: istio-system
+data:
+  #@yaml/text-templated-strings
+  fluent-bit.conf: |-
+    [SERVICE]
+        Flush          1
+        Daemon         Off
+        Log_Level      info
+        Parsers_File   parsers.conf
+    [INPUT]
+        Name    tail
+        Tag     istio-ingressgateway
+        Path    /var/log/containers/istio-ingressgateway*istio-proxy*.log
+        Parser  json
+        Refresh_Interval 1
+    [FILTER]
+        Name parser
+        Match istio-ingressgateway
+        Parser json
+        Key_Name log
+    [FILTER]
+        Name lua
+        Match istio-ingressgateway
+        script transform_record.lua
+        call transform_record
+    [OUTPUT]
+        Name forward
+        Match istio-ingressgateway
+        Host fluentd-forwarder-ingress.(@= system_namespace() @)
+        Port 24224
+  parsers.conf : |-
+    [PARSER]
+        Name   json
+        Format json
+        Time_Key time
+  transform_record.lua: |-
+    function transform_record(tag, timestamp, record)
+      new_record = {}
+      new_record["app_id"] = record["app_id"]
+      new_record["instance_id"] = "0"
+      new_record["log"] = record
+      new_record["source_type"] = "RTR"
+      return 1, timestamp, new_record
+    end
+

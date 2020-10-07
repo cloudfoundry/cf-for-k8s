@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: 'Merge pull request #69 from cloudfoundry/checkDeadLinks...'
-      sha: 8aab2b2ff7b1814b4e5c5e7856cd5c5a72af97ff
+      commitTitle: 'ci: don''t restrict LoadBalancer only to Istio...'
+      sha: 70cf3f857146e830b4f9ce40cab0671b70f89038
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

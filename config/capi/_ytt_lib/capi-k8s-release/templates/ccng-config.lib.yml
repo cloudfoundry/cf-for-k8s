@@ -71,11 +71,11 @@ info:
   version: 0
   support_address: ""
   description: ""
-  min_cli_version: ""
-  min_recommended_cli_version: ""
+  min_cli_version: "7.0.1"
+  min_recommended_cli_version: "7.0.1"
   #! app SSH is not yet supported in cf-for-k8s
-  app_ssh_endpoint: "7.0.1"
-  app_ssh_host_key_fingerprint: "7.0.1"
+  app_ssh_endpoint: ""
+  app_ssh_host_key_fingerprint: ""
   app_ssh_oauth_client: ""
 
 directories:

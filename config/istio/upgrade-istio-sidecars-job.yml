@@ -65,7 +65,7 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: #@ "restart-workloads-for-istio" + build_version()
+  name: #@ "restart-workloads-for-istio" + build_version().replace(".", "-")
   namespace: #@ workloads_namespace()
   labels:
     cloudfoundry.org/istio_version: #@ build_version()

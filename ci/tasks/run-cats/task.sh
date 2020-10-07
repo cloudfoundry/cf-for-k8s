@@ -54,7 +54,7 @@ echo '{}' | jq \
   "include_tasks": $include_tasks,
   "include_v3": $include_v3,
   "infrastructure": "kubernetes",
-  "ruby_buildpack_name": "paketo-community/ruby",
+  "ruby_buildpack_name": "paketo-buildpacks/ruby",
   "python_buildpack_name": "paketo-community/python",
   "go_buildpack_name": "paketo-buildpacks/go",
   "java_buildpack_name": "paketo-buildpacks/java",

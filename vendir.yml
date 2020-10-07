@@ -8,7 +8,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/capi-k8s-release
-      ref: 42de4c1dcfaeaa568d20654520eb431b2b3399e9
+      ref: a405f9e12e6e8256b1148ed22cf5f3a5b0664b20
     includePaths:
     - templates/**/*
     - values/**/*
@@ -17,46 +17,47 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: v0.2.0
+      ref: 70cf3f857146e830b4f9ce40cab0671b70f89038
     includePaths:
     - config/*
     - config/crd/**/*
-    - config/istio-generated/**/*
-    - config/istio-config/**/*
-    - config/istio/generated/**/*
     - config/routecontroller/**/*
 - path: config/logging/_ytt_lib/cf-k8s-logging
   contents:
   - path: .
     githubRelease:
       slug: cloudfoundry/cf-k8s-logging
-      tag: 0.2.1
+      tag: 0.4.0
       disableAutoChecksumValidation: true
 - path: config/metrics/_ytt_lib/metric-proxy
   contents:
   - path: .
     githubRelease:
       slug: cloudfoundry/metric-proxy
-      tag: 0.2.0
+      tag: 1.0.0
       disableAutoChecksumValidation: true
 - path: config/uaa/_ytt_lib/uaa
   contents:
   - path: .
     git:
       url: https://github.com/cloudfoundry/uaa
-      ref: v74.23.0
+      ref: v74.25.0
     includePaths:
     - k8s/templates/**/*
+- path: config/kpack/_ytt_lib/kpack
+  contents:
+  - path: .
+    githubRelease:
+      slug: pivotal/kpack
+      tag: v0.1.2
+      disableAutoChecksumValidation: true
+    includePaths:
+    - release-*.yaml
 # the components in this section below are handled by their corresponding build scripts
 # the manual param tells vendir to not override/touch the contents of these directories
 - path: config/eirini/_ytt_lib
   contents:
   - path: eirini
-    manual: {}
-
-- path: config/kpack/_ytt_lib
-  contents:
-  - path: kpack
     manual: {}
 
 - path: config/minio/_ytt_lib
@@ -89,7 +90,7 @@ directories:
   - path: .
     githubRelease:
       slug: cloudfoundry-incubator/eirini-release
-      tag: v1.8.0
+      tag: v1.9.0
       disableAutoChecksumValidation: true
       unpackArchive:
         path: eirini.tgz

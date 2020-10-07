@@ -1,0 +1,26 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+inputs:
+- name: cf-for-k8s-ci
+- name: cf-for-k8s-develop
+- name: ruby-buildpack
+- name: python-buildpack
+- name: java-buildpack
+- name: nodejs-buildpack
+- name: go-buildpack
+- name: dotnet-core-buildpack
+- name: php-buildpack
+- name: procfile-buildpack
+- name: cf-for-k8s-develop
+
+outputs:
+- name: cf-for-k8s-bumped
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/bump-buildpacks/task.sh

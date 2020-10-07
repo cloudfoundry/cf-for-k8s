@@ -1,7 +1,6 @@
 #@ load("@ytt:overlay", "overlay")
-#@ load("@ytt:data", "data")
 
-#@overlay/match by=overlay.subset({"kind":"Store"})
+#@overlay/match by=overlay.subset({"kind":"ClusterStore"})
 ---
 metadata:
   #@overlay/match missing_ok=True
@@ -9,7 +8,7 @@ metadata:
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-group.kpack-resources: "cf-for-k8s.cloudfoundry.org/kpack-resources"
 
-#@overlay/match by=overlay.subset({"kind":"Stack"})
+#@overlay/match by=overlay.subset({"kind":"ClusterStack"})
 ---
 metadata:
   #@overlay/match missing_ok=True
@@ -17,7 +16,7 @@ metadata:
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-group.kpack-resources: "cf-for-k8s.cloudfoundry.org/kpack-resources"
 
-#@overlay/match by=overlay.subset({"kind":"CustomBuilder"})
+#@overlay/match by=overlay.subset({"kind":"Builder"})
 ---
 metadata:
   #@overlay/match missing_ok=True

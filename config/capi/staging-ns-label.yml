@@ -1,0 +1,10 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("/namespaces.star", "workloads_staging_namespace")
+
+#@overlay/match by=overlay.subset({"kind": "Namespace", "metadata":{"name": workloads_staging_namespace()}}), expects=1
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    cf-for-k8s.cloudfoundry.org/cf-workloads-staging-ns: ""

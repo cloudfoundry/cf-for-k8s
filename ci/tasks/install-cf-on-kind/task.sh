@@ -5,6 +5,26 @@ source cf-for-k8s-ci/ci/helpers/auth-to-gcp.sh
 
 echo "Generating install values..."
 cf-for-k8s/hack/generate-values.sh -d vcap.me -g gcp-service-account.json > cf-install-values/cf-install-values.yml
+cat <<EOT >> cf-install-values/cf-install-values.yml
+add_metrics_server_components: true
+enable_automount_service_account_token: true
+metrics_server_prefer_internal_kubelet_address: true
+remove_resource_requirements: true
+use_first_party_jwt_tokens: true
+
+load_balancer:
+  enable: false
+EOT
+
+echo "Uploading cf-for-k8s repo..."
+gcloud beta compute \
+  scp --recurse cf-for-k8s ${user_host}:/tmp/kind/ --compress \
+  --zone "us-central1-a" > /dev/null
+
+echo "Replacing CI directory..."
+gcloud beta compute \
+  scp --recurse cf-for-k8s-ci/ci ${user_host}:/tmp/kind/cf-for-k8s/ --compress \
+  --zone "us-central1-a" > /dev/null
 
 echo "Uploading cf-install-values.yml..."
 gcloud beta compute \
@@ -21,14 +41,7 @@ export PATH=/tmp/kind/bin:/tmp/kind/go/bin:$PATH
 CF_VALUES=/tmp/cf-install-values.yml
 CF_RENDERED=/tmp/cf-rendered.yml
 cd /tmp/kind/cf-for-k8s
-ytt -f config \
-    -f config-optional/remove-resource-requirements.yml \
-    -f config-optional/enable-automount-service-account-token.yml \
-    -f config-optional/first-party-jwt-istio.yml \
-    -f config-optional/ingressgateway-service-nodeport.yml \
-    -f config-optional/add-metrics-server-components.yml \
-    -f config-optional/patch-metrics-server.yml \
-    -f \$CF_VALUES > \$CF_RENDERED
+ytt -f config -f \$CF_VALUES > \$CF_RENDERED
 
 kapp deploy -f \$CF_RENDERED -a cf -y
 EOT

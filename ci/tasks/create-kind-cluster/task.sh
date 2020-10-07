@@ -32,14 +32,14 @@ set -euo pipefail
 
 export HOME=/tmp/kind
 export PATH=/tmp/kind/bin:/tmp/kind/go/bin:$PATH
-kind create cluster --config=\$HOME/cf-for-k8s/deploy/kind/cluster.yml \
+kind create cluster --config=\$HOME/cluster.yml \
   --image kindest/node:v${K8S_VERSION}
 EOT
 chmod +x remote-create-kind-cluster.sh
 
-echo "Uploading cf-for-k8s repo..."
+echo "Uploading kind cluster.yml..."
 gcloud beta compute \
-  scp --recurse cf-for-k8s ${user_host}:/tmp/kind/ --compress \
+  scp cf-for-k8s/deploy/kind/cluster.yml ${user_host}:/tmp/kind/cluster.yml \
   --zone "us-central1-a" > /dev/null
 
 echo "Uploading remote-create-kind-cluster.sh..."

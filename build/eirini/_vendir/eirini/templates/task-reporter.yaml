@@ -28,8 +28,11 @@ spec:
         imagePullPolicy: Always
         resources:
           requests:
-            cpu: 15m
-            memory: 15Mi
+            cpu: {{ .Values.kube.resources.task_reporter.requests.cpu }}
+            memory: {{ .Values.kube.resources.task_reporter.requests.memory }}
+          limits:
+            cpu: {{ .Values.kube.resources.task_reporter.limits.cpu }}
+            memory: {{ .Values.kube.resources.task_reporter.limits.memory }}
         volumeMounts:
         - name: config-map-volume
           mountPath: /etc/eirini/config

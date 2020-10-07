@@ -1,9 +1,11 @@
-#@ load("@ytt:base64", "base64")
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("must_exist.star", "must_exist")
+#@ load("minio.star", "minio_enabled")
+
+#@ if minio_enabled():
 
 #@ def add_cf_blobstore_namespace():
 #@overlay/match by=overlay.all, expects="1+"
@@ -18,11 +20,18 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: cf-blobstore
+  labels:
+    cf-for-k8s.cloudfoundry.org/cf-blobstore-ns: ""
 
 #@overlay/match by=overlay.subset({"kind": "Secret", "metadata": {"name": "cf-blobstore-minio"}})
 ---
+#@overlay/match missing_ok=True
+stringData:
+  accesskey: #@ must_exist(data.values, "blobstore.access_key_id")
+  secretkey: #@ must_exist(data.values, "blobstore.secret_access_key")
+#@overlay/remove
 data:
-  accesskey: #@ base64.encode("admin")
-  secretkey: #@ base64.encode(must_exist(data.values, "cf_blobstore.secret_key"))
 
 --- #@ template.replace(overlay.apply(library.get("minio").eval(), add_cf_blobstore_namespace()))
+
+#@ end

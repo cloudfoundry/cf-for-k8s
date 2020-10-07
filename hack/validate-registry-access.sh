@@ -16,7 +16,7 @@ show_help() {
     echo "Confirm that app_registry credentials have push access to the specified repository."
     echo ""
     echo "usage:"
-    echo "  app_registry_check.sh <yaml with app_registry configuration>"
+    echo "  validate-registry-access.sh <yaml with app_registry configuration>"
     echo ""
     exit 1
 }

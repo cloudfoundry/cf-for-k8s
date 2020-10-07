@@ -1,0 +1,18 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if data.values.remove_resource_requirements:
+#! on smaller/slow environments uaa may not start successfully due to probes being too agressive
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"uaa"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"uaa"}),expects="1+"
+      -
+        #@overlay/remove
+        livenessProbe: {}
+        #@overlay/remove
+        readinessProbe: {}
+#@ end

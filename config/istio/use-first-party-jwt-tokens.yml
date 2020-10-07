@@ -1,0 +1,57 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:json", "json")
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+
+#@ if data.values.use_first_party_jwt_tokens:
+#! Patch istio to use first party jwt tokens
+#!   - Kind does not support setting 3rd party tokens yet
+
+#@ def replace_jwt_policy():
+global:
+  #@overlay/replace
+  jwtPolicy: first-party-jwt
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name":"istio-sidecar-injector"}})
+---
+data:
+  #@overlay/replace via=lambda a,_: json.encode(overlay.apply(yaml.decode(a),replace_jwt_policy()))
+  values:
+
+#@overlay/match by=overlay.subset({"kind":"DaemonSet","metadata":{"name":"istio-ingressgateway"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      - #@overlay/match by=overlay.subset({"name":"istio-proxy"})
+        env:
+        - #@overlay/match by=overlay.subset({"name":"JWT_POLICY"})
+          #@overlay/replace
+          value: first-party-jwt
+        volumeMounts:
+        #@overlay/match by=overlay.subset({"name":"istio-token"})
+        - #@overlay/remove
+      volumes:
+      #@overlay/match by=overlay.subset({"name":"istio-token"})
+      - #@overlay/remove
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"istiod"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      - #@overlay/match by=overlay.subset({"name":"discovery"})
+        env:
+        - #@overlay/match by=overlay.subset({"name":"JWT_POLICY"})
+          #@overlay/replace
+          value: first-party-jwt
+        volumeMounts:
+        #@overlay/match by=overlay.subset({"name":"istio-token"})
+        - #@overlay/remove
+      volumes:
+      #@overlay/match by=overlay.subset({"name":"istio-token"})
+      - #@overlay/remove
+#@ end

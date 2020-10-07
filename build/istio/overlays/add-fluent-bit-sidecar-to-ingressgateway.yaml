@@ -1,0 +1,50 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ deployment = overlay.subset({"kind": "Deployment", "metadata":{"name":"istio-ingressgateway"}})
+#@ daemonset = overlay.subset({"kind": "DaemonSet", "metadata":{"name":"istio-ingressgateway"}})
+#@ match_ingress_gateway=overlay.or_op(deployment, daemonset)
+
+#@overlay/match by=match_ingress_gateway
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/append
+      - name: fluent-bit
+        image: #@ data.values.fluentbit.image
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        volumeMounts:
+        - name: fluent-bit-config
+          mountPath: /fluent-bit/etc
+        - name: varlog
+          mountPath: /var/log
+        - name: dockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+
+#@overlay/match by=match_ingress_gateway
+---
+spec:
+  template:
+    spec:
+      volumes:
+      #@overlay/append
+      - name: fluent-bit-config
+        configMap:
+          name: ingressgateway-fluent-bit-forwarder-config
+      #@overlay/append
+      - name: varlog
+        hostPath:
+          path: /var/log
+      #@overlay/append
+      - name: dockercontainers
+        hostPath:
+          path: /var/lib/docker/containers

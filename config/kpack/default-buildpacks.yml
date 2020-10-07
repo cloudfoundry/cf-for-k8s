@@ -1,62 +1,81 @@
 #@ load("@ytt:data", "data")
+#@ load("/namespaces.star", "workloads_staging_namespace")
 
 ---
-apiVersion: experimental.kpack.pivotal.io/v1alpha1
-kind: Store
+apiVersion: kpack.io/v1alpha1
+kind: ClusterStore
 metadata:
   name: cf-buildpack-store
 spec:
   sources:
-  - image: gcr.io/paketo-community/ruby@sha256:5d95274fc0468f34d29ff2fd115634206fa6beaa3d8ecb2e0d8f06b42f37a777
-  - image: gcr.io/paketo-community/python@sha256:c152763e3bc606f72cb7d8c513abe2fcf6ee2d8650b1e3a2884a0b7966404300
-  - image: gcr.io/paketo-buildpacks/java@sha256:32ba0e8e7e8fee56adda85b2ff6a43bd6baa06088cf9c5b08d0a7fe5a342ae8b
-  - image: gcr.io/paketo-buildpacks/nodejs@sha256:3234414b97541a9661ba89fe20a8fe6505f6e1ca64f27227342399e5ca86138e
-  - image: gcr.io/paketo-buildpacks/go@sha256:bad4b5bae7818134cfef2609057e40b4d6bcc2406c5f7c4a85f77e9b31d1c96e
-  - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:52952dbaf7bd65ea10ac6491c5af8dda238bdda0c33a938806026d327c3a075f
-  - image: gcr.io/paketo-buildpacks/php@sha256:43ba252c72d3ce60930ded5e30f87f1f8715fc8f5d964fcbce3a3548c2d2e03e
-  - image: gcr.io/paketo-buildpacks/procfile@sha256:224f4f533d9bd44f675b704f51a21ec86dad8979aefa0d30cad2f0d72e7f2d9e
+  - image: gcr.io/paketo-community/ruby@sha256:b694786a773227f111ed1b1f7c84916f15bb3c526d7057287a929818fca7ef8f
+  - image: gcr.io/paketo-community/python@sha256:e6546f3072c49336ce99a2d8297716b748a69da9128c5afb1606c2b73a18a317
+  - image: gcr.io/paketo-buildpacks/java@sha256:bcfe1dc86d082a0f560d257d3a0431a346ea5d3947e270f3998bcad4fb1110c7
+  - image: gcr.io/paketo-buildpacks/nodejs@sha256:44d47eb2580c7cb25cb2287d05420b0f85e46632dd2c5594f18e595f4f4ff620
+  - image: gcr.io/paketo-buildpacks/go@sha256:faac0cdb26b5bbe884b864d663b868830efba17bc7095de490cc8bd8fd76550a
+  - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:db7d464fbaf62dd199f782a6efbca1cbbb60874654048e6ab9966dbda695dd78
+  - image: gcr.io/paketo-buildpacks/php@sha256:b9f721e26071d5b216ef72154fa7b52b1821b752e83c1cac0609e7d91bd81a45
+  - image: gcr.io/paketo-buildpacks/procfile@sha256:861d9c93924dd1db3fbe6663754da603398931cdc4dee3da5c057ffa65cb383d
 
 ---
-apiVersion: experimental.kpack.pivotal.io/v1alpha1
-kind: Stack
+apiVersion: kpack.io/v1alpha1
+kind: ClusterStack
 metadata:
   name: cflinuxfs3-stack
 spec:
   id: "org.cloudfoundry.stacks.cflinuxfs3"
   buildImage:
-    image: "gcr.io/paketo-buildpacks/build@sha256:84f7b60192e69036cb363b2fc7d9834cff69dcbcf7aaf8c058d986fdee6941c3"
+    image: "gcr.io/paketo-buildpacks/build@sha256:07f221b78d8704d918d9dd1248038cd6473d9fb32650bb7def145fc7c29bd612"
   runImage:
-    image: "gcr.io/paketo-buildpacks/run@sha256:84f7b60192e69036cb363b2fc7d9834cff69dcbcf7aaf8c058d986fdee6941c3"
+    image: "gcr.io/paketo-buildpacks/run@sha256:accd66b436c645b61db1614db7388c38e12733c0c2852c769694d73c7113eaf3"
 
 ---
-apiVersion: experimental.kpack.pivotal.io/v1alpha1
-kind: CustomBuilder
+apiVersion: kpack.io/v1alpha1
+kind: Builder
 metadata:
   name: cf-default-builder
-  namespace: #@ data.values.staging_namespace
+  namespace: #@ workloads_staging_namespace()
 spec:
   tag: #@ "{}/cf-default-builder".format(data.values.app_registry.repository_prefix)
   serviceAccount: cc-kpack-registry-service-account
-  stack: cflinuxfs3-stack
-  store: cf-buildpack-store
+  stack:
+    name: cflinuxfs3-stack
+    kind: ClusterStack
+  store:
+    name: cf-buildpack-store
+    kind: ClusterStore
   order:
   - group:
     - id: paketo-community/ruby
   - group:
-    - id: paketo-community/python
-  - group:
-    - id: paketo-buildpacks/java
+    - id: paketo-buildpacks/dotnet-core
+    - id: paketo-buildpacks/procfile
+      optional: true
   - group:
     - id: paketo-buildpacks/nodejs
+    - id: paketo-buildpacks/procfile
+      optional: true
   - group:
     - id: paketo-buildpacks/go
+    - id: paketo-buildpacks/procfile
+      optional: true
   - group:
-    - id: paketo-buildpacks/dotnet-core
+    - id: paketo-community/python
+    - id: paketo-buildpacks/procfile
+      optional: true
   - group:
     - id: paketo-buildpacks/php
-  - group:
-    - id: paketo-buildpacks/httpd
+    - id: paketo-buildpacks/procfile
+      optional: true
   - group:
     - id: paketo-buildpacks/nginx
+    - id: paketo-buildpacks/procfile
+      optional: true
+  - group:
+    - id: paketo-buildpacks/httpd
+    - id: paketo-buildpacks/procfile
+      optional: true
+  - group:
+    - id: paketo-buildpacks/java
   - group:
     - id: paketo-buildpacks/procfile

@@ -8,6 +8,9 @@ metadata:
   namespace: #@ data.values.systemNamespace
   labels:
     app: routecontroller
+    app.kubernetes.io/name: routecontroller
+    app.kubernetes.io/component: cf-networking
+    app.kubernetes.io/part-of: cloudfoundry
 spec:
   replicas: 1
   selector:
@@ -16,8 +19,15 @@ spec:
   template:
     metadata:
       namespace: #@ data.values.systemNamespace
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
       labels:
         app: routecontroller
+        app.kubernetes.io/name: routecontroller
+        app.kubernetes.io/component: cf-networking
+        app.kubernetes.io/part-of: cloudfoundry
     spec:
       containers:
       - name: routecontroller

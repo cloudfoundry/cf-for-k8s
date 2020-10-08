@@ -8,8 +8,8 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: 'ci: don''t restrict LoadBalancer only to Istio...'
-      sha: 70cf3f857146e830b4f9ce40cab0671b70f89038
+      commitTitle: 'ci: fix cf quota command'
+      sha: 7b8ea9a538d8a0bd0fc6d6e15cbb2380ff535255
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

@@ -86,3 +86,10 @@ blobstore:
   resource_directory_key: "cc-resources"
   buildpack_directory_key: "cc-buildpacks"
   aws_signature_version: "2"
+
+#! configuration for private registry
+private_registry:
+  add_image_pull_secrets: false
+  hostname: ""
+  username: ""
+  password: ""

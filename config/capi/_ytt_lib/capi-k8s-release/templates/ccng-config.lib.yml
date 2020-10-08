@@ -236,9 +236,6 @@ renderer:
 
 cloud_controller_username_lookup_client_name: "cloud_controller_username_lookup"
 
-cc_service_key_client_name: "cc_service_key_client"
-cc_service_key_client_secret: TODO
-
 allow_app_ssh_access: false
 default_app_ssh_access: false
 
@@ -271,27 +268,6 @@ rate_limiter:
   general_limit: 2000
   unauthenticated_limit: 100
   reset_interval_in_minutes: 60
-
-diego:
-  bbs:
-    url: https://TODO.TODO
-    key_file: "/dev/null"
-    cert_file: "/dev/null"
-    ca_file: "/dev/null"
-    connect_timeout: 10
-    send_timeout: 10
-    receive_timeout: 10
-  cc_uploader_url: https://TODO.TODO
-  docker_staging_stack: cflinuxfs3
-  file_server_url: https://TODO.TODO
-  insecure_docker_registry_list: []
-  lifecycle_bundles: {"buildpack/cflinuxfs3":"buildpack_app_lifecycle/buildpack_app_lifecycle.tgz","buildpack/windows":"buildpack_app_lifecycle/buildpack_app_lifecycle.tgz","buildpack/windows2012R2":"windows_app_lifecycle/windows_app_lifecycle.tgz","buildpack/windows2016":"buildpack_app_lifecycle/buildpack_app_lifecycle.tgz","docker":"docker_app_lifecycle/docker_app_lifecycle.tgz"}
-  droplet_destinations: {"cflinuxfs3":"/home/vcap","windows":"/Users/vcap","windows2012R2":"/","windows2016":"/Users/vcap"}
-  pid_limit: 1024
-  temporary_oci_buildpack_mode:
-  enable_declarative_asset_downloads: false
-  use_privileged_containers_for_running: false
-  use_privileged_containers_for_staging: false
 
 opi:
   url: #@ "http://eirini.{}.svc.cluster.local:8080".format(data.values.system_namespace)

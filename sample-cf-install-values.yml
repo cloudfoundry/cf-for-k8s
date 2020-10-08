@@ -113,3 +113,11 @@ use_first_party_jwt_tokens: true
 
 load_balancer:
   enable: false
+
+#! optional configuration for using a private registry that has all cf-for-k8s images relocated to.
+#! see <docs/platform_operators/private-registry.md>
+private_registry:
+  add_image_pull_secrets: false
+  hostname: <registry_hostname>
+  username: <registry_username>
+  password: <registry_password>

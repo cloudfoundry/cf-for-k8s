@@ -16,7 +16,7 @@ kind: Secret
 metadata:
   name: eirini-internal-tls-certs
   namespace: #@ system_namespace()
-data:
+stringData:
   tls.crt: #@ data.values.internal_certificate.crt
   tls.key: #@ data.values.internal_certificate.key
   tls.ca: #@ data.values.internal_certificate.ca

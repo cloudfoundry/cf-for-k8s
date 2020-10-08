@@ -48,6 +48,23 @@ spec:
           #@ if/end data.values.ccdb.ca_cert:
           - name: database-ca-cert
             mountPath: /config/database/certs
+        - name: package-image-uploader
+          image: #@ data.values.images.package_image_uploader
+          imagePullPolicy: Always
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+          env:
+            - name: REGISTRY_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: cc-package-registry-upload-secret
+                  key: username
+            - name: REGISTRY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cc-package-registry-upload-secret
+                  key: password
       serviceAccountName: cf-api-worker-service-account
       volumes:
       - #@ template.replace(shared_config_volumes())

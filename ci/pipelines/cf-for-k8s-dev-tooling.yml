@@ -231,14 +231,35 @@ jobs:
       passed: [add-stability-cluster-lock]
       trigger: true
     - get: cf-for-k8s-gke-terraform-templates
+    - get: cf-for-k8s-ci
 
   - task: create-tf-vars-file
-    file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      inputs:
+      - name: stability-pool
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+        DOMAIN: cf-for-k8s.relint.rocks
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "us-central1"
+          zone = "us-central1-a"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat stability-pool/name)"
+          env_dns_domain = "$(cat stability-pool/name).${DOMAIN}"
+          dns_zone_name = "cf-for-k8s-relint-rocks"
+          EOT
 
   - put: terraform
     params:
@@ -280,6 +301,7 @@ jobs:
       params:
         claim: stability
     - get: cf-for-k8s-gke-terraform-templates
+    - get: cf-for-k8s-ci
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
@@ -291,12 +313,32 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - task: create-tf-vars-file
-    file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      inputs:
+      - name: stability-pool
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+        DOMAIN: cf-for-k8s.relint.rocks
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "us-central1"
+          zone = "us-central1-a"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          env_name = "$(cat stability-pool/name)"
+          env_dns_domain = "$(cat stability-pool/name).${DOMAIN}"
+          dns_zone_name = "cf-for-k8s-relint-rocks"
+          EOT
 
   - put: terraform
     params:
@@ -437,6 +479,7 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-rds-terraform-templates
+
   - task: create-rds-tf-vars-file
     file: cf-for-k8s-ci/ci/tasks/create-rds-tf-vars-file/task.yml
     params:

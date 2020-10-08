@@ -295,6 +295,7 @@ jobs:
       INCLUDE_APPS: true
       INCLUDE_ROUTING: true
       INCLUDE_DETECT: true
+      INCLUDE_INTERNET_DEPENDENT: true
 
   ensure:
     do:

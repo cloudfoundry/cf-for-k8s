@@ -3,6 +3,9 @@ groups:
 - name: azure
   jobs:
   - validate-azure
+- name: minikube
+  jobs:
+  - validate-minikube-on-gcp
 
 # Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
@@ -54,6 +57,15 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
     - deploy/aks/terraform/**
+
+- name: cf-for-k8s-minikube-gcp-terraform-templates
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - deploy/minikube-on-gcp/terraform/**
 
 - name: terraform
   type: terraform
@@ -136,7 +148,8 @@ jobs:
 
             echo "Generating install values..."
             cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-            echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
+            echo "load_balancer:" >> cf-install-values.yml
+            echo "  static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
 
             echo "Installing CF..."
             kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
@@ -178,3 +191,82 @@ jobs:
           var_files: [tf-vars/input.tfvars]
         get_params:
           action: destroy
+
+- name: validate-minikube-on-gcp
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-master
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-minikube-gcp-terraform-templates
+    - get: weekday-am
+      trigger: true
+
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      outputs:
+      - name: tf-vars
+      params:
+        SERVICE_ACCOUNT_JSON: ((dev_cluster_pool_admin_service_account_json))
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          cat <<EOT > tf-vars/input.tfvars
+          project = "((ci_k8s_gcp_project_name))"
+          region = "((ci_k8s_gcp_project_region))"
+          zone = "((ci_k8s_gcp_project_zone))"
+          service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
+          machine_type = "n1-standard-8"
+          EOT
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-minikube-gcp-terraform-templates/deploy/minikube-on-gcp/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
+  - do:
+    - task: create-minikube-cluster
+      attempts: 5
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-master
+      file: cf-for-k8s-ci/ci/tasks/create-minikube-cluster/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    - task: install-cf
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-master
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-minikube/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    - task: run-smoke-tests
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-master
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-minikube/task.yml
+      params:
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    ensure:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-minikube-gcp-terraform-templates/deploy/minikube-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy
+

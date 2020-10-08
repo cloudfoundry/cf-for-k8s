@@ -16,6 +16,14 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 
+- name: cf-for-k8s-develop
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+
 - name: cf-for-k8s-ci
   type: git
   icon: github
@@ -85,10 +93,11 @@ jobs:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
   - task: install-cf-last-valid-commit
-    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    file: cf-for-k8s-last-valid-commit/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       pool-lock: ready-pool
       cf-for-k8s: cf-for-k8s-last-valid-commit
+      cf-for-k8s-ci: cf-for-k8s-last-valid-commit
     params:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -165,15 +174,15 @@ jobs:
           echo "Upgrade has failed."
           echo "If appropriate, the last valid commit can be updated to HEAD of master via the 'update-last-valid-commit-to-head-of-master' job."
 
-- name: update-last-valid-commit-to-head-of-master
+- name: update-last-valid-commit-to-head-of-develop
   serial: true
   public: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-last-valid-commit
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-develop
 
   - put: cf-for-k8s-last-valid-commit
     params:
       repository:
-        cf-for-k8s-master
+        cf-for-k8s-develop

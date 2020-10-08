@@ -3,18 +3,18 @@ directories:
 - contents:
   - git:
       commitTitle: images.yml updated by CI...
-      sha: 22aa4fe53c867056c53548cc7cd7a559afcfc620
+      sha: 8e1d891af4874f2740e0596ff51753a02eee66ae
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: 'ci: deploy latest networking is optional with flag...'
-      sha: 94b0430716f9321f9fef4d5ffaafdc21cce0044c
+      commitTitle: 'ci: fix cf quota command'
+      sha: 7b8ea9a538d8a0bd0fc6d6e15cbb2380ff535255
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/30922397
+      url: https://api.github.com/repos/cloudfoundry/cf-k8s-logging/releases/32065852
     path: .
   path: config/logging/_ytt_lib/cf-k8s-logging
 - contents:

@@ -15,6 +15,10 @@ spec:
     metadata:
       labels:
         app: fluentd
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: #@ data.values.fluentd.prometheus.path
+        prometheus.io/port: #@ data.values.fluentd.prometheus.port
     spec:
       serviceAccountName: fluentd-service-account
       tolerations:
@@ -31,9 +35,10 @@ spec:
             value: "-vvv"
         resources:
           limits:
-            memory: 200Mi
+            cpu: 1
+            memory: 600Mi
           requests:
-            cpu: 100m
+            cpu: 200m
             memory: 200Mi
         volumeMounts:
         - name: fluentd-config

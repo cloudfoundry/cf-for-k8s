@@ -6,8 +6,8 @@ BUILD_IMAGE_SHA=$(cat build-image/digest)
 RUN_IMAGE_SHA=$(cat run-image/digest)
 
 pushd cf-for-k8s-develop
-  sed -i -e "s|^    image: \"gcr.io/paketo-buildpacks/build@.*\"$|    image: \"gcr.io/paketo-buildpacks/build@${BUILD_IMAGE_SHA}\"| w /dev/stdout" config/kpack/default-buildpacks.yml
-  sed -i -e "s|^    image: \"gcr.io/paketo-buildpacks/run@.*\"$|    image: \"gcr.io/paketo-buildpacks/run@${RUN_IMAGE_SHA}\"| w /dev/stdout" config/kpack/default-buildpacks.yml
+  sed -i -e "s|^    image: \"index.docker.io/paketobuildpacks/build@.*\"$|    image: \"index.docker.io/paketobuildpacks/build@${BUILD_IMAGE_SHA}\"| w /dev/stdout" config/kpack/default-buildpacks.yml
+  sed -i -e "s|^    image: \"index.docker.io/paketobuildpacks/run@.*\"$|    image: \"index.docker.io/paketobuildpacks/run@${RUN_IMAGE_SHA}\"| w /dev/stdout" config/kpack/default-buildpacks.yml
 
   git config user.email "cf-release-integration@pivotal.io"
   git config user.name "relint-ci"

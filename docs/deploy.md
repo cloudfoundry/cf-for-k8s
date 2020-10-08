@@ -37,6 +37,8 @@ To deploy cf-for-k8s as is, the cluster should:
 - be running Kubernetes version within range 1.16.x to 1.19.x
 - have a minimum of 5 nodes
 - have a minimum of 4 CPU, 15GB memory per node
+- if PodSecurityPolicies are enforced on the cluster, [pods must be allowed to
+  have `NET_ADMIN` and `NET_RAW` capabilities](https://istio.io/latest/docs/ops/deployment/requirements/#required-pod-capabilities)
 - have a CNI plugin (Container Network Interface plugin) that supports network policies (otherwise, the NetworkPolicy resources applied by cf-for-k8s will have no effect)
 - support `LoadBalancer` services
 - most IaaSes come with `metrics-server`, but if yours does not come with one (for example, if you are using `kind`), you will need to include `add_metrics_server_components: true` in your values file.
@@ -124,6 +126,24 @@ Currently, we test the following two container registries:
          ```
 
          Update the `gcp_project_id` portion to your GCP Project ID and change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON.
+
+1. provide log destinations:
+
+    1. To send logs to a destination via syslog you can setup app log destinations in your `cf-values.yml` file:
+
+        ```yml
+        app_log_destinations:
+        #@overlay/append
+        - host: <hostname>
+          port: <port_number>
+          transport: <tls/tcp> #defaults to tls
+          insecure_disable_tls_validation: <false/true> #defaults false
+        #@overlay/append
+        - host: <hostname>
+          port: <port_number>
+          transport: <tls/tcp> #defaults to tls
+          insecure_disable_tls_validation: <false/true> #defaults false
+        ```
 
 1. Run the following commands to install Cloud Foundry on your Kubernetes cluster:
 

@@ -8,7 +8,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/capi-k8s-release
-      ref: 22aa4fe53c867056c53548cc7cd7a559afcfc620
+      ref: 8e1d891af4874f2740e0596ff51753a02eee66ae
     includePaths:
     - templates/**/*
     - values/**/*
@@ -17,7 +17,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: 94b0430716f9321f9fef4d5ffaafdc21cce0044c
+      ref: 7b8ea9a538d8a0bd0fc6d6e15cbb2380ff535255
     includePaths:
     - config/*
     - config/crd/**/*
@@ -27,7 +27,7 @@ directories:
   - path: .
     githubRelease:
       slug: cloudfoundry/cf-k8s-logging
-      tag: 0.3.1
+      tag: 0.4.0
       disableAutoChecksumValidation: true
 - path: config/metrics/_ytt_lib/metric-proxy
   contents:

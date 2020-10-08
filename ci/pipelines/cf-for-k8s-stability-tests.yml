@@ -171,14 +171,15 @@ jobs:
 
           echo "Generating install values..."
           cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-          echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
+          echo "load_balancer:" >> cf-install-values.yml
+          echo "  static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
 
           echo "Installing CF..."
           kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
 
           bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
-          grep -E "db_admin_password|capi_db_password|uaa_db_password|blobstore_secret_key|cf_admin_password" "/tmp/${cluster_name}.${DOMAIN}/cf-vars.yaml" > env-metadata/cf-vars.yaml
+          grep -E "capi_db_encryption_key|db_admin_password|capi_db_password|uaa_db_password|blobstore_secret_key|cf_admin_password" "/tmp/${cluster_name}.${DOMAIN}/cf-vars.yaml" > env-metadata/cf-vars.yaml
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
@@ -301,7 +302,8 @@ jobs:
 
             echo "Generating install values..."
             cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
-            echo "istio_static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
+            echo "load_balancer:" >> cf-install-values.yml
+            echo "  static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
 
             echo "Installing CF..."
             kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
@@ -436,7 +438,8 @@ jobs:
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
           sed -i.bak "s=\(repository_prefix:\).*$=\1 $long_lived_repository_prefix=" cf-install-values.yml
-          echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
+          echo "load_balancer:" >> cf-install-values.yml
+          echo "  static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
 
           echo "Installing CF..."
           kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
@@ -517,7 +520,8 @@ jobs:
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
 
           sed -i.bak "s=\(repository_prefix:\).*$=\1 $long_lived_repository_prefix=" cf-install-values.yml
-          echo "istio_static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
+          echo "load_balancer:" >> cf-install-values.yml
+          echo "  static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
 
           echo "Installing CF..."
           kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y

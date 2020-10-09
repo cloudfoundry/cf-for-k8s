@@ -2,44 +2,65 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:assert", "assert")
 
-#@ def check_top_level_params(data_values, params):
-#@     return [x for x in params if not hasattr(data_values, x)]
-#@ end
-#@
-#@ def check_inner_params(data_values, params):
-#@     missing_parameters = []
-#@     for key, param_list in params:
-#@         obj = getattr(data_values, key, None)
-#@         missing_parameters += ["%s.%s" % (key, param) for param in param_list if not hasattr(obj, param)]
+#! Useful command
+#! cat <(awk '-F|' '$4 == " Yes " { printf("%s\n", gensub(/\s+/, "", "g", $2)) }' docs/platform_operators/deploy-parameters.md) docs/platform_operators/required-parameters.txt | sort -u
+#! 'docs/platform_operators/required-parameters.txt' contents come from story 174981087
+
+#@ def is_missing(data_values, param):
+#@     parts = param.split('.')
+#@     obj = data_values
+#@     for p in parts[0:-1]:
+#@         obj = getattr(obj, p, None)
 #@     end
-#@     return missing_parameters
+#@     return not hasattr(obj, parts[-1])
 #@ end
 #@
-#@ def check_inner2_params(data_values, params):
-#@     missing_parameters = []
-#@     for key1, key2, param_list in params:
-#@         obj = getattr(getattr(data_values, key1, None), key2, None)
-#@         missing_parameters += ["%s.%s.%s" % (key1, key2, param) for param in param_list if not hasattr(obj, param)]
-#@     end
-#@     return missing_parameters
-#@ end
-#@
-#! Useful command to get the default values:
-#! awk '-F|' '$4 == " Yes " { printf("%s\n", gensub(/\s+/, "", "g", $2)) }' docs/platform_operators/deploy-parameters.md
-#!
 #@ def check_missing_required_parameters(data_values):
-#@     top_level_params = ['system_domain', 'app_domains', 'cf_admin_password']
-#@     required_inner_params = [['system_certificate', ['crt', 'key', 'ca']],['workloads_certificate', ['crt', 'key', 'ca']],['gateway', ['https_only']],['app_registry', ['hostname', 'repository_prefix', 'username', 'password']],]
-#@     require_db_params = [['capi', 'database', ['adapter', 'encryption_key', 'host', 'port', 'user', 'password', 'name']],['uaa', 'database', ['adapter', 'host', 'port', 'user', 'password', 'name']]]
-#@
-#@     missing_parameters = check_top_level_params(data_values, top_level_params)
-#@     missing_parameters += check_inner_params(data_values, required_inner_params)
-#@     missing_parameters += check_inner2_params(data_values, require_db_params)
-#@
+#@     required_parameters = '''\
+#@ app_domains
+#@ app_registry.hostname
+#@ app_registry.password
+#@ app_registry.repository_prefix
+#@ app_registry.username
+#@ blobstore.secret_access_key
+#@ capi.database.adapter
+#@ capi.database.encryption_key
+#@ capi.database.host
+#@ capi.database.name
+#@ capi.database.password
+#@ capi.database.port
+#@ capi.database.user
+#@ cc_username_lookup_client_secret
+#@ cf_admin_password
+#@ cf_api_controllers_client_secret
+#@ cf_db.admin_password
+#@ gateway.https_only
+#@ internal_certificate.ca
+#@ internal_certificate.crt
+#@ internal_certificate.key
+#@ system_certificate.ca
+#@ system_certificate.crt
+#@ system_certificate.key
+#@ system_domain
+#@ uaa.database.adapter
+#@ uaa.database.admin_client_secret
+#@ uaa.database.host
+#@ uaa.database.name
+#@ uaa.database.password
+#@ uaa.database.port
+#@ uaa.database.user
+#@ uaa.encryption_key.passphrase
+#@ uaa.jwt_policy.signing_key
+#@ uaa.login.login_secret
+#@ uaa.login.service_provider.certificate
+#@ uaa.login.service_provider.key
+#@ workloads_certificate.ca
+#@ workloads_certificate.crt
+#@ workloads_certificate.key'''.split("\n")
+#@     missing_parameters = [param for param in required_parameters if is_missing(data_values, param)]
 #@     if len(missing_parameters) > 0:
-     require_parameter_check: #@ assert.fail("The following required data.values parameters are missing: %s" % (missing_parameters,))
+require_parameter_check: #@ assert.fail("The following required data.values parameters are missing: %s" % (missing_parameters,))
 #@     end
 #@ end
-#@
 #@
 #@ check_missing_required_parameters(data.values)

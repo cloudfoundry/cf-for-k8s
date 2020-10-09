@@ -24,11 +24,11 @@ var _ = Describe("Missing Attributes", func() {
 		})
 
 		It("should list all the required attributes", func() {
-			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["system_domain", "app_domains", "cf_admin_password", "system_certificate.crt", "system_certificate.key", "system_certificate.ca", "workloads_certificate.crt", "workloads_certificate.key", "workloads_certificate.ca", "gateway.https_only", "app_registry.hostname", "app_registry.repository_prefix", "app_registry.username", "app_registry.password", "capi.database.adapter", "capi.database.encryption_key", "capi.database.host", "capi.database.port", "capi.database.user", "capi.database.password", "capi.database.name", "uaa.database.adapter", "uaa.database.host", "uaa.database.port", "uaa.database.user", "uaa.database.password", "uaa.database.name"\]`))
+			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_registry.username", "cc_username_lookup_client_secret", "cf_admin_password", "cf_api_controllers_client_secret", "cf_db.admin_password", "gateway.https_only", "internal_certificate.ca", "internal_certificate.key", "system_certificate.key", "uaa.database.adapter", "uaa.database.admin_client_secret", "uaa.database.host", "uaa.database.name", "uaa.database.port", "uaa.database.user", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.login_secret", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "workloads_certificate.ca"\]`))
 		})
 
-		FIt("should list exactly 27 missing required attributes", func() {
-			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \[(?:"[\w_.]+"(?:, )?){27}\]`))
+		FIt("should list exactly 40 missing required attributes", func() {
+			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \[(?:"[\w_.]+"(?:, )?){40}\]`))
 		})
 	})
 
@@ -41,7 +41,7 @@ var _ = Describe("Missing Attributes", func() {
 		})
 
 		FIt("should complain about missing attributes", func() {
-			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["cf_admin_password", "system_certificate.key", "workloads_certificate.ca", "gateway.https_only", "app_registry.username", "uaa.database.adapter", "uaa.database.host", "uaa.database.port", "uaa.database.user", "uaa.database.name"\]`))
+			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_registry.username", "cc_username_lookup_client_secret", "cf_admin_password", "cf_api_controllers_client_secret", "cf_db.admin_password", "gateway.https_only", "internal_certificate.ca", "internal_certificate.key", "system_certificate.key", "uaa.database.adapter", "uaa.database.admin_client_secret", "uaa.database.host", "uaa.database.name", "uaa.database.port", "uaa.database.user", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.login_secret", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "workloads_certificate.ca"\]`))
 		})
 	})
 

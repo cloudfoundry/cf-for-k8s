@@ -1,0 +1,51 @@
+#@data/values
+---
+system_domain: "breathable-sidewalk.k8s-dev.relint.rocks"
+app_domains:
+#@overlay/append
+- "apps.breathable-sidewalk.k8s-dev.relint.rocks"
+#! cf_admin_password: missing
+
+blobstore:
+  secret_access_key: glip
+
+capi:
+  database:
+    password: glip
+    encryption_key: glip
+    adapter: adapter
+    host: host
+    port: port
+    user: user
+    name: name
+
+system_certificate:
+  crt: crt
+  #! key: missing
+  ca: ca
+
+workloads_certificate:
+  crt: crt
+  key: key
+  #! ca: missing
+
+internal_certificate:
+  #! This certificates and keys should be valid for *.cf-system.svc.cluster.local
+  crt: crt
+
+#! Totally missing:
+#! gateway
+uaa:
+  database:
+    password: blip
+    #! also missing: ['adapter', 'host', 'port', 'user', 'name']
+  admin_client_secret: stuff
+
+app_registry:
+  hostname: gcr.io
+  repository_prefix: gcr.io/cf-relint-greengrass/cf-workloads
+#!  username: missing
+  password: secret
+
+load_balancer:
+  enable: false

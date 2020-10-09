@@ -1,0 +1,15 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ deployment = overlay.subset({"kind": "Deployment", "metadata":{"name":"istio-ingressgateway"}})
+#@ daemonset = overlay.subset({"kind": "DaemonSet", "metadata":{"name":"istio-ingressgateway"}})
+#@ match_ingress_gateway=overlay.or_op(deployment, daemonset)
+
+#@overlay/match by=match_ingress_gateway
+---
+spec:
+  template:
+    spec:
+      #@overlay/replace
+      securityContext:
+        runAsNonRoot: false

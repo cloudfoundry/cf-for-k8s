@@ -58,3 +58,4 @@ images:
   nginx:
   statsd_exporter:
   package_image_uploader:
+temporary_disable_v2_staging: true

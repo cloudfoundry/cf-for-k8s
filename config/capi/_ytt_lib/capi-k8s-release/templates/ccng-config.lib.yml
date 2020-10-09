@@ -25,6 +25,7 @@ external_protocol: https
 external_domain: #@ "api.{}".format(data.values.system_domain)
 temporary_disable_deployments: false
 temporary_use_logcache: true
+temporary_disable_v2_staging: #@ data.values.temporary_disable_v2_staging
 
 system_domain_organization: system
 system_domain: #@ data.values.system_domain

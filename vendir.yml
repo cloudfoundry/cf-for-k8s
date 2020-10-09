@@ -17,7 +17,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: 7b8ea9a538d8a0bd0fc6d6e15cbb2380ff535255
+      ref: c1a8c866375fd964f08cc5613fced88e572eefdb
     includePaths:
     - config/*
     - config/crd/**/*

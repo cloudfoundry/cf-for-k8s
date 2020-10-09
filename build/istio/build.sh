@@ -7,4 +7,4 @@ ${SCRIPT_DIR}/generate.sh "$@" | kbld -f - > "${SCRIPT_DIR}/../../config/istio/i
 
 # save the current Istio version in the networking configs
 ISTIO_VERSION="$(< "${SCRIPT_DIR}/values.yaml" yq -r .istio_version)"
-sed -r -i'' 's/(return)(.*)$/\1 "'${ISTIO_VERSION}'"/' "${SCRIPT_DIR}/../../config/istio/upgrade-istio-sidecars-job.yml"
+sed -r -i'' 's/(return)(.*\..*\..*)$/\1 "'${ISTIO_VERSION}'"/' "${SCRIPT_DIR}/../../config/istio/upgrade-istio-sidecars-job.yml"

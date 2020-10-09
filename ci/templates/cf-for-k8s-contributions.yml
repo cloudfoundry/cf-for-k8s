@@ -192,8 +192,8 @@ resources:
 - name: #@ "{}-image".format(stackname)
   type: docker-image
   source:
-    repository: #@ "gcr.io/paketo-buildpacks/{}".format(stackname)
-    tag: full-cnb-cf
+    repository: #@ "paketobuildpacks/{}".format(stackname)
+    tag: full-cnb
 #@ end
 
 jobs:

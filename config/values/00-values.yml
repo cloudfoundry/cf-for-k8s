@@ -90,8 +90,9 @@ blobstore:
   buildpack_directory_key: "cc-buildpacks"
   aws_signature_version: "2"
 
-#! configuration for private registry
-private_registry:
+#! optional configuration if using a private registry that has all cf-for-k8s images relocated to
+#! see <docs/platform_operators/system-registry.md>
+system_registry:
   add_image_pull_secrets: false
   hostname: ""
   username: ""

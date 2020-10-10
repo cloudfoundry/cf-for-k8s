@@ -6,16 +6,16 @@
 #! cat <(awk '-F|' '$4 == " Yes " { printf("%s\n", gensub(/\s+/, "", "g", $2)) }' docs/platform_operators/deploy-parameters.md) docs/platform_operators/required-parameters.txt | sort -u
 #! 'docs/platform_operators/required-parameters.txt' contents come from story 174981087
 
-#@ def is_missing(data_values, param):
+#@ def is_missing(param):
 #@     parts = param.split('.')
-#@     obj = data_values
+#@     obj = data.values
 #@     for p in parts[0:-1]:
 #@         obj = getattr(obj, p, None)
 #@     end
 #@     return not hasattr(obj, parts[-1])
 #@ end
 #@
-#@ def check_missing_required_parameters(data_values):
+#@ def check_missing_required_parameters():
 #@     required_parameters = '''\
 #@ app_domains
 #@ app_registry.hostname
@@ -57,10 +57,10 @@
 #@ workloads_certificate.ca
 #@ workloads_certificate.crt
 #@ workloads_certificate.key'''.split("\n")
-#@     missing_parameters = [param for param in required_parameters if is_missing(data_values, param)]
+#@     missing_parameters = [param for param in required_parameters if is_missing(param)]
 #@     if len(missing_parameters) > 0:
 require_parameter_check: #@ assert.fail("The following required data.values parameters are missing: %s" % (missing_parameters,))
 #@     end
 #@ end
 #@
-#@ check_missing_required_parameters(data.values)
+#@ check_missing_required_parameters()

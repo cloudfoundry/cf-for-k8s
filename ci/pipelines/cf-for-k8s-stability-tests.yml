@@ -119,7 +119,6 @@ resources:
 
 jobs:
 - name: validate-values-rotation-redeploy
-  serial: true
   public: true
   plan:
   - in_parallel:

@@ -8649,10 +8649,7 @@ spec:
           name: dockercontainers
           readOnly: true
       securityContext:
-        fsGroup: 1337
-        runAsGroup: 1337
-        runAsNonRoot: true
-        runAsUser: 1337
+        runAsNonRoot: false
       serviceAccountName: istio-ingressgateway-service-account
       terminationGracePeriodSeconds: 80
       volumes:

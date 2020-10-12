@@ -67,15 +67,21 @@ The following instructions assume you have created `cf-install-values.yml`. Plea
     Lookup `system_certificate` in `cf-install-values.yml`. You should config variables `crt`, `key` and `ca`. Follow the instructions below,
     ```yaml
     system_certificate:
-      crt: <replace this with the contents of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/fullchain.pem>
-      key: <replace this with the contents of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/privkey.pem>
+      crt: |
+        <replace this with the contents of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/fullchain.pem>
+      key: |
+        <replace this with the contents of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/privkey.pem>
       ca: "" #! replace whatever old value with empty string
     ```
-    Your final output for `system_certificate` will look something like
+    Your final output for `system_certificate` should look something like
     ```yaml
     system_certificate:
-      crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZhakNDQkZLZ0F3SUJBZ0lTQ....
-      key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2...
+      crt: |
+        -----EXAMPLE CERTIFICATE-----
+        ...
+      key: |
+        -----EXAMPLE RSA PRIVATE KEY-----
+        ...
       ca: ""
     ```
 
@@ -84,8 +90,10 @@ The following instructions assume you have created `cf-install-values.yml`. Plea
    The `workloads_certificate` has sub-keys `crt`, `key`, `ca` under it.
    ```yaml
    workloads_certificate:
-      crt: <replace this with the contents of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/fullchain.pem>
-      key: <replace this with the contents of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/privkey.pem>
+      crt: |
+        <replace this with the contents of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/fullchain.pem>
+      key: |
+        <replace this with the contents of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/privkey.pem>
       ca: "" #! replace whatever old value with empty string
    ```
 

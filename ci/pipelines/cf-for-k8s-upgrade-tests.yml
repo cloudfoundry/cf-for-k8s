@@ -74,6 +74,7 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-last-valid-commit
+      trigger: true
     - get: cf-for-k8s-master
       trigger: true
     - get: cf-for-k8s-ci

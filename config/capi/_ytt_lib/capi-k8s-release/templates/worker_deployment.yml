@@ -48,8 +48,8 @@ spec:
           #@ if/end data.values.ccdb.ca_cert:
           - name: database-ca-cert
             mountPath: /config/database/certs
-        - name: package-image-uploader
-          image: #@ data.values.images.package_image_uploader
+        - name: registry-buddy
+          image: #@ data.values.images.registry_buddy
           imagePullPolicy: Always
           readinessProbe:
             tcpSocket:

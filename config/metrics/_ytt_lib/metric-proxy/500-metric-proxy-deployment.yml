@@ -38,3 +38,10 @@ spec:
           value: cf-workloads
         - name: QUERY_TIMEOUT
           value: "5"
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 15m
+            memory: 100Mi

@@ -190,9 +190,11 @@ packages:
     base_path: #@ data.values.kpack.registry.repository_prefix
   }
 
-package_image_uploader:
+registry_buddy: &registry-buddy-config
   host: 127.0.0.1
   port: 8080
+
+package_image_uploader: *registry-buddy-config
 
 droplets:
   droplet_directory_key: #@ data.values.blobstore.droplet_directory_key

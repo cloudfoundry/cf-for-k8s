@@ -24,12 +24,12 @@ var _ = Describe("System registry", func() {
 
 	Context("enabled", func() {
 
-		It("should have imagePullSecrets", func() {
+		It("should have the expected imagePullSecrets", func() {
 			Expect(ctx).To(ProduceYAML(
 				And(
 					WithSecret("system-registry-auth-secret").WithDataValue(
 						".dockerconfigjson",
-						[]byte(`{"auths":{"test.test":{"auth":"dGVzdDp0ZXN0","password":"test","username":"test"}}}`),
+						[]byte(`{"auths":{"test.test":{"auth":"dGVzdC11c2VybmFtZTp0ZXN0LXBhc3N3b3Jk","password":"test-password","username":"test-username"}}}`),
 					),
 					WithDeployment("uaa", "cf-system").WithSpecYaml(`
                       template:

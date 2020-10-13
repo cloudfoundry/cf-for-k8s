@@ -4,5 +4,5 @@
 system_registry:
   add_image_pull_secrets: true
   hostname: "test.test"
-  username: "test"
-  password: "test"
+  username: "test-username"
+  password: "test-password"

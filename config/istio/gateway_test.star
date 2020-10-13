@@ -1,4 +1,4 @@
-load("@ytt:assert", "assert")
+load("/testing_library.star", "assert_equals")
 load("gateway.lib.yml", "gateway")
 
 def test_gateway_when_app_domain_equals_system_domain():
@@ -72,12 +72,6 @@ def test_gateway_when_http_allowed():
   assert_equals(1, len(http_servers))
 
   assert_equals(False, http_servers[0]["tls"]["httpsRedirect"])
-end
-
-def assert_equals(expected, actual):
-  if actual != expected:
-    assert.fail("Expected %s, but found %s" % (expected, actual))
-  end
 end
 
 def https_servers_in_gateway(gateway_yaml):

@@ -1,0 +1,45 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:json", "json")
+#@ load("@ytt:data", "data")
+#@ load("/namespaces.star", "system_namespace", "workloads_namespace", "workloads_staging_namespace")
+
+#! add dockerconfigjson secret to all namespaces to use as imagePullSecret in ServiceAccounts and Pod specs
+
+#@ if data.values.system_registry.add_image_pull_secrets:
+#@ namespaces = [ system_namespace(), workloads_namespace(), workloads_staging_namespace(), "cf-db", "cf-blobstore", "kpack", "istio-system" ]
+#@ for namespace in namespaces:
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: system-registry-auth-secret
+  namespace: #@ namespace
+type: kubernetes.io/dockerconfigjson
+data:
+  #@ docker_auth = base64.encode("{}:{}".format(data.values.system_registry.username, data.values.system_registry.password))
+  #@ docker_creds = {"username": data.values.system_registry.username, "password": data.values.system_registry.password, "auth": docker_auth}
+  .dockerconfigjson: #@ base64.encode(json.encode({"auths": {data.values.system_registry.hostname: docker_creds}}))
+#@ end
+
+#@overlay/match by=overlay.subset({"kind": "ServiceAccount"}), expects="1+"
+---
+#@overlay/match missing_ok=True
+imagePullSecrets:
+#@overlay/append
+- name: system-registry-auth-secret
+
+#@ deployments = overlay.subset({"kind": "Deployment"})
+#@ statefulsets = overlay.subset({"kind": "StatefulSet"})
+#@ daemonsets = overlay.subset({"kind": "DaemonSet"})
+#@ jobs = overlay.subset({"kind": "Job"})
+#@overlay/match by=overlay.or_op(deployments, statefulsets, daemonsets, jobs), expects="1+"
+---
+spec:
+  template:
+    spec:
+      #@overlay/match missing_ok=True
+      imagePullSecrets:
+      #@overlay/append
+      - name: system-registry-auth-secret
+#@ end

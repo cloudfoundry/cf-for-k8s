@@ -1,0 +1,24 @@
+#@ load("/namespaces.star", "system_namespace")
+
+#@ def ingress(name, hostnames, service, port, namespace=system_namespace(), tlsSecretName="cf-system-cert"):
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: #@ name
+  namespace: #@ namespace
+  annotations:
+    kubernetes.io/ingress.class: istio #! configure this from cf-values
+spec:
+  rules:
+  #@ for host in hostnames:
+  - host: #@ host
+    http:
+      paths:
+      - backend:
+          serviceName: #@ service
+          servicePort: #@ port
+  #@ end
+  tls:
+  - hosts: #@ hostnames
+    secretName: #@ tlsSecretName
+#@ end

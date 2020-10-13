@@ -57,5 +57,5 @@ images:
   cf_autodetect_builder:
   nginx:
   statsd_exporter:
-  registry_buddy:
+  package_image_uploader:
 temporary_disable_v2_staging: true

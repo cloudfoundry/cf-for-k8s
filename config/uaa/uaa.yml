@@ -4,7 +4,7 @@
 #@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
 #@ load("/namespaces.star", "system_namespace")
-#@ load("/networking/ingress.lib.yml", "ingress")
+#@ load("/ingress.lib.yml", "ingress")
 
 #@ def uaa_db_host():
 #@   if len(data.values.uaa.database.host) > 0:

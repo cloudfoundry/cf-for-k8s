@@ -2,7 +2,7 @@
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
 #@ load("/namespaces.star", "system_namespace")
-#@ load("/networking/ingress.lib.yml", "ingress")
+#@ load("/ingress.lib.yml", "ingress")
 
 #@ def logging_values():
 system_domain: #@ data.values.system_domain

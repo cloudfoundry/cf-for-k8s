@@ -16,6 +16,7 @@ var _ = Describe("UAA", func() {
 		templates = []string{
 			pathToFile("config/uaa"),
 			pathToFile("config/namespaces.star"),
+			pathToFile("config/ingress.lib.yml"),
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),
 		}
 	})

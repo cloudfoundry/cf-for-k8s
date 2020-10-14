@@ -1,5 +1,9 @@
 ---
 groups:
+- name: all
+  jobs:
+  - validate-azure
+  - validate-minikube-on-gcp
 - name: azure
   jobs:
   - validate-azure

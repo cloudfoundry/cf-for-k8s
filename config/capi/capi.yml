@@ -3,7 +3,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("/namespaces.star", "system_namespace", "workloads_namespace", "workloads_staging_namespace")
-#@ load("/networking/ingress.lib.yml", "ingress")
+#@ load("/ingress.lib.yml", "ingress")
 
 #@ def capi_host():
 #@   if len(data.values.capi.database.host) > 0:

@@ -34,4 +34,4 @@ capi:
   database:
     encryption_key: [KEY]
 ```
-1.Enter a secure value for [KEY] and deploy. 
+1. Enter a secure value for [KEY] and deploy. 

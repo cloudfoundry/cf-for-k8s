@@ -46,6 +46,7 @@ var _ = Describe("RBac", func() {
 		args = []string{
 			"-f", "../../../config",
 			"-f", "/tmp/dummy-domain-values-1.yml",
+			"-f", "../app_registry.yml",
 		}
 		outfile, err = os.Create(templatedPath)
 		Expect(err).NotTo(HaveOccurred())

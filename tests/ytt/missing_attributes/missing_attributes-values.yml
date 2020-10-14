@@ -13,32 +13,21 @@ capi:
   database:
     password: glip
     encryption_key: glip
-    adapter: adapter
-    host: host
-    port: port
-    user: user
-    name: name
 
 system_certificate:
   crt: crt
   #! key: missing
-  ca: ca
 
 workloads_certificate:
-  crt: crt
+  #! crt: missing
   key: key
-  #! ca: missing
 
-internal_certificate:
-  #! This certificates and keys should be valid for *.cf-system.svc.cluster.local
-  crt: crt
+#! internal_certificate: missing completely
 
-#! Totally missing:
-#! gateway
 uaa:
   database:
     password: blip
-    #! also missing: ['adapter', 'host', 'port', 'user', 'name']
+  #! encryption_key: missing
   admin_client_secret: stuff
 
 app_registry:

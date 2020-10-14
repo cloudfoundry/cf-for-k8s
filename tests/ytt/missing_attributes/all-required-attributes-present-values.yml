@@ -20,23 +20,26 @@ capi:
     port: port
     user: user
     name: name
+  cc_username_lookup_client_secret: secret
+  cf_api_controllers_client_secret: secret
+
+cf_db:
+  admin_password: shhh
 
 system_certificate:
   crt: crt
-  key: missing
-  ca: ca
+  key: key
 
 workloads_certificate:
   crt: crt
   key: key
-  ca: missing
 
 internal_certificate:
   #! This certificates and keys should be valid for *.cf-system.svc.cluster.local
   crt: crt
+  key: key
+  ca: ca
 
-#! Totally missing:
-#! gateway
 uaa:
   database:
     password: blip
@@ -45,7 +48,16 @@ uaa:
     port: port
     user: user
     name: name
+  encryption_key:
+    passphrase: correct horse
   admin_client_secret: stuff
+  jwt_policy:
+    signing_key: key
+  login:
+    service_provider:
+      certificate: cert
+      key: key
+  login_secret: secret
 
 app_registry:
   hostname: gcr.io

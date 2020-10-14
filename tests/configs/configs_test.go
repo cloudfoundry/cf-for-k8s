@@ -48,6 +48,7 @@ var _ = Describe("Configs", func() {
 		args = []string{
 			"-f", "../../config",
 			"-f", "/tmp/dummy-domain-values.yml",
+			"-f", "app_registry.yml",
 		}
 
 		outfile, err := os.Create(templatedPath)

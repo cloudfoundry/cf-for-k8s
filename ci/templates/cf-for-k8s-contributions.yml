@@ -2,6 +2,17 @@
 
 ---
 groups:
+- name: all-autobumps
+  jobs:
+  - bump-buildpacks
+  - bump-stack
+  #@ for release in data.values.releases:
+  - #@ "{}-run-unit-tests".format(release.name)
+  - #@ "{}-validate-on-newest-k8s-version".format(release.name)
+  - #@ "{}-validate-on-oldest-k8s-version".format(release.name)
+  - #@ "{}-validate-upgrade".format(release.name)
+  - #@ "{}-push-to-develop".format(release.name)
+  #@ end
 - name: pr-validation
   jobs:
   - fail-prs-to-cf-for-k8s-master
@@ -14,17 +25,22 @@ groups:
   - validate-pr-on-newest-k8s-kind
   - validate-pr-on-oldest-k8s-kind
   - test-vendir-sync-on-cf-for-k8s-pr
-- name: all-autobumps
-  jobs:
-  #@ for release in data.values.releases:
-  - #@ "{}-create-bump-pr".format(release.name)
-  #@ end
 - name: buildpacks
   jobs:
     - bump-buildpacks
 - name: stack
   jobs:
     - bump-stack
+#@ for release in data.values.releases:
+- name: #@ release.name
+  jobs:
+  - #@ "{}-run-unit-tests".format(release.name)
+  - #@ "{}-validate-on-newest-k8s-version".format(release.name)
+  - #@ "{}-validate-on-oldest-k8s-version".format(release.name)
+  - #@ "{}-validate-upgrade".format(release.name)
+  - #@ "{}-push-to-develop".format(release.name)
+  - #@ "{}-create-bump-pr".format(release.name)
+  #@ end
 
 resource_types:
 - name: pull-request

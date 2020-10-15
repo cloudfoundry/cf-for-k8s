@@ -24,6 +24,7 @@ var _ = Describe("External Prometheus scraping access", func() {
 			pathToFile("config/uaa"),
 			pathToFile("config/namespaces.star"),
 			pathToFile("config/quarks-secret/quarks-secret.star"),
+			pathToFile("config/ingress.lib.yml"),
 		}
 
 		valueFiles = []string{

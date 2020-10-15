@@ -14,6 +14,7 @@ metadata:
 stringData:
   tls.key: #@ data.values.system_certificate.key
   tls.crt: #@ data.values.system_certificate.crt
+type: kubernetes.io/tls
 
 ---
 apiVersion: v1
@@ -26,6 +27,7 @@ metadata:
 stringData:
   tls.key: #@ data.values.workloads_certificate.key
   tls.crt: #@ data.values.workloads_certificate.crt
+type: kubernetes.io/tls
 
 #! the following overlay ensures the above Secret is created before the ingressgateway since we're not using SDS
 #! ingressgateway can be either a Deployment or a DaemonSet

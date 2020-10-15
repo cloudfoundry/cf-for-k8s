@@ -20,6 +20,7 @@ var _ = Describe("System registry", func() {
 		templateFiles = []string{
 			pathToFile("config/system-registry.yml"),
 			pathToFile("config/uaa"),
+			pathToFile("config/ingress.lib.yml"),
 			pathToFile("config/namespaces.star"),
 			pathToFile("config/quarks-secret/quarks-secret.star"),
 		}

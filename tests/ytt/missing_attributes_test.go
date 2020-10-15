@@ -11,7 +11,6 @@ var _ = Describe("Missing Attributes", func() {
 	var ctx RenderingContext
 	var templates []string
 
-
 	JustBeforeEach(func() {
 		ctx = NewRenderingContext(templates...)
 	})
@@ -27,10 +26,6 @@ var _ = Describe("Missing Attributes", func() {
 		It("should list all the required attributes", func() {
 			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_domains", "app_registry.hostname", "app_registry.password", "app_registry.repository_prefix", "app_registry.username", "blobstore.secret_access_key", "capi.cc_username_lookup_client_secret", "capi.cf_api_controllers_client_secret", "capi.database.encryption_key", "capi.database.password", "cf_admin_password", "cf_db.admin_password", "internal_certificate.ca", "internal_certificate.crt", "internal_certificate.key", "system_certificate.crt", "system_certificate.key", "system_domain", "uaa.admin_client_secret", "uaa.database.password", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "uaa.login_secret", "workloads_certificate.crt", "workloads_certificate.key"\]`))
 		})
-
-		It("should list exactly 40 missing required attributes", func() {
-			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \[(?:"[\w_.]+"(?:, )?){27}\]`))
-		})
 	})
 
 	Context("when some required attributes are missing", func() {
@@ -38,7 +33,7 @@ var _ = Describe("Missing Attributes", func() {
 			templates = []string{
 				pathToFile("config/check-required-arguments.yml"),
 				pathToFile("config/get_missing_parameters.star"),
-				pathToFile("tests/ytt/missing_attributes/missing_attributes-values.yml"),
+				pathToFile("tests/ytt/missing_attributes/missing_attributes_values.yml"),
 			}
 		})
 
@@ -51,7 +46,7 @@ var _ = Describe("Missing Attributes", func() {
 		BeforeEach(func() {
 			templates = []string{
 				pathToFile("config"),
-				pathToFile("tests/ytt/missing_attributes/all-required-attributes-present-values.yml"),
+				pathToFile("sample-cf-install-values.yml"),
 			}
 		})
 

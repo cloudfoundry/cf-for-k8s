@@ -31,10 +31,7 @@ def is_missing(values, param):
 end
 
 # Useful command to build the list of required parameters:
-# cat <(awk '-F|' '$4 == " Yes " { printf("%s\n", gensub(/\s+/, "", "g", $2)) }' docs/platform_operators/deploy-parameters.md) docs/platform_operators/required-parameters.txt | sort -u
-# 'docs/platform_operators/required-parameters.txt' contents come from story 174981087
-# copy paste table
-# pbpaste | tail -n +2 | awk '{print $1}'
+# awk '-F|' '$4 == " Yes " { printf("%s\n", gensub(/\s+/, "", "g", $2)) }' docs/platform_operators/deploy-parameters.md
 
 def get_missing_parameters(values):
     required_parameters = '''\

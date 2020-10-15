@@ -29,6 +29,8 @@ helm install -n external-db --wait postgresql bitnami/postgresql
 CCDB_USERNAME="capi_user"
 CCDB_PASSWORD="$(openssl rand -base64 32)"
 CCDB_NAME="capi_db"
+CCDB_ENCRYPTION_KEY="$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 16 | head -n 1)"
+
 UAADB_USERNAME="uaa_user"
 UAADB_PASSWORD="$(openssl rand -base64 32)"
 UAADB_NAME="uaa_db"
@@ -61,7 +63,7 @@ capi:
       password: $CCDB_PASSWORD
       name: $CCDB_NAME
       ca_cert: ""
-      encryption_key: ""
+      encryption_key: "${CCDB_ENCRYPTION_KEY}"
 
 uaa:
   #@overlay/replace

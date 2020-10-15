@@ -34,6 +34,7 @@ function setup_db {
     CCDB_USERNAME="capi_user_$RDS_SUFFIX"
     CCDB_PASSWORD="$(openssl rand -base64 32)"
     CCDB_NAME="capi_db_$RDS_SUFFIX"
+    CCDB_ENCRYPTION_KEY="$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 16 | head -n 1)"
 
     UAADB_USERNAME="uaa_user_$RDS_SUFFIX"
     UAADB_PASSWORD="$(openssl rand -base64 32)"
@@ -91,7 +92,7 @@ capi:
             0SBd8dj5F6ld3t58ydZbrTHze7JJOd8ijySAp4/kiu9UfZWuTPABzDa/DSdz9Dk/
             zPW4CXXvhLmE02TA9/HeCw3KEHIwicNuEfw=
             -----END CERTIFICATE-----
-        encryption_key: ""
+        encryption_key: "${CCDB_ENCRYPTION_KEY}"
 uaa:
     #@overlay/replace
     database:

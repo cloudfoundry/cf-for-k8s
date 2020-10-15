@@ -18,6 +18,7 @@ var _ = Describe("External Prometheus scraping access", func() {
 			pathToFile("config/metrics"),
 			pathToFile("config/uaa"),
 			pathToFile("config/namespaces.star"),
+			pathToFile("config/ingress.lib.yml"),
 			pathToFile("tests/ytt/capi/capi-values.yml"),
 			pathToFile("tests/ytt/metrics/metrics-values.yml"),
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),

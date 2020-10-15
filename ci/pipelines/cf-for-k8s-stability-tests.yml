@@ -28,11 +28,11 @@ resource_types:
     repository: ljfranklin/terraform-resource
 
 resources:
-- name: cf-for-k8s-master
+- name: cf-for-k8s-main
   type: git
   icon: github
   source:
-    branch: master
+    branch: main
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 
@@ -122,7 +122,7 @@ jobs:
   public: true
   plan:
   - in_parallel:
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-main
     - get: cf-for-k8s-ci
     - get: runtime-ci
     - get: weekday-pm
@@ -147,7 +147,7 @@ jobs:
     config:
       <<: *common-task-config
       inputs:
-      - name: cf-for-k8s-master
+      - name: cf-for-k8s-main
       - name: cf-for-k8s-ci
       - name: pool-lock
       outputs:
@@ -169,12 +169,12 @@ jobs:
           DNS_DOMAIN="${cluster_name}.${DOMAIN}"
 
           echo "Generating install values..."
-          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          cf-for-k8s-main/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
           echo "load_balancer:" >> cf-install-values.yml
           echo "  static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
 
           echo "Installing CF..."
-          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-main/config -f cf-install-values.yml) -y
 
           bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
@@ -183,7 +183,7 @@ jobs:
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
-      cf-for-k8s: cf-for-k8s-master
+      cf-for-k8s: cf-for-k8s-main
     params:
       APP_NAME: jp-node-app
       VERIFY_EXISTING_APP: false
@@ -191,7 +191,7 @@ jobs:
   - task: upgrade-cf-new-values
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
-      cf-for-k8s: cf-for-k8s-master
+      cf-for-k8s: cf-for-k8s-main
       pool-lock: ready-pool
     params:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
@@ -209,14 +209,14 @@ jobs:
       - task: run-smoke-tests
         file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
         input_mapping:
-          cf-for-k8s: cf-for-k8s-master
+          cf-for-k8s: cf-for-k8s-main
         params:
           SMOKE_TEST_SKIP_SSL: false
 
       - task: verify-existing-app
         file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
         input_mapping:
-          cf-for-k8s: cf-for-k8s-master
+          cf-for-k8s: cf-for-k8s-main
         params:
           APP_NAME: jp-node-app
           VERIFY_EXISTING_APP: true
@@ -243,7 +243,7 @@ jobs:
   public: true
   plan:
   - in_parallel:
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-main
     - get: cf-for-k8s-ci
     - get: every-20-minutes
       trigger: true
@@ -277,7 +277,7 @@ jobs:
       config:
         <<: *common-task-config
         inputs:
-        - name: cf-for-k8s-master
+        - name: cf-for-k8s-main
         - name: cf-for-k8s-ci
         - name: pool-lock
         outputs:
@@ -297,15 +297,15 @@ jobs:
             gcloud_auth "${cluster_name}"
 
             export DNS_DOMAIN="${cluster_name}.((ci_k8s_root_domain))"
-            cf-for-k8s-master/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
+            cf-for-k8s-main/hack/confirm-network-policy.sh "${cluster_name}" '((ci_k8s_gcp_project_zone))'
 
             echo "Generating install values..."
-            cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+            cf-for-k8s-main/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
             echo "load_balancer:" >> cf-install-values.yml
             echo "  static_ip: $(jq -r '.lb_static_ip' pool-lock/metadata)" >> cf-install-values.yml
 
             echo "Installing CF..."
-            kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+            kapp deploy -a cf -f <(ytt -f cf-for-k8s-main/config -f cf-install-values.yml) -y
 
             bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
             bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
@@ -314,7 +314,7 @@ jobs:
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        cf-for-k8s: cf-for-k8s-main
       params:
         SMOKE_TEST_SKIP_SSL: false
 
@@ -339,7 +339,7 @@ jobs:
   public: true
   plan:
   - in_parallel:
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-main
     - get: runtime-ci
     - get: every-minute
       trigger: true
@@ -348,7 +348,7 @@ jobs:
     config:
       <<: *common-task-config
       inputs:
-      - name: cf-for-k8s-master
+      - name: cf-for-k8s-main
       - name: runtime-ci
       params:
         CF_ADMIN_PASSWORD: ((ll_dep_cf_admin_pass))
@@ -366,7 +366,7 @@ jobs:
           export SMOKE_TEST_SKIP_SSL=true
 
           set +e
-          cf-for-k8s-master/hack/run-smoke-tests.sh
+          cf-for-k8s-main/hack/run-smoke-tests.sh
           smoke_tests_exit_code=$?
           set -e
           if [[ ${smoke_tests_exit_code} == 0 ]]; then
@@ -390,7 +390,7 @@ jobs:
   public: true
   plan:
   - in_parallel:
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-main
     - get: cf-for-k8s-ci
     - get: relint-envs
     - get: weekday-pm
@@ -404,7 +404,7 @@ jobs:
     config:
       <<: *common-task-config
       inputs:
-      - name: cf-for-k8s-master
+      - name: cf-for-k8s-main
       - name: cf-for-k8s-ci
       - name: relint-envs
       - name: terraform
@@ -433,7 +433,7 @@ jobs:
           cp relint-envs/k8s-environments/long-lived-sli/cf-vars.yaml "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
 
           echo "Generating install values..."
-          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          cf-for-k8s-main/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
           sed -i.bak "s=\(repository_prefix:\).*$=\1 $long_lived_repository_prefix=" cf-install-values.yml
@@ -441,7 +441,7 @@ jobs:
           echo "  static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
 
           echo "Installing CF..."
-          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-main/config -f cf-install-values.yml) -y
 
           source cf-for-k8s-ci/ci/helpers/env-git.sh
           commit-long-lived-sli-cf-vars
@@ -457,7 +457,7 @@ jobs:
   public: true
   plan:
   - in_parallel:
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-main
     - get: cf-for-k8s-ci
     - get: relint-envs
     - get: terraform-long-lived-sli
@@ -489,7 +489,7 @@ jobs:
     config:
       <<: *common-task-config
       inputs:
-      - name: cf-for-k8s-master
+      - name: cf-for-k8s-main
       - name: cf-for-k8s-ci
       - name: relint-envs
       - name: terraform
@@ -514,7 +514,7 @@ jobs:
           echo "replacing repository prefix with repo whose images are not cleaned up"
           export long_lived_repository_prefix="gcr.io/$( bosh interpolate gcp-service-account.json --path=/project_id )/cf-workloads-long-lived"
           echo "Generating install values..."
-          cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+          cf-for-k8s-main/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' cf-install-values.yml
           sed -i.bak 's/\(cf_admin_password:\).*$/\1 ((ll_dep_cf_admin_pass))/' "/tmp/${DNS_DOMAIN}/cf-vars.yaml"
 
@@ -523,7 +523,7 @@ jobs:
           echo "  static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
 
           echo "Installing CF..."
-          kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+          kapp deploy -a cf -f <(ytt -f cf-for-k8s-main/config -f cf-install-values.yml) -y
 
           echo "((ll_dep_cf_admin_pass))" > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
@@ -542,7 +542,7 @@ jobs:
   public: true
   plan:
   - in_parallel:
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-main
       passed: [ manual-redeploy-long-lived-env-with-latest-master ]
       trigger: true
     - get: cf-for-k8s-ci
@@ -566,7 +566,7 @@ jobs:
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
     input_mapping:
-      cf-for-k8s: cf-for-k8s-master
+      cf-for-k8s: cf-for-k8s-main
     params:
       APP_NAME: long-lived-node-app
       APP_INSTANCES: 2

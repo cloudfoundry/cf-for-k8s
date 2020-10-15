@@ -9,7 +9,7 @@ groups:
   - validate-cf-for-k8s-gke-rds
   - validate-cf-for-k8s-gke-external-db
   - validate-cf-for-k8s-gke-external-blobstore
-  - promote-master-deliver-stories
+  - promote-main-deliver-stories
   - run-unit-tests
   - branch-freshness
 - name: cats
@@ -108,11 +108,11 @@ resources:
       bucket: relint-k8s-cluster-state
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
-- name: cf-for-k8s-master-push
+- name: cf-for-k8s-main-push
   type: git
   icon: github
   source:
-    branch: master
+    branch: main
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
 
@@ -786,7 +786,7 @@ jobs:
       get_params:
         action: destroy
 
-- name: promote-master-deliver-stories
+- name: promote-main-deliver-stories
   serial: true
   public: true
   plan:
@@ -800,7 +800,7 @@ jobs:
     - validate-cf-for-k8s-gke-external-blobstore
     trigger: true
 
-  - put: cf-for-k8s-master-push
+  - put: cf-for-k8s-main-push
     params:
       repository: cf-for-k8s-develop
 

@@ -15,7 +15,7 @@ groups:
   #@ end
 - name: pr-validation
   jobs:
-  - fail-prs-to-cf-for-k8s-master
+  - fail-prs-to-cf-for-k8s-main
   - pass-prs-to-cf-for-k8s-develop
   - run-unit-tests-on-pr
   - validate-pr-on-gke
@@ -152,14 +152,14 @@ resources:
     paths:
       - deploy/kind-on-gcp/terraform/**
 
-- name: cf-for-k8s-pr-master
+- name: cf-for-k8s-pr-main
   type: pull-request
   icon: github
   source:
     access_token: ((github_status_bot_repo_access_token))
     repository: cloudfoundry/cf-for-k8s
     disable_forks: false
-    base_branch: master
+    base_branch: main
 
 - name: cf-for-k8s-pr-develop
   type: pull-request
@@ -212,11 +212,11 @@ resources:
 #@ end
 
 jobs:
-- name: fail-prs-to-cf-for-k8s-master
+- name: fail-prs-to-cf-for-k8s-main
   public: true
   plan:
   - in_parallel:
-    - get: cf-for-k8s-pr-master
+    - get: cf-for-k8s-pr-main
       trigger: true
       version: every
     - get: runtime-ci
@@ -224,11 +224,11 @@ jobs:
   - task: write-pr-check-failure-comment
     file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
     input_mapping:
-      pull-request: cf-for-k8s-pr-master
+      pull-request: cf-for-k8s-pr-main
 
-  - put: cf-for-k8s-pr-master
+  - put: cf-for-k8s-pr-main
     params:
-      path: cf-for-k8s-pr-master
+      path: cf-for-k8s-pr-main
       status: failure
       context: ((pr_context))
       comment_file: pull-request-comment/comment

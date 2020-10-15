@@ -26,11 +26,11 @@ resource_types:
     repository: ljfranklin/terraform-resource
 
 resources:
-- name: cf-for-k8s-master
+- name: cf-for-k8s-main
   type: git
   icon: github
   source:
-    branch: master
+    branch: main
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 
@@ -87,7 +87,7 @@ jobs:
   - azure
   plan:
   - in_parallel:
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-main
     - get: cf-for-k8s-ci
     - get: weekday-am
       trigger: true
@@ -134,7 +134,7 @@ jobs:
       config:
         <<: *common-task-config
         inputs:
-        - name: cf-for-k8s-master
+        - name: cf-for-k8s-main
         - name: terraform
         outputs:
         - name: env-metadata
@@ -151,12 +151,12 @@ jobs:
             export DNS_DOMAIN="azure-$(cat terraform/name).((ci_k8s_root_domain))"
 
             echo "Generating install values..."
-            cf-for-k8s-master/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+            cf-for-k8s-main/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
             echo "load_balancer:" >> cf-install-values.yml
             echo "  static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
 
             echo "Installing CF..."
-            kapp deploy -a cf -f <(ytt -f cf-for-k8s-master/config -f cf-install-values.yml) -y
+            kapp deploy -a cf -f <(ytt -f cf-for-k8s-main/config -f cf-install-values.yml) -y
 
             bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
             echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
@@ -165,7 +165,7 @@ jobs:
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        cf-for-k8s: cf-for-k8s-main
       params:
         SMOKE_TEST_SKIP_SSL: false
 
@@ -200,7 +200,7 @@ jobs:
   public: true
   plan:
   - in_parallel:
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-main
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-minikube-gcp-terraform-templates
     - get: weekday-am
@@ -242,7 +242,7 @@ jobs:
     - task: create-minikube-cluster
       attempts: 5
       input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        cf-for-k8s: cf-for-k8s-main
       file: cf-for-k8s-ci/ci/tasks/create-minikube-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
@@ -250,7 +250,7 @@ jobs:
 
     - task: install-cf
       input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        cf-for-k8s: cf-for-k8s-main
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-minikube/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
@@ -258,7 +258,7 @@ jobs:
 
     - task: run-smoke-tests
       input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        cf-for-k8s: cf-for-k8s-main
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-minikube/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))

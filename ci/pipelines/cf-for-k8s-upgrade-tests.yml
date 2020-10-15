@@ -8,11 +8,11 @@ x-config: &common-task-config
       repository: relintdockerhubpushbot/cf-for-k8s-ci
 
 resources:
-- name: cf-for-k8s-master
+- name: cf-for-k8s-main
   type: git
   icon: github
   source:
-    branch: master
+    branch: main
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 
@@ -74,7 +74,7 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-last-valid-commit
       trigger: true
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-main
       trigger: true
     - get: cf-for-k8s-ci
     - get: runtime-ci
@@ -116,7 +116,7 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
     input_mapping:
       pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-master
+      cf-for-k8s: cf-for-k8s-main
     params:
       GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -133,7 +133,7 @@ jobs:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        cf-for-k8s: cf-for-k8s-main
       params:
         SMOKE_TEST_SKIP_SSL: true
 
@@ -143,7 +143,7 @@ jobs:
         APP_NAME: jp-node-app
         VERIFY_EXISTING_APP: true
       input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        cf-for-k8s: cf-for-k8s-main
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml

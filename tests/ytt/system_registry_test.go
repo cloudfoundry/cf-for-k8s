@@ -15,6 +15,7 @@ var _ = Describe("System registry", func() {
 		templates = []string{
 			pathToFile("config/system-registry.yml"),
 			pathToFile("config/uaa"),
+			pathToFile("config/ingress.lib.yml"),
 			pathToFile("config/namespaces.star"),
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),
 			pathToFile("tests/ytt/system-registry/system-registry-values.yml"),

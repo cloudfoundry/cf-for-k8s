@@ -4,6 +4,7 @@
 #@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
 #@ load("/namespaces.star", "system_namespace")
+#@ load("/ingress.lib.yml", "ingress")
 
 #@ def uaa_db_host():
 #@   if len(data.values.uaa.database.host) > 0:
@@ -217,26 +218,13 @@ data:
   uaa.yml:
 
 #! expose UAA under the system domain
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: uaa-external-virtual-service
-  namespace: #@ system_namespace()
-spec:
-  hosts:
-  - #@ "uaa." + data.values.system_domain
-  - #@ "*.uaa." + data.values.system_domain
-  - #@ "login." + data.values.system_domain
-  - #@ "*.login." + data.values.system_domain
-  gateways:
-  - #@ system_namespace() + "/istio-ingressgateway"
-  http:
-  - route:
-    - destination:
-        host: #@ "uaa." + system_namespace() + ".svc.cluster.local"
-        port:
-          number: 8080
+#@ uaa_external_hostnames = [
+#@   "uaa." + data.values.system_domain,
+#@   "*.uaa." + data.values.system_domain,
+#@   "login." + data.values.system_domain,
+#@   "*.login." + data.values.system_domain,
+#@ ]
+--- #@ ingress("uaa-external", uaa_external_hostnames, "uaa", 8080)
 
 ---
 apiVersion: v1

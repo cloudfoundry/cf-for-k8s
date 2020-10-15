@@ -3,6 +3,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("/namespaces.star", "system_namespace", "workloads_namespace", "workloads_staging_namespace")
+#@ load("/ingress.lib.yml", "ingress")
 
 #@ def capi_host():
 #@   if len(data.values.capi.database.host) > 0:
@@ -73,23 +74,7 @@ spec:
 --- #@ template.replace(capi.with_data_values(capi_values()).eval())
 
 #! expose CAPI under the system domain
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: cf-api-external-virtual-service
-  namespace: #@ system_namespace()
-spec:
-  hosts:
-  - #@ "api." + data.values.system_domain
-  gateways:
-  - #@ system_namespace() + "/istio-ingressgateway"
-  http:
-  - route:
-    - destination:
-        host: #@ "capi." + system_namespace() + ".svc.cluster.local"
-        port:
-          number: 80
+--- #@ ingress("capi-external", ["api." + data.values.system_domain], "capi", 80)
 
 ---
 apiVersion: v1

@@ -6,20 +6,8 @@
 #@overlay/remove
 ---
 
-#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name": "eirini"}})
----
-metadata:
-  #@overlay/match missing_ok=True
-  namespace: cf-system
-#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name": "eirini"}})
----
-metadata:
-  #@overlay/match missing_ok=True
-  namespace: cf-system
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "eirini-opi"}})
 ---
 metadata:
-  #@overlay/match missing_ok=True
-  namespace: cf-system
   #! TODO: PR CAPI release to allow configuration of eirini location
   name: eirini

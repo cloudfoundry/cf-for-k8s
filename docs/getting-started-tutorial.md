@@ -30,10 +30,12 @@ You’ll also need a few CLIs before you start:
 First things first, git clone the cf-for-k8s repository.  This repository contains our templated k8s yaml files:
 
 ```
-git clone https://github.com/cloudfoundry/cf-for-k8s.git
+git clone https://github.com/cloudfoundry/cf-for-k8s.git -b main
 cd cf-for-k8s
 TMP_DIR=<your-tmp-dir-path>; mkdir -p ${TMP_DIR}
 ```
+
+Note: if you would like the latest release, replace the branch reference in the clone command with that release tag. (E.G. `-b v1.0.0`)
 
 Next, create the local kubernetes cluster that we will deploy cf-for-k8s to presently:
 

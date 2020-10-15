@@ -68,10 +68,12 @@ Currently, we test the following two container registries:
 1. Clone and initialize this git repository:
 
    ```console
-   git clone https://github.com/cloudfoundry/cf-for-k8s.git
+   git clone https://github.com/cloudfoundry/cf-for-k8s.git -b main
    cd cf-for-k8s
    TMP_DIR=<your-tmp-dir-path> ; mkdir -p ${TMP_DIR}
    ```
+
+   Note: if you would like the latest release, replace the branch reference in the clone command with that release tag. (E.G. `-b v1.0.0`)
 
 1. Create a "CF Installation Values" file and configure it<a name="cf-values"></a>:
 

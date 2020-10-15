@@ -2,6 +2,7 @@
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
 #@ load("/namespaces.star", "system_namespace")
+#@ load("/ingress.lib.yml", "ingress")
 
 #@ def logging_values():
 system_domain: #@ data.values.system_domain
@@ -15,3 +16,5 @@ app_log_destinations:
 #@ end
 #@ logging = library.get("cf-k8s-logging")
 --- #@ template.replace(logging.with_data_values(logging_values()).eval())
+
+--- #@ ingress("log-cache-external", ["log-cache." + data.values.system_domain], "log-cache", 8083)

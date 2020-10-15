@@ -1,0 +1,7 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "eirini-opi"}})
+---
+metadata:
+  #! TODO: PR CAPI release to allow configuration of eirini location
+  name: eirini

@@ -28,7 +28,7 @@ set -euo pipefail
 
 export HOME=/tmp/minikube
 export PATH=/tmp/minikube/bin:/tmp/minikube/go/bin:$PATH
-minikube start --cpus=6 --memory=16g --driver=docker
+minikube start --cpus="${CPUS}" --memory="${MEMORY}" --driver=docker
 minikube addons enable metrics-server
 EOT
 chmod +x remote-create-minikube-cluster.sh

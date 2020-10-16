@@ -1,4 +1,4 @@
-# Using external blobstore
+# Using an external blobstore
 
 1. Create the necessary buckets using `aws-cli`:
 

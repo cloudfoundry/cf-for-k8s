@@ -97,7 +97,9 @@ Configuration Notes:
 1. Start minikube using the docker driver:
 
    ```console
-   minikube start --cpus=6 --memory=8g --kubernetes-version="1.19.1" --driver=docker
+   minikube start --cpus=6 --memory=8g --kubernetes-version="1.19.2" --driver=docker
+   # available minikube K8s versions can be found here: https://github.com/kubernetes/minikube/blob/master/pkg/minikube/constants/constants.go
+   # make sure to use a version within the cf-for-k8s supported minor version window (see `supported_k8s_versions.yml`)
    ```
 
 1. Enable metrics-server.

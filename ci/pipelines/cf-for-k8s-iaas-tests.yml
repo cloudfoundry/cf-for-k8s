@@ -282,7 +282,7 @@ jobs:
   public: true
   plan:
   - in_parallel:
-    - get: cf-for-k8s-master
+    - get: cf-for-k8s-main
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-minikube-gcp-terraform-templates
     - get: weekday-am
@@ -324,7 +324,7 @@ jobs:
     - task: create-minikube-cluster
       attempts: 5
       input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        cf-for-k8s: cf-for-k8s-main
       file: cf-for-k8s-ci/ci/tasks/create-minikube-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
@@ -334,7 +334,7 @@ jobs:
 
     - task: install-cf
       input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        cf-for-k8s: cf-for-k8s-main
       file: cf-for-k8s-ci/ci/tasks/install-cf-on-minikube/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
@@ -342,7 +342,7 @@ jobs:
 
     - task: run-smoke-tests
       input_mapping:
-        cf-for-k8s: cf-for-k8s-master
+        cf-for-k8s: cf-for-k8s-main
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-minikube/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))

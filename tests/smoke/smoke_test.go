@@ -86,7 +86,6 @@ var _ = Describe("Smoke Tests", func() {
 		}
 
 		It("creates a routable app pod in Kubernetes from a source-based app", func() {
-
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
@@ -137,13 +136,7 @@ var _ = Describe("Smoke Tests", func() {
 
 			body, err := ioutil.ReadAll(resp.Body)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(string(body)).To(Equal("Hello World\n"))
-
-			By("verifying that the application's logs are available.")
-			Eventually(func() string {
-				cfLogs := cf.Cf("logs", appName, "--recent")
-				return string(cfLogs.Wait().Out.Contents())
-			}, 2*time.Minute, 2*time.Second).Should(ContainSubstring("Console output from test-node-app"))
+			Expect(string(body)).To(ContainSubstring("A simple HTTP Request &amp; Response Service"))
 		})
 	})
 })

@@ -77,6 +77,7 @@ uaa:
     service_provider:
       key: login_service_provider_key
       certificate: login_service_provider_certificate
+  login_secret: uaa_login_secret
 
 #! To push apps from source code, you need to configure the `app_registry` block
 #! Example below is for docker hub. For other registry examples, see below.

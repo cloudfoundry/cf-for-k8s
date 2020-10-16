@@ -1,0 +1,9 @@
+---
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+#@ load("/get_missing_parameters.star", "get_missing_parameters")
+
+#@ missing_parameters = get_missing_parameters(data.values)
+#@ if len(missing_parameters) > 0:
+require_parameter_check: #@ assert.fail("The following required data.values parameters are missing: %s" % (missing_parameters,))
+#@ end

@@ -24,10 +24,29 @@ If you find you must rotate one of the above fields:
 
 ## Specific Issues
 
+### Outright Errors
 
 * [Rotating non-admin user/role credentials in postgres fails](https://github.com/cloudfoundry/cf-for-k8s/issues/216) 
 
 * [Support rotation of `blobstore.secret_access_key`](https://github.com/cloudfoundry/cf-for-k8s/issues/527)
+
+* [Support rotation of `capi.database.encryption_key`](https://github.com/cloudfoundry/cf-for-k8s/issues/529)
+
+* [Support rotation of `capi.database.password`](https://github.com/cloudfoundry/cf-for-k8s/issues/530)
+
+### Concourse/CI Issues
+
+The following fields can be modified and are updated eventually, but
+`uptimer`-type checking in the pipelines are currently configured to
+use either the old password or the new one, and will fail.
+
+* `cf_admin_password` - manual upgrade works, CI/upgrade fails
+
+* `db_admin_password` - manual upgrade works, CI/upgrade works
+
+* `uaa_db_password` - manual upgrade works, CI/upgrade fails: "Error unmarshalling the following into a cloud controller error: no healthy upstream"
+
+
 
 
 ## Notes on Currently Supported Rotations

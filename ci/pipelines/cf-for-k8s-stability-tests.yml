@@ -178,7 +178,7 @@ jobs:
 
           bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
-          grep -E "capi_db_encryption_key|db_admin_password|capi_db_password|uaa_db_password|blobstore_secret_key|cf_admin_password" "/tmp/${cluster_name}.${DOMAIN}/cf-vars.yaml" > env-metadata/cf-vars.yaml
+          grep -E "capi_db_encryption_key|capi_db_password|uaa_db_password|blobstore_secret_key|cf_admin_password" "/tmp/${cluster_name}.${DOMAIN}/cf-vars.yaml" > env-metadata/cf-vars.yaml
 
   - task: push-test-app
     file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml

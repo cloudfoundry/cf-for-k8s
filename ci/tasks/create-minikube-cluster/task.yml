@@ -16,6 +16,8 @@ inputs:
 params:
   GCP_KEY: ~
   GCP_PROJECT_NAME: ~
+  CPUS: ~
+  MEMORY: ~
 
 run:
   path: cf-for-k8s-ci/ci/tasks/create-minikube-cluster/task.sh

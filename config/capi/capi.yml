@@ -63,6 +63,12 @@ kpack:
     password: #@ data.values.app_registry.password
 #@ end
 
+#! scale down default number of cf-api-server replicas to 1
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"cf-api-server"}})
+---
+spec:
+  replicas: 1
+
 #@ capi = library.get("capi-k8s-release")
 --- #@ template.replace(capi.with_data_values(capi_values()).eval())
 

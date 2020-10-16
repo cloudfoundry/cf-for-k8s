@@ -1,0 +1,40 @@
+#@data/values
+---
+system_domain: "breathable-sidewalk.k8s-dev.relint.rocks"
+app_domains:
+#@overlay/append
+- "apps.breathable-sidewalk.k8s-dev.relint.rocks"
+#! cf_admin_password: missing
+
+blobstore:
+  secret_access_key: glip
+
+capi:
+  database:
+    password: glip
+    encryption_key: glip
+
+system_certificate:
+  crt: crt
+  #! key: missing
+
+workloads_certificate:
+  #! crt: missing
+  key: key
+
+#! internal_certificate: missing completely
+
+uaa:
+  database:
+    password: blip
+  #! encryption_key: missing
+  admin_client_secret: stuff
+
+app_registry:
+  hostname: gcr.io
+  repository_prefix: gcr.io/cf-relint-greengrass/cf-workloads
+#!  username: missing
+  password: secret
+
+load_balancer:
+  enable: false

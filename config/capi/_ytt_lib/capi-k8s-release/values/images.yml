@@ -1,9 +1,9 @@
 #@data/values
 ---
 images:
-  ccng: cloudfoundry/cloud-controller-ng@sha256:8517eb1d5021317f59a154510d1816042e860f92f27d05b5701aebca1df4404d
+  ccng: cloudfoundry/cloud-controller-ng@sha256:f126295abcbbb5ccc7569477a4fb91df9ad7ebee2a08f8319a07d2c4511f519b
   cf_api_controllers: cloudfoundry/cf-api-controllers@sha256:9dd23d6669bc1b58147058116554b3d9158a2b9d236fa822bb8e39ed15c7b12c
   cf_autodetect_builder: cloudfoundry/cnb:0.0.94-bionic@sha256:5b03a853e636b78c44e475bbc514e2b7b140cc41cca8ab907e9753431ae8c0b0
   nginx: cloudfoundry/capi-nginx@sha256:25997cca011ed0761955754a68931f7b1694e487bffba73c6ac8dbcd084f5dee
-  package_image_uploader: cloudfoundry/cf-api-package-image-uploader@sha256:321fbca190a06587b3d090150b499ab2c31ad56ca6c9a34715d9f6596e1542ec
+  registry_buddy: cloudfoundry/cf-api-package-registry-buddy@sha256:bb13c6ffe7cab019f3ee35fc629e164fb7d6c6b7d36bd74a0b2ae66090207561
   statsd_exporter: oratos/statsd_exporter:v0.15.0@sha256:10a64dc4ad0a3e3fe88372f0481dea5c02595c38d168617836a99a649d3ac407

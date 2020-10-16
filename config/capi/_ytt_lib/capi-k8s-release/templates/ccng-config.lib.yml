@@ -46,16 +46,6 @@ instance_file_descriptor_limit: 16384
 
 request_timeout_in_seconds: 900
 
-#! TODO: this appears unused
-bulk_api:
-  auth_user: TODO
-  auth_password: TODO
-
-#! TODO: remove this for k8s since we're using mTLS for securing this communication
-internal_api:
-  auth_user: TODO
-  auth_password: TODO
-
 nginx:
   use_nginx: true
   #! TODO: consume this from a variable since it's defined in the pod's mounts
@@ -143,10 +133,6 @@ staging:
   minimum_staging_memory_mb: 1024
   minimum_staging_disk_mb: 4096
   minimum_staging_file_descriptor_limit: 16384
-  #! TODO: make this optional until the related features are implemented/supported
-  auth:
-    user: TODO
-    password: TODO
 
 default_health_check_timeout: 60
 maximum_health_check_timeout: 180
@@ -190,7 +176,7 @@ packages:
     base_path: #@ data.values.kpack.registry.repository_prefix
   }
 
-package_image_uploader:
+registry_buddy:
   host: 127.0.0.1
   port: 8080
 

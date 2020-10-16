@@ -18,8 +18,8 @@ see that your computer can handle them:
 You’ll also need a few CLIs before you start:
 
 - [kind](https://kind.sigs.k8s.io/docs/user/quick-start/), the CNCF project for creating kubernetes clusters locally
-- [ytt](https://k14s.io/#install), the cli used to render kubernetes templates
-- [kapp](https://k14s.io/#install), the cli used to deploy cf-for-k8s
+- [ytt](https://carvel.dev/#install), the cli used to render kubernetes templates
+- [kapp](https://carvel.dev/#install), the cli used to deploy cf-for-k8s
 - [yq](https://github.com/mikefarah/yq); a cli tool for extracting information from yaml documents
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git); the tool we use to interact with the cf-for-k8s repository
 - a [Dockerhub](https://hub.docker.com) account; cf-for-k8s will use this account to store your application images

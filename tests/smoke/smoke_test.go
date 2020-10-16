@@ -86,7 +86,6 @@ var _ = Describe("Smoke Tests", func() {
 		}
 
 		It("creates a routable app pod in Kubernetes from a source-based app", func() {
-
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
@@ -113,6 +112,31 @@ var _ = Describe("Smoke Tests", func() {
 				cfLogs := cf.Cf("logs", appName, "--recent")
 				return string(cfLogs.Wait().Out.Contents())
 			}, 2*time.Minute, 2*time.Second).Should(ContainSubstring("Console output from test-node-app"))
+		})
+
+		It("creates a routable app pod in Kubernetes from a docker app", func() {
+			Eventually(cf.Cf("enable-feature-flag", "diego_docker")).Should(Exit(0))
+
+			appName = generator.PrefixedRandomName(NamePrefix, "app")
+
+			By("pushing an app and checking that the CF CLI command succeeds")
+			cfPush := cf.Cf("push", appName, "-o", "cfrouting/httpbin", "--no-route")
+			Eventually(cfPush).Should(Exit(0))
+			mapRoute(appName)
+
+			By("querying the app")
+			var resp *http.Response
+
+			Eventually(func() int {
+				var err error
+				resp, err = http.Get(fmt.Sprintf("https://%s.%s", appName, appsDomain))
+				Expect(err).NotTo(HaveOccurred())
+				return resp.StatusCode
+			}, 2*time.Minute, 30*time.Second).Should(Equal(200))
+
+			body, err := ioutil.ReadAll(resp.Body)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(string(body)).To(ContainSubstring("A simple HTTP Request &amp; Response Service"))
 		})
 	})
 })

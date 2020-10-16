@@ -20,8 +20,16 @@ See the requirements in [Deploying CF for K8s](deploy.md#required-tools).
 
 In addition to the Kubernetes version requirement in [Deploying CF for K8s](deploy.md#kubernetes-cluster-requirements), the cluster should:
 
-- have a minimum of 6 CPU, 6GB memory if using 1 node
-  - commonly configured via Docker Desktop > Preferences > Resources
+Minimum Requirements:
+- 4 CPU, 6GB memory if using 1 node
+
+Recommended Requirements:
+- 6-8 CPU, 8-16GB memory if using 1 node
+- When running with less than recommended requirements it is common for an initial `kapp deploy` to timeout; a successive `kapp deploy` should remedy this.
+
+Configuration Notes:
+- When running on a local Docker Desktop this can be configured via `Docker Desktop > Preferences > Resources`.
+- When running `Minikube`, resources can be provided as command line arguments to the start command. e.g. `minikube start --cpus=6 --memory=8gb --driver=docker`
 
 ## Considerations
 

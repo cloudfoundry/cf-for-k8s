@@ -2,16 +2,15 @@
 
 This tutorial guides you through your first `cf push` experience.
 
-In order to get there you first need to deploy cf-for-k8s.  The platform that provides the developer experience on top of Kubernetes.  So, let’s get started.
+In order to get there you first need to deploy cf-for-k8s. The platform that provides the developer experience on top of Kubernetes. So, let’s get started.
 
 ## Pre-requisites
 
 ### Machine requirements
-This tutorial will guide you through installing a local kubernetes cluster with the following machine requirements, 
-see that your computer can handle them:
+This tutorial will guide you through installing a local kubernetes cluster with the following machine requirements, see that your computer can handle them:
 
 - have a minimum of 1 node
-- have a minimum of 6 CPU, 8GB memory per node
+- have a minimum of 4 CPU, 6GB memory per node (preferably 6+ CPU and 8+ GB memory)
 
 ### Tooling
 
@@ -27,7 +26,7 @@ You’ll also need a few CLIs before you start:
 
 ## Installing Cf-for-K8s
 
-First things first, git clone the cf-for-k8s repository.  This repository contains our templated k8s yaml files:
+First things first, git clone the cf-for-k8s repository. This repository contains our templated k8s yaml files:
 
 ```
 git clone https://github.com/cloudfoundry/cf-for-k8s.git -b main
@@ -35,16 +34,16 @@ cd cf-for-k8s
 TMP_DIR=<your-tmp-dir-path>; mkdir -p ${TMP_DIR}
 ```
 
-Note: if you would like the latest release, replace the branch reference in the clone command with that release tag. (E.G. `-b v1.0.0`)
+Note: if you would like to use the latest release, replace the branch reference in the clone command with that release tag. (E.G. `-b v1.0.0`)
 
 Next, create the local kubernetes cluster that we will deploy cf-for-k8s to presently:
 
 ```
-kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.16.15
+kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.19.1
 ```
 NOTE: the versions of kubernetes that cf-for-k8s supports are [here](https://github.com/cloudfoundry/cf-for-k8s/blob/master/supported_k8s_versions.yml).
 
-Create your cf values file.  This is the file that configures your deployment:
+Create your cf values file. This is the file that configures your deployment:
 
 ```
 $ ./hack/generate-values.sh -d vcap.me > ${TMP_DIR}/cf-values.yml
@@ -57,14 +56,15 @@ app_registry:
 
 add_metrics_server_components: true			
 enable_automount_service_account_token: true
-enable_load_balancer: false
+load_balancer:
+  enable: false
 metrics_server_prefer_internal_kubelet_address: true
 remove_resource_requirements: true
 use_first_party_jwt_tokens: true
 EOF
 ```
 NOTES:
-1. You must supply an OCI-compliant container registry.  Dockerhub is recommended.
+1. You must supply an OCI-compliant container registry. Dockerhub is recommended.
 2. The additional properties configure your cf-for-k8s to run on a local kind cluster.
 
 With our input values configured we are now ready to deploy cf-for-k8s:
@@ -73,8 +73,7 @@ With our input values configured we are now ready to deploy cf-for-k8s:
 $ kapp deploy -a cf -f <(ytt -f config -f ${TMP_DIR}/cf-values.yml)
 ```
 
-Once you run this command, it should take about 10 minutes or less.  kapp will provide updates as it 
-progresses:
+Running this command should take about 10 minutes or less. `kapp` will provide updates as it progresses:
 
 ```
 ...
@@ -90,6 +89,7 @@ When deployment has finished you can log into Cloud Foundry:
 $ cf api api.vcap.me --skip-ssl-validation
 $ cf auth admin `cat ${TMP_DIR}/cf-values.yml | yq -r .cf_admin_password`
 ```
+
 ## Experiencing your first `cf push`
 
 Before we can push an application we need to create an organization and space for your application to exist in. 
@@ -111,13 +111,11 @@ $ git clone https://github.com/cloudfoundry-samples/test-app.git
 $ cd test-app
 $ cf push test-app
 ```
-You will notice that what we pushed is source code.  Yet Kubernetes runs containers.  Just some of the magic of 
-Cloud Foundry is is that it can perform the staging and deployment of your application.  Leaving you to 
-concentrate on your code.  
+
+You will notice that what we pushed is source code. Yet Kubernetes runs containers. Just some of the magic of Cloud Foundry is is that it can perform the staging and deployment of your application. Leaving you to concentrate on your code. 
 
 Once deployed, open your browser and visit test-app.vcap.me:
 
 ![](./assets/test-app.png)
 
-Congratulations.  You just pushed your first application to CloudFoundry.  As the tagline 
-says “Here is my app.  Run it for me.  I do not care how.”
+Congratulations. You just pushed your first application to CloudFoundry. As the tagline says “Here is my source code. Run it on the cloud for me. I do not care how.”

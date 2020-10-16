@@ -21,9 +21,9 @@
 
 You need the following CLIs on your system to be able to run the script:
 
-- `ytt` [install link](https://k14s.io/#install) [github repo](https://github.com/k14s/ytt)
+- `ytt` [install link](https://carvel.dev/#install) [github repo](https://github.com/k14s/ytt)
   - cf-for-k8s uses `ytt` to create and maintain reusable YAML templates. You can visit the ytt [playground](https://get-ytt.io/) to learn more about its templating features.
-- `kapp` [install link](https://k14s.io/#install) [github repo](https://github.com/k14s/kapp)
+- `kapp` [install link](https://carvel.dev/#install) [github repo](https://github.com/k14s/kapp)
   - cf-for-k8s uses `kapp` to manage its lifecycle. `kapp` will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. `kapp` will not exit until all resources are deployed and their status is running. See all options by running `kapp help`.
 - [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 - [`cf cli`](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) (v7+)

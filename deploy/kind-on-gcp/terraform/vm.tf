@@ -104,8 +104,8 @@ EOF
   rm cf.tgz
   cf --version
 
-  echo "Installing K14s..."
-  curl -L "https://k14s.io/install.sh" | K14SIO_INSTALL_BIN_DIR=/tmp/kind/bin PATH=/tmp/kind/bin:$PATH bash
+  echo "Installing Carvel tools..."
+  curl -L "https://carvel.dev/install.sh" | K14SIO_INSTALL_BIN_DIR=/tmp/kind/bin PATH=/tmp/kind/bin:$PATH bash
   ytt version
   kapp version
 cd -

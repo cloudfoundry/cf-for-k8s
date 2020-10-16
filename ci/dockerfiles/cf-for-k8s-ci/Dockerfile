@@ -10,7 +10,7 @@ RUN apk add openssl && \
     curl --retry 3 --retry-delay 3 https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
 
 RUN apk add perl-utils && \
-    wget --tries=3 -O- https://k14s.io/install.sh | bash
+    wget --tries=3 -O- https://carvel.dev/install.sh | bash
 
 RUN curl -LO --retry 3 --retry-delay 3 https://storage.googleapis.com/kubernetes-release/release/v1.15.7/bin/linux/amd64/kubectl && \
     chmod +x ./kubectl && \

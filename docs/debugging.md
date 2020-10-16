@@ -42,5 +42,5 @@ FAILED
 **How to fix it:**
 * Make sure you can login locally with `docker cli` e.g.  `docker login --username USERNAME --password PASSWORD`.
 * Make sure you can push / pull images to the the registry.
-* Compare your configuration with [examples](https://github.com/cloudfoundry/cf-for-k8s/blob/master/sample-cf-install-values.yml#L123) for different registries in `sample-cf-install-values.yml`.
+* Compare your configuration with the app_registry examples for different registries in [sample-cf-install-values.yml](https://github.com/cloudfoundry/cf-for-k8s/blob/develop/sample-cf-install-values.yml).
   * Pay particular attention to `hostname` and `repository` parameters.

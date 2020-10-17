@@ -4,12 +4,16 @@ directories:
   - git:
       commitTitle: images.yml updated by CI...
       sha: 29b77b94183a26cefdc98eff5825f22ae6c75090
+      tags:
+      - v0.4.0-17-g29b77b9
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
       commitTitle: 'ci: add whoami job to images pipeline...'
       sha: c1a8c866375fd964f08cc5613fced88e572eefdb
+      tags:
+      - v0.0.6-284-gc1a8c86
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:
@@ -26,6 +30,8 @@ directories:
   - git:
       commitTitle: Update UAA image reference in k8s deployment template to 74.26.0
       sha: a8f752f83c1cca23583c14ee9d6ff844407bd436
+      tags:
+      - v74.26.0
     path: .
   path: config/uaa/_ytt_lib/uaa
 - contents:

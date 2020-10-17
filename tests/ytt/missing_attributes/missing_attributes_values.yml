@@ -4,7 +4,7 @@ system_domain: "breathable-sidewalk.k8s-dev.relint.rocks"
 app_domains:
 #@overlay/append
 - "apps.breathable-sidewalk.k8s-dev.relint.rocks"
-#! cf_admin_password: missing
+#! cf_admin_password: missing, which is okay
 
 blobstore:
   secret_access_key: glip

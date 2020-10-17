@@ -46,7 +46,6 @@ capi.cf_api_controllers_client_secret
 capi.database.encryption_key
 capi.database.password
 cf_admin_password
-cf_db.admin_password
 internal_certificate.ca
 internal_certificate.crt
 internal_certificate.key

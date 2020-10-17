@@ -21,7 +21,7 @@ Default values are set in files like `config/values/00-values.yml`
 | capi.database.port | port on which to make database communication | No | 5432 | 3306 |
 | capi.database.user | database user for capi tables | No | cloud_controller | capi-db-user |
 | cf_admin_password | password for admin user in plain text | Yes | no value | 2fK2zLXPgvmsESrB87sADZQvdLeY5Kv4 |
-| cf_db.admin_password | password for administering the internal database | Yes | no value | FQq3dPd6DAoLIMIr |
+| cf_db.admin_password | password for administering the internal database | Not if using external database | no value | FQq3dPd6DAoLIMIr |
 | enable_automount_service_account_token |  | No | false |  |
 | gateway.https_only | When true, automatically upgrades incoming HTTP connections to HTTPS gateway | No | true | false |
 | load_balancer.enable | Enable IaaS provisioned load balancer | No | true | false |

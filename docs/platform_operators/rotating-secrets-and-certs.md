@@ -42,12 +42,9 @@ use either the old password or the new one, and will fail.
 
 * `cf_admin_password` - manual upgrade works, CI/upgrade fails
 
-* `db_admin_password` - manual upgrade works, CI/upgrade works
+* `cf_db.admin_password` - manual upgrade works, CI/upgrade works
 
-* `uaa_db_password` - manual upgrade works, CI/upgrade fails: "Error unmarshalling the following into a cloud controller error: no healthy upstream"
-
-
-
+* `uaa.database.password` - manual upgrade works, CI/upgrade fails: "Error unmarshalling the following into a cloud controller error: no healthy upstream"
 
 ## Notes on Currently Supported Rotations
 

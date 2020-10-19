@@ -14,9 +14,6 @@ For more generic and flexible instructions, see [Deploying CF for K8s](docs/depl
 ## Contributing
 Please read [CONTRIBUTING.md](community/CONTRIBUTING.md) for details on the process for submitting pull requests to us.
 
-### Awesome First PR Opportunities
-If you're looking to get started today, you can explore the [good first issue](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22) labelled issues in cf-for-k8s repository. 
-
 ## Built with
 ![](docs/assets/architecture.png)
 

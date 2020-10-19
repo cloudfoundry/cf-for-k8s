@@ -1,21 +1,4 @@
 ---
-groups:
-- name: main
-  jobs:
-  - test-vendir-sync-on-cf-for-k8s
-  - validate-cf-for-k8s-gke
-  - validate-cf-for-k8s-oldest
-  - validate-cf-for-k8s-newest
-  - validate-cf-for-k8s-gke-rds
-  - validate-cf-for-k8s-gke-external-db
-  - validate-cf-for-k8s-gke-external-blobstore
-  - promote-main-deliver-stories
-  - run-unit-tests
-  - branch-freshness
-- name: cats
-  jobs:
-  - run-cats
-
 #! Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
   platform: linux
@@ -798,6 +781,7 @@ jobs:
     - validate-cf-for-k8s-gke-rds
     - validate-cf-for-k8s-gke-external-db
     - validate-cf-for-k8s-gke-external-blobstore
+    - run-cats
     trigger: true
 
   - put: cf-for-k8s-main-push

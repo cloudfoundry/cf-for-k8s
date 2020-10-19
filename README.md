@@ -26,6 +26,13 @@ cf-for-k8s is built on top of well known Kubernetes projects like:
 - [kpack](https://github.com/pivotal/kpack)
 - [paketo buildpacks](https://paketo.io)
 
+as well as some Cloud Foundry projects that have undergone a containerization effort such as:
+
+- [Cloud Controller / CAPI-k8s-release](https://github.com/cloudfoundry/capi-k8s-release)
+- [cf-k8s-networking](https://github.com/cloudfoundry/cf-k8s-networking)
+- [cf-k8s-logging](https://github.com/cloudfoundry/cf-k8s-logging)
+- [UAA](https://github.com/cloudfoundry/uaa)
+
 ## Versioning
 
 We use [SemVer](https://semver.org/) for versioning. For the versions available, see the [releases](https://github.com/cloudfoundry/cf-for-k8s/releases) on this repository.

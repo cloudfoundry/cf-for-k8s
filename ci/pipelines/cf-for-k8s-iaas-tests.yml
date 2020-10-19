@@ -283,10 +283,11 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-main
+      trigger: true
+      passed:
+      - validate-minikube-on-gcp
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-minikube-gcp-terraform-templates
-    - get: weekday-am
-      trigger: true
 
   - task: create-tf-vars-file
     config:

@@ -1,11 +1,15 @@
+![](docs/assets/cf-for-k8s-banner.png)
 
-# Cloud Foundry for Kubernetes
-Cloud Foundry is an open source cloud platform as a service (PaaS) on which developers can build, deploy, run and scale applications. Cloud Foundry for Kubernetes (cf-for-k8s) is a Kubernetes native artifact to deploy Cloud Foundry on a Kubernetes cluster. 
+# cf push comes to Kubernetes
 
-For more information on what Cloud Foundry is and how it can help developers build cloud native applications and platform operators to manage those apps at scale, please visit [cloudfoundry.org](https://cloudfoundry.org) and [docs.cloudfoundry.org](https://docs.cloudfoundry.org/)
+Cloud Foundry For Kubernetes (cf-for-k8s) blends the popular CF developer API with Kubernetes, Istio, and other open source technologies. The project aims to improve developer productivity for organizations using Kubernetes. cf-for-k8s can be installed atop any conformant environment in minutes.
+
+Cloud Foundry is an open-source cloud platform as a service (PaaS) on which developers can build, deploy, run and scale applications. For more information on what Cloud Foundry is and how it can help developers build cloud native applications and platform operators to manage those apps at scale, please visit [cloudfoundry.org](https://cloudfoundry.org) and [docs.cloudfoundry.org](https://docs.cloudfoundry.org/)
 
 ## Getting Started
-See [Deploying CF for K8s](docs/deploy.md) to get your Cloud Foundry up and running on a Kubernetes cluster for development and testing purposes.
+If you're new to Kubernetes, we recommend this [Getting Started Guide](docs/getting-started-tutorial.md), which walks you though deploying cf-for-k8s on your machine using a local [kind](https://kind.sigs.k8s.io/) (Kubernetes In Docker) cluster.
+
+For more generic and flexible instructions, see [Deploying CF for K8s](docs/deploy.md).
 
 ## Contributing
 Please read [CONTRIBUTING.md](community/CONTRIBUTING.md) for details on the process for submitting pull requests to us.
@@ -14,10 +18,14 @@ Please read [CONTRIBUTING.md](community/CONTRIBUTING.md) for details on the proc
 If you're looking to get started today, you can explore the [good first issue](https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22) labelled issues in cf-for-k8s repository. 
 
 ## Built with
+![](docs/assets/architecture.png)
+
 cf-for-k8s is built on top of well known Kubernetes projects like:
+
 - [istio](https://github.com/istio/istio)
 - [envoy](https://github.com/envoyproxy/envoy) 
 - [fluentd](https://www.fluentd.org/)
+- [eirini](https://www.cloudfoundry.org/project-eirini/)
 - [kpack](https://github.com/pivotal/kpack)
 - [paketo buildpacks](https://paketo.io)
 

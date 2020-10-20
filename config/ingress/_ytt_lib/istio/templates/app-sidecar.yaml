@@ -1,4 +1,4 @@
-#@ load("@ytt:data", "data")
+#@ load("/values.star", "data")
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Sidecar

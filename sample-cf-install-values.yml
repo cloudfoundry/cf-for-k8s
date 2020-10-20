@@ -20,7 +20,7 @@ blobstore:
 
 #! Ingress solution can be "istio" or "contour"
 networking:
-  ingress_solution_provider: istio
+  ingress_solution_provider: contour
 
 #! The admin password for operators to access the database.
 cf_db:

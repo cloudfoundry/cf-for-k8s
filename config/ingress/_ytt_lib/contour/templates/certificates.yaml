@@ -1,0 +1,23 @@
+#@ load("/values.star", "data")
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cf-system-cert
+  namespace: #@ data.values.system_namespace
+stringData:
+  tls.key: #@ data.values.system_certificate.key
+  tls.crt: #@ data.values.system_certificate.crt
+type: kubernetes.io/tls
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cf-workloads-cert
+  namespace: #@ data.values.workloads_namespace
+stringData:
+  tls.key: #@ data.values.workloads_certificate.key
+  tls.crt: #@ data.values.workloads_certificate.crt
+type: kubernetes.io/tls

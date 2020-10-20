@@ -1,0 +1,8 @@
+#@data/values
+---
+#! These are data values to parameterize the generated Contour installation on its own.
+#! The output of the build is a static template.
+#! These values cannot be changed later when rendering cf-for-k8s templates.
+#! Values related to CF should NOT be in this file.
+
+contour_version: 1.9.0

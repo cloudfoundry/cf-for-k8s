@@ -1,4 +1,4 @@
-#@ load("@ytt:data", "data")
+#@ load("/values.star", "data")
 #@ load("@ytt:overlay", "overlay")
 
 #! this gateway is used to expose CF services in the cluster, externally

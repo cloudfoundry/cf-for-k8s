@@ -1,0 +1,16 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@ worker = overlay.subset({ "kind": "Deployment", "metadata": { "name": "cf-api-worker" }})
+#@ clock = overlay.subset({ "kind": "Deployment", "metadata": { "name": "cf-api-clock" }})
+#@ updater = overlay.subset({ "kind": "Deployment", "metadata": { "name": "cf-api-deployment-updater" }})
+#@ server = overlay.subset({ "kind": "Deployment", "metadata": { "name": "cf-api-server" }})
+#@overlay/match by=overlay.or_op(worker, clock, updater, server),expects=4
+---
+spec:
+  template:
+    spec:
+      containers:
+      - #@overlay/match by=lambda _, left, right: "readinessProbe" in left and "tcpSocket" in left["readinessProbe"],expects="0+"
+        #@overlay/remove
+        readinessProbe:

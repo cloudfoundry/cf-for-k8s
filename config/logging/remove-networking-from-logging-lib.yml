@@ -1,0 +1,10 @@
+#@ load("@ytt:overlay", "overlay")
+
+#! This is a temporary overlay to remove networking objects from logging library while the work on Contour and Ingress
+#! integration is in progress.
+#! We'll make changes to the logging repository after we finish this work.
+#! [#175359509](https://www.pivotaltracker.com/story/show/175359509)
+
+#@overlay/match by=overlay.subset({"kind": "VirtualService", "metadata":{"name":"log-cache-external-virtual-service"}})
+---
+#@overlay/remove

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="8px" height="4px" viewBox="0 0 8 4" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Path 2</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="nav-bar" transform="translate(-850.000000, -53.000000)" stroke="#2977BC">
+            <polyline id="Path-2" transform="translate(854.415527, 54.785156) rotate(90.000000) translate(-854.415527, -54.785156) " points="852.915527 51.7851562 855.915527 54.7851562 852.915527 57.7851562"></polyline>
+        </g>
+    </g>
+</svg>

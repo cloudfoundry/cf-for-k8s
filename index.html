@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+  <head>
+	<meta name="generator" content="Hugo 0.75.1" />
+    
+
+
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Cloud Foundry is an open source cloud platform as a service (PaaS) on which developers can build, deploy, run and scale applications. "/>
+<link rel="canonical" content="https://cf-for-k8s.io/">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+
+
+
+
+
+
+<meta property="og:title" content="Cloud Foundry for Kubernetes">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cf-for-k8s.io/">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Cloud Foundry for Kubernetes">
+<meta property="og:description" content="Cloud Foundry is an open source cloud platform as a service (PaaS) on which developers can build, deploy, run and scale applications. ">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://cf-for-k8s.io/images/buildpacks-social-card.jpg">
+<meta property="og:image:alt" content="Buildpacks project logo">
+<meta property="og:image:type" content="image/jpeg">
+
+
+
+
+
+
+<meta property="twitter:title" content="Cloud Foundry for Kubernetes">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:image" content="https://cf-for-k8s.io/images/buildpacks-social-card.jpg">
+<meta property="twitter:image:alt" content="Buildpacks project logo">
+<meta property="twitter:site" content="@">
+<meta property="twitter:creator" content="@">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Source+Sans+Pro:400,400i,600" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cf-for-k8s.io/scss/site.css" integrity="" media="screen">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PVB2G57');</script>
+    
+
+    <script>
+      function addAnchor(element) {
+        if (element.id === "" || element.getElementsByTagName("a").length > 0) {
+          return;
+        }
+
+        
+
+
+        element.innerHTML =
+        `${element.innerHTML}`;
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const headers = document.querySelectorAll('h1, h2, h3, h4, h5');
+        if (headers) {
+          headers.forEach(addAnchor);
+        }
+      });
+    </script>
+
+    <title>Cloud Foundry for Kubernetes · Cloud Foundry for Kubernetes</title>
+  </head>
+  <body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PVB2G57"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <header class="container">
+  <a href="https://cf-for-k8s.io/" class="logo"><img src="/images/logo.svg" alt="CF For K8s Logo"></a>
+  <input type="checkbox" id="mobile-nav-toggle">
+  <label for="mobile-nav-toggle"></label>
+  <ul>
+    
+    
+      
+      <li><a class=""  href="/">Home</a></li>
+    
+      
+      <li><a class=""  href="/features">Features</a></li>
+    
+      
+      <li><a class=""  href="/docs">Docs</a></li>
+    
+      
+      <li><a class="" target='_blank' href="https://medium.com/@cf-release-integration">Blog</a></li>
+    
+    <li><a href="https://github.com/cloudfoundry/cf-for-k8s" class="github-button icon-button bg-blue button">GitHub</a></li>
+  </ul>
+</header>
+
+    
+
+<div class="hero">
+  <div class="image">
+    <img src="/images/hero-circle.png" />
+  </div>
+  <section class="container">
+    <h2 class="px-4">
+      Push application source code to <span class="text-blue">Kubernetes</span> with the <span class="text-blue">Cloud Foundry</span> developer API
+    </h2>
+    <p class="button-holder">
+      <a href="https://github.com/cloudfoundry/cf-for-k8s" class="bg-white button">Get Started</a>
+    </p>
+  </section>
+</div>
+
+<div id="learn-more" class="container content pb-4">
+  <section class="row highlights text-center">
+    <div class="col-sm bg-light block">
+      <div class="icon">
+        <img src="/images/clock.png" />
+      </div>
+      <h3 class="mb-0">Deploy code to production in minutes</h3>
+      <p>One simple command, 
+        cf push, assembles your tested code, and deploys it atop Kubernetes.</p>
+    </div>
+    <div class="col-sm bg-light block">
+      <div class="icon">
+        <img src="/images/check.png" />
+      </div>
+      <h3 class="mb-0">A complete developer API</h3>
+      <p>Push code to prod, attach backing services, set up routes. Egress logs and metrics.</p>
+    </div>
+    <div class="col-sm bg-light block">
+      <div class="icon">
+        <img src="/images/infrastructure-providers.png" />
+      </div>
+      <h3 class="mb-0">Runs on any Kubernetes environment</h3>
+      <p>One simple command, cf push, assembles your tested code, and deploys it atop Kubernetes.</p>
+    </div>
+  </section>
+
+  <div class="extended-background">
+    <h2 class="mb-0">Why cf-for-k8s?</h2>
+    <section class="row highlights mt-2 mb-2">
+      <div class="col-sm">
+        <h3 class="pb-2">A proven developer API, integrated with cutting-edge infrastructure</h3>
+        <p>cf-for-k8s thoughtfully combines the Cloud Foundry developer API with other popular open source projects like Kubernetes, Istio, Envoy, and Fluentd. The project uses custom resource definitions (CRDs) and other Kubernetes primitives to deliver a familiar developer experience atop new components.</p>
+      </div>
+      <div class="col-sm">
+        <h3 class="pb-2">Run your app platform in more places</h3>
+        <p>cf-for-k8s retains one of the original promises of Cloud Foundry: the flexibility to run on your choice of infrastructure. It’s never been easier to cf push on your laptop, in your data center, in the public cloud, or at the edge.</p>
+      </div>
+      <div class="col-sm">
+        <h3 class="pb-2">Get started quickly with a small footprint</h3>
+        <p>In cf-for-k8s, the Cloud Foundry control plane and your custom software both run as Kubernetes apps, in their own distinct namespaces. As a result, the project has a lean footprint. Download cf-for-k8s and install it on your local Kubernetes environment - or any other conformant cluster - in minutes.</p>
+      </div>
+    </section>
+  </div>
+  
+  <section class="row project pt-5 pb-5">
+    <div class="text">
+      <h2>About the Project</h2>
+      <p>The Cloud Foundry community has spent the last few years evolving the Cloud Foundry architecture to include Kubernetes and other cloud native open source projects, and by taking pieces of the Cloud Foundry architecture and making them useful within Kubernetes environments on their own. cf-for-k8s is one of the projects that reflects this focus.</p>
+    </div>
+    <div class="image">
+      <img src="/images/logo-large.svg" />
+    </div>
+  </section>
+</div>
+
+<div id="get-started" class="get-started bg-blue">
+  <section class="container text-white text-center">
+    <p class="h2 text-white">Getting Started</p>
+    <p class="text-white info">The fastest way to try cf-for-k8s is with <a href="https://kind.sigs.k8s.io/docs/user/quick-start/" class="text-medium-blue">kind</a> on your desktop.</p>
+    <p class="text-white">Try out our tutorial to get started quickly!</p>
+
+    <p>
+      <a href="/docs/" class="button bg-white">Start Tutorial</a>
+      <a href="/docs/" class="button bg-none text-white btn-light">Read the Docs</a>
+    </p>
+  </section>
+</div>
+
+
+    <footer>
+  
+  <div class="bg-black">
+    <div class="container footer clearfix">
+      <div class="logo">
+        <a href="https://cf-for-k8s.io/"><img src="/images/logo-white.svg" class="footer-logo"></a>
+      </div>
+      <div class="info">
+        <p>cf for k8s is a Cloud Foundry Project</p>
+        <p class="sub-info">Hugo template graciously copied from buildpacks.io</p>
+      </div>
+      <ul>
+        <li><a href="https://cloudfoundry.slack.com/?redir=%2Farchives%2FCH9LF6V1P" target="_blank"><img src="/images/slack.png"></a></li>
+        <li><a href="https://lists.cloudfoundry.org/g/cf-dev/topics" target="_blank"><img src="/images/mail.png"></a></li>
+        <li><a href="https://twitter.com/cloudfoundry" target="_blank"><img src="/images/twitter.png"></a></li>
+        <li><a href="https://github.com/cloudfoundry/cf-for-k8s" target="_blank"><img src="/images/github.png"></a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

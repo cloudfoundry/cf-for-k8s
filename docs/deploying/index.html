@@ -1,0 +1,505 @@
+<!doctype html>
+<html>
+  <head>
+    
+
+
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Deploying Cloud Foundry on a Kubernetes cluster"/>
+<link rel="canonical" content="https://cf-for-k8s.io/docs/deploying/">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+
+
+
+
+
+
+<meta property="og:title" content="Deploying cf-for-k8s · Cloud Foundry for Kubernetes">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cf-for-k8s.io/docs/deploying/">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Cloud Foundry for Kubernetes">
+<meta property="og:description" content="Deploying Cloud Foundry on a Kubernetes cluster">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://cf-for-k8s.io/images/buildpacks-social-card.jpg">
+<meta property="og:image:alt" content="Buildpacks project logo">
+<meta property="og:image:type" content="image/jpeg">
+
+
+
+
+
+
+<meta property="twitter:title" content="Deploying cf-for-k8s · Cloud Foundry for Kubernetes">
+<meta property="twitter:card" content="summary">
+<meta property="twitter:image" content="https://cf-for-k8s.io/images/buildpacks-social-card-square.jpg">
+<meta property="twitter:image:alt" content="Buildpacks project logo">
+<meta property="twitter:site" content="@">
+<meta property="twitter:creator" content="@">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Source+Sans+Pro:400,400i,600" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cf-for-k8s.io/scss/site.css" integrity="" media="screen">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PVB2G57');</script>
+    
+
+    <script>
+      function addAnchor(element) {
+        if (element.id === "" || element.getElementsByTagName("a").length > 0) {
+          return;
+        }
+
+        
+
+
+        element.innerHTML =
+        `${element.innerHTML}`;
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const headers = document.querySelectorAll('h1, h2, h3, h4, h5');
+        if (headers) {
+          headers.forEach(addAnchor);
+        }
+      });
+    </script>
+
+    <title>Deploying cf-for-k8s · Cloud Foundry for Kubernetes</title>
+  </head>
+  <body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PVB2G57"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <header class="container">
+  <a href="https://cf-for-k8s.io/" class="logo"><img src="/images/logo.svg" alt="CF For K8s Logo"></a>
+  <input type="checkbox" id="mobile-nav-toggle">
+  <label for="mobile-nav-toggle"></label>
+  <ul>
+    
+    
+      
+      <li><a class=""  href="/">Home</a></li>
+    
+      
+      <li><a class=""  href="/features">Features</a></li>
+    
+      
+      <li><a class="active"  href="/docs">Docs</a></li>
+    
+      
+      <li><a class="" target='_blank' href="https://medium.com/@cf-release-integration">Blog</a></li>
+    
+    <li><a href="https://github.com/cloudfoundry/cf-for-k8s" class="github-button icon-button bg-blue button">GitHub</a></li>
+  </ul>
+</header>
+
+    
+
+<div class='docs'>
+  <div class="container">
+    <div class='row'>
+      <div class='col-md-4 docs-sidebar'>
+        <nav class='sidebar'>
+  <ul>
+      <li data-nav-id="/docs/" class="dd-item depth-0">
+        <a href="/docs/">Getting Started with Cf-for-K8s</a>
+        <ul class="ml-2">
+        </ul>
+      </li>
+      <li data-nav-id="/docs/deploying/" class="dd-item depth-0 parent active haschildren">
+        <a href="/docs/deploying/">Deploying cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/deploying/deploy-local/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-local/">Deploying CF for K8s Locally</a>
+      </li>
+      <li data-nav-id="/docs/deploying/deploy-in-ci/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-in-ci/">Deploy CF for K8s in CI</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
+        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/deploy-parameters/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/deploy-parameters/">Deploy Parameters</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/gateway-access-logs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/gateway-access-logs/">Gateway Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/ingress-routing-topology/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking-metrics/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/networking-metrics/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/sidecar-access-logs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-databases/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-databases/">Using external databases</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0">
+        <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+      </li>
+      <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
+        <a href="/docs/debugging/">Debugging</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0">
+        <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+      </li>
+    </ul>
+  
+</nav>
+
+
+
+      </div>
+      <div class='col-md-8 docs-content'>
+        <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BDeploying&#43;cf-for-k8s%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fdeploying%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/edit/master/docs/deploying/_index.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+
+        <div class="heading">
+          <h1 class="title">Deploying cf-for-k8s</h1>
+        </div>
+
+        <h1 id="deploying-cloud-foundry-on-a-kubernetes-cluster">Deploying Cloud Foundry on a Kubernetes cluster</h1>
+<ul>
+<li><a href="#prerequisites">Prerequisites</a>
+<ul>
+<li><a href="#required-tools">Required Tools</a></li>
+<li><a href="#kubernetes-cluster-requirements">Kubernetes Cluster Requirements</a></li>
+<li><a href="#container-registry-requirements">Container Registry Requirements</a></li>
+<li><a href="#setup-an-oci-compliant-registry">Setup an OCI-compliant registry</a></li>
+</ul>
+</li>
+<li><a href="#steps-to-deploy">Steps to deploy</a>
+<ul>
+<li><a href="#option-a---use-the-included-hack-script-to-generate-the-install-values">Option A - Use the included hack-script to generate the install values</a></li>
+<li><a href="#option-b---create-the-install-values-by-hand">Option B - Create the install values by hand</a></li>
+</ul>
+</li>
+<li><a href="#validate-the-deployment">Validate the deployment</a></li>
+<li><a href="#delete-the-cf-for-k8s-deployment">Delete the cf-for-k8s deployment</a></li>
+<li><a href="#additional-resources">Additional resources</a></li>
+<li><a href="#roadmap-and-milestones">Roadmap and milestones</a></li>
+</ul>
+<p><small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small></p>
+<h2 id="prerequisites">Prerequisites</h2>
+<h3 id="required-tools">Required Tools</h3>
+<p>You need the following CLIs on your system to be able to run the script:</p>
+<ul>
+<li><code>ytt</code> <a href="https://k14s.io/#install">install link</a> <a href="https://github.com/k14s/ytt">github repo</a>
+<ul>
+<li>cf-for-k8s uses <code>ytt</code> to create and maintain reusable YAML templates. You can visit the ytt <a href="https://get-ytt.io/">playground</a> to learn more about its templating features.</li>
+</ul>
+</li>
+<li><code>kapp</code> <a href="https://k14s.io/#install">install link</a> <a href="https://github.com/k14s/kapp">github repo</a>
+<ul>
+<li>cf-for-k8s uses <code>kapp</code> to manage its lifecycle. <code>kapp</code> will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. <code>kapp</code> will not exit until all resources are deployed and their status is running. See all options by running <code>kapp help</code>.</li>
+</ul>
+</li>
+<li><a href="https://kubernetes.io/docs/tasks/tools/install-kubectl/"><code>kubectl</code></a></li>
+<li><a href="https://docs.cloudfoundry.org/cf-cli/install-go-cli.html"><code>cf cli</code></a> (v7+)</li>
+</ul>
+<blockquote>
+<p>Make sure that your Kubernetes config (e.g, <code>~/.kube/config</code>) is pointing to the cluster you intend to deploy cf-for-k8s to.</p>
+</blockquote>
+<h3 id="kubernetes-cluster-requirements">Kubernetes Cluster Requirements</h3>
+<p>To deploy cf-for-k8s as is, the cluster should:</p>
+<ul>
+<li>be running Kubernetes version within range 1.16.x to 1.19.x</li>
+<li>have a minimum of 5 nodes</li>
+<li>have a minimum of 4 CPU, 15GB memory per node</li>
+<li>if PodSecurityPolicies are enforced on the cluster, <a href="https://istio.io/latest/docs/ops/deployment/requirements/#required-pod-capabilities">pods must be allowed to
+have <code>NET_ADMIN</code> and <code>NET_RAW</code> capabilities</a></li>
+<li>have a CNI plugin (Container Network Interface plugin) that supports network policies (otherwise, the NetworkPolicy resources applied by cf-for-k8s will have no effect)</li>
+<li>support <code>LoadBalancer</code> services</li>
+<li>most IaaSes come with <code>metrics-server</code>, but if yours does not come with one (for example, if you are using <code>kind</code>), you will need to include <code>add_metrics_server_components: true</code> in your values file.</li>
+<li>defines a default StorageClass
+<ul>
+<li>requires <a href="https://vmware.github.io/vsphere-storage-for-kubernetes/documentation/storageclass.html">additional config on vSphere</a>, for example</li>
+</ul>
+</li>
+</ul>
+<h3 id="container-registry-requirements">Container Registry Requirements</h3>
+<p>To deploy cf-for-k8s as is, you will need to provide an OCI-compliant registry.</p>
+<h3 id="setup-an-oci-compliant-registry">Setup an OCI-compliant registry</h3>
+<p>You must provide a container registry.  You can choose any of the cloud provider registries, such as <a href="https://hub.docker.com/">hub.docker.com</a>, <a href="https://cloud.google.com/container-registry">Google container registry</a> or <a href="https://azure.microsoft.com/en-us/services/container-registry/">Azure container registry</a>.</p>
+<p>Currently, we test the following two container registries:</p>
+<ul>
+<li>
+<p><a href="https://hub.docker.com/">hub.docker.com</a> is pretty easy to get started:</p>
+<ol>
+<li>Create an account in <a href="https://hub.docker.com/">hub.docker.com</a>. Note down the user name and password you used during signup.</li>
+<li>Create a repository in your account. Note down the repository name.</li>
+</ol>
+</li>
+<li>
+<p><a href="https://cloud.google.com/container-registry">Google Container Registry</a> is convenient if you are already using Google infrastructure:</p>
+<ol>
+<li>Create a GCP Service Account with <code>Storage/Storage Admin</code> role.</li>
+<li>Create a Service Key JSON and download it to the machine from which you will install cf-for-k8s (referred to, below, as <code>path-to-kpack-gcr-service-account</code>).</li>
+</ol>
+</li>
+</ul>
+<h2 id="steps-to-deploy">Steps to deploy</h2>
+<ol>
+<li>
+<p>Clone and initialize this git repository:</p>
+<pre><code class="language-console" data-lang="console">git clone https://github.com/cloudfoundry/cf-for-k8s.git
+cd cf-for-k8s
+TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
+</code></pre></li>
+<li>
+<p>Create a &ldquo;CF Installation Values&rdquo; file and configure it<a name="cf-values"></a>:</p>
+<p>You can either: a) auto-generate the installation values or b) create the values by yourself.</p>
+<h4 id="option-a---use-the-included-hack-script-to-generate-the-install-values">Option A - Use the included hack-script to generate the install values</h4>
+<blockquote>
+<p><strong>NOTE:</strong> The script requires the <a href="https://bosh.io/docs/cli-v2-install/#install">BOSH CLI</a> in installed on your machine. The BOSH CLI is an handy tool to generate self signed certs and passwords.</p>
+</blockquote>
+<pre><code class="language-console" data-lang="console">./hack/generate-values.sh -d &lt;cf-domain&gt; &gt; ${TMP_DIR}/cf-values.yml
+</code></pre><p>Replace <code>&lt;cf-domain&gt;</code> with <em>your</em> registered DNS domain name for your CF installation.</p>
+<h4 id="option-b---create-the-install-values-by-hand">Option B - Create the install values by hand</h4>
+<ol>
+<li>
+<p>Clone file <code>sample-cf-install-values.yml</code> from this directory as a starting point.</p>
+<pre><code class="language-console" data-lang="console">cp sample-cf-install-values.yml ${TMP_DIR}/cf-values.yml
+</code></pre></li>
+<li>
+<p>Open the file and change the <code>system_domain</code> and <code>app_domain</code> to your desired domain address.</p>
+</li>
+<li>
+<p>Generate certificates for the above domains and paste them in <code>crt</code>, <code>key</code>, <code>ca</code> values</p>
+<ul>
+<li><strong>IMPORTANT</strong> Your certificates must include a subject alternative name entry for the internal <code>*.cf-system.svc.cluster.local</code> domain in addition to your chosen external domain.</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p>Provide your credentials to an external app registry:</p>
+<ol>
+<li>
+<p>To configure Dockerhub.com, add the following registry config block to the end of <code>cf-values.yml</code> file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">app_registry</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l">https://index.docker.io/v1/</span><span class="w">
+</span><span class="w">  </span><span class="nt">repository_prefix</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;my_username&gt;&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;my_username&gt;&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;my_password&gt;&#34;</span><span class="w">
+</span><span class="w">
+</span></code></pre></div><p>Update <code>&lt;my_username&gt;</code> and <code>&lt;my_password&gt;</code> with your docker username and password that you created in the above section <a href="#setup-a-docker-registry">Setup docker registry</a>.</p>
+</li>
+<li>
+<p>To configure a Google Container Registry, add the following registry config block to the end of <code>cf-values.yml</code> file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">app_registry</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l">gcr.io</span><span class="w">
+</span><span class="w">  </span><span class="nt">repository_prefix</span><span class="p">:</span><span class="w"> </span><span class="l">gcr.io/&lt;gcp_project_id&gt;/cf-workloads</span><span class="w">
+</span><span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">_json_key</span><span class="w">
+</span><span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="sd">|
+</span><span class="sd">    &lt;contents_of_service_account_json&gt;
+</span></code></pre></div><p>Update the <code>gcp_project_id</code> portion to your GCP Project ID and change <code>contents_of_service_account_json</code> to be the entire contents of your GCP Service Account JSON.</p>
+</li>
+</ol>
+</li>
+<li>
+<p>provide log destinations:</p>
+<ol>
+<li>
+<p>To send logs to a destination via syslog you can setup app log destinations in your <code>cf-values.yml</code> file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">app_log_destinations</span><span class="p">:</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/append</span><span class="w">
+</span><span class="w"></span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;hostname&gt;</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port_number&gt;</span><span class="w">
+</span><span class="w">  </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;tls/tcp&gt; #defaults to tls</span><span class="w">
+</span><span class="w">  </span><span class="nt">insecure_disable_tls_validation</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;false/true&gt; #defaults false</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/append</span><span class="w">
+</span><span class="w"></span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;hostname&gt;</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port_number&gt;</span><span class="w">
+</span><span class="w">  </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;tls/tcp&gt; #defaults to tls</span><span class="w">
+</span><span class="w">  </span><span class="nt">insecure_disable_tls_validation</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;false/true&gt; #defaults false</span><span class="w">
+</span></code></pre></div></li>
+</ol>
+</li>
+<li>
+<p>Run the following commands to install Cloud Foundry on your Kubernetes cluster:</p>
+<p>i. Render the final K8s template to raw K8s configuration</p>
+<pre><code>  ```console
+  ytt -f config -f ${TMP_DIR}/cf-values.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
+  ```
+</code></pre>
+<p>ii. Install using <code>kapp</code> and pass the above K8s configuration file</p>
+<pre><code>  ```console
+  kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
+  ```
+</code></pre>
+<p>Once you run the command, it should take about 10 minutes or less, depending on your cluster bandwidth and size. <code>kapp</code> will provide updates on pending resource creations in the cluster and will wait until all resources are created and running. Here is a sample snippet from <code>kapp</code> output:</p>
+<pre><code class="language-console" data-lang="console">4:08:19PM: ---- waiting on 1 changes [0/1 done] ----
+4:08:19PM: ok: reconcile serviceaccount/cc-kpack-registry-service-account (v1) namespace: cf-workloads-staging
+4:08:19PM: ---- waiting complete [5/10 done] ----
+...
+</code></pre></li>
+<li>
+<p>Configure DNS on your IaaS provider to point the wildcard subdomain of your system domain and the wildcard subdomain of all apps domains to point to external IP of the Istio Ingress Gateway service. You can retrieve the external IP of this service by running:</p>
+<pre><code class="language-console" data-lang="console">kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].ip}'
+</code></pre><p>OR in certain environments, the external ip may be surfaced as a hostname instead. In that case use:</p>
+<pre><code class="language-console" data-lang="console">kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].hostname}'
+</code></pre><blockquote>
+<p>If you used a single DNS record for both <code>system_domain</code> and <code>app_domains</code>, then have it resolve to the Ingress Gateway&rsquo;s external IP:</p>
+</blockquote>
+<pre><code class="language-console" data-lang="console"># sample A record in Google cloud DNS. The IP address below is the address of Ingress gateway's external IP
+Domain         Record Type  TTL  IP Address
+*.&lt;cf-domain&gt;  A            30   35.111.111.111
+</code></pre></li>
+</ol>
+<h2 id="validate-the-deployment">Validate the deployment</h2>
+<ol>
+<li>
+<p>Target your CF CLI to point to the new CF instance:</p>
+<pre><code class="language-console" data-lang="console">cf api --skip-ssl-validation https://api.&lt;cf-domain&gt;
+</code></pre><p>Replace <code>&lt;cf-domain&gt;</code> with your desired domain address.</p>
+</li>
+<li>
+<p>Login using the admin credentials for key <code>cf_admin_password</code> in <code>${TMP_DIR}/cf-values.yml</code>:</p>
+<pre><code class="language-console" data-lang="console">cf auth admin &lt;cf-values.yml.cf-admin_password&gt;
+# or using yq: cf auth admin &quot;$(yq -r '.cf_admin_password' ${TMP_DIR}/cf-values.yml)&quot;
+</code></pre></li>
+<li>
+<p>Create an org/space for your app:</p>
+<pre><code class="language-console" data-lang="console">cf create-org test-org
+cf create-space -o test-org test-space
+cf target -o test-org -s test-space
+</code></pre></li>
+<li>
+<p>Deploy a source code based app:</p>
+<pre><code class="language-console" data-lang="console">cf push test-node-app -p tests/smoke/assets/test-node-app
+</code></pre><p>You should see the following output from the above command:</p>
+<pre><code class="language-console" data-lang="console">Pushing app test-node-app to org test-org / space test-space as admin...
+Getting app info...
+Creating app with these attributes...
+
+... omitted for brevity ...
+
+type: web
+instances: 1/1
+memory usage: 1024M
+routes: test-node-app.&lt;cf-domain&gt;
+state since cpu memory disk details
+#0 running 2020-03-18T02:24:51Z 0.0% 0 of 1G 0 of 1G
+</code></pre></br>
+</li>
+<li>
+<p>Validate the app is reachable over <strong>https</strong>:</p>
+<pre><code class="language-console" data-lang="console">curl -k https://test-node-app.&lt;cf-domain&gt;
+</code></pre><p>You should see the following output:</p>
+<pre><code class="language-console" data-lang="console">Hello World
+</code></pre></li>
+</ol>
+<h2 id="delete-the-cf-for-k8s-deployment">Delete the cf-for-k8s deployment</h2>
+<p>You can delete the cf-for-k8s deployment by running the following command:</p>
+<pre><code class="language-console" data-lang="console">kapp delete -a cf
+</code></pre><h2 id="additional-resources">Additional resources</h2>
+<p>Use the following resources to enable additional features in cf-for-k8s:</p>
+<ul>
+<li><a href="platform_operators/setup-ingress-certs-with-letsencrypt.md">Setup ingress certs with letsencrypt</a></li>
+<li><a href="platform_operators/setup-static-loadbalancer-ip.md">Setup static loadbalancer IP</a></li>
+<li><a href="platform_operators/external-databases.md">Setup an external database</a>, which we recommend for Production environments</li>
+<li><a href="platform_operators/external-blobstore.md">Setup an external blobstore</a></li>
+</ul>
+<h2 id="roadmap-and-milestones">Roadmap and milestones</h2>
+<p>You can find the project roadmap (github project) <a href="https://github.com/cloudfoundry/cf-for-k8s/projects/4">here</a> and our upcoming milestones <a href="https://github.com/cloudfoundry/cf-for-k8s/milestones">here</a>. Feel free to ask questions in the <a href="https://cloudfoundry.slack.com/archives/CH9LF6V1P">#cf-for-k8s channel</a> in the CloudFoundry slack or submit new feature requests or issues on this repo.</p>
+
+
+        
+
+        <hr>
+<div class='footline d-block'>
+  <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BDeploying&#43;cf-for-k8s%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fdeploying%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/edit/master/docs/deploying/_index.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+    <footer>
+  
+  <div class="bg-black">
+    <div class="container footer clearfix">
+      <div class="logo">
+        <a href="https://cf-for-k8s.io/"><img src="/images/logo-white.svg" class="footer-logo"></a>
+      </div>
+      <div class="info">
+        <p>cf for k8s is a Cloud Foundry Project</p>
+        <p class="sub-info">Hugo template graciously copied from buildpacks.io</p>
+      </div>
+      <ul>
+        <li><a href="https://cloudfoundry.slack.com/?redir=%2Farchives%2FCH9LF6V1P" target="_blank"><img src="/images/slack.png"></a></li>
+        <li><a href="https://lists.cloudfoundry.org/g/cf-dev/topics" target="_blank"><img src="/images/mail.png"></a></li>
+        <li><a href="https://twitter.com/cloudfoundry" target="_blank"><img src="/images/twitter.png"></a></li>
+        <li><a href="https://github.com/cloudfoundry/cf-for-k8s" target="_blank"><img src="/images/github.png"></a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

@@ -1,0 +1,406 @@
+<!doctype html>
+<html>
+  <head>
+    
+
+
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Using external databases"/>
+<link rel="canonical" content="https://cf-for-k8s.io/docs/platform_operators/external-databases/">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+
+
+
+
+
+
+<meta property="og:title" content="Using external databases · Cloud Foundry for Kubernetes">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cf-for-k8s.io/docs/platform_operators/external-databases/">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Cloud Foundry for Kubernetes">
+<meta property="og:description" content="Using external databases">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://cf-for-k8s.io/images/buildpacks-social-card.jpg">
+<meta property="og:image:alt" content="Buildpacks project logo">
+<meta property="og:image:type" content="image/jpeg">
+
+
+
+
+
+
+<meta property="twitter:title" content="Using external databases · Cloud Foundry for Kubernetes">
+<meta property="twitter:card" content="summary">
+<meta property="twitter:image" content="https://cf-for-k8s.io/images/buildpacks-social-card-square.jpg">
+<meta property="twitter:image:alt" content="Buildpacks project logo">
+<meta property="twitter:site" content="@">
+<meta property="twitter:creator" content="@">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Source+Sans+Pro:400,400i,600" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cf-for-k8s.io/scss/site.css" integrity="" media="screen">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PVB2G57');</script>
+    
+
+    <script>
+      function addAnchor(element) {
+        if (element.id === "" || element.getElementsByTagName("a").length > 0) {
+          return;
+        }
+
+        
+
+
+        element.innerHTML =
+        `${element.innerHTML}`;
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const headers = document.querySelectorAll('h1, h2, h3, h4, h5');
+        if (headers) {
+          headers.forEach(addAnchor);
+        }
+      });
+    </script>
+
+    <title>Using external databases · Cloud Foundry for Kubernetes</title>
+  </head>
+  <body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PVB2G57"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <header class="container">
+  <a href="https://cf-for-k8s.io/" class="logo"><img src="/images/logo.svg" alt="CF For K8s Logo"></a>
+  <input type="checkbox" id="mobile-nav-toggle">
+  <label for="mobile-nav-toggle"></label>
+  <ul>
+    
+    
+      
+      <li><a class=""  href="/">Home</a></li>
+    
+      
+      <li><a class=""  href="/features">Features</a></li>
+    
+      
+      <li><a class="active"  href="/docs">Docs</a></li>
+    
+      
+      <li><a class="" target='_blank' href="https://medium.com/@cf-release-integration">Blog</a></li>
+    
+    <li><a href="https://github.com/cloudfoundry/cf-for-k8s" class="github-button icon-button bg-blue button">GitHub</a></li>
+  </ul>
+</header>
+
+    
+
+<div class='docs'>
+  <div class="container">
+    <div class='row'>
+      <div class='col-md-4 docs-sidebar'>
+        <nav class='sidebar'>
+  <ul>
+      <li data-nav-id="/docs/" class="dd-item depth-0">
+        <a href="/docs/">Getting Started with Cf-for-K8s</a>
+        <ul class="ml-2">
+        </ul>
+      </li>
+      <li data-nav-id="/docs/deploying/" class="dd-item depth-0 haschildren">
+        <a href="/docs/deploying/">Deploying cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/deploying/deploy-local/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-local/">Deploying CF for K8s Locally</a>
+      </li>
+      <li data-nav-id="/docs/deploying/deploy-in-ci/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-in-ci/">Deploy CF for K8s in CI</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 parent haschildren">
+        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/deploy-parameters/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/deploy-parameters/">Deploy Parameters</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/gateway-access-logs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/gateway-access-logs/">Gateway Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/ingress-routing-topology/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking-metrics/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/networking-metrics/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/sidecar-access-logs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-databases/" class="dd-item depth-1 active">
+        <a href="/docs/platform_operators/external-databases/">Using external databases</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0">
+        <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+      </li>
+      <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
+        <a href="/docs/debugging/">Debugging</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0">
+        <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+      </li>
+    </ul>
+  
+</nav>
+
+
+
+      </div>
+      <div class='col-md-8 docs-content'>
+        <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BUsing&#43;external&#43;databases%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fexternal-databases%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/edit/master/docs/platform_operators/external-databases.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+
+        <div class="heading">
+          <h1 class="title">Using external databases</h1>
+        </div>
+
+        <h1 id="using-external-databases">Using external databases</h1>
+<p>You can use an external database for the cloud controller and uaa by providing following values:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c">#@data/values</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">capi</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="c">#@overlay/replace</span><span class="w">
+</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgres</span><span class="w">
+</span><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;host&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;user&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;database&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;ca certificate for tls&gt;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">uaa</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="c">#@overlay/replace</span><span class="w">
+</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgresql</span><span class="w">
+</span><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;host&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;user&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;database&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;ca certificate for tls&gt;</span><span class="w">
+</span></code></pre></div><p>Please note to the <strong>different spelling</strong> of <code>postgres</code>  and <code>postgresql</code> for capi and uaa.</p>
+<h2 id="limitations">Limitations</h2>
+<p>Providing a <code>ca_cert</code> enables SSL full verification. SQL database services that do not have a hostname and certificate valid for that hostname (e.g. GCP Cloud SQL) will not be able to negotiate a connection in this mode. Skipping hostname validation is not supported.</p>
+<h2 id="setup">Setup</h2>
+<p>As prerequisite, you need to execute the following steps to configure your postgres installation for cf-for-k8s:</p>
+<ol>
+<li>
+<p>Set the environment variables</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">PGPASSWORD</span><span class="o">=</span>&lt;password of postgres super user&gt;
+<span class="nb">export</span> <span class="nv">PGHOST</span><span class="o">=</span>&lt;host where postres is running&gt;
+<span class="nb">export</span> <span class="nv">DB_VALUES_FILE</span><span class="o">=</span>db-values.yml
+</code></pre></div></li>
+<li>
+<p>Run the following script. It will</p>
+<ul>
+<li>create one database each for Cloud Controller and UAA</li>
+<li>create one user each for Cloud Controller and UAA</li>
+<li>activate the <code>citext</code> extension for each of these databases</li>
+</ul>
+<p>The following uses the python module <a href="https://kislyuk.github.io/yq/">yq</a>.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">CCDB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.capi.database.user&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+<span class="nv">CCDB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.capi.database.password&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+<span class="nv">CCDB_NAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.capi.database.name&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+<span class="nv">UAADB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.uaa.database.user&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+<span class="nv">UAADB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.uaa.database.password&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+<span class="nv">UAADB_NAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.uaa.database.name&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+cat &gt; <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/setup_db.sql&#34;</span> <span class="s">&lt;&lt;EOT
+</span><span class="s">CREATE DATABASE ${CCDB_NAME};
+</span><span class="s">CREATE ROLE ${CCDB_USERNAME} LOGIN PASSWORD &#39;${CCDB_PASSWORD}&#39;;
+</span><span class="s">CREATE DATABASE ${UAADB_NAME};
+</span><span class="s">CREATE ROLE ${UAADB_USERNAME} LOGIN PASSWORD &#39;${UAADB_PASSWORD}&#39;;
+</span><span class="s">EOT</span>
+psql -U postgres -f <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/setup_db.sql&#34;</span>
+psql -U postgres -d <span class="s2">&#34;</span><span class="si">${</span><span class="nv">CCDB_NAME</span><span class="si">}</span><span class="s2">&#34;</span> -c <span class="s2">&#34;CREATE EXTENSION citext&#34;</span>
+psql -U postgres -d <span class="s2">&#34;</span><span class="si">${</span><span class="nv">UAADB_NAME</span><span class="si">}</span><span class="s2">&#34;</span> -c <span class="s2">&#34;CREATE EXTENSION citext&#34;</span>
+</code></pre></div><p>To use the Golang <a href="https://github.com/mikefarah/yq">yq</a> utility, use these assignments.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">CCDB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;capi.database.user&#39;</span><span class="k">)</span>
+<span class="nv">CCDB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;capi.database.password&#39;</span><span class="k">)</span>
+<span class="nv">CCDB_NAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;capi.database.name&#39;</span><span class="k">)</span>
+<span class="nv">UAADB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;uaa.database.user&#39;</span><span class="k">)</span>
+<span class="nv">UAADB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;uaa.database.password&#39;</span><span class="k">)</span>
+<span class="nv">UAADB_NAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;uaa.database.name&#39;</span><span class="k">)</span>
+...
+</code></pre></div></li>
+</ol>
+<h2 id="installation-of-an-internal-database">Installation of an internal database</h2>
+<p>If both, capi and uaa, are configured to use an external database, no internal database will be deployed.</p>
+<h2 id="example-with-external-rds-database">Example with external RDS database</h2>
+<p>In the following section, we will show how to setup an AWS RDS database and configure it as the datebase to be used for Cloud Controller and UAA. Please note that the values passed for RDS creation are <strong>not suitable for production environments</strong>.</p>
+<ol>
+<li>
+<p>Create a RDS database. The following command will create a small database for development. Please adjust the settings to your requirements.</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">PGPASSWORD</span><span class="o">=</span>&lt;your password&gt;
+aws rds create-db-instance <span class="se">\
+</span><span class="se"></span>    --engine postgres <span class="se">\
+</span><span class="se"></span>    --db-instance-identifier cf-for-k8s <span class="se">\
+</span><span class="se"></span>    --allocated-storage <span class="m">20</span> <span class="se">\
+</span><span class="se"></span>    --db-instance-class db.t2.micro <span class="se">\
+</span><span class="se"></span>    --db-subnet-group default <span class="se">\
+</span><span class="se"></span>    --master-username postgres <span class="se">\
+</span><span class="se"></span>    --master-user-password <span class="s2">&#34;</span><span class="nv">$PGPASSWORD</span><span class="s2">&#34;</span> <span class="se">\
+</span><span class="se"></span>    --backup-retention-period <span class="m">7</span> <span class="se">\
+</span><span class="se"></span>    --publicly-accessible
+</code></pre></div></li>
+<li>
+<p>Wait until RDS database is ready</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">aws rds <span class="nb">wait</span> db-instance-available --db-instance-identifier cf-for-k8s
+</code></pre></div></li>
+<li>
+<p>Extract database hostname</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">aws rds describe-db-instances --db-instance-identifier cf-for-k8s <span class="p">|</span> jq -r <span class="s1">&#39;.DBInstances[0].Endpoint.Address&#39;</span>
+</code></pre></div></li>
+<li>
+<p>Create configuration file <code>&quot;$DB_VALUES_FILE&quot;</code>. Please replace the <code>host</code>, <code>password</code> and <code>ca_cert</code> in this file accordingly. You can download the certificate from <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html">here</a></p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c">#@data/values</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">capi</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="c">#@override/replace</span><span class="w">
+</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgres</span><span class="w">
+</span><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com</span><span class="w">
+</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">5432</span><span class="w">
+</span><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">capi_user</span><span class="w">
+</span><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password for capi_user&gt;</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">capi_db</span><span class="w">
+</span><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="sd">|
+</span><span class="sd">      -----BEGIN CERTIFICATE-----
+</span><span class="sd">      ...
+</span><span class="sd">
+</span><span class="sd">uaa:
+</span><span class="sd">  #@overlay/replace
+</span><span class="sd">  database:
+</span><span class="sd">    adapter: postgresql
+</span><span class="sd">    host: cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com
+</span><span class="sd">    port: 5432
+</span><span class="sd">    user: uaa_user
+</span><span class="sd">    password: &lt;password for uaa_user&gt;
+</span><span class="sd">    name: uaa_db
+</span><span class="sd">    ca_cert: |
+</span><span class="sd">      -----BEGIN CERTIFICATE-----
+</span><span class="sd">      ...
+</span></code></pre></div></li>
+<li>
+<p>Set environment variables</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">DB_VALUES_FILE</span><span class="o">=</span>db-values.yml
+<span class="nb">export</span> <span class="nv">PGHOST</span><span class="o">=</span><span class="k">$(</span>cat <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="p">|</span> yq -r <span class="s1">&#39;.capi.database.host&#39;</span> <span class="k">)</span>
+</code></pre></div></li>
+<li>
+<p>Run configuration script from above</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">CCDB_USERNAME</span><span class="o">=</span>...
+...
+</code></pre></div></li>
+<li>
+<p><a href="../deploy.md">Install cf-for-k8s</a></p>
+<p>i. Configure your <a href="../deploy.md#cf-values"><code>cf-values.yml</code></a> file
+i. Render the final K8s template to raw K8s yaml. Pass the <code>&quot;$DB_VALUES_FILE&quot;</code> file as additional file to <code>ytt</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ytt -f config -f <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/cf-values.yml&#34;</span> -f <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> &gt; <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/cf-for-k8s-rendered.yml&#34;</span>
+</code></pre></div><p>ii. Install using <code>kapp</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kapp deploy -a cf-for-k8s -f <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/cf-for-k8s-rendered.yml&#34;</span>
+</code></pre></div></li>
+</ol>
+
+
+        
+
+        <hr>
+<div class='footline d-block'>
+  <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BUsing&#43;external&#43;databases%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fexternal-databases%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/edit/master/docs/platform_operators/external-databases.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+    <footer>
+  
+  <div class="bg-black">
+    <div class="container footer clearfix">
+      <div class="logo">
+        <a href="https://cf-for-k8s.io/"><img src="/images/logo-white.svg" class="footer-logo"></a>
+      </div>
+      <div class="info">
+        <p>cf for k8s is a Cloud Foundry Project</p>
+        <p class="sub-info">Hugo template graciously copied from buildpacks.io</p>
+      </div>
+      <ul>
+        <li><a href="https://cloudfoundry.slack.com/?redir=%2Farchives%2FCH9LF6V1P" target="_blank"><img src="/images/slack.png"></a></li>
+        <li><a href="https://lists.cloudfoundry.org/g/cf-dev/topics" target="_blank"><img src="/images/mail.png"></a></li>
+        <li><a href="https://twitter.com/cloudfoundry" target="_blank"><img src="/images/twitter.png"></a></li>
+        <li><a href="https://github.com/cloudfoundry/cf-for-k8s" target="_blank"><img src="/images/github.png"></a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

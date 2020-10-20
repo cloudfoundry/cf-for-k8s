@@ -1,0 +1,357 @@
+<!doctype html>
+<html>
+  <head>
+    
+
+
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Setup ingress certs with Lets Encrypt"/>
+<link rel="canonical" content="https://cf-for-k8s.io/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+
+
+
+
+
+
+<meta property="og:title" content="Setup ingress certs with Lets Encrypt · Cloud Foundry for Kubernetes">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cf-for-k8s.io/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Cloud Foundry for Kubernetes">
+<meta property="og:description" content="Setup ingress certs with Lets Encrypt">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://cf-for-k8s.io/images/buildpacks-social-card.jpg">
+<meta property="og:image:alt" content="Buildpacks project logo">
+<meta property="og:image:type" content="image/jpeg">
+
+
+
+
+
+
+<meta property="twitter:title" content="Setup ingress certs with Lets Encrypt · Cloud Foundry for Kubernetes">
+<meta property="twitter:card" content="summary">
+<meta property="twitter:image" content="https://cf-for-k8s.io/images/buildpacks-social-card-square.jpg">
+<meta property="twitter:image:alt" content="Buildpacks project logo">
+<meta property="twitter:site" content="@">
+<meta property="twitter:creator" content="@">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Source+Sans+Pro:400,400i,600" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cf-for-k8s.io/scss/site.css" integrity="" media="screen">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PVB2G57');</script>
+    
+
+    <script>
+      function addAnchor(element) {
+        if (element.id === "" || element.getElementsByTagName("a").length > 0) {
+          return;
+        }
+
+        
+
+
+        element.innerHTML =
+        `${element.innerHTML}`;
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const headers = document.querySelectorAll('h1, h2, h3, h4, h5');
+        if (headers) {
+          headers.forEach(addAnchor);
+        }
+      });
+    </script>
+
+    <title>Setup ingress certs with Lets Encrypt · Cloud Foundry for Kubernetes</title>
+  </head>
+  <body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PVB2G57"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <header class="container">
+  <a href="https://cf-for-k8s.io/" class="logo"><img src="/images/logo.svg" alt="CF For K8s Logo"></a>
+  <input type="checkbox" id="mobile-nav-toggle">
+  <label for="mobile-nav-toggle"></label>
+  <ul>
+    
+    
+      
+      <li><a class=""  href="/">Home</a></li>
+    
+      
+      <li><a class=""  href="/features">Features</a></li>
+    
+      
+      <li><a class="active"  href="/docs">Docs</a></li>
+    
+      
+      <li><a class="" target='_blank' href="https://medium.com/@cf-release-integration">Blog</a></li>
+    
+    <li><a href="https://github.com/cloudfoundry/cf-for-k8s" class="github-button icon-button bg-blue button">GitHub</a></li>
+  </ul>
+</header>
+
+    
+
+<div class='docs'>
+  <div class="container">
+    <div class='row'>
+      <div class='col-md-4 docs-sidebar'>
+        <nav class='sidebar'>
+  <ul>
+      <li data-nav-id="/docs/" class="dd-item depth-0">
+        <a href="/docs/">Getting Started with Cf-for-K8s</a>
+        <ul class="ml-2">
+        </ul>
+      </li>
+      <li data-nav-id="/docs/deploying/" class="dd-item depth-0 haschildren">
+        <a href="/docs/deploying/">Deploying cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/deploying/deploy-local/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-local/">Deploying CF for K8s Locally</a>
+      </li>
+      <li data-nav-id="/docs/deploying/deploy-in-ci/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-in-ci/">Deploy CF for K8s in CI</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 parent haschildren">
+        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/deploy-parameters/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/deploy-parameters/">Deploy Parameters</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/gateway-access-logs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/gateway-access-logs/">Gateway Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/ingress-routing-topology/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking-metrics/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/networking-metrics/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1 active">
+        <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/sidecar-access-logs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-databases/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-databases/">Using external databases</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0">
+        <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+      </li>
+      <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
+        <a href="/docs/debugging/">Debugging</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0">
+        <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+      </li>
+    </ul>
+  
+</nav>
+
+
+
+      </div>
+      <div class='col-md-8 docs-content'>
+        <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BSetup&#43;ingress&#43;certs&#43;with&#43;Lets&#43;Encrypt%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fsetup-ingress-certs-with-letsencrypt%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/edit/master/docs/platform_operators/setup-ingress-certs-with-letsencrypt.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+
+        <div class="heading">
+          <h1 class="title">Setup ingress certs with Lets Encrypt</h1>
+        </div>
+
+        <h1 id="setup-ingress-certs-with-lets-encrypt">Setup ingress certs with Lets Encrypt</h1>
+<p>The following instructions will setup ingress certs with Lets Encrypt. You have the option of setting up certs before install or update an existing install with the new certs.</p>
+<h2 id="objective">Objective</h2>
+<p>At the end of this setup, you and your users will be able to access CF CLI and CF APPs over HTTPS.</p>
+<h2 id="prerequisites">Prerequisites</h2>
+<ul>
+<li><code>certbot</code> cli
+<ul>
+<li>For Mac, run <code>brew install certbot</code>. For other linux distros, see instructions on <a href="https://certbot.eff.org/instructions">certbot site</a> [1].</li>
+</ul>
+</li>
+<li>Permissions to add/update DNS <code>A</code> and <code>TXT</code> records.</li>
+</ul>
+<p>[1] On <code>certbot</code> site, the web server and os is irrelevant. You will be generating the certs on your machine, so choose the os that matches your os.</p>
+<h2 id="steps-to-setup-ingress-certs">Steps to setup ingress certs</h2>
+<p>The following instructions assume that the system domain is setup at <code>pm-k8s.dev.relint.rocks</code> and the apps domain is setup at <code>apps.pm-k8s.dev.relint.rocks</code>. You can update the domains accordingly.</p>
+<h3 id="system-domain">System domain</h3>
+<ol>
+<li>Set the environment variable for sys domain</li>
+</ol>
+<pre><code class="language-console" data-lang="console">export SYS_DOMAIN=pm-k8s.dev.relint.rocks
+</code></pre><ol start="2">
+<li>Generate a cert for the system domain</li>
+</ol>
+<pre><code class="language-console" data-lang="console">certbot --server https://acme-v02.api.letsencrypt.org/directory -d &quot;*.$SYS_DOMAIN&quot; --manual \
+    --preferred-challenges dns-01 certonly \
+    --work-dir /tmp/certbot/wd --config-dir /tmp/certbot/cfg \
+    --logs-dir /tmp/certbot/logs
+</code></pre><ol start="3">
+<li>You will be presented with a challenge to verify domain ownership. Copy the <code>TXT</code>value printed by certbot and create a TXT record in your DNS provider.</li>
+</ol>
+<pre><code class="language-console" data-lang="console"># example of the TXT in your DNS
+_acme-challenge.SYS_DOMAIN.	TXT    kyfxzsAirB79lsk173jkdlamxiryqloy
+</code></pre><ol start="4">
+<li>Wait for the TXT record to propagate to the nameservers. You can <code>dig</code> tool in a separate console to verify the TXT is updated</li>
+</ol>
+<pre><code class="language-console" data-lang="console">dig _acme-challenge.$SYS_DOMAIN TXT
+</code></pre><ol start="5">
+<li>In the certbot console, press enter once the TXT change is propagated to nameservers. <code>certbot</code> will verify that you own the server and create the necessary files.</li>
+</ol>
+<h3 id="apps-domain">Apps domain</h3>
+<p>Let&rsquo;s now create apps domain certs</p>
+<ol>
+<li>Set environment variable for the apps domain</li>
+</ol>
+<pre><code class="language-console" data-lang="console">export APPS_DOMAIN=apps.pm-k8s.dev.relint.rocks
+</code></pre><ol start="2">
+<li>Generate a cert for the workloads domain</li>
+</ol>
+<pre><code class="language-console" data-lang="console">certbot --server https://acme-v02.api.letsencrypt.org/directory -d &quot;*.$APPS_DOMAIN&quot; --manual \
+    --preferred-challenges dns-01 certonly \
+    --work-dir /tmp/certbot/wd --config-dir /tmp/certbot/cfg \
+    --logs-dir /tmp/certbot/logs
+</code></pre><ol start="3">
+<li>You will be presented with a challenge to verify domain ownership. Copy the <code>TXT</code>value printed by certbot and create a TXT record in your DNS provider.</li>
+</ol>
+<pre><code class="language-console" data-lang="console"># example of the TXT in your DNS
+_acme-challenge.$APPS_DOMAIN.	TXT    kyfxzsAirB79lsk173jkdlamxiryqloy
+</code></pre><h3 id="update-cf-values-yaml">Update cf-values yaml</h3>
+<p>The following instructions assume you have created <code>cf-install-values.yml</code>. Please ensure to copy the file contents into the variables as is.</p>
+<ol>
+<li>
+<p><strong>Update system certificate values</strong></p>
+<p>Lookup <code>system_certificate</code> in <code>cf-install-values.yml</code>. You should config variables <code>crt</code>, <code>key</code> and <code>ca</code>. Follow the instructions below,</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">system_certificate</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">crt</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;replace this with the contents of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/fullchain.pem&gt;</span><span class="w">
+</span><span class="w">  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;replace this with the contents of the file /tmp/certbot/cfg/live/$SYS_DOMAIN/privkey.pem&gt;</span><span class="w">
+</span><span class="w">  </span><span class="nt">ca</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w"> </span><span class="c">#! replace whatever old value with empty string</span><span class="w">
+</span></code></pre></div><p>Your final output for <code>system_certificate</code> will look something like</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">system_certificate</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">crt</span><span class="p">:</span><span class="w"> </span><span class="l">LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZhakNDQkZLZ0F3SUJBZ0lTQ....</span><span class="w">
+</span><span class="w">  </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2Z0lCQURBTkJna3Foa2...</span><span class="w">
+</span><span class="w">  </span><span class="nt">ca</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></code></pre></div></li>
+<li>
+<p><strong>Update apps certificate values</strong></p>
+<p>The <code>workloads_certificate</code> has sub-keys <code>crt</code>, <code>key</code>, <code>ca</code> under it.</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">workloads_certificate</span><span class="p">:</span><span class="w">
+</span><span class="w">   </span><span class="nt">crt</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;replace this with the contents of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/fullchain.pem&gt;</span><span class="w">
+</span><span class="w">   </span><span class="nt">key</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;replace this with the contents of the file /tmp/certbot/cfg/live/$APPS_DOMAIN/privkey.pem&gt;</span><span class="w">
+</span><span class="w">   </span><span class="nt">ca</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w"> </span><span class="c">#! replace whatever old value with empty string</span><span class="w">
+</span></code></pre></div></li>
+<li>
+<p>Follow the instructions from deploy doc to generate the final deploy yml using <code>ytt</code> and <code>kapp</code> to deploy cf-for-k8s to your cluster.</p>
+</li>
+</ol>
+<h3 id="verify-tls">Verify TLS</h3>
+<ol>
+<li>Connect to the cf api without skipping the ssl validation</li>
+</ol>
+<pre><code class="language-console" data-lang="console">cf api https://api.$SYS_DOMAIN
+</code></pre><p>Follow instructions in deploy doc to setup your org/spaces and cf push an app (if you haven&rsquo;t already).</p>
+<ol start="2">
+<li>Verify app domain certs by running <code>curl -vvv</code> or verify the cert in a browser</li>
+</ol>
+<pre><code class="language-console" data-lang="console">curl -vvv  https://$APP_NAME.$APPS_DOMAIN
+# output should show `SSL certificate verify ok`
+</code></pre>
+
+        
+
+        <hr>
+<div class='footline d-block'>
+  <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BSetup&#43;ingress&#43;certs&#43;with&#43;Lets&#43;Encrypt%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fsetup-ingress-certs-with-letsencrypt%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/edit/master/docs/platform_operators/setup-ingress-certs-with-letsencrypt.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+    <footer>
+  
+  <div class="bg-black">
+    <div class="container footer clearfix">
+      <div class="logo">
+        <a href="https://cf-for-k8s.io/"><img src="/images/logo-white.svg" class="footer-logo"></a>
+      </div>
+      <div class="info">
+        <p>cf for k8s is a Cloud Foundry Project</p>
+        <p class="sub-info">Hugo template graciously copied from buildpacks.io</p>
+      </div>
+      <ul>
+        <li><a href="https://cloudfoundry.slack.com/?redir=%2Farchives%2FCH9LF6V1P" target="_blank"><img src="/images/slack.png"></a></li>
+        <li><a href="https://lists.cloudfoundry.org/g/cf-dev/topics" target="_blank"><img src="/images/mail.png"></a></li>
+        <li><a href="https://twitter.com/cloudfoundry" target="_blank"><img src="/images/twitter.png"></a></li>
+        <li><a href="https://github.com/cloudfoundry/cf-for-k8s" target="_blank"><img src="/images/github.png"></a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

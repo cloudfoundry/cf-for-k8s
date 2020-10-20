@@ -1,0 +1,326 @@
+<!doctype html>
+<html>
+  <head>
+    
+
+
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Contributing to cf-for-k8s"/>
+<link rel="canonical" content="https://cf-for-k8s.io/docs/contributing/">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+
+
+
+
+
+
+<meta property="og:title" content="Contributing &lt;br&gt;(for Component Developers) · Cloud Foundry for Kubernetes">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cf-for-k8s.io/docs/contributing/">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Cloud Foundry for Kubernetes">
+<meta property="og:description" content="Contributing to cf-for-k8s">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://cf-for-k8s.io/images/buildpacks-social-card.jpg">
+<meta property="og:image:alt" content="Buildpacks project logo">
+<meta property="og:image:type" content="image/jpeg">
+
+
+
+
+
+
+<meta property="twitter:title" content="Contributing &lt;br&gt;(for Component Developers) · Cloud Foundry for Kubernetes">
+<meta property="twitter:card" content="summary">
+<meta property="twitter:image" content="https://cf-for-k8s.io/images/buildpacks-social-card-square.jpg">
+<meta property="twitter:image:alt" content="Buildpacks project logo">
+<meta property="twitter:site" content="@">
+<meta property="twitter:creator" content="@">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Source+Sans+Pro:400,400i,600" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cf-for-k8s.io/scss/site.css" integrity="" media="screen">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PVB2G57');</script>
+    
+
+    <script>
+      function addAnchor(element) {
+        if (element.id === "" || element.getElementsByTagName("a").length > 0) {
+          return;
+        }
+
+        
+
+
+        element.innerHTML =
+        `${element.innerHTML}`;
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const headers = document.querySelectorAll('h1, h2, h3, h4, h5');
+        if (headers) {
+          headers.forEach(addAnchor);
+        }
+      });
+    </script>
+
+    <title>Contributing (for Component Developers) · Cloud Foundry for Kubernetes</title>
+  </head>
+  <body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PVB2G57"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <header class="container">
+  <a href="https://cf-for-k8s.io/" class="logo"><img src="/images/logo.svg" alt="CF For K8s Logo"></a>
+  <input type="checkbox" id="mobile-nav-toggle">
+  <label for="mobile-nav-toggle"></label>
+  <ul>
+    
+    
+      
+      <li><a class=""  href="/">Home</a></li>
+    
+      
+      <li><a class=""  href="/features">Features</a></li>
+    
+      
+      <li><a class="active"  href="/docs">Docs</a></li>
+    
+      
+      <li><a class="" target='_blank' href="https://medium.com/@cf-release-integration">Blog</a></li>
+    
+    <li><a href="https://github.com/cloudfoundry/cf-for-k8s" class="github-button icon-button bg-blue button">GitHub</a></li>
+  </ul>
+</header>
+
+    
+
+<div class='docs'>
+  <div class="container">
+    <div class='row'>
+      <div class='col-md-4 docs-sidebar'>
+        <nav class='sidebar'>
+  <ul>
+      <li data-nav-id="/docs/" class="dd-item depth-0">
+        <a href="/docs/">Getting Started with Cf-for-K8s</a>
+        <ul class="ml-2">
+        </ul>
+      </li>
+      <li data-nav-id="/docs/deploying/" class="dd-item depth-0 haschildren">
+        <a href="/docs/deploying/">Deploying cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/deploying/deploy-local/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-local/">Deploying CF for K8s Locally</a>
+      </li>
+      <li data-nav-id="/docs/deploying/deploy-in-ci/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-in-ci/">Deploy CF for K8s in CI</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
+        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/deploy-parameters/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/deploy-parameters/">Deploy Parameters</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/gateway-access-logs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/gateway-access-logs/">Gateway Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/ingress-routing-topology/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking-metrics/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/networking-metrics/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/sidecar-access-logs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-databases/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-databases/">Using external databases</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0 parent active">
+        <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+      </li>
+      <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
+        <a href="/docs/debugging/">Debugging</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0">
+        <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+      </li>
+    </ul>
+  
+</nav>
+
+
+
+      </div>
+      <div class='col-md-8 docs-content'>
+        <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BContributing&#43;%26lt%3Bbr%26gt%3B%28for&#43;Component&#43;Developers%29%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fcontributing%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/edit/master/docs/contributing/_index.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+
+        <div class="heading">
+          <h1 class="title">Contributing <br>(for Component Developers)</h1>
+        </div>
+
+        <h1 id="contributing-to-cf-for-k8s">Contributing to cf-for-k8s</h1>
+<p>The following sections outline the process to contribute to cf-for-k8s.</p>
+<ul>
+<li><a href="#code-of-conduct">Code of conduct</a></li>
+<li><a href="#contributor-license-agreements">Contributor license agreements</a></li>
+<li><a href="#project-management-committee">Project Management Committee</a></li>
+<li><a href="#setting-up-to-contribute">Setting up to contribute</a></li>
+<li><a href="#pull-requests">Pull requests</a>
+<ul>
+<li><a href="#getting-started-with-contribution">Getting started with contribution</a></li>
+</ul>
+</li>
+<li><a href="#contributing-a-feature">Contributing a feature</a></li>
+</ul>
+<h2 id="code-of-conduct">Code of conduct</h2>
+<p>All members of the cf-for-k8s community must abide by the <a href="community/code-of-conduct.md">Code of Conduct</a>. Only by respecting each other can we develop a productive, collaborative community. If you would like to report a violation of the code of contact, please contact any member from the <a href="MAINTAINERS.md">Maintainers list</a>.</p>
+<h2 id="contributor-license-agreements">Contributor license agreements</h2>
+<p>We&rsquo;d love to accept your contributions! But before we can take them, you will have to fill out the <a href="https://lfcla.com/">EasyCLA</a>.</p>
+<p>Once you are CLA&rsquo;ed, we&rsquo;ll be able to accept your pull requests.</p>
+<h2 id="project-management-committee">Project Management Committee</h2>
+<p>The cf-for-k8s is maintained by projects that are governed by the Project Management Committee (PMC). Any contribution to cf-for-k8s should be started by first engaging with the appropriate project group. You can find the full list of projects, their leads and contact information <a href="https://docs.google.com/spreadsheets/d/1hg0EA3aB9wiCq8SgCU90ft4qrHvczsUjK0W_31APWxM/edit#gid=0">here</a>.</p>
+<h2 id="setting-up-to-contribute">Setting up to contribute</h2>
+<p>Check out <a href="PREPARING-FOR-DEVELOPMENT.md">preparing for development</a> to learn about how to setup your local dev environment with cf-for-k8s.</p>
+<h2 id="pull-requests">Pull requests</h2>
+<p>If you&rsquo;re working on an existing issue, simply respond to the issue and express interest in working on it. This helps other people know that the issue is active, and hopefully prevents duplicated efforts.</p>
+<p>To submit a proposed change:</p>
+<ul>
+<li>Fork the affected repository.</li>
+<li>Create a new branch for your changes.</li>
+<li>Develop/fix the code.</li>
+<li>Add new test cases as applicable. In the case of a bug fix, the tests should fail without your code changes. For new features try to cover as many variants as reasonably possible.</li>
+<li>Update the docs as applicable.</li>
+</ul>
+<p>When ready, if you have not already done so, sign a contributor license agreement and submit the PR. The PR checks will run unit tests and validate your changes by upgrading from head of develop to your PR, monitoring application uptime whilst doing so.   Finally, it will run <code>smoketests</code>.  If there are failures, take a look at the PRs checks, specifically those that failed, and the pipeline output to try and ascertain what went wrong.</p>
+<p>Categories of failure might include:</p>
+<ul>
+<li>deployment; kapp deploy fails whilst upgrading to your PR.  Typified by errors in the kapp logs.  Investigate to determine if the failure was due to changes that broke deployment assumptions.</li>
+<li>uptime; one or more app uptime checks failed during upgrade.  Uptimer results on the PR will include a FAILED Http Availability report.  Change in your PR may have affected the availability of running apps.  Maintaining app
+availability during upgrades is a project goal and we cannot allow PRs that can&rsquo;t achieve this.</li>
+<li>smoke tests; one or more smoke tests failed.  Typically, a failure to push or curl an app.</li>
+<li>flake; it happens!  If you cannot pinpoint the failure to one of the above categories then it might have been a flake.  We monitor the pipelines and will usually re-trigger them if we believe this to be the case.</li>
+</ul>
+<p>Don&rsquo;t hesitate to ping the members in #cf-for-k8s slack channel for help.</p>
+<h3 id="getting-started-with-contribution">Getting started with contribution</h3>
+<p>If you&rsquo;re looking to get started today, you can explore the <a href="https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aopen+is%3Aissue+label%3A%22Good+first+issue%22">good first issue</a> labelled issues in cf-for-k8s repository.</p>
+<p>If you&rsquo;re looking to take on more, you can explore the <a href="https://github.com/cloudfoundry/cf-for-k8s/issues?q=is%3Aopen+is%3Aissue+label%3A%22Help+wanted%22">help wanted</a> labelled issues to get started.</p>
+<p>You can create <a href="https://github.com/cloudfoundry/cf-for-k8s/issues">issues</a> to report bugs or submit feature requests. The approporate templates will guide you to fill the key pieces of information. To check for relevant existing issues/reports</p>
+<h2 id="contributing-a-feature">Contributing a feature</h2>
+<p>In order to contribute a feature to cf-for-k8s, you&rsquo;ll need to go through the following steps:</p>
+<ul>
+<li>
+<p>First, create a feature request issue type in cf-for-k8s repository. The issue should include information about the requirements and use cases that it is trying to address. Include a discussion of the proposed design and technical details of the implementation in the issue.</p>
+</li>
+<li>
+<p>If the feature is substantial enough, a project team member may ask for architecture design doc. Create the design document in google doc and add a link to the GitHub issue. Update the projects by sending an email to <a href="mailto:cf-dev@cloudfoundry.org">cf-dev@cloudfoundry.org</a> mailing list and/or via slack channel. Depending on the complexity and the breadth of the feature request, the project team may discuss in one of the special interest groups or during runtime PMC meetings or they might directly involve relevant projects before being approved.</p>
+</li>
+<li>
+<p>Submit PRs to the respective project repository with your code changes. Include relevant documentation changes and tests in your PR.</p>
+</li>
+</ul>
+<blockquote>
+<p>Note that we prefer bite-sized PRs instead of giant monster PRs. It&rsquo;s therefore preferable if you can introduce large features in smaller reviewable changes that build on top of one another.</p>
+</blockquote>
+<h2 id="have-a-question-or-feedback-reach-out-to-us">Have a question or feedback, reach out to us</h2>
+<p>We are very active in slack channel <a href="https://cloudfoundry.slack.com/archives/CH9LF6V1P">#cf-for-k8s</a> in the Cloud Foundry workspace. Please hit us up with any questions you may have or to share your experience with the cf-for-k8s community. To request a fast reponse during Pacific business hours, begin your message with <code>#release-integration @interrupt</code></p>
+
+
+        
+    
+
+        <hr>
+<div class='footline d-block'>
+  <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BContributing&#43;%26lt%3Bbr%26gt%3B%28for&#43;Component&#43;Developers%29%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fcontributing%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/edit/master/docs/contributing/_index.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+    <footer>
+  
+  <div class="bg-black">
+    <div class="container footer clearfix">
+      <div class="logo">
+        <a href="https://cf-for-k8s.io/"><img src="/images/logo-white.svg" class="footer-logo"></a>
+      </div>
+      <div class="info">
+        <p>cf for k8s is a Cloud Foundry Project</p>
+        <p class="sub-info">Hugo template graciously copied from buildpacks.io</p>
+      </div>
+      <ul>
+        <li><a href="https://cloudfoundry.slack.com/?redir=%2Farchives%2FCH9LF6V1P" target="_blank"><img src="/images/slack.png"></a></li>
+        <li><a href="https://lists.cloudfoundry.org/g/cf-dev/topics" target="_blank"><img src="/images/mail.png"></a></li>
+        <li><a href="https://twitter.com/cloudfoundry" target="_blank"><img src="/images/twitter.png"></a></li>
+        <li><a href="https://github.com/cloudfoundry/cf-for-k8s" target="_blank"><img src="/images/github.png"></a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

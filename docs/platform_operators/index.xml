@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Extend cf-for-k8s on Cloud Foundry for Kubernetes</title>
+    <link>https://cf-for-k8s.io/docs/platform_operators/</link>
+    <description>Recent content in Extend cf-for-k8s on Cloud Foundry for Kubernetes</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://cf-for-k8s.io/docs/platform_operators/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Deploy Parameters</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/deploy-parameters/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/deploy-parameters/</guid>
+      <description>Deploy Parameters</description>
+    </item>
+    
+    <item>
+      <title>Gateway Access Logs</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/gateway-access-logs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/gateway-access-logs/</guid>
+      <description>Gateway Access Logs</description>
+    </item>
+    
+    <item>
+      <title>Ingress Routing</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/ingress-routing-topology/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/ingress-routing-topology/</guid>
+      <description>Ingress Routing</description>
+    </item>
+    
+    <item>
+      <title>kubectl Warning</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/warning-regarding-kubectl-usage/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/warning-regarding-kubectl-usage/</guid>
+      <description>kubectl Warning</description>
+    </item>
+    
+    <item>
+      <title>Networking Metrics</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/networking-metrics/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/networking-metrics/</guid>
+      <description>Networking Metrics</description>
+    </item>
+    
+    <item>
+      <title>Rotating Secrets</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/rotating-secrets-and-certs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/rotating-secrets-and-certs/</guid>
+      <description>Rotating Secrets</description>
+    </item>
+    
+    <item>
+      <title>Setup a static IP for loadbalancer</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/setup-static-loadbalancer-ip/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/setup-static-loadbalancer-ip/</guid>
+      <description>Setup a static IP for loadbalancer</description>
+    </item>
+    
+    <item>
+      <title>Setup ingress certs with Lets Encrypt</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/setup-ingress-certs-with-letsencrypt/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/setup-ingress-certs-with-letsencrypt/</guid>
+      <description>Setup ingress certs with Lets Encrypt</description>
+    </item>
+    
+    <item>
+      <title>Sidecar Access Logs</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/sidecar-access-logs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/sidecar-access-logs/</guid>
+      <description>Sidecar Access Logs</description>
+    </item>
+    
+    <item>
+      <title>Using external blobstore</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/external-blobstore/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/external-blobstore/</guid>
+      <description>Using external blobstore</description>
+    </item>
+    
+    <item>
+      <title>Using external databases</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/external-databases/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/external-databases/</guid>
+      <description>Using external databases</description>
+    </item>
+    
+  </channel>
+</rss>

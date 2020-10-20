@@ -1,0 +1,450 @@
+<!doctype html>
+<html>
+  <head>
+    
+
+
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Networking Metrics"/>
+<link rel="canonical" content="https://cf-for-k8s.io/docs/platform_operators/networking-metrics/">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+
+
+
+
+
+
+<meta property="og:title" content="Networking Metrics · Cloud Foundry for Kubernetes">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cf-for-k8s.io/docs/platform_operators/networking-metrics/">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Cloud Foundry for Kubernetes">
+<meta property="og:description" content="Networking Metrics">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://cf-for-k8s.io/images/buildpacks-social-card.jpg">
+<meta property="og:image:alt" content="Buildpacks project logo">
+<meta property="og:image:type" content="image/jpeg">
+
+
+
+
+
+
+<meta property="twitter:title" content="Networking Metrics · Cloud Foundry for Kubernetes">
+<meta property="twitter:card" content="summary">
+<meta property="twitter:image" content="https://cf-for-k8s.io/images/buildpacks-social-card-square.jpg">
+<meta property="twitter:image:alt" content="Buildpacks project logo">
+<meta property="twitter:site" content="@">
+<meta property="twitter:creator" content="@">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Source+Sans+Pro:400,400i,600" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cf-for-k8s.io/scss/site.css" integrity="" media="screen">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PVB2G57');</script>
+    
+
+    <script>
+      function addAnchor(element) {
+        if (element.id === "" || element.getElementsByTagName("a").length > 0) {
+          return;
+        }
+
+        
+
+
+        element.innerHTML =
+        `${element.innerHTML}`;
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const headers = document.querySelectorAll('h1, h2, h3, h4, h5');
+        if (headers) {
+          headers.forEach(addAnchor);
+        }
+      });
+    </script>
+
+    <title>Networking Metrics · Cloud Foundry for Kubernetes</title>
+  </head>
+  <body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PVB2G57"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <header class="container">
+  <a href="https://cf-for-k8s.io/" class="logo"><img src="/images/logo.svg" alt="CF For K8s Logo"></a>
+  <input type="checkbox" id="mobile-nav-toggle">
+  <label for="mobile-nav-toggle"></label>
+  <ul>
+    
+    
+      
+      <li><a class=""  href="/">Home</a></li>
+    
+      
+      <li><a class=""  href="/features">Features</a></li>
+    
+      
+      <li><a class="active"  href="/docs">Docs</a></li>
+    
+      
+      <li><a class="" target='_blank' href="https://medium.com/@cf-release-integration">Blog</a></li>
+    
+    <li><a href="https://github.com/cloudfoundry/cf-for-k8s" class="github-button icon-button bg-blue button">GitHub</a></li>
+  </ul>
+</header>
+
+    
+
+<div class='docs'>
+  <div class="container">
+    <div class='row'>
+      <div class='col-md-4 docs-sidebar'>
+        <nav class='sidebar'>
+  <ul>
+      <li data-nav-id="/docs/" class="dd-item depth-0">
+        <a href="/docs/">Getting Started with Cf-for-K8s</a>
+        <ul class="ml-2">
+        </ul>
+      </li>
+      <li data-nav-id="/docs/deploying/" class="dd-item depth-0 haschildren">
+        <a href="/docs/deploying/">Deploying cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/deploying/deploy-local/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-local/">Deploying CF for K8s Locally</a>
+      </li>
+      <li data-nav-id="/docs/deploying/deploy-in-ci/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-in-ci/">Deploy CF for K8s in CI</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 parent haschildren">
+        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/deploy-parameters/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/deploy-parameters/">Deploy Parameters</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/gateway-access-logs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/gateway-access-logs/">Gateway Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/ingress-routing-topology/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking-metrics/" class="dd-item depth-1 active">
+        <a href="/docs/platform_operators/networking-metrics/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/sidecar-access-logs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-databases/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-databases/">Using external databases</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0">
+        <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+      </li>
+      <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
+        <a href="/docs/debugging/">Debugging</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0">
+        <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+      </li>
+    </ul>
+  
+</nav>
+
+
+
+      </div>
+      <div class='col-md-8 docs-content'>
+        <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BNetworking&#43;Metrics%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fnetworking-metrics%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/edit/master/docs/platform_operators/networking-metrics.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+
+        <div class="heading">
+          <h1 class="title">Networking Metrics</h1>
+        </div>
+
+        <h1 id="networking-metrics">Networking Metrics</h1>
+<p>The networking control plane emits metrics that can be used to understand the
+health of the platform. These metrics can be consumed by Prometheus and graphed
+with Grafana, but the installation and configuration of those tools is outside
+the scope of this document.</p>
+<h2 id="official-resources">Official Resources</h2>
+<p>There is existing official documentation on what metrics each component exposes.</p>
+<ul>
+<li><a href="https://istio.io/latest/docs/reference/config/policy-and-telemetry/metrics/">Istio metrics</a></li>
+<li><a href="https://istio.io/latest/docs/ops/integrations/grafana/">Istio preconfigured grafana dashboards</a>
+<ul>
+<li>These dashboards have helpful Prometheus queries and demonstrate what the
+Istio community finds valuable to monitor when running Istio.</li>
+</ul>
+</li>
+<li><a href="https://www.envoyproxy.io/docs/envoy/latest/configuration/upstream/cluster_manager/cluster_stats">Full list of Envoy metrics</a>
+<ul>
+<li>However, Envoy as configured by Istio does not emit all of the ones listed.</li>
+</ul>
+</li>
+<li><a href="https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/statistics#server%5C">More Envoy metrics docs</a></li>
+</ul>
+<h1 id="is-the-platform-healthy">Is the platform healthy?</h1>
+<p>One goal you might have when monitoring is to ensure that requests are being
+served and that the components are not becoming overloaded.</p>
+<h2 id="dataplane-monitoring">Dataplane Monitoring</h2>
+<p>Significant changes in the number or size of requests is a sign that load on the
+cluster is changing and the ingress-gateways might need to be scaled. Because
+Istio configures Envoy to output data plane metrics, it is possible to measure
+the global dataplane load across all Envoys.</p>
+<ol>
+<li>The following query will return the rate of requests per second across all
+Envoy proxies configured by Istio:
+<pre><code>round(sum(irate(istio_requests_total{reporter=&quot;destination&quot;}[1m])), 0.001)
+</code></pre></li>
+<li>The following query will return the 95th percentile of request latency in
+milliseconds across all Envoy proxies configured by Istio:
+<pre><code>histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket[5m])) by (le))
+</code></pre></li>
+<li>The following query will return the 95th percentile of HTTP request body size
+across all Envoy proxies configured by Istio:
+<pre><code>histogram_quantile(0.95, sum(rate(istio_request_bytes_bucket[5m])) by (le))
+</code></pre></li>
+<li>The following query will return the 95th percentile of HTTP response body size
+across all Envoy proxies configured by Istio:
+<pre><code>histogram_quantile(0.95, sum(rate(istio_response_bytes_bucket[5m])) by (le))
+</code></pre></li>
+</ol>
+<p>In addition to measuring the load, it can be useful to watch out for spikes in
+the rate of error codes or cancelled requests:</p>
+<ol>
+<li>The following query will return the current rate of requests per second that have a
+particular status (e.g. <code>cancelled</code>, <code>completed</code>, <code>total</code>):
+<pre><code>round(sum(irate(envoy_cluster_upstream_rq_&lt;status word&gt;[1m])), 0.001)
+</code></pre></li>
+<li>The following query will return the current rate of requests per second that have a
+particular status code (e.g. <code>200</code>, <code>404</code>, <code>503</code>):
+<pre><code>round(sum(irate(envoy_cluster_upstream_rq_&lt;http status code&gt;[1m])), 0.001)
+</code></pre></li>
+</ol>
+<p>Note that these metrics are emitted for both the ingress-gateways, and the
+sidecars, so if you want to monitor the sidecars and the ingress-gateways
+separately, then the metrics will need to be filtered.
+For example, the following query will return the rate of <code>503</code>s per second across
+all the ingress-gateways:</p>
+<pre><code>sum(irate(envoy_cluster_upstream_rq_503{namespace=&quot;istio-system&quot;}[1m]))
+</code></pre><h2 id="gateway-health-metrics">Gateway Health Metrics</h2>
+<p>Monitoring the self-reported state of the ingress-gateways is one way to
+determine the health of the ingress-gateways. The relevant metrics for that
+monitoring are:</p>
+<ol>
+<li>
+<p>The following query will return the time since each ingress-gateway last
+restarted:</p>
+<pre><code>envoy_server_uptime{pod_name=~&quot;istio-ingressgateway-.*&quot;}
+</code></pre></li>
+<li>
+<p>The following query will return the current state of each ingress-gateway:</p>
+<pre><code>envoy_server_state{pod_name=~&quot;istio-ingressgateway-.*&quot;}
+</code></pre><ul>
+<li>This <code>envoy_server_state</code> has the following values:
+<ul>
+<li>0: live</li>
+<li>1: draining</li>
+<li>2: pre-initializing</li>
+<li>3: initializing</li>
+</ul>
+</li>
+<li>When no upgrade is running and no scaling has be initiated, the
+ingress-gateways should be in state <code>0: live</code>. During an upgrade, some pods
+would be spinning up (in states <code>2: pre-initializing</code> and <code>3: initializing</code>) and others would be <code>1: draining</code> to make room for the new
+pods.</li>
+</ul>
+</li>
+<li>
+<p>The following query will return the current number of live ingress-gateways:</p>
+<pre><code>sum(envoy_server_live{pod_name=~&quot;istio-ingressgateway-.*&quot;})
+</code></pre></li>
+</ol>
+<h2 id="general-resource-metrics">General Resource Metrics</h2>
+<p>For all the components, you can monitor the standard set of resource usage
+metrics, such as the following queries that measure efficiency:</p>
+<ol>
+<li>The following query will return the ingress-gateway CPU usage per thousand requests per second:
+<pre><code>sum(irate(container_cpu_usage_seconds_total{pod=~&quot;istio-ingressgateway-.*&quot;,container=&quot;istio-proxy&quot;}[1m]))
+/ (round(
+     sum(irate(
+       istio_requests_total{source_workload=&quot;istio-ingressgateway&quot;, reporter=&quot;source&quot;}[1m])),
+     0.001)
+   / 1000)
+</code></pre></li>
+<li>The following query will return the ingress-gateway memory usage per thousand requests per second:
+<pre><code>sum(irate(container_memory_usage_bytes{pod=~&quot;istio-ingressgateway-.*&quot;,container=&quot;istio-proxy&quot;}[1m]))
+/ (round(
+     sum(irate(
+       istio_requests_total{source_workload=&quot;istio-ingressgateway&quot;, reporter=&quot;source&quot;}[1m])),
+     0.001)
+   / 1000)
+</code></pre></li>
+</ol>
+<h1 id="control-plane-latency">Control Plane Latency</h1>
+<p>The path from making a configuration change using the CF CLI to that change
+being applied in Envoy (especially the Envoy ingress-gateways) has a series of
+steps. It is recommended to monitor each step separately in order to ensure that
+control plane latency is not too high overall and to make fixing latency
+problems easier. This section will cover metrics relevant to monitoring each
+step.</p>
+<p>Because most steps involve the K8s API, we will first cover the K8s API metrics that are
+relevant to all those steps.</p>
+<h2 id="k8s-api-metrics">K8s API Metrics</h2>
+<p>All of the metrics beginning with <code>apiserver_request_</code>  measure the load on the
+K8s API server.</p>
+<ol>
+<li>
+<p>The following query measures the current latency on the various API server
+actions (e.g. CREATE, WATCH) and resources (e.g. pods):</p>
+<pre><code>apiserver_request_duration_seconds_bucket
+</code></pre></li>
+<li>
+<p>The following query will return the number of requests per second
+to the API server over the range of a minute, rounded to the nearest
+thousandth:</p>
+<pre><code>round(sum(irate(apiserver_request_total[1m])), 0.001)
+</code></pre></li>
+<li>
+<p>The following query will return errors from the API server such as HTTP 5xx
+errors:</p>
+<pre><code>rate(apiserver_request_count{code=~&quot;^(?:5..)$&quot;}[5m]) / rate(apiserver_request_count[5m])
+</code></pre><ul>
+<li><code>(?:5..)</code> can be replaced with other status codes numbers (e.g. <code>(?:4..)</code>
+for HTTP 4xx errors).</li>
+</ul>
+</li>
+<li>
+<p>The following query will return the 95th percentile latency for all
+Kubernetes resources and verbs:</p>
+<pre><code>histogram_quantile(0.95,
+sum(rate(apiserver_request_duration_seconds_bucket[5m])) by (le, resource,
+subresource, verb))
+</code></pre><ul>
+<li>It is also possible to select specific resources such as virtual services
+by adding the resource name to the metric.  For example, the query below
+will return the 95th precentile request duration latency for
+VirtualServices only.
+<pre><code>histogram_quantile(0.95,
+sum(rate(apiserver_request_duration_seconds_bucket{resource=&quot;virtualservices&quot;}[5m]))
+by (le, resource, subresource, verb))
+</code></pre></li>
+</ul>
+</li>
+</ol>
+<h2 id="cc-api">CC API</h2>
+<p>The CC API creates or updates a Route CR to reflect changes requested by a CF
+CLI command. The CC API does not emit metrics, so K8s API metrics related to
+Route CRs are the most relevant.</p>
+<h2 id="route-controller">Route Controller</h2>
+<p>The Route Controller consumes Route CRs and outputs Istio configuration as other
+CRs. There are no metrics output by Route Controller at this time, so the most
+relevant metrics are emitted by the K8s API.</p>
+<h2 id="istio-metrics">Istio Metrics</h2>
+<p>Istio consumes its config as VirtualService CRs and emits configuration to each
+Envoy via XDS. In addition to K8s API metrics related to VirtualServices, istiod
+outputs several relevant metrics:</p>
+<ol>
+<li>The following query will return the 99th percentile latency of Istio sending
+configuration to Envoy (measured from when Istio is ready to send a new
+configuration to when Envoy acknowledges the configuration):
+<pre><code>histogram_quantile(0.99, sum(rate(pilot_proxy_convergence_time_bucket[1m])) by (le))
+</code></pre></li>
+</ol>
+
+
+        
+
+        <hr>
+<div class='footline d-block'>
+  <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BNetworking&#43;Metrics%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fnetworking-metrics%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/content/docs/edit/master/docs/platform_operators/networking-metrics.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+    <footer>
+  
+  <div class="bg-black">
+    <div class="container footer clearfix">
+      <div class="logo">
+        <a href="https://cf-for-k8s.io/"><img src="/images/logo-white.svg" class="footer-logo"></a>
+      </div>
+      <div class="info">
+        <p>cf for k8s is a Cloud Foundry Project</p>
+        <p class="sub-info">Hugo template graciously copied from buildpacks.io</p>
+      </div>
+      <ul>
+        <li><a href="https://cloudfoundry.slack.com/?redir=%2Farchives%2FCH9LF6V1P" target="_blank"><img src="/images/slack.png"></a></li>
+        <li><a href="https://lists.cloudfoundry.org/g/cf-dev/topics" target="_blank"><img src="/images/mail.png"></a></li>
+        <li><a href="https://twitter.com/cloudfoundry" target="_blank"><img src="/images/twitter.png"></a></li>
+        <li><a href="https://github.com/cloudfoundry/cf-for-k8s" target="_blank"><img src="/images/github.png"></a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

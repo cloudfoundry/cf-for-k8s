@@ -1,4 +1,4 @@
-# Networking Metrics
+# Networking Metrics and Monitoring
 
 The networking control plane emits metrics that can be used to understand the
 health of the platform. These metrics can be consumed by Prometheus and graphed
@@ -23,6 +23,7 @@ One goal you might have when monitoring is to ensure that requests are being
 served and that the components are not becoming overloaded.
 
 ## Dataplane Monitoring
+
 Significant changes in the number or size of requests is a sign that load on the
 cluster is changing and the ingress-gateways might need to be scaled. Because
 Istio configures Envoy to output data plane metrics, it is possible to measure

@@ -10,6 +10,7 @@ echo "=========================="
 echo "External Registry: ${USE_EXTERNAL_APP_REGISTRY}"
 echo "Upgrade: ${UPGRADE}"
 echo "Uptimer: ${UPTIMER}"
+echo "Uptimer fail on downtime: ${UPTIMER_FAIL_ON_DOWNTIME}"
 echo -e "\n"
 
 source cf-for-k8s-ci/ci/helpers/gke.sh
@@ -71,9 +72,11 @@ password="$(bosh interpolate --path /cf_admin_password cf-values.yml)"
 echo "Installing CF..."
 rendered_yaml="/tmp/rendered.yml"
 additional_args=""
+
 if [[ "${USE_EXTERNAL_DB}" == "true" ]]; then
   additional_args="-f db-metadata/db-values.yaml"
 fi
+
 if [[ "${USE_EXTERNAL_BLOBSTORE}" == "true" ]]; then
   additional_args+="-f blobstore-metadata/blobstore-values.yaml"
 fi
@@ -94,14 +97,23 @@ if [[ "${UPTIMER}" == "true" ]]; then
     source runtime-ci/tasks/shared-functions
     push_uptimer_metrics_to_wavefront "${SOURCE_PIPELINE}" "${UPTIMER_RESULT_FILE_PATH}"
   fi
-  if [[ "$uptimer_exit_code" != "0" ]]; then
+
+  if [ "${UPTIMER_FAIL_ON_DOWNTIME}" = "false" ]; then
+    # uptimer_exit_code 64 means that there was downtime, but the deployment was successful
+    # uptimer_exit_code 70 means that there was a measurement setup failure, but the deployment was successful
+    if [ ${uptimer_exit_code} == 64 ] || [ ${uptimer_exit_code} == 70 ]; then
+      uptimer_exit_code=0
+    fi
+  fi
+
+  if [[ "${uptimer_exit_code}" != "0" ]]; then
     exit 1
   fi
 else
   kapp deploy -a cf -f ${rendered_yaml} -y
 fi
 
-echo ${password} > env-metadata/cf-admin-password.txt
+echo "${password}" > env-metadata/cf-admin-password.txt
 echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
-bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
+bosh interpolate --path /default_ca/ca "/tmp/${DNS_DOMAIN}/cf-vars.yaml" > env-metadata/default_ca.ca
 cp "/tmp/${DNS_DOMAIN}/cf-vars.yaml" env-metadata

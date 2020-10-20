@@ -24,6 +24,15 @@ resources:
     ignore_paths:
     - ci/**
 
+- name: cf-for-k8s-last-release
+  type: git
+  icon: github
+  source:
+    branch: main
+    tag_filter: "v*"
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
+
 - name: cf-for-k8s-all-branches
   type: git
   icon: github
@@ -211,6 +220,103 @@ jobs:
     params:
       APP_NAME: lingering-node-app
       VERIFY_EXISTING_APP: false
+
+  - task: delete-cf
+    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+  - put: destroy-pool
+    params:
+      add: ready-pool
+
+  - put: ready-pool
+    params:
+      remove: ready-pool
+
+- name: validate-cf-for-k8s-upgrade
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-develop
+      passed:
+      - test-vendir-sync-on-cf-for-k8s
+      - run-unit-tests
+      trigger: true
+    - get: cf-for-k8s-last-release
+    - get: cf-for-k8s-ci
+    - get: runtime-ci
+
+  - put: ready-pool
+    params:
+      acquire: true
+
+  - task: display-cluster-info
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+  - task: install-cf-last-release
+    file: cf-for-k8s-last-release/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+      cf-for-k8s: cf-for-k8s-last-release
+      cf-for-k8s-ci: cf-for-k8s-last-release
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
+
+  - task: push-test-app
+    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-last-release
+    params:
+      APP_NAME: jp-node-app
+      VERIFY_EXISTING_APP: false
+
+  - task: upgrade-cf-to-develop
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+      cf-for-k8s: cf-for-k8s-develop
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      DOMAIN: k8s-dev.relint.rocks
+      UPGRADE: true
+      UPTIMER: true
+      UPTIMER_FAIL_ON_DOWNTIME: false
+      EMIT_UPTIMER_METRICS_TO_WAVEFRONT: true
+      WAVEFRONT_API_KEY: ((wavefront_ci_service_account))
+      WAVEFRONT_API_ENDPOINT: "https://vmwareprod.wavefront.com/report"
+      SOURCE_PIPELINE: upgrade-from-last-release
+
+  - in_parallel:
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        SMOKE_TEST_SKIP_SSL: true
+
+    - task: verify-existing-app
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      params:
+        APP_NAME: jp-node-app
+        VERIFY_EXISTING_APP: true
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
@@ -776,11 +882,12 @@ jobs:
   - get: cf-for-k8s-develop
     passed:
     - validate-cf-for-k8s-gke
-    - validate-cf-for-k8s-oldest
-    - validate-cf-for-k8s-newest
+    - validate-cf-for-k8s-upgrade
     - validate-cf-for-k8s-gke-rds
     - validate-cf-for-k8s-gke-external-db
     - validate-cf-for-k8s-gke-external-blobstore
+    - validate-cf-for-k8s-oldest
+    - validate-cf-for-k8s-newest
     - run-cats
     trigger: true
 

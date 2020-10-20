@@ -31,7 +31,7 @@ def is_missing(values, param):
 end
 
 # Useful command to build the list of required parameters:
-# awk '-F|' '$4 == " Yes " { printf("%s\n", gensub(/\s+/, "", "g", $2)) }' docs/platform_operators/deploy-parameters.md
+# awk '-F|' '$4 == " Yes " { printf("%s\n", gensub(/\s+/, "", "g", $2)) }' docs/platform_operators/config-values.md
 
 def get_missing_parameters(values):
     required_parameters = '''\

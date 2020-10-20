@@ -1,7 +1,7 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
-#@ if data.values.use_external_dns_for_wildcard:
+#@ def use_external_dns_for_wildcard():
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "istio-ingressgateway"}})
 ---
 metadata:

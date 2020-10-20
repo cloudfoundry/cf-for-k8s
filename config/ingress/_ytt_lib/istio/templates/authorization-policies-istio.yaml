@@ -1,4 +1,4 @@
-#@ load("/namespaces.star", "system_namespace")
+#@ load("@ytt:data", "data")
 
 #@ def principal(namespace, service_account):
 #@   return "cluster.local/ns/{}/sa/{}".format(namespace, service_account)
@@ -10,7 +10,7 @@ apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
   name: default-allow-all
-  namespace: #@ system_namespace()
+  namespace: #@ data.values.system_namespace
 spec:
   rules:
     - {}
@@ -19,7 +19,7 @@ apiVersion: security.istio.io/v1beta1
 kind: AuthorizationPolicy
 metadata:
   name: cf-api-server
-  namespace: #@ system_namespace()
+  namespace: #@ data.values.system_namespace
 spec:
   action: DENY
   selector:
@@ -29,9 +29,9 @@ spec:
     - from:
         - source:
             notPrincipals:
-            - #@ principal(system_namespace(), "opi")
-            - #@ principal(system_namespace(), "eirini-events")
-            - #@ principal(system_namespace(), "eirini-task-reporter")
+            - #@ principal(data.values.system_namespace, "opi")
+            - #@ principal(data.values.system_namespace, "eirini-events")
+            - #@ principal(data.values.system_namespace , "eirini-task-reporter")
       to:
         - operation:
             paths:

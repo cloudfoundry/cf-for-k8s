@@ -1,5 +1,4 @@
-#@ load("/namespaces.star", "system_namespace", "workloads_namespace")
-
+#@ load("@ytt:data", "data")
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -33,7 +32,7 @@ data:
     [OUTPUT]
         Name forward
         Match istio-ingressgateway
-        Host fluentd-forwarder-ingress.(@= system_namespace() @)
+        Host fluentd-forwarder-ingress.(@= data.values.system_namespace @)
         Port 24224
   parsers.conf : |-
     [PARSER]
@@ -49,4 +48,3 @@ data:
       new_record["source_type"] = "RTR"
       return 1, timestamp, new_record
     end
-

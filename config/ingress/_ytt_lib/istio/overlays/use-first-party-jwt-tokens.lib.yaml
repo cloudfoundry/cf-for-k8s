@@ -3,9 +3,9 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:yaml", "yaml")
 
-#@ if data.values.use_first_party_jwt_tokens:
 #! Patch istio to use first party jwt tokens
 #!   - Kind does not support setting 3rd party tokens yet
+#@ def use_first_party_jwt_tokens():
 
 #@ def replace_jwt_policy():
 global:

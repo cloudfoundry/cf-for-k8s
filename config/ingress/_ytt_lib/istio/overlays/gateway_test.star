@@ -1,5 +1,5 @@
-load("/testing_library.star", "assert_equals")
-load("gateway.lib.yml", "gateway")
+load("gateway.lib.yaml", "gateway")
+load("@ytt:assert", "assert")
 
 def test_gateway_when_app_domain_equals_system_domain():
   result = gateway("sys-and-app-domain.com", ["sys-and-app-domain.com"], "sys-namespace", "work-namespace", True)
@@ -80,6 +80,12 @@ end
 
 def http_servers_in_gateway(gateway_yaml):
   return [ server for server in gateway_yaml["spec"]["servers"] if server["port"]["protocol"] == 'HTTP' ]
+end
+
+def assert_equals(expected, actual):
+  if actual != expected:
+    assert.fail("Expected %s, but found %s" % (expected, actual))
+  end
 end
 
 test_gateway_when_app_domain_equals_system_domain()

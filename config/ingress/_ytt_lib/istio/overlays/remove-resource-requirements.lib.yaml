@@ -1,7 +1,7 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
-#@ if data.values.remove_resource_requirements:
+#@ def remove_resource_requirements():
 #! remove resource requirements to allow installation on smaller environments
 #@ for/end kind in ["Deployment", "DaemonSet"]:
 #@overlay/match by=overlay.subset({"kind": kind}),expects="1+"

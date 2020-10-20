@@ -1,5 +1,6 @@
 #@ load("@ytt:overlay", "overlay")
 
+#@ def remove_hpas_and_scale_istiod():
 #@overlay/match by=overlay.subset({"kind":"HorizontalPodAutoscaler"}), expects="1+"
 #@overlay/remove
 ---
@@ -9,3 +10,4 @@
 spec:
   #@overlay/match missing_ok=True
   replicas: 1
+#@ end 

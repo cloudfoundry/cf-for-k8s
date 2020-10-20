@@ -1,8 +1,20 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 #@ load("/minio/minio.star", "minio_enabled")
-#@ load("/namespaces.star", "system_namespace", "workloads_staging_namespace")
+#@ load("/namespaces.star", "system_namespace", "workloads_staging_namespace", "workloads_namespace")
 #@ load("/postgres/postgres.star", "cfdb_enabled")
+
+#@ def ingress_selector():
+  #@ if data.values.networking.ingress_solution_provider == "istio":
+podSelector:
+  matchLabels:
+    istio: ingressgateway
+namespaceSelector:
+  matchLabels:
+    cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+  #@ end
+  #! TODO: add case for Contour
+#@ end
 
 #@ def database_egress():
 to:
@@ -71,42 +83,35 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: only-allow-istio-control-plane
+  name: only-allow-ingress-control-plane
   namespace: #@ system_namespace()
 spec:
   podSelector: {}
   ingress:
   - from:
-    - namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - #@ ingress_selector()
   egress:
   - to:
-    - namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - #@ ingress_selector()
   policyTypes:
   - Ingress
   - Egress
+
 #@ if cfdb_enabled():
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: only-allow-istio-control-plane
+  name: only-allow-ingress-control-plane
   namespace: cf-db
 spec:
   podSelector: {}
   ingress:
   - from:
-    - namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - #@ ingress_selector()
   egress:
   - to:
-    - namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - #@ ingress_selector()
   policyTypes:
   - Ingress
   - Egress
@@ -116,20 +121,16 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: only-allow-istio-control-plane
+  name: only-allow-ingress-control-plane
   namespace: cf-blobstore
 spec:
   podSelector: {}
   ingress:
   - from:
-    - namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - #@ ingress_selector()
   egress:
   - to:
-    - namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - #@ ingress_selector()
   policyTypes:
   - Ingress
   - Egress
@@ -259,12 +260,7 @@ spec:
       app.kubernetes.io/name: uaa
   ingress:
   - from:
-    - podSelector:
-        matchLabels:
-          istio: ingressgateway
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - #@ ingress_selector()
     - podSelector:
         matchLabels:
           app.kubernetes.io/name: cf-api-server
@@ -294,12 +290,7 @@ spec:
       app.kubernetes.io/name: cf-api-server
   ingress:
   - from:
-    - podSelector:
-        matchLabels:
-          istio: ingressgateway
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - #@ ingress_selector()
     - podSelector:
         matchLabels:
           app.kubernetes.io/name: cf-api-controllers
@@ -451,12 +442,7 @@ spec:
       release: cf-blobstore
   ingress:
   - from:
-    - podSelector:
-        matchLabels:
-          istio: ingressgateway
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+    - #@ ingress_selector()
     - podSelector:
         matchLabels:
           cloudfoundry.org/source_type: STG
@@ -680,9 +666,58 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - #@ ingress_selector()
+
+#! Allow app traffic from the istio-ingressgateway
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-app-ingress-from-ingress-pod
+  namespace: #@ workloads_namespace()
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - #@ ingress_selector()
+
+#! Copied from _ytt_lib/cf-k8s-logging
+#! TODO: remove with logging/remove-networking-from-logging-lib.yml
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: log-cache-network-policy-temp
+  namespace: #@ system_namespace()
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app: log-cache
+  ingress:
+  - from:
+    - #@ ingress_selector()
     - podSelector:
         matchLabels:
-          istio: ingressgateway
+          app: fluentd
       namespaceSelector:
         matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+  egress:
+  - to:
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: uaa
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app.kubernetes.io/name: cf-api-server
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""

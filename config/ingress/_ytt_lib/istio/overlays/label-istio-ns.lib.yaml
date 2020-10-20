@@ -1,5 +1,6 @@
 #@ load("@ytt:overlay", "overlay")
 
+#@ def label_istio_ns():
 #@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name": "istio-system"}})
 ---
 metadata:
@@ -7,3 +8,4 @@ metadata:
   labels:
     #@overlay/match missing_ok=True
     cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+#@ end

@@ -1,4 +1,4 @@
-#@ load("/namespaces.star", "workloads_namespace")
+#@ load("@ytt:data", "data")
 
 #@ def build_version():
 #@   return "1.7.3"
@@ -9,13 +9,13 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   name: restart-workloads
-  namespace: #@ workloads_namespace()
+  namespace: #@ data.values.workloads_namespace
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: restart-workloads
-  namespace: #@ workloads_namespace()
+  namespace: #@ data.values.workloads_namespace
 rules:
   - apiGroups: ["apps", "extensions"]
     resources: ["statefulsets"]
@@ -28,7 +28,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: restart-workloads
-  namespace: #@ workloads_namespace()
+  namespace: #@ data.values.workloads_namespace
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -36,7 +36,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: restart-workloads
-    namespace: #@ workloads_namespace()
+    namespace: #@ data.values.workloads_namespace
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -60,13 +60,13 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: restart-workloads
-    namespace: #@ workloads_namespace()
+    namespace: #@ data.values.workloads_namespace
 ---
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: #@ "restart-workloads-for-istio" + build_version().replace(".", "-")
-  namespace: #@ workloads_namespace()
+  namespace: #@ data.values.workloads_namespace
   labels:
     cloudfoundry.org/istio_version: #@ build_version()
 spec:

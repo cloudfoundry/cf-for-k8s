@@ -1,0 +1,33 @@
+#@ load("@ytt:data", "data")
+
+#! PeerAuthentication is an Istio concept, we should only apply if Istio is the chosen ingress solution provider
+#@ if data.values.minio_enabled:
+---
+#! explanation: the blobstore's sidecar needs to accept plain text connections from kpack build init containers.
+#! see https://github.com/cloudfoundry/capi-k8s-release/issues/12
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: cf-blobstore-allow-plaintext
+  namespace: cf-blobstore
+spec:
+  selector:
+    matchLabels:
+      app: minio
+  mtls:
+    mode: PERMISSIVE
+#@ end
+---
+#! apiServer fails to validate certs provided by istio endpoints.
+#! traffic from apiServer to kpack-webhook is TLS even without istio
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: "kpack-webhook-allow-plaintext"
+  namespace: "kpack"
+spec:
+  selector:
+    matchLabels:
+      app: kpack-webhook
+  mtls:
+    mode: PERMISSIVE

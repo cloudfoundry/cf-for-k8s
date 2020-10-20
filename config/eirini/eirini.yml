@@ -21,26 +21,6 @@ stringData:
   tls.key: #@ data.values.internal_certificate.key
   tls.ca: #@ data.values.internal_certificate.ca
 
-#! Allow app traffic from the istio-ingressgateway
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-app-ingress-from-ingressgateway
-  namespace: #@ workloads_namespace()
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-  ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
-      podSelector:
-        matchLabels:
-          istio: ingressgateway
-
 #! Add Secret to allow K8s to download app images from the provided registry
 #! https://github.com/cloudfoundry/cf-for-k8s/issues/74
 #! may want to keep this in sync with https://github.com/cloudfoundry-incubator/eirini-release/blob/master/helm/cf/templates/registry-secret.yaml

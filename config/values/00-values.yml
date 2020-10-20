@@ -36,6 +36,9 @@ workloads_certificate:
 gateway:
   https_only: true
 
+networking:
+  ingress_solution_provider: istio
+
 capi:
   database:
     #! or mysql2, as needed

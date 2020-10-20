@@ -18,6 +18,10 @@ cf_admin_password: cfadminpassword
 blobstore:
   secret_access_key: the_blobstore_secret_key
 
+#! Ingress solution can be "istio" or "contour"
+networking:
+  ingress_solution_provider: istio
+
 #! The admin password for operators to access the database.
 cf_db:
   admin_password: the_cf_dbadmin_password

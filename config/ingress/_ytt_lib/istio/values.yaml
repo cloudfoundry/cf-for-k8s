@@ -1,0 +1,24 @@
+#@data/values
+---
+system_namespace: ""
+workloads_namespace: ""
+system_domain: ""
+app_domains: []
+gateway:
+  https_only:
+system_certificate:
+  crt:
+  key:
+  ca:
+workloads_certificate:
+  crt:
+  key:
+  ca:
+load_balancer:
+  enable:
+  static_ip:
+remove_resource_requirements:
+use_external_dns_for_wildcard:
+use_first_party_jwt_tokens:
+minio_enabled:
+

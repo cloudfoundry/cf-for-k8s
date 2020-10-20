@@ -8,3 +8,10 @@
 #@overlay/match by=overlay.subset({"kind": "VirtualService", "metadata":{"name":"log-cache-external-virtual-service"}})
 ---
 #@overlay/remove
+
+
+#! Do not forget to remove the networking policy in config/networking/network-policies.yaml
+#! when you remove this overlay
+#@overlay/match by=overlay.subset({"kind": "NetworkPolicy", "metadata":{"name":"log-cache-network-policy"}})
+---
+#@overlay/remove

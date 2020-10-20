@@ -12,6 +12,9 @@ internal_certificate:
   key: internal-cert-key
   crt: internal-cert
 
+networking:
+  ingress_solution_provider: istio
+
 uaa:
   login:
     service_provider:

@@ -1,0 +1,60 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+system_domain: system.example.com
+app_domains:
+#@overlay/append
+- "apps.example.com"
+cf_admin_password: meow
+
+blobstore:
+  secret_access_key: meow
+cf_db:
+  admin_password: meow
+
+capi:
+  cc_username_lookup_client_secret: it's a secret
+  cf_api_controllers_client_secret: hi timmyd
+  database:
+    password: mydb
+    encryption_key: very stronk
+
+networking:
+  ingress_solution_provider:
+
+system_certificate:
+  #! This certificates and keys should be valid for *.system.cf.example.com
+  crt: crt
+  key: key
+  ca: ca
+
+workloads_certificate:
+  #! This certificates and keys should be valid for *.apps.cf.example.com
+  crt: crt
+  key: key
+  ca: ca
+
+internal_certificate:
+  #! This certificates and keys should be valid for *.cf-system.svc.cluster.local
+  crt: crt
+  key: key
+  ca: ca
+uaa:
+  database:
+    password: password
+  admin_client_secret: secret
+  jwt_policy:
+    signing_key: key
+  encryption_key:
+    passphrase: passphrase
+  login:
+    service_provider:
+      key: key
+      certificate: cert
+  login_secret: secret
+
+app_registry:
+  hostname: example.com
+  repository_prefix: prefix
+  username: username
+  password: password

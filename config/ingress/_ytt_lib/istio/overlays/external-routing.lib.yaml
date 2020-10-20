@@ -1,6 +1,11 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
-#@ load("/namespaces.star", "system_namespace", "workloads_namespace")
+
+#! this gateway is used to expose CF services in the cluster, externally
+#@ load("gateway.lib.yaml", "gateway")
+
+#@ def external_routing():
+--- #@ gateway(data.values.system_domain, data.values.app_domains, data.values.system_namespace, data.values.workloads_namespace, data.values.gateway.https_only)
 
 #! this secret contains the certificate/key combo used for the external system domain
 ---
@@ -42,10 +47,6 @@ metadata:
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-group: istio.io/ingressgateway
 
-#! this gateway is used to expose CF services in the cluster, externally
-#@ load("gateway.lib.yml", "gateway")
---- #@ gateway(data.values.system_domain, data.values.app_domains, system_namespace(), workloads_namespace(), data.values.gateway.https_only)
-
 #! This will set overlay a static IP for the istio load balancer.
 #@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "istio-ingressgateway"}})
 ---
@@ -53,4 +54,5 @@ metadata:
 spec:
   #@overlay/match missing_ok=True
   loadBalancerIP: #@ data.values.load_balancer.static_ip
+#@ end
 #@ end

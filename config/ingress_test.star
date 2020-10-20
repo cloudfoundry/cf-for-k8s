@@ -1,6 +1,14 @@
 load("/testing_library.star", "assert_equals")
 load("ingress.lib.yml", "ingress")
 
+load("@ytt:assert", "assert")
+
+def assert_equals(expected, actual):
+  if actual != expected:
+    assert.fail("Expected %s, but found %s" % (expected, actual))
+  end
+end
+
 def test_ingress_adds_correct_host_for_every_hostname():
     result = ingress(
         "cupcake", ["meow.example.com", "woof.example.com"], "my-service", 8080

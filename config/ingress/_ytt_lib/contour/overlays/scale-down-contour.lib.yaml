@@ -1,0 +1,8 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ def scale_down_contour():
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name": "contour"}}),expects=1
+---
+spec:
+  replicas: 1
+#@ end

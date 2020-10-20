@@ -1,8 +1,8 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
-#@ def use_external_dns_for_wildcard():
-#@overlay/match by=overlay.subset({"kind": "Service", "metadata":{"name": "istio-ingressgateway"}})
+#@ if data.values.use_external_dns_for_wildcard:
+#@overlay/match by=overlay.subset({"kind":"Service","metadata":{"labels": { "cf-for-k8s.cloudfoundry.org/ingress-service": "" } }})
 ---
 metadata:
   #@overlay/match missing_ok=True

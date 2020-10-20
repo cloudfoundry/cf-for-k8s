@@ -1,0 +1,11 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ def label_contour_ns():
+#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name": "projectcontour"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    cf-for-k8s.cloudfoundry.org/contour-system-ns: ""
+#@ end

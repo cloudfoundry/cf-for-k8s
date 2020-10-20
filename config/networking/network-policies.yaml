@@ -5,15 +5,21 @@
 #@ load("/postgres/postgres.star", "cfdb_enabled")
 
 #@ def ingress_selector():
-  #@ if data.values.networking.ingress_solution_provider == "istio":
+#@   if data.values.networking.ingress_solution_provider == "istio":
 podSelector:
   matchLabels:
     istio: ingressgateway
 namespaceSelector:
   matchLabels:
     cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
-  #@ end
-  #! TODO: add case for Contour
+#@   elif data.values.networking.ingress_solution_provider == "contour":
+podSelector:
+  matchLabels:
+    app: envoy
+namespaceSelector:
+  matchLabels:
+    cf-for-k8s.cloudfoundry.org/contour-system-ns: ""
+#@   end
 #@ end
 
 #@ def database_egress():

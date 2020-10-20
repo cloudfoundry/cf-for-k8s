@@ -1,49 +1,42 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:library", "library")
 #@ load("@ytt:template", "template")
-#@ load("/minio/minio.star", "minio_enabled")
+#@ load("@ytt:yaml", "yaml")
+#@ load("@ytt:struct", "struct")
+#@ load("@ytt:assert", "assert")
 
+#@ load("/minio/minio.star", "minio_enabled")
 #@ load("/namespaces.star", "system_namespace", "workloads_namespace")
 
+#! ingress_values serialized data.values into YAML string and merges
+#! function values into it
 #@ def ingress_values():
-system_namespace: #@ system_namespace()
-workloads_namespace: #@ workloads_namespace()
-system_domain: #@ data.values.system_domain
-app_domains:
-#@ for domain in data.values.app_domains:
-#@overlay/append
-- #@ domain
-#@ end
-gateway:
-  https_only: #@ data.values.gateway.https_only
-system_certificate:
-  crt: #@ data.values.system_certificate.crt
-  key: #@ data.values.system_certificate.key
-  ca: #@ data.values.system_certificate.ca
-
-workloads_certificate:
-  crt: #@ data.values.workloads_certificate.crt
-  key: #@ data.values.workloads_certificate.key
-  ca: #@ data.values.workloads_certificate.ca
-load_balancer:
-  enable: #@ data.values.load_balancer.enable
-  static_ip: #@ data.values.load_balancer.static_ip
-remove_resource_requirements: #@ data.values.remove_resource_requirements
-use_external_dns_for_wildcard: #@ data.values.use_external_dns_for_wildcard
-use_first_party_jwt_tokens: #@ data.values.use_first_party_jwt_tokens
-minio_enabled: #@ minio_enabled()
+#@  values = struct.decode(data.values)
+#@  values["system_namespace"] = system_namespace()
+#@  values["workloads_namespace"] = workloads_namespace()
+#@  values["minio_enabled"] = minio_enabled()
+#@  return {
+#@    "values": yaml.encode(values)
+#@  }
 #@ end
 
-#@ if data.values.networking.ingress_solution_provider == "istio":
+#@ if data.values.networking.ingress_solution_provider not in ["istio", "contour"]:
+#@  assert.fail("networking.ingress_solution_provider can only be 'istio' or 'contour'. Please choose one.")
+#@ end
+#@
+#@ ingress_library = library.get(
+#@  data.values.networking.ingress_solution_provider
+#@ ).with_data_values(ingress_values())
+#@
 
-#@ istio = library.get("istio").with_data_values(ingress_values())
+#! Load the library templates into this file
+--- #@ template.replace(ingress_library.eval())
 
---- #@ template.replace(istio.eval())
-
-#@ overlays = istio.export("all_overlays")
+#! Load overlays and apply them
+#@ overlays = ingress_library.export("all_overlays")
 #@ for overlay in overlays:
 --- #@ template.replace(overlay())
 #@ end
 
-#@ end
+
 

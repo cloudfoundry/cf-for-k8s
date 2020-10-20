@@ -4,8 +4,6 @@ namespaceSelector:
     cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
 #@ end
 
-#@ def control_plane_network_policy():
-
 #! Documentation for Istio ports https://istio.io/docs/ops/deployment/requirements/#ports-used-by-istio
 #! The following ports are exposed by the istiod and ingressgateway services
 #@ grpc_xds = 15010 #! Istiod XDS and CA services (plaintext)
@@ -78,5 +76,4 @@ spec:
     - port: 443
     - port: 8080
     - port: 8443
-#@ end
 

@@ -1,0 +1,10 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+
+#@ if not data.values.load_balancer.enable:
+#@overlay/match by=overlay.subset({"kind":"Service","metadata":{"labels": { "cf-for-k8s.cloudfoundry.org/ingress-service": "" } }})
+---
+spec:
+  #@overlay/replace
+  type: NodePort
+#@ end

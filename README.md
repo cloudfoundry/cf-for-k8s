@@ -28,7 +28,7 @@ cf-for-k8s is built on top of well known Kubernetes projects like:
 
 as well as some Cloud Foundry projects that have undergone a containerization effort such as:
 
-- [Cloud Controller / CAPI-k8s-release](https://github.com/cloudfoundry/capi-k8s-release)
+- [CF API / CAPI-k8s-release](https://github.com/cloudfoundry/capi-k8s-release)
 - [cf-k8s-networking](https://github.com/cloudfoundry/cf-k8s-networking)
 - [cf-k8s-logging](https://github.com/cloudfoundry/cf-k8s-logging)
 - [UAA](https://github.com/cloudfoundry/uaa)

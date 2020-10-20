@@ -9,9 +9,9 @@ groups:
   - long-lived-env-sli
 - name: long-lived-env
   jobs:
-  - manual-redeploy-long-lived-env-with-latest-master
+  - upgrade-long-lived-env-to-latest-main
+  - manual-redeploy-long-lived-env-with-latest-main
   - deploy-long-lived-node-app
-  - upgrade-long-lived-env-to-latest-master
 
 # Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
@@ -384,7 +384,7 @@ jobs:
 
           exit ${smoke_tests_exit_code}
 
-- name: upgrade-long-lived-env-to-latest-master
+- name: upgrade-long-lived-env-to-latest-main
   serial: true
   serial_groups: [long-lived-env]
   public: true
@@ -451,7 +451,7 @@ jobs:
       repository: relint-envs-updated
       rebase: true
 
-- name: manual-redeploy-long-lived-env-with-latest-master
+- name: manual-redeploy-long-lived-env-with-latest-main
   serial: true
   serial_groups: [long-lived-env]
   public: true
@@ -543,7 +543,8 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-main
-      passed: [ manual-redeploy-long-lived-env-with-latest-master ]
+      passed:
+      - manual-redeploy-long-lived-env-with-latest-main
       trigger: true
     - get: cf-for-k8s-ci
 

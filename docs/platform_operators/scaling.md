@@ -3,7 +3,7 @@
   * [Vertical Scaling](#vertical-scaling)
   * [Discovering all cf-for-k8s Pods](#discovering-all-cf-for-k8s-pods)
   * [Component-specific Scaling](#component-specific-scaling)
-    + [Scaling Cloud Controller](#scaling-cloud-controller)
+    + [Scaling CF API](#scaling-cf-api)
     + [Scaling Networking](#scaling-networking)
   * [ytt overlay troubleshooting](#ytt-overlay-troubleshooting)
 
@@ -113,7 +113,7 @@ Note: The `cf-workloads` namespace is controlled by `cf-for-k8s` internals, and 
 
 ## Component-specific Scaling
 
-### Scaling Cloud Controller
+### Scaling CF API
 
 Please see https://docs.cloudfoundry.org/running/managing-cf/scaling-cloud-controller-k8s.html
 
@@ -127,7 +127,7 @@ environment, simply:
 1. Adjust the values to your liking
 1. Append `-f scaling-networking.yml` to the `ytt` command you run for rendering your cf-for-k8s yaml
 
-The number of ingressgateway replicas depends on load profile of your cluster.
+The number of ingressgateway replicas depends on load profile of your cluster. Based on the Istio team's testing, in an unknown test environment, a single Envoy consumes 0.5 vCPU and 50 MB memory per 1000 requests per second.
 
 The number of istiod replicas depends on the number of application instances.
 

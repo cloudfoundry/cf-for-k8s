@@ -37,7 +37,7 @@ gateway:
   https_only: true
 
 networking:
-  ingress_solution_provider: istio
+  ingress_solution_provider: contour
 
 capi:
   database:

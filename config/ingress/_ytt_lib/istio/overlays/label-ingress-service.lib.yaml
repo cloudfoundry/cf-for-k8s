@@ -1,0 +1,11 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ def label_ingress_service():
+#@overlay/match by=overlay.subset({"kind":"Service", "metadata":{"name": "istio-ingressgateway"}})
+---
+metadata:
+  #@overlay/match missing_ok=True
+  labels:
+    #@overlay/match missing_ok=True
+    cf-for-k8s.cloudfoundry.org/ingress-service: ""
+#@ end

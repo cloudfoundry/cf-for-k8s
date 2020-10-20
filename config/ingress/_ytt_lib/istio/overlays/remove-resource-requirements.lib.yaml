@@ -1,4 +1,4 @@
-#@ load("@ytt:data", "data")
+#@ load("/values.star", "data")
 #@ load("@ytt:overlay", "overlay")
 
 #@ def remove_resource_requirements():

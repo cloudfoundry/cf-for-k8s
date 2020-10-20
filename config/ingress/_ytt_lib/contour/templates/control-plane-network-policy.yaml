@@ -1,0 +1,71 @@
+#@ def contour_ns_selector():
+namespaceSelector:
+  matchLabels:
+    cf-for-k8s.cloudfoundry.org/contour-system-ns: ""
+#@ end
+
+#! The following ports are exposed by the contour and envoy services
+#@ grpc_xds = 8001
+#@ dns = 53
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: projectcontour
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-within-namepsace
+  namespace: projectcontour
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - #@ contour_ns_selector()
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: contour-network-policy
+  namespace: projectcontour
+spec:
+  podSelector:
+    matchLabels:
+      app: contour
+  policyTypes:
+  - Ingress
+  ingress:
+  - ports:
+    - port: #@ grpc_xds
+    - port: #@ dns
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: envoy-network-policy
+  namespace: projectcontour
+spec:
+  podSelector:
+    matchLabels:
+      app: envoy
+  policyTypes:
+  - Ingress
+  ingress:
+  - ports:
+    - port: 80
+    - port: 443
+    - port: 8080
+    - port: 8443
+

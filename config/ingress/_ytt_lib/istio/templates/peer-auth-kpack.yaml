@@ -1,4 +1,4 @@
-#@ load("@ytt:data", "data")
+#@ load("/values.star", "data")
 
 #! PeerAuthentication is an Istio concept, we should only apply if Istio is the chosen ingress solution provider
 #@ if data.values.minio_enabled:

@@ -1,3 +1,0 @@
-Welcome To Eirini
-
-This is not a standalone Helm Chart and needs to be deployed as helm dependency for SUSE/scf!

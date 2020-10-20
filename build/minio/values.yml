@@ -1,8 +1,0 @@
-DeploymentUpdate:
-  maxUnavailable: 1
-resources:
-  requests:
-    memory: 256Mi
-    cpu: 250m
-persistence:
-  size: 10Gi

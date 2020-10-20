@@ -1,9 +1,0 @@
-#@ load("@ytt:overlay", "overlay")
-
-#@overlay/match by=overlay.subset({"kind":"Namespace", "metadata":{"name": "istio-system"}})
----
-metadata:
-  #@overlay/match missing_ok=True
-  labels:
-    #@overlay/match missing_ok=True
-    cf-for-k8s.cloudfoundry.org/istio-system-ns: ""

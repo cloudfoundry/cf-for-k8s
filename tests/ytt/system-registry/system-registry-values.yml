@@ -1,8 +1,0 @@
-#@data/values
-#@overlay/match-child-defaults missing_ok=True
----
-system_registry:
-  add_image_pull_secrets: true
-  hostname: "test.test"
-  username: "test-username"
-  password: "test-password"

@@ -10,7 +10,7 @@ Default values are set in files like `config/values/00-values.yml`
 | app_registry.repository_prefix | Image registry repository prefix | Yes | no value | my-org |
 | app_registry.username | Image registry username | Yes | no value | Wingdang |
 | blobstore.secret_access_key | Blobstore secret access key | Yes | no value | Potrzebie |
-| capi.cc_username_lookup_client_secret | Cloud controller client secret | Yes | no value | o/L4Zsu6ZAgw4+Qj |
+| capi.cc_username_lookup_client_secret | CF API client secret | Yes | no value | o/L4Zsu6ZAgw4+Qj |
 | capi.cf_api_controllers_client_secret | API controller client secret | Yes | no value | q/3PZsu6ZAgw4+Qj |
 | capi.database.adapter | database adapter for use by capi | No | postgres | postgres | mysql |
 | capi.database.ca_cert | authority of the certificate used for tls connections to the database | No | no value |  |

@@ -36,9 +36,20 @@ jobs:
         - -ec
         - |
           pushd cf-for-k8s-docs
+          DOCS_SHA=$(git rev-parse HEAD)
           hugo
           popd
           cp -R cf-for-k8s-docs/public/* cf-for-k8s-gh-pages/
+
+          pushd cf-for-k8s-gh-pages
+          git config user.email "cf-release-integration@pivotal.io"
+          git config user.name "relint-ci"
+          git add .
+
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git commit -m "Updating gh-pages - cf-for-k8s-docs@${DOCS_SHA}"
+          fi
+          popd
   - put: cf-for-k8s-gh-pages
     params:
       repository: cf-for-k8s-gh-pages

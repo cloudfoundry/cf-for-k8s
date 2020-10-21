@@ -1,6 +1,6 @@
 FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y curl wget
+RUN apt-get update && apt-get install -y curl wget git
 
 RUN curl -s https://api.github.com/repos/gohugoio/hugo/releases/latest \
     | grep browser_download_url \

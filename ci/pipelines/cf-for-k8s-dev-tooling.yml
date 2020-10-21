@@ -14,6 +14,7 @@ groups:
   jobs:
   - build-cf-for-k8s-ci-image
   - build-cf-for-k8s-deplab-image
+  - build-cf-for-k8s-gh-pages-image
   - build-cf-for-k8s-azure-image
 - name: rds-databases
   jobs:
@@ -57,6 +58,16 @@ resources:
     paths:
     - ci/dockerfiles/cf-for-k8s-deplab/Dockerfile
 
+- name: cf-for-k8s-gh-pages-dockerfile
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - ci/dockerfiles/cf-for-k8s-gh-pages/Dockerfile
+
 - name: weekly
   type: time
   icon: clock-outline
@@ -86,6 +97,15 @@ resources:
   icon: docker
   source:
     repository: relintdockerhubpushbot/cf-for-k8s-deplab
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
+
+- name: cf-for-k8s-gh-pages-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-gh-pages
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
@@ -202,6 +222,22 @@ jobs:
     - put: cf-for-k8s-deplab-image
       params:
         build: cf-for-k8s-deplab-dockerfile/ci/dockerfiles/cf-for-k8s-deplab/
+        push: true
+
+- name: build-cf-for-k8s-gh-pages-image
+  public: true
+  plan:
+  - timeout: 4h
+    do:
+    - in_parallel:
+      - get: weekly
+        trigger: true
+      - get: cf-for-k8s-gh-pages-dockerfile
+        trigger: true
+
+    - put: cf-for-k8s-gh-pages-image
+      params:
+        build: cf-for-k8s-gh-pages-dockerfile/ci/dockerfiles/cf-for-k8s-gh-pages/
         push: true
 
 - name: build-cf-for-k8s-azure-image

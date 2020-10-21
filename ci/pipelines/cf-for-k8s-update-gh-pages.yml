@@ -1,0 +1,45 @@
+resources:
+- name: cf-for-k8s-docs
+  type: git
+  icon: github
+  source:
+    branch: main
+    uri: git@github.com:cloudfoundry/cf-for-k8s-docs
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))\
+- name: cf-for-k8s-gh-pages
+  type: git
+  icon: github
+  source:
+    branch: gh-pages
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
+
+jobs:
+- name: update-gh-pages
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-docs
+      trigger: true
+    - get: cf-for-k8s-gh-pages
+  - task: generate-docs
+    config:
+      inputs:
+      - name: cf-for-k8s-docs
+      - name: cf-for-k8s-gh-pages
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-for-k8s-gh-pages}
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          pushd cf-for-k8s-docs
+          hugo
+          popd
+          cp -R cf-for-k8s-docs/public/* cf-for-k8s-gh-pages/
+  - put: cf-for-k8s-gh-pages
+    params:
+      repository: cf-for-k8s-gh-pages
+      rebase: true

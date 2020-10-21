@@ -1,23 +1,31 @@
 package ytt
 
 import (
+	"io/ioutil"
+	"os"
+
 	. "code.cloudfoundry.org/yttk8smatchers/matchers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("External Prometheus scraping access", func() {
-
 	var ctx RenderingContext
 	var data map[string]interface{}
-	var templates []string
+	var templateFiles []string
+	var valueFiles []string
+	var targetDir string
+	var err error
 
 	BeforeEach(func() {
-		templates = []string{
+		templateFiles = []string{
 			pathToFile("config/capi"),
 			pathToFile("config/metrics"),
 			pathToFile("config/uaa"),
 			pathToFile("config/namespaces.star"),
+		}
+
+		valueFiles = []string{
 			pathToFile("tests/ytt/capi/capi-values.yml"),
 			pathToFile("tests/ytt/metrics/metrics-values.yml"),
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),
@@ -25,11 +33,21 @@ var _ = Describe("External Prometheus scraping access", func() {
 	})
 
 	JustBeforeEach(func() {
-		ctx = NewRenderingContext(templates...).WithData(data)
+		targetDir, err = ioutil.TempDir("", "")
+		Expect(err).NotTo(HaveOccurred())
+
+		ctx = NewRenderingContext(targetDir, valueFiles...).WithData(data)
+
+		err = ctx.CopyTemplatesToTargetDir(templateFiles...)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	JustAfterEach(func() {
+		err = os.RemoveAll(targetDir)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	Context("disabled", func() {
-
 		BeforeEach(func() {
 			data = map[string]interface{}{
 				"allow_prometheus_metrics_access": false,
@@ -54,12 +72,12 @@ var _ = Describe("External Prometheus scraping access", func() {
                         metadata:
                           annotations:
                             traffic.sidecar.istio.io/excludeInboundPorts: "9102"`)),
-				)))
+				),
+			))
 		})
 	})
 
 	Context("enabled", func() {
-
 		BeforeEach(func() {
 			data = map[string]interface{}{
 				"allow_prometheus_metrics_access": true,
@@ -84,7 +102,8 @@ var _ = Describe("External Prometheus scraping access", func() {
                         metadata:
                           annotations:
                             traffic.sidecar.istio.io/excludeInboundPorts: "9102"`),
-				)))
+				),
+			))
 		})
 	})
 })

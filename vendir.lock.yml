@@ -10,10 +10,10 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: 'ci: add whoami job to images pipeline...'
-      sha: c1a8c866375fd964f08cc5613fced88e572eefdb
+      commitTitle: 'ci: use 1.0.0-rc.2 as the source branch for the upgrade test...'
+      sha: d5a7920bc6da6b2a1af407a2061a8979fec3f568
       tags:
-      - v0.0.6-284-gc1a8c86
+      - v0.0.6-292-gd5a7920
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

@@ -50,12 +50,12 @@ Create your cf values file. This is the file that configures your deployment:
 $ ./hack/generate-values.sh -d vcap.me > ${TMP_DIR}/cf-values.yml
 $ cat << EOF >> ${TMP_DIR}/cf-values.yml
 app_registry:
-  hostname: https://index.docker.io/v1/		
-  repository_prefix: "<my_username>"	
+  hostname: https://index.docker.io/v1/
+  repository_prefix: "<my_username>"
   username: "<my_username>"
   password: "<my_password>"
 
-add_metrics_server_components: true			
+add_metrics_server_components: true
 enable_automount_service_account_token: true
 load_balancer:
   enable: false
@@ -88,14 +88,14 @@ When deployment has finished you can log into Cloud Foundry:
 
 ```
 $ cf api api.vcap.me --skip-ssl-validation
-$ cf auth admin `cat ${TMP_DIR}/cf-values.yml | yq read .cf_admin_password`
+$ cf auth admin $(yq read ${TMP_DIR}/cf-values.yml 'cf_admin_password')
 ```
 
 ## Experiencing your first `cf push`
 
-Before we can push an application we need to create an organization and space for your application to exist in. 
+Before we can push an application we need to create an organization and space for your application to exist in.
 
-NOTE: Cloud Foundry supports the development workflows of very large organizations, you can read more about 
+NOTE: Cloud Foundry supports the development workflows of very large organizations, you can read more about
 how Cloud Foundry achieves that [here](https://docs.cloudfoundry.org/concepts/roles.html).
 
 ```

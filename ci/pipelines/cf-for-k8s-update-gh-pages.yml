@@ -26,6 +26,8 @@ jobs:
       inputs:
       - name: cf-for-k8s-docs
       - name: cf-for-k8s-gh-pages
+      outputs:
+      - name: cf-for-k8s-gh-pages-modified
       platform: linux
       image_resource:
         type: docker-image
@@ -50,7 +52,8 @@ jobs:
             git commit -m "Updating gh-pages - cf-for-k8s-docs@${DOCS_SHA}"
           fi
           popd
+          cp -R cf-for-k8s-gh-pages/. cf-for-k8s-gh-pages-modified/
   - put: cf-for-k8s-gh-pages
     params:
-      repository: cf-for-k8s-gh-pages
+      repository: cf-for-k8s-gh-pages-modified
       rebase: true

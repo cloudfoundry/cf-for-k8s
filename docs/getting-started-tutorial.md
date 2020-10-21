@@ -88,7 +88,7 @@ When deployment has finished you can log into Cloud Foundry:
 
 ```
 $ cf api api.vcap.me --skip-ssl-validation
-$ cf auth admin `cat ${TMP_DIR}/cf-values.yml | yq -r .cf_admin_password`
+$ cf auth admin `cat ${TMP_DIR}/cf-values.yml | yq read .cf_admin_password`
 ```
 
 ## Experiencing your first `cf push`
@@ -100,7 +100,7 @@ how Cloud Foundry achieves that [here](https://docs.cloudfoundry.org/concepts/ro
 
 ```
 $ cf create-org my-org
-$ cf create-space my-space -o my-org 
+$ cf create-space my-space -o my-org
 $ cf target -o my-org -s my-space
 ```
 

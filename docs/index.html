@@ -131,23 +131,37 @@
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
         <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
           <ul class="ml-2">
-      <li data-nav-id="/docs/platform_operators/deploy-parameters/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/deploy-parameters/">Deploy Parameters</a>
+      <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/gateway-access-logs/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/gateway-access-logs/">Gateway Access Logs</a>
+      <li data-nav-id="/docs/platform_operators/networking/" class="dd-item depth-1 haschildren">
+        <a href="/docs/platform_operators/networking/">Networking</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/networking/gateway-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/gateway-access-logs/">Gateway Access Logs</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/ingress-routing-topology/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/ingress-routing-topology/">Ingress Routing</a>
+      <li data-nav-id="/docs/platform_operators/networking/ingress-routing-topology/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/networking-metrics-and-monitoring/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/networking-metrics-and-monitoring/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/sidecar-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/config-values/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/config-values/">Deploy Parameters</a>
       </li>
       <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
         <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/networking-metrics/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/networking-metrics/">Networking Metrics</a>
-      </li>
       <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
         <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
@@ -155,8 +169,8 @@
       <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/sidecar-access-logs/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/sidecar-access-logs/">Sidecar Access Logs</a>
+      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -166,14 +180,30 @@
       </li>
           </ul>
       </li>
-      <li data-nav-id="/docs/contributing/" class="dd-item depth-0">
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0 haschildren">
         <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/contributing/code-of-conduct/" class="dd-item depth-1">
+        <a href="/docs/contributing/code-of-conduct/">Code Of Conduct</a>
+      </li>
+      <li data-nav-id="/docs/contributing/networking/" class="dd-item depth-1">
+        <a href="/docs/contributing/networking/">Networking Configuration for System Components</a>
+      </li>
+          </ul>
       </li>
       <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
         <a href="/docs/debugging/">Debugging</a>
       </li>
-      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0">
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0 haschildren">
         <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/maintaining/preparing-for-development/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/maintainers/"></a>
+      </li>
+          </ul>
       </li>
     </ul>
   
@@ -203,37 +233,38 @@
           <h1 class="title">Getting Started with Cf-for-K8s</h1>
         </div>
 
-        <p>This tutorial guides you through your first <code>cf push</code> experience.</p>
-<p>In order to get there you first need to deploy cf-for-k8s.  The platform that provides the developer experience on top of Kubernetes.  So, let’s get started.</p>
+        <h1 id="getting-started-with-cf-for-k8s">Getting Started with Cf-for-K8s</h1>
+<p>This tutorial guides you through your first <code>cf push</code> experience.</p>
+<p>In order to get there you first need to deploy cf-for-k8s. The platform that provides the developer experience on top of Kubernetes. So, let’s get started.</p>
 <h2 id="pre-requisites">Pre-requisites</h2>
 <h3 id="machine-requirements">Machine requirements</h3>
-<p>This tutorial will guide you through installing a local kubernetes cluster with the following machine requirements,
-see that your computer can handle them:</p>
+<p>This tutorial will guide you through installing a local kubernetes cluster with the following machine requirements, see that your computer can handle them:</p>
 <ul>
 <li>have a minimum of 1 node</li>
-<li>have a minimum of 6 CPU, 8GB memory per node</li>
+<li>have a minimum of 4 CPU, 6GB memory per node (preferably 6+ CPU and 8+ GB memory)</li>
 </ul>
 <h3 id="tooling">Tooling</h3>
 <p>You’ll also need a few CLIs before you start:</p>
 <ul>
-<li><a href="https://kind.sigs.k8s.io/docs/user/quick-start/">kind</a>; the CNCF project for creating kubernetes clusters locally</li>
-<li><a href="https://k14s.io/#install">ytt</a>; the cli used to render kubernetes templates</li>
-<li><a href="https://k14s.io/#install">kapp</a>; the cli used to deploy cf-for-k8s</li>
+<li><a href="https://kind.sigs.k8s.io/docs/user/quick-start/">kind</a>, the CNCF project for creating kubernetes clusters locally</li>
+<li><a href="https://carvel.dev/#install">ytt</a>, the cli used to render kubernetes templates</li>
+<li><a href="https://carvel.dev/#install">kapp</a>, the cli used to deploy cf-for-k8s</li>
 <li><a href="https://github.com/mikefarah/yq">yq</a>; a cli tool for extracting information from yaml documents</li>
 <li><a href="https://bosh.io/docs/cli-v2-install/#install">BOSH CLI</a>; a handy tool to generate self signed certs and passwords, used by generate-values</li>
 <li><a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">git</a>; the tool we use to interact with the cf-for-k8s repository</li>
 <li>a <a href="https://hub.docker.com">Dockerhub</a> account; cf-for-k8s will use this account to store your application images</li>
-<li><a href="https://docs.cloudfoundry.org/cf-cli/install-go-cli.html">cf</a>; the cli used to interact with Cloud Foundry</li>
+<li><a href="https://docs.cloudfoundry.org/cf-cli/install-go-cli.html">cf</a>, the cli used to interact with Cloud Foundry</li>
 </ul>
 <h2 id="installing-cf-for-k8s">Installing Cf-for-K8s</h2>
-<p>First things first, git clone the cf-for-k8s repository.  This repository contains our templated k8s yaml files:</p>
-<pre><code>git clone https://github.com/cloudfoundry/cf-for-k8s.git
+<p>First things first, git clone the cf-for-k8s repository. This repository contains our templated k8s yaml files:</p>
+<pre><code>git clone https://github.com/cloudfoundry/cf-for-k8s.git -b main
 cd cf-for-k8s
 TMP_DIR=&lt;your-tmp-dir-path&gt;; mkdir -p ${TMP_DIR}
-</code></pre><p>Next, create the local kubernetes cluster that we will deploy cf-for-k8s to presently:</p>
-<pre><code>kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.16.15
+</code></pre><p>Note: if you would like to use the latest release, replace the branch reference in the clone command with that release tag. (E.G. <code>-b v1.0.0</code>)</p>
+<p>Next, create the local kubernetes cluster that we will deploy cf-for-k8s to presently:</p>
+<pre><code>kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.19.1
 </code></pre><p>NOTE: the versions of kubernetes that cf-for-k8s supports are <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/master/supported_k8s_versions.yml">here</a>.</p>
-<p>Create your cf values file.  This is the file that configures your deployment:</p>
+<p>Create your cf values file. This is the file that configures your deployment:</p>
 <pre><code>$ ./hack/generate-values.sh -d vcap.me &gt; ${TMP_DIR}/cf-values.yml
 $ cat &lt;&lt; EOF &gt;&gt; ${TMP_DIR}/cf-values.yml
 app_registry:
@@ -252,13 +283,12 @@ use_first_party_jwt_tokens: true
 EOF
 </code></pre><p>NOTES:</p>
 <ol>
-<li>You must supply an OCI-compliant container registry.  Dockerhub is recommended.</li>
+<li>You must supply an OCI-compliant container registry. Dockerhub is recommended.</li>
 <li>The additional properties configure your cf-for-k8s to run on a local kind cluster.</li>
 </ol>
 <p>With our input values configured we are now ready to deploy cf-for-k8s:</p>
 <pre><code>$ kapp deploy -a cf -f &lt;(ytt -f config -f ${TMP_DIR}/cf-values.yml)
-</code></pre><p>Once you run this command, it should take about 10 minutes or less.  kapp will provide updates as it
-progresses:</p>
+</code></pre><p>Running this command should take about 10 minutes or less. <code>kapp</code> will provide updates as it progresses:</p>
 <pre><code>...
 4:08:19PM: ---- waiting on 1 changes [0/1 done] ----
 4:08:19PM: ok: reconcile serviceaccount/cc-kpack-registry-service-account (v1) namespace: cf-workloads-staging
@@ -279,13 +309,10 @@ $ cf target -o my-org -s my-space
 $ git clone https://github.com/cloudfoundry-samples/test-app.git
 $ cd test-app
 $ cf push test-app
-</code></pre><p>You will notice that what we pushed is source code.  Yet Kubernetes runs containers.  Just some of the magic of
-Cloud Foundry is is that it can perform the staging and deployment of your application.  Leaving you to
-concentrate on your code.</p>
+</code></pre><p>You will notice that what we pushed is source code. Yet Kubernetes runs containers. Just some of the magic of Cloud Foundry is is that it can perform the staging and deployment of your application. Leaving you to concentrate on your code.</p>
 <p>Once deployed, open your browser and visit test-app.vcap.me:</p>
 <p><img src="./assets/test-app.png" alt=""></p>
-<p>Congratulations.  You just pushed your first application to CloudFoundry.  As the tagline
-says “Here is my app.  Run it for me.  I do not care how.”</p>
+<p>Congratulations. You just pushed your first application to CloudFoundry. As the tagline says “Here is my source code. Run it on the cloud for me. I do not care how.”</p>
 
 
         

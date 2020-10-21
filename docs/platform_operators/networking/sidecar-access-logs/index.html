@@ -1,0 +1,409 @@
+<!doctype html>
+<html>
+  <head>
+    
+
+
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Sidecar Access Logs"/>
+<link rel="canonical" content="https://cf-for-k8s.io/docs/platform_operators/networking/sidecar-access-logs/">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+
+
+
+
+
+
+<meta property="og:title" content="Sidecar Access Logs · Cloud Foundry for Kubernetes">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cf-for-k8s.io/docs/platform_operators/networking/sidecar-access-logs/">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Cloud Foundry for Kubernetes">
+<meta property="og:description" content="Sidecar Access Logs">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://cf-for-k8s.io/images/cf-for-k8s-logo.png">
+<meta property="og:image:alt" content="CF for K8s project logo">
+<meta property="og:image:type" content="image/jpeg">
+
+
+
+
+
+
+<meta property="twitter:title" content="Sidecar Access Logs · Cloud Foundry for Kubernetes">
+<meta property="twitter:card" content="summary">
+<meta property="twitter:image" content="https://cf-for-k8s.io/images/cf-for-k8s-logo.png">
+<meta property="twitter:image:alt" content="CF for K8s project logo">
+<meta property="twitter:site" content="@">
+<meta property="twitter:creator" content="@">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Source+Sans+Pro:400,400i,600" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cf-for-k8s.io/scss/site.css" integrity="" media="screen">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PVB2G57');</script>
+    
+
+    <script>
+      function addAnchor(element) {
+        if (element.id === "" || element.getElementsByTagName("a").length > 0) {
+          return;
+        }
+
+        
+
+
+        element.innerHTML =
+        `${element.innerHTML}`;
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const headers = document.querySelectorAll('h1, h2, h3, h4, h5');
+        if (headers) {
+          headers.forEach(addAnchor);
+        }
+      });
+    </script>
+
+    <title>Sidecar Access Logs · Cloud Foundry for Kubernetes</title>
+  </head>
+  <body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PVB2G57"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <header class="container">
+  <a href="https://cf-for-k8s.io/" class="logo"><img src="/images/logo.svg" alt="CF For K8s Logo"></a>
+  <input type="checkbox" id="mobile-nav-toggle">
+  <label for="mobile-nav-toggle"></label>
+  <ul>
+    
+    
+      
+      <li><a class=""  href="/">Home</a></li>
+    
+      
+      <li><a class=""  href="/features/">Features</a></li>
+    
+      
+      <li><a class="active"  href="/docs/">Docs</a></li>
+    
+      
+      <li><a class="" target='_blank' href="https://medium.com/@cf-release-integration">Blog</a></li>
+    
+    <li><a href="https://github.com/cloudfoundry/cf-for-k8s" class="github-button icon-button bg-blue button">GitHub</a></li>
+  </ul>
+</header>
+
+    
+
+<div class='docs'>
+  <div class="container">
+    <div class='row'>
+      <div class='col-md-4 docs-sidebar'>
+        <nav class='sidebar'>
+  <ul>
+      <li data-nav-id="/docs/" class="dd-item depth-0">
+        <a href="/docs/">Getting Started with Cf-for-K8s</a>
+        <ul class="ml-2">
+        </ul>
+      </li>
+      <li data-nav-id="/docs/deploying/" class="dd-item depth-0 haschildren">
+        <a href="/docs/deploying/">Deploying cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/deploying/deploy-local/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-local/">Deploying CF for K8s Locally</a>
+      </li>
+      <li data-nav-id="/docs/deploying/deploy-in-ci/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-in-ci/">Deploy CF for K8s in CI</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 parent haschildren">
+        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/" class="dd-item depth-1 parent haschildren">
+        <a href="/docs/platform_operators/networking/">Networking</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/networking/gateway-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/gateway-access-logs/">Gateway Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/ingress-routing-topology/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/networking-metrics-and-monitoring/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/networking-metrics-and-monitoring/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/sidecar-access-logs/" class="dd-item depth-2 active">
+        <a href="/docs/platform_operators/networking/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/config-values/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/config-values/">Deploy Parameters</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/scaling/">Scaling</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-databases/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-databases/">Using external databases</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0 haschildren">
+        <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/contributing/code-of-conduct/" class="dd-item depth-1">
+        <a href="/docs/contributing/code-of-conduct/">Code Of Conduct</a>
+      </li>
+      <li data-nav-id="/docs/contributing/networking/" class="dd-item depth-1">
+        <a href="/docs/contributing/networking/">Networking Configuration for System Components</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
+        <a href="/docs/debugging/">Debugging</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0 haschildren">
+        <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/maintaining/preparing-for-development/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/maintainers/"></a>
+      </li>
+          </ul>
+      </li>
+    </ul>
+  
+</nav>
+
+
+
+      </div>
+      <div class='col-md-8 docs-content'>
+        <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BSidecar&#43;Access&#43;Logs%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fnetworking%2Fsidecar-access-logs%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/platform_operators/networking/sidecar-access-logs.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+
+        <div class="heading">
+          <h1 class="title">Sidecar Access Logs</h1>
+        </div>
+
+        <h2 id="access-logs">Access Logs</h2>
+<h3 id="how-to-view-access-logs">How to view access logs?</h3>
+<p>Traffic flows through the sidecar containers on sidecar enabled pods, which
+prints access logs to stdout. For example, this is how you might view them for your apps:</p>
+<pre><code>kubectl logs app-pod -c istio-proxy -n cf-workloads
+</code></pre><p>Any namespace with the label <code>istio-injection=enabled</code> will add a sidecar
+<code>istio-proxy</code> container to all pods in the namespace. You can try the above
+command for any pod in a namespace with the label <code>istio-injection=enabled</code>.</p>
+<h3 id="example-access-log-line">Example access log line</h3>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;app_id&#34;</span><span class="p">:</span> <span class="s2">&#34;e96aef43-873a-46db-8d3e-4bc6acd70da9&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;authority&#34;</span><span class="p">:</span> <span class="s2">&#34;myapp.apps.com&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;bytes_received&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span>
+  <span class="s2">&#34;bytes_sent&#34;</span><span class="p">:</span> <span class="s2">&#34;9593&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;downstream_local_address&#34;</span><span class="p">:</span> <span class="s2">&#34;10.52.5.11:8080&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;downstream_remote_address&#34;</span><span class="p">:</span> <span class="s2">&#34;34.123.54.126:0&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;duration&#34;</span><span class="p">:</span> <span class="s2">&#34;22&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;method&#34;</span><span class="p">:</span> <span class="s2">&#34;GET&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;organization_id&#34;</span><span class="p">:</span> <span class="s2">&#34;d390d3f0-f349-481a-8f13-8f1f76ab12ed&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;/&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;process_type&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;protocol&#34;</span><span class="p">:</span> <span class="s2">&#34;HTTP/1.1&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;referer&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;request_id&#34;</span><span class="p">:</span> <span class="s2">&#34;0e5e3948-e8bf-4668-8275-5b87eadcd983&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;requested_server_name&#34;</span><span class="p">:</span> <span class="s2">&#34;outbound_.8080_._.s-93d15c95-b5c3-45e0-bb16-26172767b322.cf-workloads.svc.cluster.local&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;response_code&#34;</span><span class="p">:</span> <span class="s2">&#34;200&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;response_duration&#34;</span><span class="p">:</span> <span class="s2">&#34;22&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;response_flags&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;response_tx_duration&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;space_id&#34;</span><span class="p">:</span> <span class="s2">&#34;471a8af4-3627-4324-bca9-3f69b2e80ab2&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;start_time&#34;</span><span class="p">:</span> <span class="s2">&#34;2020-09-10T20:45:01.808Z&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;upstream_cluster&#34;</span><span class="p">:</span> <span class="s2">&#34;inbound|8080|http|s-93d15c95-b5c3-45e0-bb16-26172767b322.cf-workloads.svc.cluster.local&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;upstream_host&#34;</span><span class="p">:</span> <span class="s2">&#34;127.0.0.1:8080&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;upstream_local_address&#34;</span><span class="p">:</span> <span class="s2">&#34;127.0.0.1:53338&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;upstream_service_time&#34;</span><span class="p">:</span> <span class="s2">&#34;21&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;upstream_transport_failure_reason&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;user_agent&#34;</span><span class="p">:</span> <span class="s2">&#34;curl/7.68.0&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;x_b3_parentspanid&#34;</span><span class="p">:</span> <span class="s2">&#34;7cbd7a861229cc6a&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;x_b3_spanid&#34;</span><span class="p">:</span> <span class="s2">&#34;a8ba1d9c16d7437c&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;x_b3_traceid&#34;</span><span class="p">:</span> <span class="s2">&#34;efff41366f43d46c7cbd7a861229cc6a&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;x_forwarded_for&#34;</span><span class="p">:</span> <span class="s2">&#34;34.123.54.126&#34;</span><span class="p">,</span>
+  <span class="nt">&#34;x_forwarded_proto&#34;</span><span class="p">:</span> <span class="s2">&#34;https&#34;</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="duration-fields">Duration fields</h3>
+<p>The access log contains the following fields for duration in milliseconds</p>
+<ul>
+<li><code>upstream_service_time</code>: The time from when the sidecar sends a request to the app to when it receives a response from the app</li>
+<li><code>duration</code>: The time from when the sidecar receives a request from the gateway to when it sends a response to the gateway</li>
+<li><code>response_duration</code>: The time from when the sidecar receives a request from the gateway to when it receives a response from the app</li>
+<li><code>response_tx_duration</code>: The time a response spends in the sidecar</li>
+</ul>
+<p><img src="/docs/platform_operators/assets/sidecar-graph.png" alt="Sidecar Graph"></p>
+<h4 id="determining-app-latency-vs-platform-latency">Determining App Latency vs Platform Latency</h4>
+<p>To calculate the time a request spends within the sidecar subtract <code>upstream_service_time</code> from <code>response_duration</code></p>
+<h3 id="fields">Fields</h3>
+<p>The fields we use are defined by <a href="https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage">Envoy&rsquo;s access logging
+format</a>.</p>
+<ul>
+<li><code>app_id</code>: Cloud Foundry application GUID</li>
+<li><code>authority</code>: <code>Authority</code> (HTTP/2) or <code>Host</code> header (HTTP/1.1) of the request;
+see <a href="https://tools.ietf.org/html/rfc7540#section-8.1.2.3">RFC7540</a> for more
+details</li>
+<li><code>bytes_received</code>: Body bytes received</li>
+<li><code>bytes_sent</code>: Body bytes sent. For WebSocket connections it will also include
+response header bytes</li>
+<li><code>downstream_local_address</code>: Local address of the downstream connection; see
+<code>%DOWNSTREAM_LOCAL_ADDRESS%</code> in Envoy docs</li>
+<li><code>downstream_remote_address</code>: Remote address of the downstream connection; see
+<code>%DOWNSTREAM_REMOTE_ADDRESS%</code> in Envoy docs</li>
+<li><code>duration</code>: Total duration in milliseconds of the request from the start time
+to the last byte out; see <code>%DURATION%</code> in Envoy docs</li>
+<li><code>method</code>: Method of HTTP request</li>
+<li><code>organization_id</code>:  Cloud Foundry organization GUID of the application</li>
+<li><code>path</code>: HTTP request path</li>
+<li><code>process_type</code>: <a href="https://v3-apidocs.cloudfoundry.org/version/3.80.0/index.html#processes">Cloud Foundry Process
+Type</a>
+for the backend being routed to</li>
+<li><code>protocol</code>: Currently either HTTP/1.1 or HTTP/2. See <code>%PROTOCOL%</code> in Envoy
+docs</li>
+<li><code>referer</code>: HTTP <code>Referer</code> header</li>
+<li><code>request_id</code>: Unique ID for the request</li>
+<li><code>requested_server_name</code>: String value set on ssl connection socket for Server
+Name Indication (SNI); see <code>%REQUESTED_SERVER_NAME%</code> in Envoy docs</li>
+<li><code>response_code</code>: HTTP response code. Note that a response code of ‘0’ means
+that the server never sent the beginning of a response. This generally means
+that the (downstream) client disconnected; see <code>%RESPONSE_CODE%</code> in Envoy docs</li>
+<li><code>response_duration</code>: Total duration in milliseconds of the request from the
+start time to the first byte read from the app; see <code>%RESPONSE_DURATION%</code>
+in Envoy docs</li>
+<li><code>response_flags</code>: Additional details about the response or connection, if any;
+see <code>%RESPONSE_FLAGS%</code> in <a href="https://www.envoyproxy.io/docs/envoy/latest/configuration/observability/access_log/usage">Envoy docs</a></li>
+<li><code>response_tx_duration</code>: Total duration in milliseconds of the request from the
+first byte read from the app to the last byte sent downstream; see
+<code>%RESPONSE_TX_DURATION%</code> in Envoy docs</li>
+<li><code>space_id</code>: Cloud Foundry space GUID of the application</li>
+<li><code>start_time</code>: Request start time including milliseconds; see <code>%START_TIME%</code> in Envoy docs</li>
+<li><code>upstream_cluster</code>: Upstream cluster to which the upstream host belongs to</li>
+<li><code>upstream_host</code>: Upstream host URL</li>
+<li><code>upstream_local_address</code>: Local address of the upstream connection. If the
+address is an IP address it includes both address and port; see
+<code>%UPSTREAM_LOCAL_ADDRESS%</code> in Envoy docs</li>
+<li><code>upstream_service_time</code>: Time in milliseconds spent by the app processing
+the request including network latency.; see <a href="#duration-fields">Duration Fields</a> and these <a href="https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-upstream-service-time">Envoy
+docs</a>
+for more information</li>
+<li><code>upstream_transport_failure_reason</code>: If upstream connection failed due to a TLS failure. This field currently does not indicate any <a href="https://osi-model.com/transport-layer/">Transport Layer</a> failures.
+transport socket (e.g. TLS handshake), provides the failure reason from the
+transport socket</li>
+<li><code>user_agent</code>: HTTP request <code>User-Agent</code> header</li>
+<li><code>x_b3_parentspanid</code>: Used for request tracing; see
+<a href="https://github.com/openzipkin/b3-propagation">b3-propagation</a> for more info</li>
+<li><code>x_b3_spanid</code>: Used for request tracing; see
+<a href="https://github.com/openzipkin/b3-propagation">b3-propagation</a> for more info</li>
+<li><code>x_b3_traceid</code>: Used for request tracing; see
+<a href="https://github.com/openzipkin/b3-propagation">b3-propagation</a> for more info</li>
+<li><code>x_forwarded_for</code>: IP of the client used to initiate the request</li>
+<li><code>x_forwarded_proto</code>: Protocol a client used to initiate the request. Can be
+<code>http</code> or <code>https</code> for HTTP traffic</li>
+</ul>
+
+
+        
+
+        <hr>
+<div class='footline d-block'>
+  <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BSidecar&#43;Access&#43;Logs%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fnetworking%2Fsidecar-access-logs%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/platform_operators/networking/sidecar-access-logs.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+    <footer>
+  
+  <div class="bg-black">
+    <div class="container footer clearfix">
+      <div class="logo">
+        <a href="https://cf-for-k8s.io/"><img src="/images/logo-white.svg" class="footer-logo"></a>
+      </div>
+      <div class="info">
+        <p>cf for k8s is a Cloud Foundry Project</p>
+        <p class="sub-info">Hugo template graciously copied from buildpacks.io</p>
+      </div>
+      <ul>
+        <li><a href="https://cloudfoundry.slack.com/?redir=%2Farchives%2FCH9LF6V1P" target="_blank"><img src="/images/slack.png"></a></li>
+        <li><a href="https://lists.cloudfoundry.org/g/cf-dev/topics" target="_blank"><img src="/images/mail.png"></a></li>
+        <li><a href="https://twitter.com/cloudfoundry" target="_blank"><img src="/images/twitter.png"></a></li>
+        <li><a href="https://github.com/cloudfoundry/cf-for-k8s" target="_blank"><img src="/images/github.png"></a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

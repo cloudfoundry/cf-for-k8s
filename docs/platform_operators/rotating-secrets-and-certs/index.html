@@ -131,23 +131,37 @@
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 parent haschildren">
         <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
           <ul class="ml-2">
-      <li data-nav-id="/docs/platform_operators/deploy-parameters/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/deploy-parameters/">Deploy Parameters</a>
+      <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/gateway-access-logs/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/gateway-access-logs/">Gateway Access Logs</a>
+      <li data-nav-id="/docs/platform_operators/networking/" class="dd-item depth-1 haschildren">
+        <a href="/docs/platform_operators/networking/">Networking</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/networking/gateway-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/gateway-access-logs/">Gateway Access Logs</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/ingress-routing-topology/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/ingress-routing-topology/">Ingress Routing</a>
+      <li data-nav-id="/docs/platform_operators/networking/ingress-routing-topology/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/networking-metrics-and-monitoring/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/networking-metrics-and-monitoring/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/sidecar-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/config-values/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/config-values/">Deploy Parameters</a>
       </li>
       <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
         <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/networking-metrics/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/networking-metrics/">Networking Metrics</a>
-      </li>
       <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1 active">
         <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
@@ -155,8 +169,8 @@
       <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/sidecar-access-logs/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/sidecar-access-logs/">Sidecar Access Logs</a>
+      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -166,14 +180,30 @@
       </li>
           </ul>
       </li>
-      <li data-nav-id="/docs/contributing/" class="dd-item depth-0">
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0 haschildren">
         <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/contributing/code-of-conduct/" class="dd-item depth-1">
+        <a href="/docs/contributing/code-of-conduct/">Code Of Conduct</a>
+      </li>
+      <li data-nav-id="/docs/contributing/networking/" class="dd-item depth-1">
+        <a href="/docs/contributing/networking/">Networking Configuration for System Components</a>
+      </li>
+          </ul>
       </li>
       <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
         <a href="/docs/debugging/">Debugging</a>
       </li>
-      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0">
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0 haschildren">
         <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/maintaining/preparing-for-development/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/maintainers/"></a>
+      </li>
+          </ul>
       </li>
     </ul>
   
@@ -221,7 +251,6 @@ successfully rotated in the Istio Ingress Gateway.</li>
 You cannot rotate the app domains' certificates separately because there is only
 one certificate.</p>
 <h3 id="cloud-controller-database-encryption-key">Cloud Controller Database Encryption Key</h3>
-<h3 id="cloud-controller-database-encryption-key-1">Cloud Controller Database Encryption Key</h3>
 <p>Prior to cf-for-k8s 1.0, rotating the cloud controller db encryption key is a breaking change. Rotating the key will
 require a recreating your environment (including deleting database contents) in order to prevent decryption errors when fetching
 previously-saved data.</p>

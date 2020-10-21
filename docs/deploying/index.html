@@ -131,23 +131,37 @@
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
         <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
           <ul class="ml-2">
-      <li data-nav-id="/docs/platform_operators/deploy-parameters/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/deploy-parameters/">Deploy Parameters</a>
+      <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/gateway-access-logs/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/gateway-access-logs/">Gateway Access Logs</a>
+      <li data-nav-id="/docs/platform_operators/networking/" class="dd-item depth-1 haschildren">
+        <a href="/docs/platform_operators/networking/">Networking</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/networking/gateway-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/gateway-access-logs/">Gateway Access Logs</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/ingress-routing-topology/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/ingress-routing-topology/">Ingress Routing</a>
+      <li data-nav-id="/docs/platform_operators/networking/ingress-routing-topology/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/networking-metrics-and-monitoring/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/networking-metrics-and-monitoring/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/sidecar-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/config-values/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/config-values/">Deploy Parameters</a>
       </li>
       <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
         <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/networking-metrics/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/networking-metrics/">Networking Metrics</a>
-      </li>
       <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
         <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
@@ -155,8 +169,8 @@
       <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/sidecar-access-logs/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/sidecar-access-logs/">Sidecar Access Logs</a>
+      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -166,14 +180,30 @@
       </li>
           </ul>
       </li>
-      <li data-nav-id="/docs/contributing/" class="dd-item depth-0">
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0 haschildren">
         <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/contributing/code-of-conduct/" class="dd-item depth-1">
+        <a href="/docs/contributing/code-of-conduct/">Code Of Conduct</a>
+      </li>
+      <li data-nav-id="/docs/contributing/networking/" class="dd-item depth-1">
+        <a href="/docs/contributing/networking/">Networking Configuration for System Components</a>
+      </li>
+          </ul>
       </li>
       <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
         <a href="/docs/debugging/">Debugging</a>
       </li>
-      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0">
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0 haschildren">
         <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/maintaining/preparing-for-development/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/maintainers/"></a>
+      </li>
+          </ul>
       </li>
     </ul>
   
@@ -229,12 +259,12 @@
 <h3 id="required-tools">Required Tools</h3>
 <p>You need the following CLIs on your system to be able to run the script:</p>
 <ul>
-<li><code>ytt</code> <a href="https://k14s.io/#install">install link</a> <a href="https://github.com/k14s/ytt">github repo</a>
+<li><code>ytt</code> <a href="https://carvel.dev/#install">install link</a> <a href="https://github.com/k14s/ytt">github repo</a>
 <ul>
 <li>cf-for-k8s uses <code>ytt</code> to create and maintain reusable YAML templates. You can visit the ytt <a href="https://get-ytt.io/">playground</a> to learn more about its templating features.</li>
 </ul>
 </li>
-<li><code>kapp</code> <a href="https://k14s.io/#install">install link</a> <a href="https://github.com/k14s/kapp">github repo</a>
+<li><code>kapp</code> <a href="https://carvel.dev/#install">install link</a> <a href="https://github.com/k14s/kapp">github repo</a>
 <ul>
 <li>cf-for-k8s uses <code>kapp</code> to manage its lifecycle. <code>kapp</code> will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. <code>kapp</code> will not exit until all resources are deployed and their status is running. See all options by running <code>kapp help</code>.</li>
 </ul>
@@ -287,10 +317,11 @@ have <code>NET_ADMIN</code> and <code>NET_RAW</code> capabilities</a></li>
 <ol>
 <li>
 <p>Clone and initialize this git repository:</p>
-<pre><code class="language-console" data-lang="console">git clone https://github.com/cloudfoundry/cf-for-k8s.git
+<pre><code class="language-console" data-lang="console">git clone https://github.com/cloudfoundry/cf-for-k8s.git -b main
 cd cf-for-k8s
 TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
-</code></pre></li>
+</code></pre><p>Note: if you would like the latest release, replace the branch reference in the clone command with that release tag. (E.G. <code>-b v1.0.0</code>)</p>
+</li>
 <li>
 <p>Create a &ldquo;CF Installation Values&rdquo; file and configure it<a name="cf-values"></a>:</p>
 <p>You can either: a) auto-generate the installation values or b) create the values by yourself.</p>
@@ -441,10 +472,10 @@ state since cpu memory disk details
 </code></pre><h2 id="additional-resources">Additional resources</h2>
 <p>Use the following resources to enable additional features in cf-for-k8s:</p>
 <ul>
-<li><a href="platform_operators/setup-ingress-certs-with-letsencrypt.md">Setup ingress certs with letsencrypt</a></li>
-<li><a href="platform_operators/setup-static-loadbalancer-ip.md">Setup static loadbalancer IP</a></li>
-<li><a href="platform_operators/external-databases.md">Setup an external database</a>, which we recommend for Production environments</li>
-<li><a href="platform_operators/external-blobstore.md">Setup an external blobstore</a></li>
+<li><a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with letsencrypt</a></li>
+<li><a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup static loadbalancer IP</a></li>
+<li><a href="/docs/platform_operators/external-databases/">Setup an external database</a>, which we recommend for Production environments</li>
+<li><a href="/docs/platform_operators/external-blobstore/">Setup an external blobstore</a></li>
 </ul>
 <h2 id="roadmap-and-milestones">Roadmap and milestones</h2>
 <p>You can find the project roadmap (github project) <a href="https://github.com/cloudfoundry/cf-for-k8s/projects/4">here</a> and our upcoming milestones <a href="https://github.com/cloudfoundry/cf-for-k8s/milestones">here</a>. Feel free to ask questions in the <a href="https://cloudfoundry.slack.com/archives/CH9LF6V1P">#cf-for-k8s channel</a> in the CloudFoundry slack or submit new feature requests or issues on this repo.</p>

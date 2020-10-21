@@ -3,7 +3,15 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://cf-for-k8s.io/docs/contributing/code-of-conduct/</loc>
+  </url>
+  
+  <url>
     <loc>https://cf-for-k8s.io/docs/deploying/deploy-local/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cf-for-k8s.io/docs/maintaining/preparing-for-development/</loc>
   </url>
   
   <url>
@@ -12,6 +20,14 @@
   
   <url>
     <loc>https://cf-for-k8s.io/docs/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cf-for-k8s.io/docs/contributing/networking/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/platform-availability/</loc>
   </url>
   
   <url>
@@ -27,6 +43,10 @@
   </url>
   
   <url>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/networking/</loc>
+  </url>
+  
+  <url>
     <loc>https://cf-for-k8s.io/docs/contributing/</loc>
   </url>
   
@@ -39,15 +59,7 @@
   </url>
   
   <url>
-    <loc>https://cf-for-k8s.io/docs/adrs/001-use-kapp-versioned/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/component_authors/networking/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/testing/uptime-during-platform-upgrades/</loc>
+    <loc>https://cf-for-k8s.io/docs/maintaining/maintainers/</loc>
   </url>
   
   <url>
@@ -59,15 +71,15 @@
   </url>
   
   <url>
-    <loc>https://cf-for-k8s.io/docs/platform_operators/deploy-parameters/</loc>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/config-values/</loc>
   </url>
   
   <url>
-    <loc>https://cf-for-k8s.io/docs/platform_operators/gateway-access-logs/</loc>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/networking/gateway-access-logs/</loc>
   </url>
   
   <url>
-    <loc>https://cf-for-k8s.io/docs/platform_operators/ingress-routing-topology/</loc>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/networking/ingress-routing-topology/</loc>
   </url>
   
   <url>
@@ -75,11 +87,15 @@
   </url>
   
   <url>
-    <loc>https://cf-for-k8s.io/docs/platform_operators/networking-metrics/</loc>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/networking/networking-metrics-and-monitoring/</loc>
   </url>
   
   <url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/rotating-secrets-and-certs/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/scaling/</loc>
   </url>
   
   <url>
@@ -91,7 +107,11 @@
   </url>
   
   <url>
-    <loc>https://cf-for-k8s.io/docs/platform_operators/sidecar-access-logs/</loc>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/networking/sidecar-access-logs/</loc>
+  </url>
+  
+  <url>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/system-registry-management/</loc>
   </url>
   
   <url>

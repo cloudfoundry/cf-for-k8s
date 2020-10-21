@@ -7,30 +7,21 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="https://cf-for-k8s.io/docs/platform_operators/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Platform Availability</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/platform-availability/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/platform-availability/</guid>
+      <description>Platform Availability</description>
+    </item>
+    
+    <item>
       <title>Deploy Parameters</title>
-      <link>https://cf-for-k8s.io/docs/platform_operators/deploy-parameters/</link>
+      <link>https://cf-for-k8s.io/docs/platform_operators/config-values/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://cf-for-k8s.io/docs/platform_operators/deploy-parameters/</guid>
+      <guid>https://cf-for-k8s.io/docs/platform_operators/config-values/</guid>
       <description>Deploy Parameters</description>
-    </item>
-    
-    <item>
-      <title>Gateway Access Logs</title>
-      <link>https://cf-for-k8s.io/docs/platform_operators/gateway-access-logs/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://cf-for-k8s.io/docs/platform_operators/gateway-access-logs/</guid>
-      <description>Gateway Access Logs</description>
-    </item>
-    
-    <item>
-      <title>Ingress Routing</title>
-      <link>https://cf-for-k8s.io/docs/platform_operators/ingress-routing-topology/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://cf-for-k8s.io/docs/platform_operators/ingress-routing-topology/</guid>
-      <description>Ingress Routing</description>
     </item>
     
     <item>
@@ -43,21 +34,21 @@
     </item>
     
     <item>
-      <title>Networking Metrics</title>
-      <link>https://cf-for-k8s.io/docs/platform_operators/networking-metrics/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://cf-for-k8s.io/docs/platform_operators/networking-metrics/</guid>
-      <description>Networking Metrics</description>
-    </item>
-    
-    <item>
       <title>Rotating Secrets</title>
       <link>https://cf-for-k8s.io/docs/platform_operators/rotating-secrets-and-certs/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://cf-for-k8s.io/docs/platform_operators/rotating-secrets-and-certs/</guid>
       <description>Rotating Secrets</description>
+    </item>
+    
+    <item>
+      <title>Scaling</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/scaling/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/scaling/</guid>
+      <description>Scaling</description>
     </item>
     
     <item>
@@ -79,12 +70,12 @@
     </item>
     
     <item>
-      <title>Sidecar Access Logs</title>
-      <link>https://cf-for-k8s.io/docs/platform_operators/sidecar-access-logs/</link>
+      <title>System Registry Management</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/system-registry-management/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://cf-for-k8s.io/docs/platform_operators/sidecar-access-logs/</guid>
-      <description>Sidecar Access Logs</description>
+      <guid>https://cf-for-k8s.io/docs/platform_operators/system-registry-management/</guid>
+      <description>System Registry Management</description>
     </item>
     
     <item>

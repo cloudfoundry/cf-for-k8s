@@ -131,23 +131,37 @@
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
         <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
           <ul class="ml-2">
-      <li data-nav-id="/docs/platform_operators/deploy-parameters/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/deploy-parameters/">Deploy Parameters</a>
+      <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/gateway-access-logs/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/gateway-access-logs/">Gateway Access Logs</a>
+      <li data-nav-id="/docs/platform_operators/networking/" class="dd-item depth-1 haschildren">
+        <a href="/docs/platform_operators/networking/">Networking</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/networking/gateway-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/gateway-access-logs/">Gateway Access Logs</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/ingress-routing-topology/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/ingress-routing-topology/">Ingress Routing</a>
+      <li data-nav-id="/docs/platform_operators/networking/ingress-routing-topology/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/networking-metrics-and-monitoring/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/networking-metrics-and-monitoring/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/sidecar-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/config-values/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/config-values/">Deploy Parameters</a>
       </li>
       <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
         <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/networking-metrics/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/networking-metrics/">Networking Metrics</a>
-      </li>
       <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
         <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
@@ -155,8 +169,8 @@
       <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/sidecar-access-logs/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/sidecar-access-logs/">Sidecar Access Logs</a>
+      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -166,14 +180,30 @@
       </li>
           </ul>
       </li>
-      <li data-nav-id="/docs/contributing/" class="dd-item depth-0">
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0 haschildren">
         <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/contributing/code-of-conduct/" class="dd-item depth-1">
+        <a href="/docs/contributing/code-of-conduct/">Code Of Conduct</a>
+      </li>
+      <li data-nav-id="/docs/contributing/networking/" class="dd-item depth-1">
+        <a href="/docs/contributing/networking/">Networking Configuration for System Components</a>
+      </li>
+          </ul>
       </li>
       <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
         <a href="/docs/debugging/">Debugging</a>
       </li>
-      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0">
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0 haschildren">
         <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/maintaining/preparing-for-development/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/maintainers/"></a>
+      </li>
+          </ul>
       </li>
     </ul>
   
@@ -203,7 +233,8 @@
           <h1 class="title">Deploying CF for K8s Locally</h1>
         </div>
 
-        <ul>
+        <h1 id="deploying-cf-for-k8s-locally">Deploying CF for K8s Locally</h1>
+<ul>
 <li><a href="#prerequisites">Prerequisites</a>
 <ul>
 <li><a href="#required-tools">Required Tools</a></li>
@@ -211,27 +242,42 @@
 </ul>
 </li>
 <li><a href="#considerations">Considerations</a></li>
-<li><a href="#steps-to-deploy-on-kind">Steps to Deploy on Kind</a></li>
+<li><a href="#steps-to-deploy-on-kind">Steps to Deploy on KinD</a></li>
 <li><a href="#steps-to-deploy-on-minikube">Steps to Deploy on Minikube</a></li>
 </ul>
 <p><small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small></p>
 <h2 id="prerequisites">Prerequisites</h2>
 <h3 id="required-tools">Required Tools</h3>
-<p>See the requirements in <a href="deploy.md#required-tools">Deploying CF for K8s</a>.</p>
+<p>See the requirements in <a href="/docs/deploying/#required-tools">Deploying CF for K8s</a>.</p>
 <h3 id="machine-requirements">Machine Requirements</h3>
-<p>In addition to the Kubernetes version requirement in <a href="deploy.md#kubernetes-cluster-requirements">Deploying CF for K8s</a>, the cluster should:</p>
-<ul>
-<li>have a minimum of 6 CPU, 6GB memory if using 1 node
-<ul>
-<li>commonly configured via Docker Desktop &gt; Preferences &gt; Resources</li>
-</ul>
+<p>In addition to the Kubernetes version requirement in <a href="/docs/deploying/#kubernetes-cluster-requirements">Deploying CF for K8s</a>, the cluster should:</p>
+<ol>
+<li>
+<p>Use a Kubernetes version within the supported version window (see <code>supported_k8s_versions.yml</code>)</p>
 </li>
+<li>
+<p>Specify at least the minimum resource requirements shown below.</p>
+</li>
+</ol>
+<p><strong>Minimum Requirements</strong></p>
+<ul>
+<li>4 CPU, 6GB memory if using 1 node</li>
+</ul>
+<p><strong>Recommended Requirements</strong></p>
+<ul>
+<li>6-8 CPU, 8-16GB memory if using 1 node</li>
+<li>When running with less than recommended requirements it is common for an initial <code>kapp deploy</code> to timeout; a successive <code>kapp deploy</code> may remedy this.</li>
+</ul>
+<p>Configuration Notes:</p>
+<ul>
+<li>When running on a local Docker Desktop this can be configured via <code>Docker Desktop &gt; Preferences &gt; Resources</code>.</li>
+<li>When running <code>Minikube</code>, resources can be provided as command line arguments to the start command. e.g. <code>minikube start --cpus=6 --memory=8gb --driver=docker</code></li>
 </ul>
 <h2 id="considerations">Considerations</h2>
 <ol>
 <li>
 <p>Using minikube allows local image development via the included docker daemon
-without having to push to a public image registry, whereas kind uses
+without having to push to a public image registry, whereas KinD uses
 containerd as its backing driver, which doesn&rsquo;t allow for local image
 creation.</p>
 </li>
@@ -240,15 +286,27 @@ creation.</p>
 virtualbox driver as it uses the local Docker for Mac installation.</p>
 </li>
 </ol>
-<h2 id="steps-to-deploy-on-kind">Steps to Deploy on Kind</h2>
-<ol>
+<h2 id="steps-to-deploy-on-kind">Steps to Deploy on KinD</h2>
+<ol start="0">
 <li>
-<p>Create a kind cluster:</p>
-<pre><code class="language-console" data-lang="console">kind create cluster --config=./deploy/kind/cluster.yml
-# optional flag: &quot;--image kindest/node:v1.18.2&quot;, for example
+<p>(Optional) Choose the version of Kubernetes you&rsquo;d like to use to deploy KinD.</p>
+<p>To grab the latest KinD patch version of a K8s minor release:</p>
+<pre><code class="language-console" data-lang="console"># from the cf-for-k8s repo/directory
+k8s_minor_version=&quot;$(yq -r .newest_version supported_k8s_versions.yml)&quot;  # or k8s_minor_version=&quot;1.17&quot;
+patch_version=$(wget -q https://registry.hub.docker.com/v1/repositories/kindest/node/tags -O - | \
+  jq -r '.[].name' | grep -E &quot;^v${k8s_minor_version}.[0-9]+$&quot; | \
+  cut -d. -f3 | sort -rn | head -1)
+k8s_version=&quot;v${k8s_minor_version}.${patch_version}&quot;
+echo &quot;Creating KinD cluster with Kubernetes version ${k8s_version}&quot;
 </code></pre></li>
 <li>
-<p>Follow the instructions in <a href="deploy.md">Deploying CF for K8s</a>.</p>
+<p>Create a KinD cluster:</p>
+<pre><code class="language-console" data-lang="console"># from the cf-for-k8s repo/directory
+kind create cluster --config=./deploy/kind/cluster.yml
+# suggested flag: &quot;--image kindest/node:${k8s_version}&quot;
+</code></pre></li>
+<li>
+<p>Follow the instructions in <a href="/docs/deploying/">Deploying CF for K8s</a>.</p>
 <ul>
 <li>
 <p>Use <code>vcap.me</code> as the domain for the installation. This means that you do not have to
@@ -263,19 +321,24 @@ configure DNS for the domain.</p>
 </span><span class="w"></span><span class="nt">metrics_server_prefer_internal_kubelet_address</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span><span class="w"></span><span class="nt">remove_resource_requirements</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span><span class="w"></span><span class="nt">use_first_party_jwt_tokens</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">   
+</span><span class="w">
 </span><span class="w"></span><span class="nt">load_balancer</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
 </span></code></pre></div></li>
 <li>
 <p>Once the <code>kapp deploy</code> succeeds, you should be able to run <code>cf api api.vcap.me --skip-ssl-validation</code>, etc</p>
+<ul>
+<li>If the kapp deploy fails with a message like <code>Finished unsuccessfully (Deployment is not progressing: ProgressDeadlineExceeded (message: ReplicaSet &quot;something&quot; has timed out progressing.))</code>, this may indicate that your cluster&rsquo;s resources are under allocated. Simply re-running the kapp deploy command frequently fixes this issue.</li>
+</ul>
 </li>
 </ol>
 <h2 id="steps-to-deploy-on-minikube">Steps to Deploy on Minikube</h2>
 <ol>
 <li>
 <p>Start minikube using the docker driver:</p>
-<pre><code class="language-console" data-lang="console">minikube start --cpus=6 --memory=8g --kubernetes-version=1.16.8 --driver=docker
+<pre><code class="language-console" data-lang="console">minikube start --cpus=6 --memory=8g --kubernetes-version=&quot;1.19.2&quot; --driver=docker
+# available minikube K8s versions can be found here: https://github.com/kubernetes/minikube/blob/master/pkg/minikube/constants/constants.go
+# make sure to use a version within the cf-for-k8s supported minor version window (see `supported_k8s_versions.yml`)
 </code></pre></li>
 <li>
 <p>Enable metrics-server.</p>
@@ -300,7 +363,7 @@ run to allow minikube to create the LoadBalancer service.</li>
 </ul>
 </li>
 <li>
-<p>Follow the instructions in <a href="deploy.md">Deploying CF for K8s</a>.</p>
+<p>Follow the instructions in <a href="/docs/deploying/">Deploying CF for K8s</a>.</p>
 <ul>
 <li>
 <p>Use <code>&lt;minikube ip&gt;.nip.io</code> as the domain for the installation. This means that you do not have to

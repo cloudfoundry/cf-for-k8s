@@ -6,5 +6,24 @@
     <description>Recent content in Maintaining &lt;br&gt;(for Release Integration Engineers) on Cloud Foundry for Kubernetes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="https://cf-for-k8s.io/docs/maintaining/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Developing CF Components</title>
+      <link>https://cf-for-k8s.io/docs/maintaining/preparing-for-development/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/maintaining/preparing-for-development/</guid>
+      <description>Developing CF Components</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://cf-for-k8s.io/docs/maintaining/maintainers/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/maintaining/maintainers/</guid>
+      <description>cf-for-k8s Maintainers GOVERNANCE doc describes governance guidelines and maintainer responsibilities.
+Maintainers    Maintainer GitHub ID Affiliation     Andrew Costa acosta11 VMware   Andrew Wittrock Birdrock VMware   Dave Walter davewalter VMware   Eric Promislow paulcwarren SUSE   James Pollard jamespollard8 VMware   Paul Warren paulcwarren VMware   Renee Chu reneighbor VMware    Have a question or feedback, reach out to us We are very active in slack channel #cf-for-k8s in the Cloud Foundry workspace.</description>
+    </item>
+    
   </channel>
 </rss>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Networking on Cloud Foundry for Kubernetes</title>
+    <link>https://cf-for-k8s.io/docs/platform_operators/networking/</link>
+    <description>Recent content in Networking on Cloud Foundry for Kubernetes</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://cf-for-k8s.io/docs/platform_operators/networking/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Gateway Access Logs</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/networking/gateway-access-logs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/networking/gateway-access-logs/</guid>
+      <description>Gateway Access Logs</description>
+    </item>
+    
+    <item>
+      <title>Ingress Routing</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/networking/ingress-routing-topology/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/networking/ingress-routing-topology/</guid>
+      <description>Ingress Routing</description>
+    </item>
+    
+    <item>
+      <title>Networking Metrics</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/networking/networking-metrics-and-monitoring/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/networking/networking-metrics-and-monitoring/</guid>
+      <description>Networking Metrics</description>
+    </item>
+    
+    <item>
+      <title>Sidecar Access Logs</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/networking/sidecar-access-logs/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/networking/sidecar-access-logs/</guid>
+      <description>Sidecar Access Logs</description>
+    </item>
+    
+  </channel>
+</rss>

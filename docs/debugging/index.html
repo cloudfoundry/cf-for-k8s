@@ -131,23 +131,37 @@
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
         <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
           <ul class="ml-2">
-      <li data-nav-id="/docs/platform_operators/deploy-parameters/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/deploy-parameters/">Deploy Parameters</a>
+      <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/gateway-access-logs/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/gateway-access-logs/">Gateway Access Logs</a>
+      <li data-nav-id="/docs/platform_operators/networking/" class="dd-item depth-1 haschildren">
+        <a href="/docs/platform_operators/networking/">Networking</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/networking/gateway-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/gateway-access-logs/">Gateway Access Logs</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/ingress-routing-topology/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/ingress-routing-topology/">Ingress Routing</a>
+      <li data-nav-id="/docs/platform_operators/networking/ingress-routing-topology/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/networking-metrics-and-monitoring/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/networking-metrics-and-monitoring/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/sidecar-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/config-values/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/config-values/">Deploy Parameters</a>
       </li>
       <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
         <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/networking-metrics/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/networking-metrics/">Networking Metrics</a>
-      </li>
       <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
         <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
@@ -155,8 +169,8 @@
       <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/sidecar-access-logs/" class="dd-item depth-1">
-        <a href="/docs/platform_operators/sidecar-access-logs/">Sidecar Access Logs</a>
+      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -166,14 +180,30 @@
       </li>
           </ul>
       </li>
-      <li data-nav-id="/docs/contributing/" class="dd-item depth-0">
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0 haschildren">
         <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/contributing/code-of-conduct/" class="dd-item depth-1">
+        <a href="/docs/contributing/code-of-conduct/">Code Of Conduct</a>
+      </li>
+      <li data-nav-id="/docs/contributing/networking/" class="dd-item depth-1">
+        <a href="/docs/contributing/networking/">Networking Configuration for System Components</a>
+      </li>
+          </ul>
       </li>
       <li data-nav-id="/docs/debugging/" class="dd-item depth-0 parent active">
         <a href="/docs/debugging/">Debugging</a>
       </li>
-      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0">
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0 haschildren">
         <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/maintaining/preparing-for-development/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/maintainers/"></a>
+      </li>
+          </ul>
       </li>
     </ul>
   
@@ -203,7 +233,8 @@
           <h1 class="title">Debugging</h1>
         </div>
 
-        <h2 id="staging-app-and-tracing-logs-hangs">Staging app and tracing logs hangs</h2>
+        <h1 id="debugging">Debugging</h1>
+<h2 id="staging-app-and-tracing-logs-hangs">Staging app and tracing logs hangs</h2>
 <p>If you see <code>cf push</code> or smoketests hang here:</p>
 <pre><code>...
 Waiting for API to complete processing files...
@@ -249,7 +280,7 @@ FAILED
 <ul>
 <li>Make sure you can login locally with <code>docker cli</code> e.g.  <code>docker login --username USERNAME --password PASSWORD</code>.</li>
 <li>Make sure you can push / pull images to the the registry.</li>
-<li>Compare your configuration with <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/master/sample-cf-install-values.yml#L123">examples</a> for different registries in <code>sample-cf-install-values.yml</code>.
+<li>Compare your configuration with the app_registry examples for different registries in <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/develop/sample-cf-install-values.yml">sample-cf-install-values.yml</a>.
 <ul>
 <li>Pay particular attention to <code>hostname</code> and <code>repository</code> parameters.</li>
 </ul>

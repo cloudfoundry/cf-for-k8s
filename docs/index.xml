@@ -6,37 +6,5 @@
     <description>Recent content in Getting Started with Cf-for-K8s on Cloud Foundry for Kubernetes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="https://cf-for-k8s.io/docs/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title></title>
-      <link>https://cf-for-k8s.io/docs/adrs/001-use-kapp-versioned/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://cf-for-k8s.io/docs/adrs/001-use-kapp-versioned/</guid>
-      <description>1. Use kapp versioned annotation Date: 2020-05-08
-[Tracker ID: #167379966] https://www.pivotaltracker.com/story/show/172597153 https://www.pivotaltracker.com/story/show/172597361 https://www.pivotaltracker.com/story/show/172724542
-Status Accepted
-Context As we look to support the rotation of configuration and credentials in cf-for-k8s, we have considered the potential challenges of a kubernetes-native implementation. At some point in the chain from kubernetes resources to the processes running in pods, we need to update a value and have that value flow into the running processes by which it is consumed.</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://cf-for-k8s.io/docs/component_authors/networking/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://cf-for-k8s.io/docs/component_authors/networking/</guid>
-      <description>Networking Configuration for System Components Network Policies Network Policies provide a way to declaritively define how Pods are allowed to communicate.
-These policies, also known as &amp;ldquo;Layer 3&amp;rdquo; Network Policies (as opposed to &amp;ldquo;Layer 7&amp;rdquo; policy that might be applied by a service mesh), are used by a cluster&amp;rsquo;s CNI plugin to configure networking rules at the OS level. Not all CNI plugins support Network Policies and their specific implementation is left up to the plugin (many use iptables or eBPF).</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://cf-for-k8s.io/docs/testing/uptime-during-platform-upgrades/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://cf-for-k8s.io/docs/testing/uptime-during-platform-upgrades/</guid>
-      <description>Application availability during an upgrade CF-K8s currently supports 95% app uptime during an upgrade. For example, given a deployment of cf-k8s with an upgrade duration of 3min, we expect 9 seconds app downtime during the upgrade.
-The number of gateways required for a deployment of cf-k8s is proportional to the the load profile of applications deployed on the platform. Based on the Istio team&amp;rsquo;s testing, in an unknown test environment, a single Envoy consumes 0.</description>
-    </item>
-    
   </channel>
 </rss>

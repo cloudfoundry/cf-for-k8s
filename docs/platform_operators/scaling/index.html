@@ -1,0 +1,518 @@
+<!doctype html>
+<html>
+  <head>
+    
+
+
+<meta charset="utf-8">
+<meta http-equiv="x-ua-compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Scaling"/>
+<link rel="canonical" content="https://cf-for-k8s.io/docs/platform_operators/scaling/">
+<link rel="icon" type="image/png" href="/images/favicon.png">
+
+
+
+
+
+
+<meta property="og:title" content="Scaling · Cloud Foundry for Kubernetes">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cf-for-k8s.io/docs/platform_operators/scaling/">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Cloud Foundry for Kubernetes">
+<meta property="og:description" content="Scaling">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://cf-for-k8s.io/images/cf-for-k8s-logo.png">
+<meta property="og:image:alt" content="CF for K8s project logo">
+<meta property="og:image:type" content="image/jpeg">
+
+
+
+
+
+
+<meta property="twitter:title" content="Scaling · Cloud Foundry for Kubernetes">
+<meta property="twitter:card" content="summary">
+<meta property="twitter:image" content="https://cf-for-k8s.io/images/cf-for-k8s-logo.png">
+<meta property="twitter:image:alt" content="CF for K8s project logo">
+<meta property="twitter:site" content="@">
+<meta property="twitter:creator" content="@">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono|Source+Sans+Pro:400,400i,600" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cf-for-k8s.io/scss/site.css" integrity="" media="screen">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PVB2G57');</script>
+    
+
+    <script>
+      function addAnchor(element) {
+        if (element.id === "" || element.getElementsByTagName("a").length > 0) {
+          return;
+        }
+
+        
+
+
+        element.innerHTML =
+        `${element.innerHTML}`;
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const headers = document.querySelectorAll('h1, h2, h3, h4, h5');
+        if (headers) {
+          headers.forEach(addAnchor);
+        }
+      });
+    </script>
+
+    <title>Scaling · Cloud Foundry for Kubernetes</title>
+  </head>
+  <body>
+    
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PVB2G57"
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    
+    <header class="container">
+  <a href="https://cf-for-k8s.io/" class="logo"><img src="/images/logo.svg" alt="CF For K8s Logo"></a>
+  <input type="checkbox" id="mobile-nav-toggle">
+  <label for="mobile-nav-toggle"></label>
+  <ul>
+    
+    
+      
+      <li><a class=""  href="/">Home</a></li>
+    
+      
+      <li><a class=""  href="/features/">Features</a></li>
+    
+      
+      <li><a class="active"  href="/docs/">Docs</a></li>
+    
+      
+      <li><a class="" target='_blank' href="https://medium.com/@cf-release-integration">Blog</a></li>
+    
+    <li><a href="https://github.com/cloudfoundry/cf-for-k8s" class="github-button icon-button bg-blue button">GitHub</a></li>
+  </ul>
+</header>
+
+    
+
+<div class='docs'>
+  <div class="container">
+    <div class='row'>
+      <div class='col-md-4 docs-sidebar'>
+        <nav class='sidebar'>
+  <ul>
+      <li data-nav-id="/docs/" class="dd-item depth-0">
+        <a href="/docs/">Getting Started with Cf-for-K8s</a>
+        <ul class="ml-2">
+        </ul>
+      </li>
+      <li data-nav-id="/docs/deploying/" class="dd-item depth-0 haschildren">
+        <a href="/docs/deploying/">Deploying cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/deploying/deploy-local/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-local/">Deploying CF for K8s Locally</a>
+      </li>
+      <li data-nav-id="/docs/deploying/deploy-in-ci/" class="dd-item depth-1">
+        <a href="/docs/deploying/deploy-in-ci/">Deploy CF for K8s in CI</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 parent haschildren">
+        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/" class="dd-item depth-1 haschildren">
+        <a href="/docs/platform_operators/networking/">Networking</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/platform_operators/networking/gateway-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/gateway-access-logs/">Gateway Access Logs</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/ingress-routing-topology/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/ingress-routing-topology/">Ingress Routing</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/networking-metrics-and-monitoring/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/networking-metrics-and-monitoring/">Networking Metrics</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/networking/sidecar-access-logs/" class="dd-item depth-2">
+        <a href="/docs/platform_operators/networking/sidecar-access-logs/">Sidecar Access Logs</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/platform_operators/config-values/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/config-values/">Deploy Parameters</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/warning-regarding-kubectl-usage/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/warning-regarding-kubectl-usage/">kubectl Warning</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/rotating-secrets-and-certs/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/rotating-secrets-and-certs/">Rotating Secrets</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1 active">
+        <a href="/docs/platform_operators/scaling/">Scaling</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/external-databases/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/external-databases/">Using external databases</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/contributing/" class="dd-item depth-0 haschildren">
+        <a href="/docs/contributing/">Contributing <br>(for Component Developers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/contributing/code-of-conduct/" class="dd-item depth-1">
+        <a href="/docs/contributing/code-of-conduct/">Code Of Conduct</a>
+      </li>
+      <li data-nav-id="/docs/contributing/networking/" class="dd-item depth-1">
+        <a href="/docs/contributing/networking/">Networking Configuration for System Components</a>
+      </li>
+          </ul>
+      </li>
+      <li data-nav-id="/docs/debugging/" class="dd-item depth-0">
+        <a href="/docs/debugging/">Debugging</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/" class="dd-item depth-0 haschildren">
+        <a href="/docs/maintaining/">Maintaining <br>(for Release Integration Engineers)</a>
+          <ul class="ml-2">
+      <li data-nav-id="/docs/maintaining/preparing-for-development/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
+      </li>
+      <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
+        <a href="/docs/maintaining/maintainers/"></a>
+      </li>
+          </ul>
+      </li>
+    </ul>
+  
+</nav>
+
+
+
+      </div>
+      <div class='col-md-8 docs-content'>
+        <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BScaling%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fscaling%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/platform_operators/scaling.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+
+        <div class="heading">
+          <h1 class="title">Scaling</h1>
+        </div>
+
+        <h1 id="scaling">Scaling</h1>
+<ul>
+<li><a href="#scaling-cf-for-k8s">Scaling cf-for-k8s</a>
+<ul>
+<li><a href="#horizontal-scaling">Horizontal Scaling</a></li>
+<li><a href="#vertical-scaling">Vertical Scaling</a></li>
+<li><a href="#discovering-all-cf-for-k8s-pods">Discovering all cf-for-k8s Pods</a></li>
+<li><a href="#component-specific-scaling">Component-specific Scaling</a>
+<ul>
+<li><a href="#scaling-cf-api">Scaling CF API</a></li>
+<li><a href="#scaling-networking">Scaling Networking</a></li>
+</ul>
+</li>
+<li><a href="#ytt-overlay-troubleshooting">ytt overlay troubleshooting</a></li>
+</ul>
+</li>
+</ul>
+<p><small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small></p>
+<h1 id="scaling-cf-for-k8s">Scaling cf-for-k8s</h1>
+<p>cf-for-k8s ships by default in a small-footprint, developer configuration to allow for quick testing, for example on a minikube or KinD local cluster. For production use cases, cf-for-k8s needs to be scaled up. This document describes different ways of scaling cf-for-k8s and gives examples that you can use as a starting point.</p>
+<h2 id="horizontal-scaling">Horizontal Scaling</h2>
+<p>This involves changing the number of Kubernetes <em>pods</em> (where a pod is where containers are run) that a particular component uses.</p>
+<p>For example, suppose you want to be running 3 <code>cf-api-server</code> pods instead of the default of 2.</p>
+<p>The easiest way is to create a <em>ytt overlay</em> that makes this specification. Suppose it&rsquo;s in the file called <code>scale-api-server.yml</code> (it&rsquo;s important that this file have a <code>.yml</code> extension):</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c">#@ load(&#34;@ytt:overlay&#34;, &#34;overlay&#34;)</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/match by=overlay.subset({&#34;kind&#34;: &#34;Deployment&#34;, &#34;metadata&#34;:{&#34;name&#34;: &#34;cf-api-server&#34;}})</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
+</span></code></pre></div><p>You then modify the <code>ytt</code> command to include this file as an additional <code>-f</code> input:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ytt -f config -f VALUES_FILE -f scale-api-server.yml &gt; /tmp/new-cffork8s-rendered.yml
+</code></pre></div><p>If you had run an earlier <code>ytt</code> command, you should see this diff in the rendered contents:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ytt -f config -f VALUES_FILE &gt; /tmp/cffork8s-rendered.yml
+$ ytt -f config -f VALUES_FILE -f scale-api-server.yml &gt; /tmp/new-cffork8s-rendered.yml
+$ diff /tmp/cffork8s-rendered.yml /tmp/new-cffork8s-rendered.yml
+38c38
+&lt;   replicas: <span class="m">2</span>
+---
+&gt;   replicas: <span class="m">3</span>
+</code></pre></div><p>You can learn much more about <code>ytt</code>, and try things out in the <code>ytt sandbox</code> at <a href="https://get-ytt.io">https://get-ytt.io</a> .</p>
+<h2 id="vertical-scaling">Vertical Scaling</h2>
+<p>This section is concerned with two resources: the amount of RAM and how much of a CPU a container has access to.</p>
+<p>By default, a container has no resource constraints placed on it.</p>
+<p>When a container is run, a command like <code>docker run</code> can specify the amount of memory and/or CPU the container has access to. In <code>cf-for-k8s</code>, containers are run through YAML specifications in the <code>spec.containers.resources</code> fields. For example, in <code>config/capi/_ytt_lib/capi-k8s-release/templates/api_server_deployment.yml</code>, the starting and maximum limits for each <code>cf-api-server</code> container are specified as:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">500m</span><span class="w">
+</span><span class="w">      </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">300Mi</span><span class="w">
+</span><span class="w">    </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">1000m</span><span class="w">
+</span><span class="w">      </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="m">1.</span><span class="l">2Gi</span><span class="w">
+</span></code></pre></div><p>The <code>requests</code> block gives the initial resources for the container, and the <code>limits</code> gives the final. If a container exceeds a factor in the <code>limits</code> block, kubernetes kills that container and starts a new one. This is called <a href="https://kubernetes.io/docs/tasks/configure-pod-container/quality-service-pod/">burstable QOS</a> (quality of service), and is normally the best way to configure pods. See this wonderful, succinct blog post to learn more: <a href="https://medium.com/better-programming/the-kubernetes-quality-of-service-conundrum-eebbbb5f89cf">The Kubernetes Quality of Service Conundrum</a></p>
+<p>You <em>could</em> modify this file in place, but it&rsquo;s better to write a reusable <code>ytt</code> overlay to scale. All your overlays could be in a single file, but we&rsquo;ll write this one in a separate file, <code>vertically-scale-api-server.yml</code>, to isolate the change:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c">#@ load(&#34;@ytt:overlay&#34;, &#34;overlay&#34;)</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/match by=overlay.subset({&#34;kind&#34;: &#34;Deployment&#34;, &#34;metadata&#34;:{&#34;name&#34;: &#34;cf-api-server&#34;}})</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="c">#@overlay/match by=overlay.subset({&#34;name&#34;: &#34;cf-api-server&#34;})</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">2000m</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="m">2.</span><span class="l">4Gi</span><span class="w">
+</span></code></pre></div><p>The syntax might be unfamiliar, but it&rsquo;s essentially describing a path through the yaml tree (<code>kind.spec.template.spec.containers</code>) using the two <code>overlay/match</code> commands to select the particular items we want. Again, see <a href="https://get-ytt.io">https://get-ytt.io</a> for more info.</p>
+<p>This time, comparing the new and old rendered contents should give this diff:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ytt -f config -f VALUES_FILE -f vertically-scale-api-server.yml &gt; /tmp/new-rendered-contents.yml
+$ diff /tmp/rendered-contents.yml /tmp/new-rendered-contents.yml
+70,71c70,71
+&lt;             cpu: 1000m
+&lt;             memory: 1.2Gi
+---
+&gt;             cpu: 2000m
+&gt;             memory: 2.4Gi
+</code></pre></div><h2 id="discovering-all-cf-for-k8s-pods">Discovering all cf-for-k8s Pods</h2>
+<p><code>cf-for-k8s</code> puts pods in several different namespaces, so the most straightforward way to list all the pods that can be scaled up is by ignoring the kubernetes pods, with this command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ kubectl get pods -A <span class="p">|</span> grep -v -e kube-system -e cf-workloads
+</code></pre></div><p>Note: The <code>cf-workloads</code> namespace is controlled by <code>cf-for-k8s</code> internals, and should not require scaling.</p>
+<h2 id="component-specific-scaling">Component-specific Scaling</h2>
+<h3 id="scaling-cf-api">Scaling CF API</h3>
+<p>Please see <a href="https://docs.cloudfoundry.org/running/managing-cf/scaling-cloud-controller-k8s.html">https://docs.cloudfoundry.org/running/managing-cf/scaling-cloud-controller-k8s.html</a></p>
+<h3 id="scaling-networking">Scaling Networking</h3>
+<p>This describes how to scale the cf-for-k8s networking components for production use cases. It uses the ideas and principles described above and includes an example overlay implementation.</p>
+<p>If you would like to scale up the networking components for a larger scale
+environment, simply:</p>
+<ol>
+<li>Copy the following example into a <code>scaling-networking.yml</code> file</li>
+<li>Adjust the values to your liking</li>
+<li>Append <code>-f scaling-networking.yml</code> to the <code>ytt</code> command you run for rendering your cf-for-k8s yaml</li>
+</ol>
+<p>The number of ingressgateway replicas depends on load profile of your cluster. Based on the Istio team&rsquo;s testing, in an unknown test environment, a single Envoy consumes 0.5 vCPU and 50 MB memory per 1000 requests per second.</p>
+<p>The number of istiod replicas depends on the number of application instances.</p>
+<p>We recommend two routecontrollers for high availability; you likely won&rsquo;t
+need more than that.</p>
+<p>Sidecar resource usage depends on the load profile of your AIs.</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c">#@ load(&#34;@ytt:overlay&#34;, &#34;overlay&#34;)</span><span class="w">
+</span><span class="w"></span><span class="c">#@ load(&#34;@ytt:json&#34;, &#34;json&#34;)</span><span class="w">
+</span><span class="w"></span><span class="c">#! Modify these values to adjust scaling characteristics</span><span class="w">
+</span><span class="w"></span><span class="c">#@ ingress_gateway_replicas = 2</span><span class="w">
+</span><span class="w"></span><span class="c">#@ ingress_gateway_cpu_request = &#34;1&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ ingress_gateway_cpu_limit = &#34;2&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ ingress_gateway_mem_request = &#34;1Gi&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ ingress_gateway_mem_limit = &#34;2Gi&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ istiod_replicas = 2</span><span class="w">
+</span><span class="w"></span><span class="c">#@ istiod_cpu_request = &#34;1&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ istiod_cpu_limit = &#34;2&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ istiod_mem_request = &#34;1Gi&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ istiod_mem_limit = &#34;2Gi&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ routecontroller_replicas = 2</span><span class="w">
+</span><span class="w"></span><span class="c">#@ routecontroller_cpu_request = &#34;200m&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ routecontroller_cpu_limit = &#34;400m&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ routecontroller_mem_request = &#34;32Mi&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ routecontroller_mem_limit = &#34;1024Mi&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ sidecar_cpu_request = &#34;100m&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ sidecar_cpu_limit = &#34;2000m&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ sidecar_mem_request = &#34;128Mi&#34;</span><span class="w">
+</span><span class="w"></span><span class="c">#@ sidecar_mem_limit = &#34;1024Mi&#34;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c">#! the intent is that the overlays below shouldn&#39;t need to be changed [much] but we are not testing them in CI</span><span class="w">
+</span><span class="w"></span><span class="c">#! if you notice that they&#39;ve become outdated, please suggest changes via a pull request</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c">#@ def modify_configmap(data):</span><span class="w">
+</span><span class="w"></span><span class="c">#@   decoded = json.decode(data)</span><span class="w">
+</span><span class="w"></span><span class="c">#@   decoded[&#34;global&#34;][&#34;proxy&#34;][&#34;resources&#34;] = {</span><span class="w">
+</span><span class="w"></span><span class="c">#@     &#34;limits&#34;: {</span><span class="w">
+</span><span class="w"></span><span class="c">#@       &#34;cpu&#34;: sidecar_cpu_limit,</span><span class="w">
+</span><span class="w"></span><span class="c">#@       &#34;memory&#34;: sidecar_mem_limit,</span><span class="w">
+</span><span class="w"></span><span class="c">#@     },</span><span class="w">
+</span><span class="w"></span><span class="c">#@     &#34;requests&#34;: {</span><span class="w">
+</span><span class="w"></span><span class="c">#@       &#34;cpu&#34;: sidecar_cpu_request,</span><span class="w">
+</span><span class="w"></span><span class="c">#@       &#34;memory&#34;: sidecar_mem_request,</span><span class="w">
+</span><span class="w"></span><span class="c">#@     },</span><span class="w">
+</span><span class="w"></span><span class="c">#@   }</span><span class="w">
+</span><span class="w"></span><span class="c">#@   return json.encode(decoded)</span><span class="w">
+</span><span class="w"></span><span class="c">#@ end</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/match by=overlay.subset({&#34;kind&#34;: &#34;ConfigMap&#34;, &#34;metadata&#34;:{&#34;name&#34;:&#34;istio-sidecar-injector&#34;}}),expects=1</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">data</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="c">#@overlay/replace via=lambda a,_: modify_configmap(a)</span><span class="w">
+</span><span class="w">  </span><span class="nt">values</span><span class="p">:</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/match by=overlay.subset({&#34;kind&#34;: &#34;DaemonSet&#34;, &#34;metadata&#34;:{&#34;name&#34;:&#34;istio-ingressgateway&#34;}}),expects=1</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/replace</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="c">#@overlay/match missing_ok=True</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="c">#@ ingress_gateway_replicas</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="c">#@overlay/match by=&#34;name&#34;, expects=1</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">istio-proxy</span><span class="w">
+</span><span class="w">        </span><span class="c">#@overlay/match missing_ok=True</span><span class="w">
+</span><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="c">#@ ingress_gateway_cpu_limit</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="c">#@ ingress_gateway_mem_limit</span><span class="w">
+</span><span class="w">          </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="c">#@ ingress_gateway_cpu_request</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="c">#@ ingress_gateway_mem_request</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/match by=overlay.subset({&#34;kind&#34;: &#34;Deployment&#34;, &#34;metadata&#34;:{&#34;name&#34;:&#34;istiod&#34;}}),expects=1</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="c">#@overlay/replace</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="c">#@ istiod_replicas</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="c">#@overlay/match by=&#34;name&#34;, expects=1</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">discovery</span><span class="w">
+</span><span class="w">        </span><span class="c">#@overlay/match missing_ok=True</span><span class="w">
+</span><span class="w">        </span><span class="c">#@overlay/replace</span><span class="w">
+</span><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="c">#@ istiod_cpu_limit</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="c">#@ istiod_mem_limit</span><span class="w">
+</span><span class="w">          </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="c">#@ istiod_cpu_request</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="c">#@ istiod_mem_request</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/match by=overlay.subset({&#34;kind&#34;: &#34;Deployment&#34;, &#34;metadata&#34;: { &#34;name&#34;: &#34;routecontroller&#34;}}),expects=1</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="c">#@overlay/replace</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="c">#@ routecontroller_replicas</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="c">#@overlay/match by=&#34;name&#34;, expects=1</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">routecontroller</span><span class="w">
+</span><span class="w">        </span><span class="c">#@overlay/match missing_ok=True</span><span class="w">
+</span><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="c">#@ routecontroller_cpu_limit</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="c">#@ routecontroller_mem_limit</span><span class="w">
+</span><span class="w">          </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="c">#@ routecontroller_cpu_request</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="c">#@ routecontroller_mem_request</span><span class="w">
+</span></code></pre></div><h2 id="ytt-overlay-troubleshooting">ytt overlay troubleshooting</h2>
+<p><code>ytt</code> <em>will</em> give error messages if it finds a problem in some code. If there is no problem, it will emit over 16,000 lines of YAML. Normally, when you run <code>ytt</code> you should direct its output to a file, as we&rsquo;ve done in the above examples. If there&rsquo;s an error, the message will be written to <code>stderr</code> and not to the redirected file. For example, let&rsquo;s rerun the vertical scaling example with one small change in the overlay code, saved in a file called <code>vertically-scale-api-server-missing-list-hyphen.yml</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c">#@ load(&#34;@ytt:overlay&#34;, &#34;overlay&#34;)</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/match by=overlay.subset({&#34;kind&#34;: &#34;Deployment&#34;, &#34;metadata&#34;:{&#34;name&#34;: &#34;cf-api-server&#34;}})</span><span class="w">
+</span><span class="w"></span><span class="nn">---</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="c">#@overlay/match by=overlay.subset({&#34;name&#34;: &#34;cf-api-server&#34;})</span><span class="w">
+</span><span class="w">      </span><span class="nt">resources</span><span class="p">:</span><span class="w">  </span><span class="c">#! &lt;---- missing hyphen before &#39;resources&#39;</span><span class="w">
+</span><span class="w">          </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">2000m</span><span class="w">
+</span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="m">2.</span><span class="l">4Gi</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ytt -f config -f VALUES_FILE -f vertically-scale-api-server-missing-list-hyphen.yml  &gt; output.txt
+  ytt: Error: Overlaying <span class="o">(</span>in following order: 2-fix-null-annotations.yml, capi/staging-ns-label.yml, eirini/eirini.yml, fix-db-startup-order.yml, istio/add-istio-injection.yml, istio/external-routing.yml, istio/istio-kapp-ordering.yml, istio/label-istio-ns.yml, istio/remove-hpas-and-scale-istiod.yml, kpack/kapp-order.yml, kpack/kpack-ns-label.yml, kpack/kpack.yml, minio/minio.yml, networking/network-policies.yaml, postgres/postgres.yml, prioritize-daemonsets.yml, uaa/uaa.yml, workloads-namespace.yml, z-kapp-versioned-creds.yml, vert-scale-api-server.yml<span class="o">)</span>:
+    Document on line vert-scale-api-server.yml:4:
+      Map item <span class="o">(</span>key <span class="s1">&#39;spec&#39;</span><span class="o">)</span> on line vert-scale-api-server.yml:5:
+        Map item <span class="o">(</span>key <span class="s1">&#39;template&#39;</span><span class="o">)</span> on line vert-scale-api-server.yml:6:
+          Map item <span class="o">(</span>key <span class="s1">&#39;spec&#39;</span><span class="o">)</span> on line vert-scale-api-server.yml:7:
+            Map item <span class="o">(</span>key <span class="s1">&#39;resources&#39;</span><span class="o">)</span> on line vert-scale-api-server.yml:10:
+              Expected number of matched nodes to be 1, but was <span class="m">0</span>
+
+</code></pre></div>
+
+        
+
+        <hr>
+<div class='footline d-block'>
+  <div class="support-links">
+  
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BScaling%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fscaling%2F%29"
+       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
+
+    
+    
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/platform_operators/scaling.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
+    
+  
+</div>
+
+</div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+    <footer>
+  
+  <div class="bg-black">
+    <div class="container footer clearfix">
+      <div class="logo">
+        <a href="https://cf-for-k8s.io/"><img src="/images/logo-white.svg" class="footer-logo"></a>
+      </div>
+      <div class="info">
+        <p>cf for k8s is a Cloud Foundry Project</p>
+        <p class="sub-info">Hugo template graciously copied from buildpacks.io</p>
+      </div>
+      <ul>
+        <li><a href="https://cloudfoundry.slack.com/?redir=%2Farchives%2FCH9LF6V1P" target="_blank"><img src="/images/slack.png"></a></li>
+        <li><a href="https://lists.cloudfoundry.org/g/cf-dev/topics" target="_blank"><img src="/images/mail.png"></a></li>
+        <li><a href="https://twitter.com/cloudfoundry" target="_blank"><img src="/images/twitter.png"></a></li>
+        <li><a href="https://github.com/cloudfoundry/cf-for-k8s" target="_blank"><img src="/images/github.png"></a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

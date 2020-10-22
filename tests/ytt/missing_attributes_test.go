@@ -20,9 +20,11 @@ var _ = Describe("Missing Attributes", func() {
 		targetDir, err = ioutil.TempDir("", "")
 		Expect(err).NotTo(HaveOccurred())
 
-		ctx = NewRenderingContext(targetDir, valueFiles...)
-
-		err = ctx.CopyTemplatesToTargetDir(templateFiles...)
+		ctx, err = NewRenderingContext(
+			WithTargetDir(targetDir),
+			WithTemplateFiles(templateFiles...),
+			WithValueFiles(valueFiles...),
+		)
 		Expect(err).NotTo(HaveOccurred())
 	})
 

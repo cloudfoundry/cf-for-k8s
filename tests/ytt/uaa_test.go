@@ -33,9 +33,12 @@ var _ = Describe("UAA", func() {
 		targetDir, err = ioutil.TempDir("", "")
 		Expect(err).NotTo(HaveOccurred())
 
-		ctx = NewRenderingContext(targetDir, valueFiles...).WithData(data)
-
-		err = ctx.CopyTemplatesToTargetDir(templateFiles...)
+		ctx, err = NewRenderingContext(
+			WithData(data),
+			WithTargetDir(targetDir),
+			WithTemplateFiles(templateFiles...),
+			WithValueFiles(valueFiles...),
+		)
 		Expect(err).NotTo(HaveOccurred())
 	})
 

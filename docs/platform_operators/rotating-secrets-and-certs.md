@@ -8,9 +8,6 @@ The following fields currently cannot be rotated:
 * `blobstore.secret_access_key`
 * `capi.database.encryption_key`
 * `capi.database.password`
-* `cf_admin_password`
-* `cf_db.admin_password`
-* `uaa.database.password`
 
 For example, rotating the cloud controller db encryption key is a breaking change. Rotating the key will 
 require a recreating your environment (including deleting database contents) in order to prevent decryption errors when fetching

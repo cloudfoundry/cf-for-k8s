@@ -11,6 +11,7 @@ blobstore:
   region: ""
   resource_directory_key: cc-resources
   secret_access_key_secret_name:
+  fog_aws_storage_options: {}
 cc:
   log_level: info
 ccdb:

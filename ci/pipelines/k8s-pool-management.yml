@@ -190,6 +190,44 @@ jobs:
         - put: building-pool
           params: {add: new-lock}
 
+- name: spin-down-after-hours
+  plan:
+  - in_parallel:
+    - get: after-7pm
+      trigger: true
+    - get: pool-repo
+
+  - task: delete-unclaimed
+    # this moves everything from ready/unclaimed to destroy/unclaimed
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      inputs:
+      - name: pool-repo
+      outputs:
+      - name: updated-pool-repo
+      run:
+        path: /bin/bash
+        args:
+        - -ec
+        - |
+          git config --global user.name "Cluster Management Overlord"
+          git config --global user.email "cf-release-integration+ci@pivotal.io"
+          git clone pool-repo updated-pool-repo
+          cd updated-pool-repo
+          find k8s-dev/ready/unclaimed -type f ! -name .gitkeep | xargs -n1 -I{} git mv -v {} k8s-dev/destroy/unclaimed
+
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git commit -m'Destroying unclaimed K8s dev pool environments'
+          fi
+
+  - put: pool-repo
+    params:
+      repository: updated-pool-repo
+      rebase: true
+
 - name: acquire-lock-for-create-cluster
   plan:
   - get: building-pool-trigger
@@ -273,45 +311,7 @@ jobs:
     params:
       remove: building-cluster
 
-- name: spin-down-after-hours
-  plan:
-  - in_parallel:
-    - get: after-7pm
-      trigger: true
-    - get: pool-repo
-
-  - task: delete-unclaimed
-    # this moves everything from ready/unclaimed to destroy/unclaimed
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
-      inputs:
-      - name: pool-repo
-      outputs:
-      - name: updated-pool-repo
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          git config --global user.name "Cluster Management Overlord"
-          git config --global user.email "cf-release-integration+ci@pivotal.io"
-          git clone pool-repo updated-pool-repo
-          cd updated-pool-repo
-          find k8s-dev/ready/unclaimed -type f ! -name .gitkeep | xargs -n1 -I{} git mv -v {} k8s-dev/destroy/unclaimed
-
-          if [[ -n "$(git status --porcelain)" ]]; then
-            git commit -m'Destroying unclaimed K8s dev pool environments'
-          fi
-
-  - put: pool-repo
-    params:
-      repository: updated-pool-repo
-      rebase: true
-
-- name: acquire-lock-for-destroy-cluster
+- name: destroy-cluster
   plan:
   - get: destroy-pool-trigger
     version: every
@@ -321,15 +321,7 @@ jobs:
     params:
       acquire: true
 
-- name: destroy-cluster
-  plan:
-  - in_parallel:
-    - get: destroy-cluster
-      resource: destroy-pool
-      version: every
-      passed: [acquire-lock-for-destroy-cluster]
-      trigger: true
-    - get: cf-for-k8s-gke-terraform-templates
+  - get: cf-for-k8s-gke-terraform-templates
 
   - task: create-tf-vars-file
     config:
@@ -338,7 +330,7 @@ jobs:
         type: docker-image
         source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
       inputs:
-      - name: destroy-cluster
+      - name: destroy-pool
       outputs:
       - name: tf-vars
       params:
@@ -354,15 +346,15 @@ jobs:
           region = "us-central1"
           zone = "us-central1-a"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-          env_name = "$(cat destroy-cluster/name)"
-          env_dns_domain = "$(cat destroy-cluster/name).${DOMAIN}"
+          env_name = "$(cat destroy-pool/name)"
+          env_dns_domain = "$(cat destroy-pool/name).${DOMAIN}"
           dns_zone_name = "k8s-dev-relint-rocks"
           EOT
 
   - put: terraform
     params:
       terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
-      env_name_file: destroy-cluster/name
+      env_name_file: destroy-pool/name
       action: destroy
       var_files: [ tf-vars/input.tfvars ]
     get_params:
@@ -370,7 +362,7 @@ jobs:
 
   - put: destroy-pool
     params:
-      remove: destroy-cluster
+      remove: destroy-pool
 
 - name: post-to-slack
   plan:

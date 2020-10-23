@@ -228,7 +228,7 @@ jobs:
       repository: updated-pool-repo
       rebase: true
 
-- name: acquire-lock-for-create-cluster
+- name: create-cluster
   plan:
   - get: building-pool-trigger
     version: every
@@ -238,16 +238,7 @@ jobs:
     params:
       acquire: true
 
-- name: create-cluster
-  plan:
-  - in_parallel:
-    - get: building-cluster
-      resource: building-pool
-      version: every
-      passed: [acquire-lock-for-create-cluster]
-      trigger: true
-    - get: pool-repo
-    - get: cf-for-k8s-gke-terraform-templates
+  - get: cf-for-k8s-gke-terraform-templates
 
   - task: create-tf-vars-file
     config:
@@ -256,7 +247,7 @@ jobs:
         type: docker-image
         source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
       inputs:
-      - name: building-cluster
+      - name: building-pool
       outputs:
       - name: tf-vars
       params:
@@ -272,15 +263,15 @@ jobs:
           region = "us-central1"
           zone = "us-central1-a"
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
-          env_name = "$(cat building-cluster/name)"
-          env_dns_domain = "$(cat building-cluster/name).${DOMAIN}"
+          env_name = "$(cat building-pool/name)"
+          env_dns_domain = "$(cat building-pool/name).${DOMAIN}"
           dns_zone_name = "k8s-dev-relint-rocks"
           EOT
 
   - put: terraform
     params:
       terraform_source: cf-for-k8s-gke-terraform-templates/deploy/gke/terraform
-      env_name_file: building-cluster/name
+      env_name_file: building-pool/name
       delete_on_failure: true
       var_files: [ tf-vars/input.tfvars ]
 
@@ -291,7 +282,7 @@ jobs:
         type: docker-image
         source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
       inputs:
-      - name: building-cluster
+      - name: building-pool
       - name: terraform
       outputs:
       - name: ready-cluster
@@ -300,7 +291,7 @@ jobs:
         args:
         - -ec
         - |
-          cp -v building-cluster/name ready-cluster/name
+          cp -v building-pool/name ready-cluster/name
           cp -v terraform/metadata ready-cluster/metadata
 
   - put: ready-pool
@@ -309,7 +300,7 @@ jobs:
 
   - put: building-pool
     params:
-      remove: building-cluster
+      remove: building-pool
 
 - name: destroy-cluster
   plan:

@@ -157,7 +157,7 @@ resource_pool:
   minimum_size: 65536
   maximum_size: 536870912
 
-  fog_aws_storage_options: {}
+  fog_aws_storage_options: #@ data.values.blobstore.fog_aws_storage_options
 
 packages:
   app_package_directory_key: #@ data.values.blobstore.package_directory_key

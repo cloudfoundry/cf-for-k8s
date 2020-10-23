@@ -22,7 +22,7 @@ Default values are set in files like `config/values/00-values.yml`
 | capi.database.user | database user for capi tables | No | cloud_controller | capi-db-user |
 | cf_admin_password | password for admin user in plain text | Yes | no value | 2fK2zLXPgvmsESrB87sADZQvdLeY5Kv4 |
 | cf_db.admin_password | password for administering the internal database | Not if using external database | no value | FQq3dPd6DAoLIMIr |
-| enable_automount_service_account_token |  | No | false |  |
+| enable_automount_service_account_token |  | No | false | On most IaaSes should be same as `use_first_party_jwt_tokens` |
 | gateway.https_only | When true, automatically upgrades incoming HTTP connections to HTTPS gateway | No | true | false |
 | load_balancer.enable | Enable IaaS provisioned load balancer | No | true | false |
 | load_balancer.static_ip | reserved static ip for LoadBalancer | No | dynamically assigned | "192.168.0.0" |
@@ -46,7 +46,7 @@ Default values are set in files like `config/values/00-values.yml`
 | uaa.login.service_provider.key | key for UAA's SAML provider | Yes | no value | qcXZEcKlrG/8mCfH |
 | uaa.login_secret | secret for an external login server to authenticate to UAA | Yes | no value | xrEL+uJ4eb8duBms |
 | use_external_dns_for_wildcard | Enable external-dns integration on the system ingress Service | No | false |  |
-| use_first_party_jwt_tokens | Patch istio to use first party jwt tokens | No | false |  |
+| use_first_party_jwt_tokens | Patch istio to use first party jwt tokens | No | false | On most IaaSes should be same as `enable_automount_service_account_token` |
 | workloads_certificate.ca | CA certificate used to sign the workloads certifcate | No | no value |  |
 | workloads_certificate.crt | Certificate for the wildcard - subdomain of the system domain | Yes | no value | CN=*.apps.cf.example.com |
 | workloads_certificate.key | Private key for the workloads certificate | Yes | no value |  |

@@ -53,7 +53,6 @@ internal_certificate.key
 system_certificate.crt
 system_certificate.key
 system_domain
-uaa.admin_client_secret
 uaa.database.password
 uaa.encryption_key.passphrase
 uaa.jwt_policy.signing_key

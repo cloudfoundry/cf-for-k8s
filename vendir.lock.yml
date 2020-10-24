@@ -3,9 +3,9 @@ directories:
 - contents:
   - git:
       commitTitle: images.yml updated by CI...
-      sha: b651a51c58a3577be8c6bf2b1c598a36633989df
+      sha: 30132ef73ce7b2f05d33ba539ce46edeeae55903
       tags:
-      - v0.4.0-40-gb651a51
+      - v0.4.0-44-g30132ef
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:

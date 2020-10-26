@@ -1,13 +1,16 @@
 - [Scaling cf-for-k8s](#scaling-cf-for-k8s)
   * [Horizontal Scaling](#horizontal-scaling)
   * [Vertical Scaling](#vertical-scaling)
-  * [Discovering all cf-for-k8s Pods](#discovering-all-cf-for-k8s-pods)
+    + [Simple ytt interface for scaling all pods](#simple-ytt-interface-for-scaling-all-pods)
+  * [Example resource scaling for a massive cf-for-k8s](#example-resource-scaling-for-a-massive-cf-for-k8s)
   * [Component-specific Scaling](#component-specific-scaling)
     + [Scaling CF API](#scaling-cf-api)
     + [Scaling Networking](#scaling-networking)
+  * [Discovering all cf-for-k8s Pods](#discovering-all-cf-for-k8s-pods)
   * [ytt overlay troubleshooting](#ytt-overlay-troubleshooting)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 
 # Scaling cf-for-k8s
 
@@ -101,15 +104,13 @@ $ diff /tmp/rendered-contents.yml /tmp/new-rendered-contents.yml
 >             memory: 2.4Gi
 ```
 
-## Discovering all cf-for-k8s Pods
+### Simple ytt interface for scaling all pods
 
-`cf-for-k8s` puts pods in several different namespaces, so the most straightforward way to list all the pods that can be scaled up is by ignoring the kubernetes pods, with this command:
+For an example ytt overlay that provides a simple values file interface for scaling any pod/container, please checkout this example from the Carvel team in the ytt playground: https://get-ytt.io/#gist:https://gist.github.com/cppforlife/32d6ed87a18c66333dab8e710e180dea
 
-```bash
-$ kubectl get pods -A | grep -v -e kube-system -e cf-workloads
-```
+## Example resource scaling for a massive cf-for-k8s
 
-Note: The `cf-workloads` namespace is controlled by `cf-for-k8s` internals, and should not require scaling.
+For a massive scale test, we recommend the values used by the SAP team in their write-up here: https://github.com/perf-cfk8s/docs/wiki/cf-for-k8s-1.0.0
 
 ## Component-specific Scaling
 
@@ -244,6 +245,16 @@ spec:
             cpu: #@ routecontroller_cpu_request
             memory: #@ routecontroller_mem_request
 ```
+
+## Discovering all cf-for-k8s Pods
+
+`cf-for-k8s` puts pods in several different namespaces, so the most straightforward way to list all the pods that can be scaled up is by ignoring the kubernetes pods, with this command:
+
+```bash
+$ kubectl get pods -A | grep -v -e kube-system -e cf-workloads
+```
+
+Note: The `cf-workloads` namespace is controlled by `cf-for-k8s` internals, and should not require scaling.
 
 ## ytt overlay troubleshooting
 

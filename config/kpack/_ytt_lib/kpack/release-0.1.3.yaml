@@ -113,7 +113,7 @@ metadata:
   name: build-init-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/build-init@sha256:8136ff3a64517457b91f86bf66b8ffe13b986aaf3511887eda107e59dcb8c632
+  image: gcr.io/cf-build-service-public/kpack/build-init@sha256:2c2d04fac6af56a94c546f618c238c3a302fcb482656eb7c5dc3597a64c3fb0e
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -121,7 +121,7 @@ metadata:
   name: rebase-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/rebase@sha256:70e1d8837773d623c67f9e9f09cddb58c77a30de46ebfe1d0090199c29dabc0d
+  image: gcr.io/cf-build-service-public/kpack/rebase@sha256:69078c7b3793692176b0493e7de869d00f6e0b5f07b8090389a59f4e33c94588
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -129,7 +129,7 @@ metadata:
   name: lifecycle-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/lifecycle@sha256:2b97f13bdf43d2f4e72b68f67dcb1b693c6bee10f76b709c09e46ae21ec265e8
+  image: gcr.io/cf-build-service-public/kpack/lifecycle@sha256:b9bc08572a2d2237aa635e696354a65c0668ea8e89a6cc8a5097b965141ac728
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -137,7 +137,7 @@ metadata:
   name: completion-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/completion@sha256:1e83c4ccb56ad3e0fccbac74f91dfc404db280f8d3380cfa20c7d68fd0359235
+  image: gcr.io/cf-build-service-public/kpack/completion@sha256:479e9326ad7c0a3a2febeb619d4c430fd812a1d0b249e700dacaec9bdd8fd070
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -153,12 +153,12 @@ spec:
     metadata:
       labels:
         app: kpack-controller
-        version: 0.1.2-rc.1
+        version: 0.1.3-rc.22
     spec:
       serviceAccountName: controller
       containers:
       - name: controller
-        image: gcr.io/cf-build-service-public/kpack/controller@sha256:6a7fbb4d34a5ed778e75edc2a14b671afcbccaed1a37a4662708b7a11559734c
+        image: gcr.io/cf-build-service-public/kpack/controller@sha256:5e5c33fc9cd0e2187f3f20e710f3ee096aa3bff529e3d5ec25c6b4ec87aaa86d
         env:
         - name: CONFIG_LOGGING_NAME
           value: config-logging
@@ -190,6 +190,13 @@ spec:
             configMapKeyRef:
               name: lifecycle-image
               key: image
+        resources:
+          requests:
+            cpu: 10m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 200Mi
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -431,12 +438,12 @@ spec:
       labels:
         app: kpack-webhook
         role: webhook
-        version: 0.1.2-rc.1
+        version: 0.1.3-rc.22
     spec:
       serviceAccountName: webhook
       containers:
       - name: webhook
-        image: gcr.io/cf-build-service-public/kpack/webhook@sha256:c51a7508908baacc7253c74b9d9a4f7384a62882005c0d7aabe59f9d43904233
+        image: gcr.io/cf-build-service-public/kpack/webhook@sha256:5b7aa13e802ecdc611535111c8136f03598712b9242fd20d9695f4114855cad2
         ports:
         - name: https-webhook
           containerPort: 8443
@@ -451,6 +458,13 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        resources:
+          requests:
+            cpu: 10m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 200Mi
 ---
 apiVersion: v1
 kind: ServiceAccount

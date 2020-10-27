@@ -265,7 +265,7 @@ Use the following resources to enable additional features in cf-for-k8s:
 - [Setup ingress certs with letsencrypt](platform_operators/setup-ingress-certs-with-letsencrypt.md)
 - [Setup static loadbalancer IP](platform_operators/setup-static-loadbalancer-ip.md)
 - [Setup an external database](platform_operators/external-databases.md), which we recommend for Production environments
-- [Setup an external blobstore](platform_operators/external-blobstore.md)
+- [Setup an external blobstore](platform_operators/external-blobstore.md), which we recommend for Production environments
 
 ## Roadmap and milestones
 You can find the project roadmap (github project) [here](https://github.com/cloudfoundry/cf-for-k8s/projects/4) and our upcoming milestones [here](https://github.com/cloudfoundry/cf-for-k8s/milestones). Feel free to ask questions in the [#cf-for-k8s channel](https://cloudfoundry.slack.com/archives/CH9LF6V1P) in the CloudFoundry slack or submit new feature requests or issues on this repo.

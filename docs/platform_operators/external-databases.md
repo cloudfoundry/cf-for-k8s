@@ -1,5 +1,8 @@
 # Using external databases
 
+The included postgres database is in support of the kick-the-tyres user and should just work.
+
+For all other users we recommend configuring your deployment with an external database.
 
 You can use an external database for the CF API and UAA by providing following values:
 

@@ -426,12 +426,12 @@ jobs:
             echo -e "${output}" | column -t -s $'\t'
           }
 
-          message="Time for another CLUSTER MGMT OVERLORD round-up! If you have a cluster claimed that you no longer need, run \`unclaim_k8s_env ENV_NAME\` to set it free!"
-          printf "${message}" >> "${output_file}"
+          echo "Time for another CLUSTER MANAGEMENT OVERLORD round-up!" > "${output_file}"
           echo "" >> "${output_file}"
           echo '```' >> "${output_file}"
           printf "$(print_env_info)" >> "${output_file}"
           echo '```' >> "${output_file}"
+          echo "If you have a cluster claimed that you no longer need, run \`unclaim_k8s_env ENV_NAME\` to set it free. You can also run \`cleanup_stale_ci_k8s_envs\` to release all clusters claimed by CI." >> "${output_file}"
 
           echo "Message:"
           cat "${output_file}"

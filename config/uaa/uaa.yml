@@ -134,6 +134,9 @@ oauth:
     cf_api_controllers:
       authorities: cloud_controller.write,cloud_controller.read,cloud_controller.update_build_state,cloud_controller.admin_read_only
       authorized-grant-types: client_credentials
+    cf_api_backup_metadata_generator:
+      authorities: cloud_controller.read,cloud_controller.admin_read_only
+      authorized-grant-types: client_credentials
   #@overlay/match missing_ok=True
   user:
     authorities:
@@ -277,6 +280,7 @@ scim:
 --- #@ uaa_client_credential("cf", "", "uaa-cf-client-secret")
 --- #@ uaa_client_credential("cloud_controller_username_lookup", data.values.capi.cc_username_lookup_client_secret, "uaa-cloud-controller-username-lookup-client-secret")
 --- #@ uaa_client_credential("cf_api_controllers", data.values.capi.cf_api_controllers_client_secret, "uaa-cf-api-controllers-client-secret")
+--- #@ uaa_client_credential("cf_api_backup_metadata_generator", data.values.capi.cf_api_backup_metadata_generator_client_secret, "uaa-cf-api-backup-metadata-generator-client-secret")
 
 ---
 apiVersion: v1
@@ -319,6 +323,11 @@ spec:
           mountPath: #@ "{}/cf_api_controllers_client_credentials.yml".format(secrets_dir)
           subPath: client_credentials.yml
           readOnly: true
+        #@overlay/append
+        - name: cf-api-backup-metadata-generator-client-credentials-file
+          mountPath: #@ "{}/cf_api_backup_metadata_generator_client_credentials.yml".format(secrets_dir)
+          subPath: client_credentials.yml
+          readOnly: true
       volumes:
       #@overlay/append
       - name: cf-admin-user-credentials-file
@@ -336,3 +345,7 @@ spec:
       - name: cf-api-controllers-client-credentials-file
         secret:
           secretName: uaa-cf-api-controllers-client-secret
+      #@overlay/append
+      - name: cf-api-backup-metadata-generator-client-credentials-file
+        secret:
+          secretName: uaa-cf-api-backup-metadata-generator-client-secret

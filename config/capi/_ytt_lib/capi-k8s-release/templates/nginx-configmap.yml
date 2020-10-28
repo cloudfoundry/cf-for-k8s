@@ -67,6 +67,13 @@ data:
             upload_pass_args on;
             upload_pass_form_field "^resources$";
           }
+
+          location ~ /v3/buildpacks/.*/upload {
+            include public_upload.conf;
+
+            upload_pass_args on;
+            upload_pass_form_field "^resources$";
+          }
       }
 
       server {

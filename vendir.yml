@@ -17,7 +17,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: 99de0eaab6f1bd368140329b94204472d15134eb
+      ref: contour-ingress
     includePaths:
     - config/*
     - config/crd/**/*

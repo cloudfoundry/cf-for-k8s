@@ -426,6 +426,16 @@ jobs:
           VERIFY_EXISTING_APP: true
         attempts: 5
 
+      - task: run-cats
+        file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        params:
+          INCLUDE_APPS: true
+          INCLUDE_ROUTING: true
+          INCLUDE_DETECT: true
+          INCLUDE_INTERNET_DEPENDENT: true
+
     on_failure:
       do:
       - task: write-pr-check-failure-comment

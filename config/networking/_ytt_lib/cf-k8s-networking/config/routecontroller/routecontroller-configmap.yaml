@@ -1,4 +1,10 @@
 #@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+
+
+#@ if data.values.routecontroller.ingressSolutionProvider not in ["istio", "contour"]:
+#@  assert.fail("Invalid value of data.values.routecontroller.ingressSolutionProvider. It only can be \"istio\" or \"contour\".")
+#@ end
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -7,11 +13,14 @@ metadata:
   namespace: #@ data.values.systemNamespace
   annotations:
     kapp.k14s.io/versioned: ""
-    kapp.k14s.io/num-versions: "2"
+    kapp.k14s.io/num-versions: "3"
   labels:
     app.kubernetes.io/name: routecontroller-config
     app.kubernetes.io/component: cf-networking
     app.kubernetes.io/part-of: cloudfoundry
 data:
-  ISTIO_GATEWAY_NAME: #@ data.values.systemNamespace + "/istio-ingressgateway"
+  INGRESS_PROVIDER: #@ data.values.routecontroller.ingressSolutionProvider
   RESYNC_INTERVAL: "900"
+  #@ if data.values.routecontroller.ingressSolutionProvider == "istio":
+  ISTIO_GATEWAY_NAME: #@ data.values.systemNamespace + "/istio-ingressgateway"
+  #@ end

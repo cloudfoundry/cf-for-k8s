@@ -10,10 +10,10 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: 'Merge pull request #72 from cloudfoundry/AddNetworkPolicyADR...'
-      sha: fd9fda44fe1534e80e2331817f0014fcf62b54b6
+      commitTitle: Update routecontroller image digest to sha256:aa79bb476ee8d8ed1dd77c216cf1c4e79abf7599e32181ae2dcde1c2f83bd9fc
+      sha: 2d2dc2e83d21928c12f4c930f042554fd29507bf
       tags:
-      - v0.0.6-295-gfd9fda4
+      - v0.0.6-319-g2d2dc2e
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

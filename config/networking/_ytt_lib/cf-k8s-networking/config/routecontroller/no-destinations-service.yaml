@@ -1,0 +1,15 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: no-destinations
+  namespace: #@ data.values.workloadsNamespace
+spec:
+  externalName: no-destinations
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  type: ExternalName

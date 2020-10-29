@@ -7,6 +7,7 @@
   - [Using a Dedicated Registry for System Images](system-registry-management.md)
   - [Setup Ingress Certs with Let's Encrypt](setup-ingress-certs-with-letsencrypt.md)
   - [Setup a Loadbalancer Static IP](setup-static-loadbalancer-ip.md)
+  - [Setup an External Syslog Destination](setup-external-syslog-destinations.md)
 - Maintenance (Day 2 Concerns)
   - [Rotating Secrets and Certs](rotating-secrets-and-certs.md)
   - [Scaling the Platform](scaling.md)

@@ -129,24 +129,6 @@ Currently, we test the following two container registries:
 
          Update the `gcp_project_id` portion to your GCP Project ID and change `contents_of_service_account_json` to be the entire contents of your GCP Service Account JSON.
 
-1. provide log destinations:
-
-    1. To send logs to a destination via syslog you can setup app log destinations in your `cf-values.yml` file:
-
-        ```yml
-        app_log_destinations:
-        #@overlay/append
-        - host: <hostname>
-          port: <port_number>
-          transport: <tls/tcp> #defaults to tls
-          insecure_disable_tls_validation: <false/true> #defaults false
-        #@overlay/append
-        - host: <hostname>
-          port: <port_number>
-          transport: <tls/tcp> #defaults to tls
-          insecure_disable_tls_validation: <false/true> #defaults false
-        ```
-
 1. Run the following commands to install Cloud Foundry on your Kubernetes cluster:
 
       i. Render the final K8s template to raw K8s configuration

@@ -458,26 +458,6 @@ jobs:
     - get: cf-for-k8s-gke-terraform-templates
     - get: cf-for-k8s-ci
 
-  - task: delete-cf
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: cf-for-k8s-ci
-      params:
-        CLUSTER_NAME: long-lived-sli
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          source cf-for-k8s-ci/ci/helpers/gke.sh
-          gcloud_auth "${CLUSTER_NAME}"
-
-          kapp delete -a cf --yes
-
   - task: create-tf-vars-file
     config:
       <<: *common-task-config

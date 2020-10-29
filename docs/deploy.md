@@ -220,7 +220,7 @@ Currently, we test the following two container registries:
    #0 running 2020-03-18T02:24:51Z 0.0% 0 of 1G 0 of 1G
    ```
 
-   </br>
+   <br />
 
 1. Validate the app is reachable over **https**:
 

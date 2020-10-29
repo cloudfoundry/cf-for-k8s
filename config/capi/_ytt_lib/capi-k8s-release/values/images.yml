@@ -1,10 +1,7 @@
 #@data/values
 ---
 images:
-  #! Original, works with Istio, but doesn't work with Contour
-  #! ccng: cloudfoundry/cloud-controller-ng@sha256:e9bae71c142d7e43809b98ba8f66c4f3610fb45915c3108c4c1585559958b40f
-  #! Works with Contour only
-  ccng: gcr.io/cf-networking-images/cf-k8s-networking/dev-ccng@sha256:6c06585bc9b957342ebbfdb0d2bac19d9285b6e78c66c0d713aa6d7725cc21fc
+  ccng: cloudfoundry/cloud-controller-ng@sha256:e9bae71c142d7e43809b98ba8f66c4f3610fb45915c3108c4c1585559958b40f
   cf_api_controllers: cloudfoundry/cf-api-controllers@sha256:9dd23d6669bc1b58147058116554b3d9158a2b9d236fa822bb8e39ed15c7b12c
   cf_autodetect_builder: cloudfoundry/cnb:0.0.94-bionic@sha256:5b03a853e636b78c44e475bbc514e2b7b140cc41cca8ab907e9753431ae8c0b0
   nginx: cloudfoundry/capi-nginx@sha256:25997cca011ed0761955754a68931f7b1694e487bffba73c6ac8dbcd084f5dee

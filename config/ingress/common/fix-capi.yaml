@@ -1,6 +1,8 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 
+#! Remove this overlay after https://github.com/cloudfoundry/capi-k8s-release/issues/91 is resolved
+
 #@ worker = overlay.subset({ "kind": "Deployment", "metadata": { "name": "cf-api-worker" }})
 #@ clock = overlay.subset({ "kind": "Deployment", "metadata": { "name": "cf-api-clock" }})
 #@ updater = overlay.subset({ "kind": "Deployment", "metadata": { "name": "cf-api-deployment-updater" }})
@@ -14,3 +16,18 @@ spec:
       - #@overlay/match by=lambda _, left, right: "readinessProbe" in left and "tcpSocket" in left["readinessProbe"],expects="0+"
         #@overlay/remove
         readinessProbe:
+
+
+#! Remove this overlay after https://github.com/cloudfoundry/capi-k8s-release/issues/87 is resolved
+
+#@overlay/match by=overlay.subset({ "kind": "Job", "metadata": { "name": "ccdb-migrate"  } })
+---
+spec:
+  template:
+    spec:
+      containers:
+      - #@overlay/match by='name'
+        name: run-migrations
+        #! this ccng image where we removed "wait for Istio part". This won't work with Istio, but will work with Contour
+        image: gcr.io/cf-networking-images/cf-k8s-networking/dev-ccng@sha256:6c06585bc9b957342ebbfdb0d2bac19d9285b6e78c66c0d713aa6d7725cc21fc
+

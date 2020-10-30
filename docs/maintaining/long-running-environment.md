@@ -24,6 +24,8 @@ In the spirit of the purpose of this environment, we strive to fix the environme
 
 1) Fix the root problem in cf-for-k8s
 1) Re-push the long-running app using the [deploy-long-lived-node-app job](https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s-stability-tests/jobs/deploy-long-lived-node-app)
-1) Re-run the platform upgrade / `kapp deploy` job
+1) Re-run the platform upgrade / `kapp deploy` job: [upgrade-long-lived-env-to-latest-main](https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s-stability-tests/jobs/upgrade-long-lived-env-to-latest-main)
 1) Restarting K8s pods
-1) Tearing down and standing back up the environment
+  - to target the cluster, run `gcloud container clusters get-credentials long-lived-sli --zone us-central1-a --project cf-relint-greengrass`
+  - the cf-values file for the LRE can be found here: `relint-envs/k8s-environments/long-lived-sli/cf-values.yaml`
+1) Tearing down and standing back up the environment, using the destroy and create jobs in [cf-for-k8s-dev-tooling/long-lived-sli-cluster](https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s-dev-tooling?group=long-lived-sli-cluster)

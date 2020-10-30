@@ -13,7 +13,7 @@
 #@  }
 #@  if data.values.networking.ingress_solution_provider == "contour":
 #@    values["routecontroller"]["contour"] = {
-#@      "tlsSecretName": system_namespace() + "/cf-workloads-cert-ver-1",
+#@      "tlsSecretName": "cf-workloads-cert",
 #@      "httpsOnly": data.values.gateway.https_only,
 #@    }
 #@  end

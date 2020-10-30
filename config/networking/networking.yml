@@ -4,10 +4,20 @@
 #@ load("/namespaces.star", "system_namespace", "workloads_namespace")
 
 #@ def networking_values():
-systemNamespace: #@ system_namespace()
-workloadsNamespace: #@ workloads_namespace()
-routecontroller:
-  ingressSolutionProvider: #@ data.values.networking.ingress_solution_provider
+#@  values = {
+#@    "systemNamespace": system_namespace(),
+#@    "workloadsNamespace": workloads_namespace(),
+#@    "routecontroller": {
+#@      "ingressSolutionProvider": data.values.networking.ingress_solution_provider,
+#@    },
+#@  }
+#@  if data.values.networking.ingress_solution_provider == "contour":
+#@    values["routecontroller"]["contour"] = {
+#@      "tlsSecretName": system_namespace() + "/cf-workloads-cert-ver-1",
+#@      "httpsOnly": data.values.gateway.https_only,
+#@    }
+#@  end
+#@  return values
 #@ end
 
 #@ networking = library.get("cf-k8s-networking")

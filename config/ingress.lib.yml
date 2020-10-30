@@ -9,6 +9,9 @@ metadata:
   namespace: #@ namespace
   annotations:
     kubernetes.io/ingress.class: #@ data.values.networking.ingress_solution_provider
+    #@ if data.values.gateway.https_only:
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    #@ end
 spec:
   rules:
   #@ for host in hostnames:

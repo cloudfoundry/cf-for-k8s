@@ -6,8 +6,11 @@ systemNamespace: cf-system
 workloadsNamespace: cf-workloads
 
 routecontroller:
-  image: gcr.io/cf-networking-images/cf-k8s-networking/routecontroller@sha256:aa79bb476ee8d8ed1dd77c216cf1c4e79abf7599e32181ae2dcde1c2f83bd9fc
+  image: gcr.io/cf-networking-images/cf-k8s-networking/routecontroller@sha256:2e0f34697ecca6e9d118367a43add3c5346921274d363c06c0a81917c979b4ee
   ingressSolutionProvider: contour
+  contour:
+    tlsSecretName:
+    httpsOnly: true
 
 service:
   externalPort: 80

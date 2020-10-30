@@ -24,3 +24,7 @@ data:
   #@ if data.values.routecontroller.ingressSolutionProvider == "istio":
   ISTIO_GATEWAY_NAME: #@ data.values.systemNamespace + "/istio-ingressgateway"
   #@ end
+  #@ if data.values.routecontroller.ingressSolutionProvider == "contour":
+  TLS_SECRET_NAME: #@ data.values.routecontroller.contour.tlsSecretName
+  HTTPS_ONLY: #@ "true" if data.values.routecontroller.contour.httpsOnly else "false"
+  #@ end

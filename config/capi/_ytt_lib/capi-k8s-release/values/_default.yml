@@ -47,6 +47,8 @@ uaa:
   clients:
     cf_api_controllers:
       secret_name:
+    cf_api_backup_metadata_generator:
+      secret_name:
     cloud_controller_username_lookup:
       secret_name:
   serverCerts:

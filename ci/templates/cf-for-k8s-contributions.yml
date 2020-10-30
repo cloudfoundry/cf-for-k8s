@@ -346,6 +346,7 @@ jobs:
       - test-vendir-sync-on-cf-for-k8s-pr
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
+    - get: cf-acceptance-tests
     - get: runtime-ci
 
   - put: cf-for-k8s-pr-all-branches-and-forks

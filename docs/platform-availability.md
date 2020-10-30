@@ -25,3 +25,7 @@ Up to this point in the project, most app availabilty downtime during upgrades h
 We have not yet investigated or aggregated common root causes of control plane downtime.
 
 For post v1.0.0 releases, we'll include downtime information in release notes. From pre-v1.0.0, this document captures downtime-causing changes and lives [here](https://docs.google.com/spreadsheets/d/1eJEOJg7WLqL8n_S-woKAMYGunh9jyhI0sFMScmxi9F4/edit#gid=0).
+
+## Maintaining the long-running environment
+
+please see https://github.com/cloudfoundry/cf-for-k8s/blob/develop/docs/maintaining/long-running-environment.md

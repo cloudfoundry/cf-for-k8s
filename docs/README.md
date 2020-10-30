@@ -6,4 +6,4 @@
   - [Extend cf-for-k8s](platform_operators/)
 - [Contributing](../community/CONTRIBUTING.md) (for Component Developers)
 - [Debugging](debugging.md)
-- [Maintaining](maintaining.md) (for Release Integration Engineers)
+- [Maintaining](maintaining/) (for Release Integration Engineers)

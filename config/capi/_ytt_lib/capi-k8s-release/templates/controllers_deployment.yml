@@ -19,6 +19,9 @@ spec:
       app.kubernetes.io/name: cf-api-controllers
   template:
     metadata:
+      annotations:
+        pre.hook.backup.velero.io/container: backup-metadata-generator
+        pre.hook.backup.velero.io/command: '["/cnb/process/generate-metadata"]'
       labels:
         app.kubernetes.io/name: cf-api-controllers
     spec:
@@ -47,6 +50,27 @@ spec:
         volumeMounts:
           - name: uaa-client-secret
             mountPath: /config/uaa_client_secret
+      - name: backup-metadata-generator
+        image: #@ data.values.images.backup_metadata
+        imagePullPolicy: Always
+        command: [ "/cnb/process/wait" ]
+        env:
+        - name: CF_API_HOST
+          value: #@ "http://capi.{}.svc.cluster.local".format(data.values.system_namespace)
+        - name: CF_CLIENT
+          value: cf_api_controllers
+        - name: CF_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: #@ data.values.uaa.clients.cf_api_controllers.secret_name
+        resources:
+          requests:
+            cpu: 10m
+            memory: 50Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
       volumes:
         - name: uaa-client-secret
           secret:

@@ -1,5 +1,5 @@
 #@ load("@ytt:data","data")
-#@ def ccng_config():
+#@ def/end ccng_config():
 ---
 local_route: 0.0.0.0
 
@@ -313,4 +313,8 @@ pending_droplets:
 #! deployment updater properties
 deployment_updater:
   update_frequency_in_seconds: 1
-#@ end
+
+#@ if/end data.values.honeycomb.write_key:
+honeycomb:
+  write_key: #@ data.values.honeycomb.write_key
+  dataset: #@ data.values.honeycomb.dataset

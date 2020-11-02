@@ -1,30 +1,51 @@
 package ytt
 
 import (
+	"io/ioutil"
+	"os"
+
 	. "code.cloudfoundry.org/yttk8smatchers/matchers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("External Blobstore", func() {
-
 	var ctx RenderingContext
 	var data map[string]interface{}
-	var templates []string
+	var templateFiles []string
+	var valueFiles []string
+	var targetDir string
+	var err error
 
 	BeforeEach(func() {
-		templates = []string{
+		templateFiles = []string{
 			pathToFile("config/minio"),
+		}
+
+		valueFiles = []string{
 			pathToFile("tests/ytt/blobstore/blobstore-values.yml"),
 		}
 	})
 
 	JustBeforeEach(func() {
-		ctx = NewRenderingContext(templates...).WithData(data)
+		targetDir, err = ioutil.TempDir("", "")
+		Expect(err).NotTo(HaveOccurred())
+
+		ctx, err = NewRenderingContext(
+			WithData(data),
+			WithTargetDir(targetDir),
+			WithTemplateFiles(templateFiles...),
+			WithValueFiles(valueFiles...),
+		)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	JustAfterEach(func() {
+		err = os.RemoveAll(targetDir)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	Context("disabled", func() {
-
 		BeforeEach(func() {
 			data = map[string]interface{}{
 				"blobstore.endpoint":          "http://cf-blobstore-minio.cf-blobstore.svc.cluster.local:9000",
@@ -34,17 +55,16 @@ var _ = Describe("External Blobstore", func() {
 		})
 
 		It("should have cf-blobstore namespace and cf-blobstore-minio deployment", func() {
-
 			Expect(ctx).To(ProduceYAML(
 				And(
 					WithNamespace("cf-blobstore"),
-					WithDeployment("cf-blobstore-minio", "cf-blobstore")),
+					WithDeployment("cf-blobstore-minio", "cf-blobstore"),
+				),
 			))
 		})
 	})
 
 	Context("enabled", func() {
-
 		BeforeEach(func() {
 			data = map[string]interface{}{
 				"blobstore.endpoint":                "https://s3.eu-central-1.amazonaws.com/",
@@ -60,12 +80,12 @@ var _ = Describe("External Blobstore", func() {
 		})
 
 		It("should not have cf-blobstore namespace and cf-blobstore-minio deployment", func() {
-
 			Expect(ctx).To(ProduceYAML(
 				And(
 					Not(WithNamespace("cf-blobstore")),
 					Not(WithDeployment("cf-blobstore-minio", "cf-blobstore")),
-				)))
+				),
+			))
 		})
 	})
 })

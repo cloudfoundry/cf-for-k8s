@@ -1,29 +1,52 @@
 package ytt
 
 import (
+	"io/ioutil"
+	"os"
+
 	. "code.cloudfoundry.org/yttk8smatchers/matchers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("System registry", func() {
-
 	var ctx RenderingContext
-	var templates []string
+	var templateFiles []string
+	var valueFiles []string
+	var targetDir string
+	var err error
 
 	BeforeEach(func() {
-		templates = []string{
+		templateFiles = []string{
 			pathToFile("config/system-registry.yml"),
 			pathToFile("config/uaa"),
 			pathToFile("config/namespaces.star"),
+		}
+
+		valueFiles = []string{
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),
 			pathToFile("tests/ytt/system-registry/system-registry-values.yml"),
 		}
-		ctx = NewRenderingContext(templates...)
+	})
+
+	JustBeforeEach(func() {
+		targetDir, err = ioutil.TempDir("", "")
+		Expect(err).NotTo(HaveOccurred())
+
+		ctx, err = NewRenderingContext(
+			WithTargetDir(targetDir),
+			WithTemplateFiles(templateFiles...),
+			WithValueFiles(valueFiles...),
+		)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	JustAfterEach(func() {
+		err = os.RemoveAll(targetDir)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	Context("enabled", func() {
-
 		It("should have the expected imagePullSecrets", func() {
 			Expect(ctx).To(ProduceYAML(
 				And(
@@ -36,7 +59,8 @@ var _ = Describe("System registry", func() {
                         spec:
                           imagePullSecrets:
                           - name: system-registry-auth-secret`),
-				)))
+				),
+			))
 		})
 	})
 })

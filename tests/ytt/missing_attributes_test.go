@@ -1,23 +1,41 @@
 package ytt
 
 import (
+	"io/ioutil"
+	"os"
+
 	. "code.cloudfoundry.org/yttk8smatchers/matchers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Missing Attributes", func() {
-
 	var ctx RenderingContext
-	var templates []string
+	var templateFiles []string
+	var valueFiles []string
+	var targetDir string
+	var err error
 
 	JustBeforeEach(func() {
-		ctx = NewRenderingContext(templates...)
+		targetDir, err = ioutil.TempDir("", "")
+		Expect(err).NotTo(HaveOccurred())
+
+		ctx, err = NewRenderingContext(
+			WithTargetDir(targetDir),
+			WithTemplateFiles(templateFiles...),
+			WithValueFiles(valueFiles...),
+		)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	JustAfterEach(func() {
+		err = os.RemoveAll(targetDir)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	Context("when all required attributes are missing", func() {
 		BeforeEach(func() {
-			templates = []string{
+			templateFiles = []string{
 				pathToFile("config/get_missing_parameters.star"),
 				pathToFile("config/check-required-arguments.yml"),
 			}
@@ -30,9 +48,12 @@ var _ = Describe("Missing Attributes", func() {
 
 	Context("when some required attributes are missing", func() {
 		BeforeEach(func() {
-			templates = []string{
+			templateFiles = []string{
 				pathToFile("config/check-required-arguments.yml"),
 				pathToFile("config/get_missing_parameters.star"),
+			}
+
+			valueFiles = []string{
 				pathToFile("tests/ytt/missing_attributes/missing_attributes_values.yml"),
 			}
 		})
@@ -44,8 +65,11 @@ var _ = Describe("Missing Attributes", func() {
 
 	Context("when all required attributes are present", func() {
 		BeforeEach(func() {
-			templates = []string{
+			templateFiles = []string{
 				pathToFile("config"),
+			}
+
+			valueFiles = []string{
 				pathToFile("sample-cf-install-values.yml"),
 			}
 		})

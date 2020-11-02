@@ -5,10 +5,11 @@ To allow ingress to your system component, regardless of the chosen ingress
 solution provider, you can create an [Ingress
 CR](https://kubernetes.io/docs/concepts/services-networking/ingress/).
 
-To make things even easier, we have provided you a `ytt` function that can
-create an ingress CR for you, called [ingress](../../config/ingress.lib.yml).
+For the most straightforward cases, we have provided you a `ytt` function that
+can create an ingress CR for you, called
+[ingress()](../../config/ingress.lib.yml).
 
-Here are the inputs:
+Here are the arguments:
 * `name`: the name of your ingress object
 * `hostnames`: the hostnames for your component that the ingress will match
 * `serivce`: the name of the service that will be the backend
@@ -18,8 +19,12 @@ Here are the inputs:
 * (optional) `tlsSecretName`: the name of the tls secret if you wish to encrypt
   traffic to your component. It defaults to `cf-system-cert`
 
-If you find that you need to customize more than the inputs we provide, come ask
-us about it in #cf-for-k8s-networking on slack.
+If you find that you need to customize more than the arguments that `ingress()`
+accepts, like adding path based routing, consider writing your own Ingress
+resource using [the kubernetes
+docs](https://kubernetes.io/docs/concepts/services-networking/ingress/). If you
+do, please let us know if you have any questions in
+[#cf-k8s-networking](https://cloudfoundry.slack.com/archives/CFX13JK7B).
 
 ## Network Policies
 

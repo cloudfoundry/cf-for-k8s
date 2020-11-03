@@ -1,0 +1,11 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@ def make_certgen_job_versioned():
+#@overlay/match by=lambda _, left, right: left["kind"] == "Job" and left["metadata"]["name"].startswith("contour-certgen"),expects="0+"
+---
+metadata:
+  #@overlay/match missing_ok=True
+  annotations:
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/versioned: ""
+#@ end

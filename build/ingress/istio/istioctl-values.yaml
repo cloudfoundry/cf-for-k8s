@@ -1,0 +1,52 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: install.istio.io/v1alpha2
+kind: IstioOperator
+spec:
+  hub: gcr.io/cf-routing
+  profile: default
+  namespace: istio-system
+  components:
+    ingressGateways:
+      - name: istio-ingressgateway
+        enabled: true
+        k8s:
+          hpaSpec:
+            minReplicas: 1
+            maxReplicas: 1
+          service:
+            externalTrafficPolicy: Local
+            ports: #! TODO: remove when https://github.com/istio/istio/issues/24432 fixed
+            - name: status-port
+              port: 15021
+              targetPort: 15021
+            - name: http2
+              port: 80
+              targetPort: 8080
+            - name: https
+              port: 443
+              targetPort: 8443
+            - name: tls
+              port: 15443
+              targetPort: 15443
+    pilot:
+      k8s:
+        hpaSpec:
+          minReplicas: 1
+          maxReplicas: 1
+  values:
+    prometheus:
+      enabled: false
+    sidecarInjectorWebhook:
+      rewriteAppHTTPProbe: true
+    meshConfig:
+      accessLogEncoding: 'JSON'
+      enablePrometheusMerge: true
+      enableAutoMtls: true
+      accessLogFile: "/dev/stdout"
+      accessLogFormat: #@ data.values.envoy_access_log_format
+    global:
+      controlPlaneSecurityEnabled: true
+      proxy:
+        holdApplicationUntilProxyStarts: true
+

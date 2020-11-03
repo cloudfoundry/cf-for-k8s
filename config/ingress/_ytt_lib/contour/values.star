@@ -16,7 +16,7 @@ data_values_dict = { "values": yaml.decode(ytt_data.values.values) }
 #! can be accessed through one object. Have fun!
 for key in dir(ytt_data.values):
   if key != "values":
-    data_values_dict[key] = getattr(ytt_data.values, key)
+    data_values_dict["values"][key] = getattr(ytt_data.values, key)
   end
 end
 

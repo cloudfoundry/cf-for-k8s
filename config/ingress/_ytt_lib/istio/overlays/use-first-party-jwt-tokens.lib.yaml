@@ -2,6 +2,7 @@
 #@ load("@ytt:json", "json")
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:yaml", "yaml")
+#@ load("/helpers.lib.star", "match_ingressgateway")
 
 #! Patch istio to use first party jwt tokens
 #!   - Kind does not support setting 3rd party tokens yet
@@ -19,7 +20,7 @@ data:
   #@overlay/replace via=lambda a,_: json.encode(overlay.apply(yaml.decode(a),replace_jwt_policy()))
   values:
 
-#@overlay/match by=overlay.subset({"kind":"DaemonSet","metadata":{"name":"istio-ingressgateway"}})
+#@overlay/match by=match_ingressgateway
 ---
 spec:
   template:

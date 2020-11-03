@@ -1,0 +1,31 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:json", "json")
+#@ load("@ytt:yaml", "yaml")
+
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"contour"}})
+#@yaml/text-templated-strings
+---
+
+#@ def format_access_log(json_format):
+#@  return yaml.encode(
+#@    [key + "=" + value for (key,value) in json.decode(json_format).items()]
+#@   )
+#@ end
+
+
+#@overlay/replace
+apiVersion: v1
+data:
+  contour.yaml: |
+    disablePermitInsecure: false
+    tls:
+      fallback-certificate:
+      envoy-client-certificate:
+    accesslog-format: json
+    json-fields:
+    (@= format_access_log(data.values.envoy_access_log_format) @)
+kind: ConfigMap
+metadata:
+  name: contour
+  namespace: projectcontour

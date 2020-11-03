@@ -1,0 +1,41 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+fluentbit:
+  image: gcr.io/cf-networking-images/cf-k8s-networking/fluentbit@sha256:636813e4dfa80d615ecba1667d2e0f94c28096010bc190e177134b46e1e03eea
+
+envoy_access_log_format: >-
+  {
+    "app_id": "%REQ(CF-APP-ID)%",
+    "authority": "%REQ(:AUTHORITY)%",
+    "bytes_received": "%BYTES_RECEIVED%",
+    "bytes_sent": "%BYTES_SENT%",
+    "downstream_local_address": "%DOWNSTREAM_LOCAL_ADDRESS%",
+    "downstream_remote_address": "%DOWNSTREAM_REMOTE_ADDRESS%",
+    "duration": "%DURATION%",
+    "method": "%REQ(:METHOD)%",
+    "organization_id": "%REQ(CF-ORGANIZATION-ID)%",
+    "path": "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%",
+    "process_type": "%REQ(APP-PROCESS-TYPE)%",
+    "protocol": "%PROTOCOL%",
+    "referer": "%REQ(REFERER)%",
+    "request_id": "%REQ(X-REQUEST-ID)%",
+    "requested_server_name": "%REQUESTED_SERVER_NAME%",
+    "response_code": "%RESPONSE_CODE%",
+    "response_duration": "%RESPONSE_DURATION%",
+    "response_flags": "%RESPONSE_FLAGS%",
+    "response_tx_duration": "%RESPONSE_TX_DURATION%",
+    "space_id": "%REQ(CF-SPACE-ID)%",
+    "start_time": "%START_TIME%",
+    "upstream_cluster": "%UPSTREAM_CLUSTER%",
+    "upstream_host": "%UPSTREAM_HOST%",
+    "upstream_local_address": "%UPSTREAM_LOCAL_ADDRESS%",
+    "upstream_service_time": "%RESP(X-ENVOY-UPSTREAM-SERVICE-TIME)%",
+    "upstream_transport_failure_reason": "%UPSTREAM_TRANSPORT_FAILURE_REASON%",
+    "user_agent": "%REQ(USER-AGENT)%",
+    "x_b3_parentspanid": "%REQ(X-B3-PARENTSPANID)%",
+    "x_b3_spanid": "%REQ(X-B3-SPANID)%",
+    "x_b3_traceid": "%REQ(X-B3-TRACEID)%",
+    "x_forwarded_for": "%REQ(X-FORWARDED-FOR)%",
+    "x_forwarded_proto": "%REQ(X-FORWARDED-PROTO)%"
+  }

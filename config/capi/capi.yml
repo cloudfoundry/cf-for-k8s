@@ -54,6 +54,8 @@ uaa:
       secret_name: cloud-controller-username-lookup-client-secret
     cf_api_controllers:
       secret_name: cf-api-controllers-client-secret
+    cf_api_backup_metadata_generator:
+      secret_name: cf-api-backup-metadata-generator-secret
 
 kpack:
   registry:
@@ -118,6 +120,15 @@ metadata:
 type: Opaque
 stringData:
   password: #@ data.values.capi.cf_api_controllers_client_secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cf-api-backup-metadata-generator-client-secret
+  namespace: #@ system_namespace()
+type: Opaque
+stringData:
+  password: #@ data.values.capi.cf_api_backup_metadata_generator_client_secret
 ---
 apiVersion: v1
 kind: Secret

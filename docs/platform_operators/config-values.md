@@ -12,6 +12,7 @@ Default values are set in files like `config/values/00-values.yml`
 | blobstore.secret_access_key | Blobstore secret access key | Yes | no value | Potrzebie |
 | capi.cc_username_lookup_client_secret | CF API client secret | Yes | no value | o/L4Zsu6ZAgw4+Qj |
 | capi.cf_api_controllers_client_secret | API controller client secret | Yes | no value | q/3PZsu6ZAgw4+Qj |
+| capi.cf_api_backup_metadata_generator_client_secret | Backup metadata utility client secret | Yes | no value | q/3PZsu6ZAgw4+Qj |
 | capi.database.adapter | database adapter for use by capi | No | postgres | postgres | mysql |
 | capi.database.ca_cert | authority of the certificate used for tls connections to the database | No | no value |  |
 | capi.database.encryption_key | key used to encrypt database records at rest | Yes | no value | YqEgP7KxSjUmQTSX9drTkQLye8wrqrP4 |

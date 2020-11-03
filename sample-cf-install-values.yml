@@ -25,6 +25,7 @@ cf_db:
 #! The db password shared between CAPI and the database.
 capi:
   cf_api_controllers_client_secret: uaa_cf_api_controllers_client_credentials
+  cf_api_backup_metadata_generator_client_secret: uaa_cf_api_backup_metadata_generator_client_credentials
   cc_username_lookup_client_secret: uaa_cloud_controller_lookup_client_credentials
   database:
     password: ccdb_password

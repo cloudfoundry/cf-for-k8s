@@ -43,6 +43,7 @@ app_registry.username
 blobstore.secret_access_key
 capi.cc_username_lookup_client_secret
 capi.cf_api_controllers_client_secret
+capi.cf_api_backup_metadata_generator_client_secret
 capi.database.encryption_key
 capi.database.password
 cf_admin_password

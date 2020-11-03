@@ -1,12 +1,9 @@
 #@data/values
 ---
 images:
-  backup_metadata_generator: cloudfoundry/cf-api-backup-metadata-generator@sha256:9049945ede457502ef6ee89bb99bacb3dea798d48eb6b23216274c03a6355bde
-  #! Original, works with Istio, but doesn't work with Contour
-  #! ccng: cloudfoundry/cloud-controller-ng@sha256:e9bae71c142d7e43809b98ba8f66c4f3610fb45915c3108c4c1585559958b40f
-  #! Works with Contour only
-  ccng: gcr.io/cf-networking-images/cf-k8s-networking/dev-ccng@sha256:6c06585bc9b957342ebbfdb0d2bac19d9285b6e78c66c0d713aa6d7725cc21fc
-  cf_api_controllers: cloudfoundry/cf-api-controllers@sha256:4f8247163c1e7b72c28f2ff3fafd54847f195c557c064c035166123d001c15af
+  backup_metadata: cloudfoundry/cf-api-backup-metadata-generator@sha256:b4a76bd7ea43782e2e0d624d86c6d04175ca5c5e6a29ff0210179a96a21e6d9c
+  ccng: cloudfoundry/cloud-controller-ng@sha256:e5e164b3e889a36da9d37569a482730db7abf75659a67fe79cd4d0c0bca09322
+  cf_api_controllers: cloudfoundry/cf-api-controllers@sha256:3e160806f070af538eca6f04f6b3ee6a95f6b3247946e6961a0c976c18848243
   cf_autodetect_builder: cloudfoundry/cnb:0.0.94-bionic@sha256:5b03a853e636b78c44e475bbc514e2b7b140cc41cca8ab907e9753431ae8c0b0
   nginx: cloudfoundry/capi-nginx@sha256:04dbaba65a3002f2225735c312788317035afc8971864ce34a91e077a90742c4
   registry_buddy: cloudfoundry/cf-api-package-registry-buddy@sha256:77f631c8cc3b6887ec3bb8e08d283f2954c2f4fac6a72ffb4e8c6c9c7a093c7a

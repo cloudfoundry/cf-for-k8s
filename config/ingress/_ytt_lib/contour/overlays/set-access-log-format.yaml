@@ -1,5 +1,5 @@
 #@ load("@ytt:overlay", "overlay")
-#@ load("@ytt:data", "data")
+#@ load("/values.star", "data")
 #@ load("@ytt:json", "json")
 #@ load("@ytt:yaml", "yaml")
 

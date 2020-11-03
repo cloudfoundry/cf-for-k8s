@@ -1,9 +1,6 @@
 #@ load("@ytt:overlay", "overlay")
-#@ load("@ytt:data", "data")
-
-#@ deployment = overlay.subset({"kind": "Deployment", "metadata":{"name":"envoy"}})
-#@ daemonset = overlay.subset({"kind": "DaemonSet", "metadata":{"name":"envoy"}})
-#@ match_envoy=overlay.or_op(deployment, daemonset)
+#@ load("/values.star", "data")
+#@ load("/helpers.lib.star", "match_envoy")
 
 #@overlay/match by=match_envoy
 ---

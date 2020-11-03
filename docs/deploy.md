@@ -131,13 +131,13 @@ Currently, we test the following two container registries:
 
 1. Run the following commands to install Cloud Foundry on your Kubernetes cluster:
 
-      i. Render the final K8s template to raw K8s configuration
+      1. Render the final K8s template to raw K8s configuration
 
          ```console
          ytt -f config -f ${TMP_DIR}/cf-values.yml > ${TMP_DIR}/cf-for-k8s-rendered.yml
          ```
 
-      ii. Install using `kapp` and pass the above K8s configuration file
+      1. Install using `kapp` and pass the above K8s configuration file
 
          ```console
          kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y

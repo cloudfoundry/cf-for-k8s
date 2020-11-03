@@ -46,6 +46,14 @@ resources:
     paths:
     - ci/**
 
+- name: cf-acceptance-tests
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-acceptance-tests
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+
 - name: weekday-am
   type: time
   icon: clock-outline
@@ -91,6 +99,7 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-main
     - get: cf-for-k8s-ci
+    - get: cf-acceptance-tests
     - get: weekday-am
       trigger: true
     - get: cf-for-k8s-aks-terraform-templates
@@ -170,6 +179,17 @@ jobs:
         cf-for-k8s: cf-for-k8s-main
       params:
         SMOKE_TEST_SKIP_SSL: false
+
+    - task: run-cats
+      file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-main
+      params:
+        CF_PUSH_TIMEOUT: 360
+        INCLUDE_APPS: true
+        INCLUDE_ROUTING: true
+        INCLUDE_DETECT: true
+        INCLUDE_INTERNET_DEPENDENT: true
 
     ensure:
       do:

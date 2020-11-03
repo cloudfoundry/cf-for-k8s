@@ -1,0 +1,4 @@
+#@data/values
+---
+#! YAML string of data.values from cf-for-k8s
+values:

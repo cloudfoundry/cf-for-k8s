@@ -1,0 +1,50 @@
+#@ load("/values.star", "data")
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: envoy-fluent-bit-forwarder-config
+  namespace: projectcontour
+data:
+  #@yaml/text-templated-strings
+  fluent-bit.conf: |-
+    [SERVICE]
+        Flush          1
+        Daemon         Off
+        Log_Level      info
+        Parsers_File   parsers.conf
+    [INPUT]
+        Name    tail
+        Tag     envoy
+        Path    /var/log/containers/envoy*envoy*.log
+        Parser  json
+        Refresh_Interval 1
+    [FILTER]
+        Name parser
+        Match envoy
+        Parser json
+        Key_Name log
+    [FILTER]
+        Name lua
+        Match envoy
+        script transform_record.lua
+        call transform_record
+    [OUTPUT]
+        Name forward
+        Match envoy
+        Host fluentd-forwarder-ingress.(@= data.values.system_namespace @)
+        Port 24224
+  parsers.conf : |-
+    [PARSER]
+        Name   json
+        Format json
+        Time_Key time
+  transform_record.lua: |-
+    function transform_record(tag, timestamp, record)
+      new_record = {}
+      new_record["app_id"] = record["app_id"]
+      new_record["instance_id"] = "0"
+      new_record["log"] = record
+      new_record["source_type"] = "RTR"
+      return 1, timestamp, new_record
+    end

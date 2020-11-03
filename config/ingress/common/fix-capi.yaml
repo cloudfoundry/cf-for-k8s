@@ -29,5 +29,5 @@ spec:
       - #@overlay/match by='name'
         name: run-migrations
         #! this ccng image where we removed "wait for Istio part". This won't work with Istio, but will work with Contour
-        image: gcr.io/cf-networking-images/cf-k8s-networking/dev-ccng@sha256:6c06585bc9b957342ebbfdb0d2bac19d9285b6e78c66c0d713aa6d7725cc21fc
+        image: gcr.io/cf-networking-images/cf-k8s-networking/dev-ccng@sha256:5bf80d42a5fe7a10d6026fa2c5e6516aae89258bce3c87647720e7bdb21258bf
 

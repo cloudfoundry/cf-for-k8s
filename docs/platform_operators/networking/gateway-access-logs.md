@@ -2,14 +2,25 @@
 
 ### How to view access logs?
 
-Ingress traffic to Cloud Foundry is proxied through the `istio-ingressgateway`
-pods which prints access logs to stdout. To view them:
+Viewing access logs will depend on your chosen ingress solution provider.
+
+For Istio, ingress traffic to Cloud Foundry is proxied through the
+`istio-ingressgateway` pods which prints access logs to stdout. To view them:
 
 ```
 kubectl logs -l app=istio-ingressgateway -c istio-proxy -n istio-system
 ```
 
+For Contour, ingress traffic to Cloud Foundry is proxied through the
+`envoy` pods which prints access logs to stdout. To view them:
+
+```
+kubectl logs -l app=envoy -c envoy -n projectcontour
+```
+
 ### Example access log line
+In either case of ingress solution provider, the actual format of the logs will
+be the same.
 
 ```json
 {

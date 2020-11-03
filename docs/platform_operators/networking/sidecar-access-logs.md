@@ -2,8 +2,9 @@
 
 ### How to view access logs?
 
-Traffic flows through the sidecar containers on sidecar enabled pods, which
-prints access logs to stdout. For example, this is how you might view them for your apps:
+When using Istio as the ingress solution provider, traffic flows through the
+sidecar containers on sidecar enabled pods, which prints access logs to stdout.
+For example, this is how you might view them for your apps:
 
 ```
 kubectl logs app-pod -c istio-proxy -n cf-workloads

@@ -1,6 +1,6 @@
 # Ingress Routing with Ingress Gateway as a Daemon Set
 
-The Istio Ingress Gateway is deployed as a Kubernetes Daemon Set with every
+The Ingress Gateway is deployed as a Kubernetes Daemon Set with every
 Ingress Gateway directly listening on ports 80 and 443. This allows a variety of
 ways to route to the Ingress Gateway.
 
@@ -9,9 +9,9 @@ ways to route to the Ingress Gateway.
 On cloud providers that support external load balancers, a typical production
 installation will use a [LoadBalancer
 Service](https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer)
-to allow traffic to reach the Istio Ingress Gateway.
+to allow traffic to reach the Ingress Gateway.
 
-![Ingress Routing with a load balancer Service](./assets/ingress-gateway-topology-lb-service.jpg)
+![Ingress Routing with a load balancer Service](./../assets/ingress-gateway-topology-lb-service.jpg)
 
 ### Routing directly to Worker Nodes
 
@@ -26,7 +26,7 @@ IP addresses.
 
 The following diagram shows what this might look like:
 
-![Ingress Routing directly to workers](./assets/ingress-gateway-topology-directly-to-worker-nodes.jpg)
+![Ingress Routing directly to workers](./../assets/ingress-gateway-topology-directly-to-worker-nodes.jpg)
 
 ### Routing with an external configured Load Balancer
 
@@ -36,4 +36,4 @@ This is valuable on infrastructures that don't support the Kubernetes Load
 Balancer Service. The external Load Balancer would be configured to receive and
 forward traffic to the Kubernetes Worker nodes on ports 80 and 443.
 
-![Ingress Routing with external load balancer](./assets/ingress-gateway-topology-external-lb.jpg)
+![Ingress Routing with external load balancer](./../assets/ingress-gateway-topology-external-lb.jpg)

@@ -10,10 +10,11 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: Add kapp config for referencing the secret in routecontroller-configmap...
-      sha: 6eb3ae51740c2531a1d75300ca7d404b6f732a81
+      commitTitle: 'ci: pass INGRESS_PROVIDER to ytt instead of setting to values
+        file...'
+      sha: c5162a82cf340fcdcca1aac11f9a6a2d086cd318
       tags:
-      - v0.0.6-325-g6eb3ae5
+      - v0.0.6-330-gc5162a8
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

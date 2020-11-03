@@ -1,5 +1,6 @@
 #@ load("/values.star", "data")
 #@ load("@ytt:overlay", "overlay")
+#@ load("/helpers.lib.star", "match_ingressgateway")
 
 #! this gateway is used to expose CF services in the cluster, externally
 #@ load("gateway.lib.yaml", "gateway")
@@ -35,11 +36,7 @@ stringData:
 type: kubernetes.io/tls
 
 #! the following overlay ensures the above Secret is created before the ingressgateway since we're not using SDS
-#! ingressgateway can be either a Deployment or a DaemonSet
-#@ deployment = overlay.subset({"kind": "Deployment", "metadata":{"name":"istio-ingressgateway"}})
-#@ daemonset = overlay.subset({"kind": "DaemonSet", "metadata":{"name":"istio-ingressgateway"}})
-#@ match_ingress_gateway=overlay.or_op(deployment, daemonset)
-#@overlay/match by=match_ingress_gateway
+#@overlay/match by=match_ingressgateway
 ---
 metadata:
   #@overlay/match missing_ok=True

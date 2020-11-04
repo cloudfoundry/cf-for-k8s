@@ -26,6 +26,7 @@ var _ = Describe("System registry", func() {
 		valueFiles = []string{
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),
 			pathToFile("tests/ytt/system-registry/system-registry-values.yml"),
+			pathToFile("tests/ytt/quarks_secret/quarks_secret_enabled.yml"),
 		}
 	})
 
@@ -50,15 +51,15 @@ var _ = Describe("System registry", func() {
 		It("should have the expected imagePullSecrets", func() {
 			Expect(ctx).To(ProduceYAML(
 				And(
-					WithSecret("system-registry-auth-secret", "cf-system").WithDataValue(
+					WithSecret("system-registry-auth-secret", "").WithDataValue(
 						".dockerconfigjson",
 						[]byte(`{"auths":{"test.test":{"auth":"dGVzdC11c2VybmFtZTp0ZXN0LXBhc3N3b3Jk","password":"test-password","username":"test-username"}}}`),
 					),
 					WithDeployment("uaa", "cf-system").WithSpecYaml(`
-                      template:
-                        spec:
-                          imagePullSecrets:
-                          - name: system-registry-auth-secret`),
+                     template:
+                       spec:
+                         imagePullSecrets:
+                         - name: system-registry-auth-secret`),
 				),
 			))
 		})

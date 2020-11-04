@@ -4,36 +4,58 @@ import (
 	. "code.cloudfoundry.org/yttk8smatchers/matchers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"io/ioutil"
+	"os"
 )
 
-var _ = FDescribe("CAPI", func() {
+var _ = Describe("CAPI", func() {
 	var ctx RenderingContext
 	var data map[string]interface{}
-	var templates []string
+	var templateFiles []string
+	var valueFiles []string
+	var targetDir string
+	var err error
 
 	BeforeEach(func() {
-		templates = []string{
+		targetDir, err = ioutil.TempDir("", "")
+		Expect(err).NotTo(HaveOccurred())
+
+		templateFiles = []string{
 			pathToFile("config/namespaces.star"),
 			pathToFile("config/quarks-secret/quarks-secret.star"),
-			pathToFile("tests/ytt/capi/capi-values.yml"),
 			pathToFile("config/capi"),
 		}
-		data = map[string]interface{}{}
+		valueFiles = []string{
+			pathToFile("tests/ytt/capi/capi-values.yml"),
+		}
 	})
 
 	JustBeforeEach(func() {
-		ctx = NewRenderingContext(templates...).WithData(data)
+		ctx, err = NewRenderingContext(
+			WithData(data),
+			WithTargetDir(targetDir),
+			WithTemplateFiles(templateFiles...),
+			WithValueFiles(valueFiles...),
+			)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	AfterEach(func() {
+		err = os.RemoveAll(targetDir)
+		Expect(err).NotTo(HaveOccurred())
 	})
 
 	Context("Secrets", func() {
 		Context("when using quarks secrets", func() {
 			BeforeEach(func() {
+				data = map[string]interface{}{}
 				data["quarks_secret.enable"] = true
 			})
 		})
 
 		Context("when using k8s secrets", func() {
 			BeforeEach(func() {
+				data = map[string]interface{}{}
 				data["quarks_secret.enable"] = false
 				data["capi.cf_api_controllers_client_secret"] = "squirrel"
 			})

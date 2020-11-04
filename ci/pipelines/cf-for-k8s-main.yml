@@ -731,110 +731,95 @@ jobs:
       params:
         PGPASSWORD: ((ci_k8s_aws_rds_database_password))
 
-- name: validate-cf-for-k8s-gke-s3
+- name: validate-s3
   serial: true
   public: true
   plan:
-    - in_parallel:
-      - get: cf-for-k8s-develop
-        passed:
-          - test-vendir-sync-on-cf-for-k8s
-          - run-unit-tests
-        trigger: true
-      - get: cf-for-k8s-ci
-      - get: cf-for-k8s-s3-terraform-templates
+  - in_parallel:
+    - get: cf-for-k8s-develop
+      passed:
+      - test-vendir-sync
+      - run-unit-tests
+      trigger: true
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-s3-terraform-templates
 
-    - put: ready-pool
-      params:
-        acquire: true
+  - put: ready-pool
+    params:
+      acquire: true
 
-    - task: create-s3-tf-vars-file
-      file: cf-for-k8s-ci/ci/tasks/create-s3-tf-vars-file/task.yml
-      params:
-        AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
-        AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
-        AWS_REGION: ((ci_k8s_aws_region))
+  - task: create-s3-tf-vars-file
+    file: cf-for-k8s-ci/ci/tasks/create-s3-tf-vars-file/task.yml
+    params:
+      AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
+      AWS_REGION: ((ci_k8s_aws_region))
 
-    - put: terraform-s3
-      params:
-        terraform_source: cf-for-k8s-s3-terraform-templates/deploy/s3/terraform
-        delete_on_failure: true
-        var_files: [tf-vars-s3/input.tfvars]
+  - put: terraform-s3
+    params:
+      terraform_source: cf-for-k8s-s3-terraform-templates/deploy/s3/terraform
+      delete_on_failure: true
+      var_files: [tf-vars-s3/input.tfvars]
 
-    - task: create-s3-bucket-data-values-file
-      params:
-        AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
-        AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
-        AWS_REGION: ((ci_k8s_aws_region))
-      file: cf-for-k8s-ci/ci/tasks/create-s3-bucket-data-values-file/task.yml
+  - task: create-s3-bucket-data-values-file
+    file: cf-for-k8s-ci/ci/tasks/create-s3-bucket-data-values-file/task.yml
+    params:
+      AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
+      AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
+      AWS_REGION: ((ci_k8s_aws_region))
 
-    - task: install-cf
+  - task: install-cf
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+      cf-for-k8s: cf-for-k8s-develop
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+      USE_EXTERNAL_BLOBSTORE: true
+      DOMAIN: k8s-dev.relint.rocks
+
+  - in_parallel:
+    - task: run-external-blobstore-validation-test
+      file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
       input_mapping:
         pool-lock: ready-pool
         cf-for-k8s: cf-for-k8s-develop
       params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
-        USE_EXTERNAL_BLOBSTORE: true
-        DOMAIN: k8s-dev.relint.rocks
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        EXTERNAL_BLOBSTORE: "s3"
 
-    - in_parallel:
-      - task: run-external-blobstore-validation-test
-        file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
-        params:
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          EXTERNAL_BLOBSTORE: "s3"
-        input_mapping:
-          pool-lock: ready-pool
-          cf-for-k8s: cf-for-k8s-develop
-
-      - task: run-smoke-tests
-        input_mapping:
-          cf-for-k8s: cf-for-k8s-develop
-        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-        params:
-          GCP_KEY: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-
-    - task: delete-cf
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
-        pool-lock: ready-pool
-      config:
-        <<: *common-task-config
-        inputs:
-          - name: cf-for-k8s-ci
-          - name: pool-lock
-        params:
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        run:
-          path: /bin/bash
-          args:
-            - -ec
-            - |
-              source cf-for-k8s-ci/ci/helpers/gke.sh
-
-              cluster_name="$(cat pool-lock/name)"
-              gcloud_auth "${cluster_name}"
-
-              kapp delete -a cf --yes
-
-    - put: destroy-pool
+        cf-for-k8s: cf-for-k8s-develop
       params:
-        add: ready-pool
+        GCP_KEY: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
 
-    - put: ready-pool
-      params:
-        remove: ready-pool
+  - task: delete-cf
+    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+  - put: destroy-pool
+    params:
+      add: ready-pool
+
+  - put: ready-pool
+    params:
+      remove: ready-pool
 
   ensure:
     put: terraform-s3
@@ -1017,6 +1002,7 @@ jobs:
     - validate-upgrade
     - validate-rds
     - validate-external-db
+    - validate-s3
     - validate-external-blobstore
     - validate-oldest-k8s
     - validate-newest-k8s

@@ -59,7 +59,7 @@ var _ = Describe("Missing Attributes", func() {
 		})
 
 		It("should complain about missing attributes", func() {
-			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_registry.username", "capi.cc_username_lookup_client_secret", "capi.cf_api_controllers_client_secret", "capi.cf_api_backup_metadata_generator_client_secret", "cf_admin_password", "internal_certificate.ca", "internal_certificate.crt", "internal_certificate.key", "system_certificate.key", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "uaa.login_secret", "workloads_certificate.crt"\]`))
+			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_registry.username", "capi.cc_username_lookup_client_secret", "capi.cf_api_controllers_client_secret", "capi.cf_api_backup_metadata_generator_client_secret","cf_admin_password", "internal_certificate.ca", "internal_certificate.crt", "internal_certificate.key", "system_certificate.key", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "uaa.login_secret", "workloads_certificate.crt"\]`))
 		})
 	})
 

@@ -101,7 +101,11 @@ variables:
   type: password
 - name: uaa_login_secret
   type: password
+- name: uaa_admin_client_secret
+  type: password
 - name: uaa_encryption_key_passphrase
+  type: password
+- name: cc_username_lookup_client_secret
   type: password
 - name: cf_api_controllers_client_secret
   type: password
@@ -142,7 +146,6 @@ variables:
     extended_key_usage:
     - client_auth
     - server_auth
-
 - name: uaa_jwt_policy_signing_key
   type: certificate
   options:
@@ -173,10 +176,12 @@ cf_db:
   admin_password: $(bosh interpolate ${VARS_FILE} --path=/db_admin_password)
 
 capi:
+  cc_username_lookup_client_secret: $(bosh interpolate ${VARS_FILE} --path=/cc_username_lookup_client_secret)
   cf_api_controllers_client_secret: $(bosh interpolate ${VARS_FILE} --path=/cf_api_controllers_client_secret)
   cf_api_backup_metadata_generator_client_secret: $(bosh interpolate ${VARS_FILE} --path=/cf_api_backup_metadata_generator_client_secret)
   database:
     password: $(bosh interpolate ${VARS_FILE} --path=/capi_db_password)
+    encryption_key: $(bosh interpolate ${VARS_FILE} --path=/capi_db_encryption_key)
 
 system_certificate:
   #! This certificates and keys should be valid for *.system.cf.example.com
@@ -208,6 +213,7 @@ $(bosh interpolate ${VARS_FILE} --path=/internal_certificate/ca | grep -Ev '^$' 
 uaa:
   database:
     password: $(bosh interpolate ${VARS_FILE} --path=/uaa_db_password)
+  admin_client_secret: $(bosh interpolate ${VARS_FILE} --path=/uaa_admin_client_secret)
   jwt_policy:
     signing_key: |
 $(bosh interpolate "${VARS_FILE}" --path=/uaa_jwt_policy_signing_key/private_key | grep -Ev '^$' | sed -e 's/^/      /')

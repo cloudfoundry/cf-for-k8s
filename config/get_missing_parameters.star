@@ -61,5 +61,14 @@ uaa.login.service_provider.key
 uaa.login_secret
 workloads_certificate.crt
 workloads_certificate.key'''.split("\n")
+    if not values.quarks_secret.enable:
+     required_parameters += '''\
+capi.cc_username_lookup_client_secret
+capi.cf_api_controllers_client_secret
+capi.cf_api_backup_metadata_generator_client_secret
+capi.database.encryption_key
+uaa.admin_client_secret'''.split("\n")
+     required_parameters.sort()
+    end
     return [param for param in required_parameters if is_missing(values, param)]
 end

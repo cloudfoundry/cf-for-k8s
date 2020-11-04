@@ -21,6 +21,7 @@ groups:
   - validate-pr-on-gke
   - validate-pr-on-gke-external-db
   - validate-pr-on-gke-external-blobstore
+  - validate-pr-on-gke-s3
   - validate-pr-on-gke-rds
   - validate-pr-on-newest-k8s-kind
   - validate-pr-on-oldest-k8s-kind
@@ -193,6 +194,24 @@ resources:
     backend_config:
       bucket: relint-k8s-cluster-state
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
+
+- name: terraform-s3
+  type: terraform
+  source:
+    env_name: aws-rds
+    backend_type: gcs
+    backend_config:
+      bucket: relint-k8s-cluster-state
+      credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
+
+- name: cf-for-k8s-s3-terraform-templates
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+      - deploy/s3/terraform/**
 
 #@ for source, bpnames in [['community', ['python']], ['buildpacks', ['ruby', 'java', 'nodejs', 'go', 'dotnet-core', 'php', 'procfile']]]:
 #@   for bpname in bpnames:
@@ -713,6 +732,140 @@ jobs:
         file: cf-for-k8s-ci/ci/tasks/delete-rds/task.yml
         params:
           PGPASSWORD: ((ci_k8s_aws_rds_database_password))
+
+- name: validate-pr-on-gke-s3
+  serial: true
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        integration_tool: rebase
+      trigger: true
+      version: every
+      passed:
+      - run-unit-tests-on-pr
+      - test-vendir-sync-on-cf-for-k8s-pr
+    - get: cf-for-k8s-ci
+    - get: cf-for-k8s-develop
+    - get: runtime-ci
+    - get: cf-for-k8s-s3-terraform-templates
+
+  - put: cf-for-k8s-pr-all-branches-and-forks
+    params:
+      path: cf-for-k8s-pr-all-branches-and-forks
+      status: pending
+      context: external-blobstore-s3
+
+  - put: ready-pool
+    params:
+      acquire: true
+
+  - do:
+    - task: create-s3-tf-vars-file
+      file: cf-for-k8s-ci/ci/tasks/create-s3-tf-vars-file/task.yml
+      params:
+        AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
+        AWS_REGION: ((ci_k8s_aws_region))
+
+    - put: terraform-s3
+      params:
+        terraform_source: cf-for-k8s-s3-terraform-templates/deploy/s3/terraform
+        delete_on_failure: true
+        var_files: [tf-vars-s3/input.tfvars]
+
+    - task: create-s3-bucket-data-values-file
+      params:
+        AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
+        AWS_REGION: ((ci_k8s_aws_region))
+      file: cf-for-k8s-ci/ci/tasks/create-s3-bucket-data-values-file/task.yml
+
+    - task: install-cf-pr
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-pr-all-branches-and-forks
+        pool-lock: ready-pool
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        DOMAIN: k8s-dev.relint.rocks
+        USE_EXTERNAL_APP_REGISTRY: true
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        USE_EXTERNAL_BLOBSTORE: true
+
+    - in_parallel:
+      - task: run-external-blobstore-validation-test
+        file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          EXTERNAL_BLOBSTORE: "s3"
+        input_mapping:
+          pool-lock: ready-pool
+          cf-for-k8s: cf-for-k8s-develop
+
+      - task: run-smoke-tests
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        params:
+          GCP_KEY: ((ci_k8s_gcp_service_account_json))
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    on_failure:
+      do:
+      - task: write-pr-check-failure-comment
+        file: runtime-ci/tasks/write-pr-check-failure-comment/task.yml
+        input_mapping:
+          pull-request: cf-for-k8s-pr-all-branches-and-forks
+
+      - put: cf-for-k8s-pr-all-branches-and-forks
+        params:
+          path: cf-for-k8s-pr-all-branches-and-forks
+          status: failure
+          context: external-blobstore-s3
+          comment_file: pull-request-comment/comment
+
+    on_success:
+      put: cf-for-k8s-pr-all-branches-and-forks
+      params:
+        path: cf-for-k8s-pr-all-branches-and-forks
+        status: success
+        context: external-blobstore-s3
+
+    ensure:
+      do:
+      - task: delete-cf
+        file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+      - put: destroy-pool
+        params:
+          add: ready-pool
+
+      - put: ready-pool
+        params:
+          remove: ready-pool
+
+      - put: terraform-s3
+        params:
+          terraform_source: cf-for-k8s-s3-terraform-templates/deploy/s3/terraform
+          var_files: [tf-vars-s3/input.tfvars]
+          action: destroy
+        get_params:
+          action: destroy
 
 - name: validate-pr-on-gke-external-blobstore
   public: true

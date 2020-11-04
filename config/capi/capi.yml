@@ -3,6 +3,8 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("/namespaces.star", "system_namespace", "workloads_namespace", "workloads_staging_namespace")
+#@ load("/quarks-secret.star", "quarks_secret_enabled")
+#! !!!TODO: fix please /quarks-secret
 
 #@ def capi_host():
 #@   if len(data.values.capi.database.host) > 0:
@@ -111,6 +113,7 @@ metadata:
 type: Opaque
 stringData:
   password: #@ data.values.blobstore.secret_access_key
+#@ if not quarks_secret_enabled():
 ---
 apiVersion: v1
 kind: Secret
@@ -147,3 +150,4 @@ metadata:
 type: Opaque
 stringData:
   password: #@ data.values.capi.database.encryption_key
+#@ end

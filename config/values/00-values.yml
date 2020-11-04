@@ -43,6 +43,7 @@ capi:
   database:
     #! or mysql2, as needed
     adapter: postgres
+    encryption_key: ""
     host: ""
     port: 5432
     user: cloud_controller

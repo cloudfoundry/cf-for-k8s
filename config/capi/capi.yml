@@ -3,8 +3,7 @@
 #@ load("@ytt:overlay", "overlay")
 #@ load("@ytt:template", "template")
 #@ load("/namespaces.star", "system_namespace", "workloads_namespace", "workloads_staging_namespace")
-#@ load("/quarks-secret.star", "quarks_secret_enabled")
-#! !!!TODO: fix please /quarks-secret
+#@ load("/quarks-secret/quarks-secret.star", "quarks_secret_enabled")
 
 #@ def capi_host():
 #@   if len(data.values.capi.database.host) > 0:

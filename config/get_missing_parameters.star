@@ -40,10 +40,16 @@ app_registry.hostname
 app_registry.password
 app_registry.repository_prefix
 app_registry.username
-blobstore.secret_access_key
+blobstore.secret_access_key'''.split("\n")
+
+    if not values.quarks_secret.enable:
+        required_parameters += '''\
 capi.cc_username_lookup_client_secret
 capi.cf_api_controllers_client_secret
-capi.cf_api_backup_metadata_generator_client_secret
+capi.cf_api_backup_metadata_generator_client_secret'''.split("\n")
+    end
+
+    required_parameters += '''\
 capi.database.encryption_key
 capi.database.password
 cf_admin_password
@@ -52,7 +58,14 @@ internal_certificate.crt
 internal_certificate.key
 system_certificate.crt
 system_certificate.key
-system_domain
+system_domain'''.split("\n")
+
+    if not values.quarks_secret.enable:
+        required_parameters += '''\
+uaa.admin_client_secret'''.split("\n")
+    end
+
+    required_parameters += '''\
 uaa.database.password
 uaa.encryption_key.passphrase
 uaa.jwt_policy.signing_key
@@ -61,14 +74,5 @@ uaa.login.service_provider.key
 uaa.login_secret
 workloads_certificate.crt
 workloads_certificate.key'''.split("\n")
-    if not values.quarks_secret.enable:
-     required_parameters += '''\
-capi.cc_username_lookup_client_secret
-capi.cf_api_controllers_client_secret
-capi.cf_api_backup_metadata_generator_client_secret
-capi.database.encryption_key
-uaa.admin_client_secret'''.split("\n")
-     required_parameters.sort()
-    end
     return [param for param in required_parameters if is_missing(values, param)]
 end

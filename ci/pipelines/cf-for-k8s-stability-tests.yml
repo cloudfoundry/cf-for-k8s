@@ -185,7 +185,7 @@ jobs:
     input_mapping:
       cf-for-k8s: cf-for-k8s-main
     params:
-      APP_NAME: jp-node-app
+      APP_NAME: existing-node-app
       VERIFY_EXISTING_APP: false
 
   - task: upgrade-cf-new-values
@@ -218,7 +218,7 @@ jobs:
         input_mapping:
           cf-for-k8s: cf-for-k8s-main
         params:
-          APP_NAME: jp-node-app
+          APP_NAME: existing-node-app
           VERIFY_EXISTING_APP: true
 
   - task: delete-cf

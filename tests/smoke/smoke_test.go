@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -97,11 +98,14 @@ var _ = Describe("Smoke Tests", func() {
 			var resp *http.Response
 
 			Eventually(func() int {
-				var err error
-				resp, err = http.Get(fmt.Sprintf("https://%s.%s", appName, appsDomain))
-				Expect(err).NotTo(HaveOccurred())
-				return resp.StatusCode
-			}, 2*time.Minute, 30*time.Second).Should(Equal(200))
+				var (
+					err        error
+					statusCode int
+				)
+				resp, statusCode, err = requestApp(appName, appsDomain)
+				Expect(err).ToNot(HaveOccurred())
+				return statusCode
+			}, 2*time.Minute, 30*time.Second).Should(Equal(http.StatusOK))
 
 			body, err := ioutil.ReadAll(resp.Body)
 			Expect(err).NotTo(HaveOccurred())
@@ -128,11 +132,14 @@ var _ = Describe("Smoke Tests", func() {
 			var resp *http.Response
 
 			Eventually(func() int {
-				var err error
-				resp, err = http.Get(fmt.Sprintf("https://%s.%s", appName, appsDomain))
-				Expect(err).NotTo(HaveOccurred())
-				return resp.StatusCode
-			}, 2*time.Minute, 30*time.Second).Should(Equal(200))
+				var (
+					err        error
+					statusCode int
+				)
+				resp, statusCode, err = requestApp(appName, appsDomain)
+				Expect(err).ToNot(HaveOccurred())
+				return statusCode
+			}, 2*time.Minute, 30*time.Second).Should(Equal(http.StatusOK))
 
 			body, err := ioutil.ReadAll(resp.Body)
 			Expect(err).NotTo(HaveOccurred())
@@ -155,4 +162,18 @@ func printAppReport(appName string) {
 func printAppReportBanner(announcement string) {
 	sequence := strings.Repeat("*", len(announcement))
 	fmt.Fprintf(GinkgoWriter, "\n\n%s\n%s\n%s\n", sequence, announcement, sequence)
+}
+
+func requestApp(appName, appsDomain string) (*http.Response, int, error) {
+	resp, err := http.Get(fmt.Sprintf("https://%s.%s", appName, appsDomain))
+
+	// Some ingress solution providers will reset connection when host doesn't exist
+	if err != nil {
+		if _, ok := err.(*url.Error); ok {
+			return nil, http.StatusNotFound, nil
+		}
+
+		return nil, 0, err
+	}
+	return resp, resp.StatusCode, nil
 }

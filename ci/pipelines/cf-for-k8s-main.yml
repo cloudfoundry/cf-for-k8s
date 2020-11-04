@@ -224,20 +224,21 @@ jobs:
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
       DOMAIN: k8s-dev.relint.rocks
 
-  - task: run-smoke-test
-    file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      SMOKE_TEST_SKIP_SSL: false
+  - in_parallel:
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        SMOKE_TEST_SKIP_SSL: false
 
-  - task: push-test-app
-    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      APP_NAME: lingering-node-app
-      VERIFY_EXISTING_APP: false
+    - task: push-test-app
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        APP_NAME: lingering-node-app
+        VERIFY_EXISTING_APP: false
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
@@ -299,7 +300,7 @@ jobs:
     input_mapping:
       cf-for-k8s: cf-for-k8s-last-release
     params:
-      APP_NAME: jp-node-app
+      APP_NAME: existing-node-app
       VERIFY_EXISTING_APP: false
 
   - task: upgrade-cf-to-develop
@@ -326,12 +327,12 @@ jobs:
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
       params:
-        SMOKE_TEST_SKIP_SSL: true
+        SMOKE_TEST_SKIP_SSL: false
 
     - task: verify-existing-app
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
       params:
-        APP_NAME: jp-node-app
+        APP_NAME: existing-node-app
         VERIFY_EXISTING_APP: true
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
@@ -471,32 +472,24 @@ jobs:
       USE_EXTERNAL_DB: true
       DOMAIN: k8s-dev.relint.rocks
 
-  - task: run-external-db-validation-test
-    file: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      EXTERNAL_DB: "incluster"
-
   - in_parallel:
-    - task: run-smoke-test
+    - task: run-external-db-validation-test
+      file: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        EXTERNAL_DB: "incluster"
+
+    - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
       params:
         SMOKE_TEST_SKIP_SSL: false
-
-    - task: push-test-app
-      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-      params:
-        APP_NAME: lingering-node-app
-        VERIFY_EXISTING_APP: false
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
@@ -589,12 +582,24 @@ jobs:
       USE_EXTERNAL_BLOBSTORE: true
       DOMAIN: k8s-dev.relint.rocks
 
-  - task: run-smoke-test
-    file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      SMOKE_TEST_SKIP_SSL: false
+  - in_parallel:
+    - task: run-external-blobstore-validation-test
+      file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        EXTERNAL_BLOBSTORE: "incluster"
+
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        SMOKE_TEST_SKIP_SSL: false
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
@@ -685,27 +690,20 @@ jobs:
       USE_EXTERNAL_DB: true
       DOMAIN: k8s-dev.relint.rocks
 
-  - task: run-rds-validation-test
-    file: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      PGPASSWORD: ((ci_k8s_aws_rds_database_password))
+  - in_parallel:
+    - task: run-rds-validation-test
+      file: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        PGPASSWORD: ((ci_k8s_aws_rds_database_password))
 
-  - task: run-smoke-test
-    file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      SMOKE_TEST_SKIP_SSL: false
-
-  - task: push-test-app
-    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      APP_NAME: lingering-node-app
-      VERIFY_EXISTING_APP: false
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        SMOKE_TEST_SKIP_SSL: false
 
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml

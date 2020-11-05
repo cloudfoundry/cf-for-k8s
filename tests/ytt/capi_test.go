@@ -51,6 +51,28 @@ var _ = Describe("CAPI", func() {
 				data = map[string]interface{}{}
 				data["quarks_secret.enable"] = true
 			})
+
+			It("should not have k8s capi secrets",  func() {
+
+				Expect(ctx).To(ProduceYAML(
+					And(
+						Not(WithSecret("cf-api-controllers-client-secret", "cf-system")),
+						Not(WithSecret("cf-api-backup-metadata-generator-client-secret", "cf-system")),
+						Not(WithSecret("cloud-controller-username-lookup-client-secret", "cf-system")),
+						Not(WithSecret("capi-database-encryption-key-secret", "cf-system")),
+
+						//TODO: Do we need a QuarksSecretMatcher ?
+						// or can we just match against the raw YAML output?
+	//					WithDeploymentMatcher("cloud-controller-username-lookup-client-secret", "cf-system").WithSpecYaml(`spec:
+  //type: password
+  //secretName: cloud-controller-username-lookup-client-secret`),
+
+						//WithSecret("cf-api-backup-metadata-generator-client-secret", "cf-system"),
+						//WithSecret("cloud-controller-username-lookup-client-secret", "cf-system"),
+						//WithSecret("capi-database-encryption-key-secret", "cf-system"),
+					),
+				))
+			})
 		})
 
 		Context("when using k8s secrets", func() {
@@ -58,16 +80,18 @@ var _ = Describe("CAPI", func() {
 				data = map[string]interface{}{}
 				data["quarks_secret.enable"] = false
 				data["capi.cf_api_controllers_client_secret"] = "squirrel"
+				data["capi.cf_api_backup_metadata_generator_client_secret"] = "mole"
+				data["capi.cc_username_lookup_client_secret"] = "weasel"
+				data["capi.database.encryption_key"] = "capybara"
 			})
-			It("should have only k8s capi secrets",  func() {
 
+			It("should have only k8s capi secrets",  func() {
 				Expect(ctx).To(ProduceYAML(
 					And(
 						WithSecret("cf-api-controllers-client-secret", "cf-system").WithStringDataValue("password", "squirrel"),
-
-						//WithSecret("cf-api-backup-metadata-generator-client-secret", "cf-system"),
-						//WithSecret("cloud-controller-username-lookup-client-secret", "cf-system"),
-						//WithSecret("capi-database-encryption-key-secret", "cf-system"),
+						WithSecret("cf-api-backup-metadata-generator-client-secret", "cf-system").WithStringDataValue("password", "mole"),
+						WithSecret("cloud-controller-username-lookup-client-secret", "cf-system").WithStringDataValue("password", "weasel"),
+						WithSecret("capi-database-encryption-key-secret", "cf-system").WithStringDataValue("password", "capybara"),
 					),
 				))
 			})

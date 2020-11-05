@@ -199,7 +199,7 @@ resources:
 - name: terraform-s3
   type: terraform
   source:
-    env_name: aws-rds
+    env_name: aws-s3-pr
     backend_type: gcs
     backend_config:
       bucket: relint-k8s-cluster-state

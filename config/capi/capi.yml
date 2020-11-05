@@ -56,7 +56,7 @@ uaa:
     cf_api_controllers:
       secret_name: cf-api-controllers-client-secret
     cf_api_backup_metadata_generator:
-      secret_name: cf-api-backup-metadata-generator-secret
+      secret_name: cf-api-backup-metadata-generator-client-secret
 
 kpack:
   registry:

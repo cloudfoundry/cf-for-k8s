@@ -1,7 +1,9 @@
-#@ load("@ytt:data", "data")
+#@ load("/values.star", "data")
 #@ load("@ytt:overlay", "overlay")
 
 #! Remove this overlay after https://github.com/cloudfoundry/capi-k8s-release/issues/91 is resolved
+
+#@ def fix_capi():
 
 #@ worker = overlay.subset({ "kind": "Deployment", "metadata": { "name": "cf-api-worker" }})
 #@ clock = overlay.subset({ "kind": "Deployment", "metadata": { "name": "cf-api-clock" }})
@@ -31,3 +33,4 @@ spec:
         #! this ccng image where we removed "wait for Istio part". This won't work with Istio, but will work with Contour
         image: gcr.io/cf-networking-images/cf-k8s-networking/dev-ccng@sha256:5bf80d42a5fe7a10d6026fa2c5e6516aae89258bce3c87647720e7bdb21258bf
 
+#@ end

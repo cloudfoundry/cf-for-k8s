@@ -50,9 +50,7 @@ capi.cf_api_backup_metadata_generator_client_secret'''.split("\n")
     end
 
     required_parameters += '''\
-capi.database.encryption_key
 capi.database.password
-cf_admin_password
 internal_certificate.ca
 internal_certificate.crt
 internal_certificate.key
@@ -62,6 +60,8 @@ system_domain'''.split("\n")
 
     if not values.quarks_secret.enable:
         required_parameters += '''\
+capi.database.encryption_key
+cf_admin_password
 uaa.admin_client_secret'''.split("\n")
     end
 

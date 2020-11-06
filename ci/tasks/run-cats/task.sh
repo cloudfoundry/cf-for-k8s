@@ -35,6 +35,13 @@ echo '{}' | jq \
 --argjson include_services "${INCLUDE_SERVICES}" \
 --argjson include_tasks "${INCLUDE_TASKS}" \
 --argjson include_v3 "${INCLUDE_V3}" \
+--argjson ruby_buildpack "${RUBY_BUILDPACK}" \
+--argjson python_buildpack "${PYTHON_BUILDPACK}" \
+--argjson go_buildpack "${GO_BUILDPACK}" \
+--argjson java_buildpack "${JAVA_BUILDPACK}" \
+--argjson nodejs_buildpack "${NODEJS_BUILDPACK}" \
+--argjson php_buildpack "${PHP_BUILDPACK}" \
+--argjson binary_buildpack "${BINARY_BUILDPACK}" \
 '{
   "api": $cf_api_url,
   "admin_user": "admin",
@@ -59,13 +66,13 @@ echo '{}' | jq \
   "include_tasks": $include_tasks,
   "include_v3": $include_v3,
   "infrastructure": "kubernetes",
-  "ruby_buildpack_name": "paketo-buildpacks/ruby",
-  "python_buildpack_name": "paketo-community/python",
-  "go_buildpack_name": "paketo-buildpacks/go",
-  "java_buildpack_name": "paketo-buildpacks/java",
-  "nodejs_buildpack_name": "paketo-buildpacks/nodejs",
-  "php_buildpack_name": "paketo-buildpacks/php",
-  "binary_buildpack_name": "paketo-buildpacks/procfile"
+  "ruby_buildpack_name": $ruby_buildpack,
+  "python_buildpack_name": $python_buildpack,
+  "go_buildpack_name": $go_buildpack,
+  "java_buildpack_name": $java_buildpack,
+  "nodejs_buildpack_name": $nodejs_buildpack,
+  "php_buildpack_name": $php_buildpack,
+  "binary_buildpack_name": $binary_buildpack
 }' > "${CATS_CONFIG_FILE}"
 # `cf_push_timeout` and `default_timeout` are set fairly arbitrarily
 

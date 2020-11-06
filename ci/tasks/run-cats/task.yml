@@ -37,6 +37,13 @@ params:
   INCLUDE_SERVICES: false
   INCLUDE_TASKS: false
   INCLUDE_V3: false
+  RUBY_BUILDPACK: paketo-buildpacks/ruby
+  PYTHON_BUILDPACK: paketo-community/python
+  GO_BUILDPACK: paketo-buildpacks/go
+  JAVA_BUILDPACK: paketo-buildpacks/java
+  NODEJS_BUILDPACK: paketo-buildpacks/nodejs
+  PHP_BUILDPACK: paketo-buildpacks/php
+  BINARY_BUILDPACK: paketo-buildpacks/procfile
 
 run:
   path: cf-for-k8s-ci/ci/tasks/run-cats/task.sh

@@ -253,12 +253,6 @@ stringData:
   uaa.key: #@ data.values.internal_certificate.key
   uaa.crt: #@ data.values.internal_certificate.crt
 
-#@ if quarks_secret_enabled():
-#! Remove UAA-templated admin client-secret so we can generate the credential w/ Quarks
-#@overlay/match by=overlay.subset({"kind":"Secret", "metadata":{"name":"uaa-admin-client-credentials"}})
-#@overlay/remove
----
-
 #@ def uaa_client_credential_data(client_name, credential):
 oauth:
   #@yaml/text-templated-strings
@@ -284,9 +278,26 @@ scim:
   - #@ "admin|" + data.values.cf_admin_password + "|admin@admin.tld|first|last|clients.read,cloud_controller.admin,doppler.firehose,network.admin,openid,routing.router_groups.read,routing.router_groups.write,scim.read,scim.write|uaa"
 #@ end
 
---- #@ uaa_client_credential("cf", "", "uaa-cf-client-secret")
+#@ if not quarks_secret_enabled():
+#! Remove UAA-templated admin client-secret so we can generate the credential w/ Quarks
+#@overlay/match by=overlay.subset({"kind":"Secret", "metadata":{"name":"uaa-admin-client-credentials"}})
+#@overlay/remove
+---
 --- #@ uaa_client_credential("cf_api_controllers", data.values.capi.cf_api_controllers_client_secret, "uaa-cf-api-controllers-client-secret")
 --- #@ uaa_client_credential("cf_api_backup_metadata_generator", data.values.capi.cf_api_backup_metadata_generator_client_secret, "uaa-cf-api-backup-metadata-generator-client-secret")
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: dummy-secret
+  namespace: #@ system_namespace()
+type: Opaque
+stringData:
+  cf_admin_user_credentials.yml: #@ yaml.encode(uaa_cf_admin_user_credentials())
+#@ end
+
+--- #@ uaa_client_credential("cf", "", "uaa-cf-client-secret")
 
 ---
 apiVersion: v1
@@ -297,7 +308,6 @@ metadata:
 type: Opaque
 stringData:
   cf_admin_user_credentials.yml: #@ yaml.encode(uaa_cf_admin_user_credentials())
-#@ end
 
 #@ load("@uaa/k8s:templates/deployment.star",
 #@  "secrets_dir")

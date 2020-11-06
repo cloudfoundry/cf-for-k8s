@@ -1,5 +1,6 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:template", "template")
 #@ load("/minio/minio.star", "minio_enabled")
 #@ load("/namespaces.star", "system_namespace", "workloads_staging_namespace", "workloads_namespace")
 #@ load("/postgres/postgres.star", "cfdb_enabled")
@@ -7,21 +8,28 @@
 
 #@ def ingress_selector():
 #@   if data.values.networking.ingress_solution_provider == "istio":
-podSelector:
-  matchLabels:
-    istio: ingressgateway
-namespaceSelector:
-  matchLabels:
-    cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+- podSelector:
+    matchLabels:
+      istio: ingressgateway
+  namespaceSelector:
+    matchLabels:
+      cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+- podSelector:
+    matchLabels:
+      istio: istiod
+  namespaceSelector:
+    matchLabels:
+      cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
 #@   elif data.values.networking.ingress_solution_provider == "contour":
-podSelector:
-  matchLabels:
-    app: envoy
-namespaceSelector:
-  matchLabels:
-    cf-for-k8s.cloudfoundry.org/contour-system-ns: ""
+- podSelector:
+    matchLabels:
+      app: envoy
+  namespaceSelector:
+    matchLabels:
+      cf-for-k8s.cloudfoundry.org/contour-system-ns: ""
 #@   end
 #@ end
+---
 
 #@ def database_egress():
 to:
@@ -96,10 +104,10 @@ spec:
   podSelector: {}
   ingress:
   - from:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
   egress:
   - to:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
   policyTypes:
   - Ingress
   - Egress
@@ -115,10 +123,10 @@ spec:
   podSelector: {}
   ingress:
   - from:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
   egress:
   - to:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
   policyTypes:
   - Ingress
   - Egress
@@ -134,10 +142,10 @@ spec:
   podSelector: {}
   ingress:
   - from:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
   egress:
   - to:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
   policyTypes:
   - Ingress
   - Egress
@@ -267,7 +275,7 @@ spec:
       app.kubernetes.io/name: uaa
   ingress:
   - from:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
     - podSelector:
         matchLabels:
           app.kubernetes.io/name: cf-api-server
@@ -297,7 +305,7 @@ spec:
       app.kubernetes.io/name: cf-api-server
   ingress:
   - from:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
     - podSelector:
         matchLabels:
           app.kubernetes.io/name: cf-api-controllers
@@ -449,7 +457,7 @@ spec:
       release: cf-blobstore
   ingress:
   - from:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
     - podSelector:
         matchLabels:
           cloudfoundry.org/source_type: STG
@@ -692,7 +700,7 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
 
 #! Allow app traffic from the istio-ingressgateway
 ---
@@ -707,7 +715,7 @@ spec:
   - Ingress
   ingress:
   - from:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
 
 #! Copied from _ytt_lib/cf-k8s-logging
 #! TODO: remove with logging/remove-networking-from-logging-lib.yml
@@ -726,7 +734,7 @@ spec:
       app: log-cache
   ingress:
   - from:
-    - #@ ingress_selector()
+    - #@ template.replace(ingress_selector())
     - podSelector:
         matchLabels:
           app: fluentd

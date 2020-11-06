@@ -8,4 +8,4 @@ require (
 	github.com/onsi/gomega v1.10.1
 )
 
-replace code.cloudfoundry.org/yttk8smatchers => /Users/ericp/go/src/code.cloudfoundry.org/yttk8smatchers
+replace code.cloudfoundry.org/yttk8smatchers => /Users/pivotal/workspace/yttk8smatchers

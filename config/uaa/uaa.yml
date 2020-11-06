@@ -4,6 +4,7 @@
 #@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
 #@ load("/namespaces.star", "system_namespace")
+#@ load("/quarks-secret/quarks-secret.star", "quarks_secret_enabled")
 
 #@ def uaa_db_host():
 #@   if len(data.values.uaa.database.host) > 0:
@@ -252,6 +253,7 @@ stringData:
   uaa.key: #@ data.values.internal_certificate.key
   uaa.crt: #@ data.values.internal_certificate.crt
 
+#@ if quarks_secret_enabled():
 #! Remove UAA-templated admin client-secret so we can generate the credential w/ Quarks
 #@overlay/match by=overlay.subset({"kind":"Secret", "metadata":{"name":"uaa-admin-client-credentials"}})
 #@overlay/remove
@@ -295,6 +297,7 @@ metadata:
 type: Opaque
 stringData:
   cf_admin_user_credentials.yml: #@ yaml.encode(uaa_cf_admin_user_credentials())
+#@ end
 
 #@ load("@uaa/k8s:templates/deployment.star",
 #@  "secrets_dir")

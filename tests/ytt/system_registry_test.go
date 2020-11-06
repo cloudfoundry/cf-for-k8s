@@ -21,6 +21,7 @@ var _ = Describe("System registry", func() {
 			pathToFile("config/system-registry.yml"),
 			pathToFile("config/uaa"),
 			pathToFile("config/namespaces.star"),
+			pathToFile("config/quarks-secret/quarks-secret.star"),
 		}
 
 		valueFiles = []string{

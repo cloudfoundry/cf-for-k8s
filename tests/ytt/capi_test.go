@@ -1,11 +1,12 @@
 package ytt
 
 import (
+	"io/ioutil"
+	"os"
+
 	. "code.cloudfoundry.org/yttk8smatchers/matchers"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"io/ioutil"
-	"os"
 )
 
 var _ = Describe("CAPI", func() {
@@ -36,7 +37,7 @@ var _ = Describe("CAPI", func() {
 			WithTargetDir(targetDir),
 			WithTemplateFiles(templateFiles...),
 			WithValueFiles(valueFiles...),
-			)
+		)
 		Expect(err).NotTo(HaveOccurred())
 	})
 
@@ -52,7 +53,7 @@ var _ = Describe("CAPI", func() {
 				data["quarks_secret.enable"] = true
 			})
 
-			It("should not have k8s capi secrets",  func() {
+			It("should not have k8s capi secrets", func() {
 
 				Expect(ctx).To(ProduceYAML(
 					And(
@@ -61,15 +62,10 @@ var _ = Describe("CAPI", func() {
 						Not(WithSecret("cloud-controller-username-lookup-client-secret", "cf-system")),
 						Not(WithSecret("capi-database-encryption-key-secret", "cf-system")),
 
-						//TODO: Do we need a QuarksSecretMatcher ?
-						// or can we just match against the raw YAML output?
-	//					WithDeploymentMatcher("cloud-controller-username-lookup-client-secret", "cf-system").WithSpecYaml(`spec:
-  //type: password
-  //secretName: cloud-controller-username-lookup-client-secret`),
-
-						//WithSecret("cf-api-backup-metadata-generator-client-secret", "cf-system"),
-						//WithSecret("cloud-controller-username-lookup-client-secret", "cf-system"),
-						//WithSecret("capi-database-encryption-key-secret", "cf-system"),
+						WithQuarksSecret("cf-api-controllers-client-secret", "cf-system"),
+						WithQuarksSecret("cf-api-backup-metadata-generator-client-secret", "cf-system"),
+						WithQuarksSecret("cloud-controller-username-lookup-client-secret", "cf-system"),
+						WithQuarksSecret("capi-database-encryption-key-secret", "cf-system"),
 					),
 				))
 			})
@@ -85,7 +81,7 @@ var _ = Describe("CAPI", func() {
 				data["capi.database.encryption_key"] = "capybara"
 			})
 
-			It("should have only k8s capi secrets",  func() {
+			It("should have only k8s capi secrets", func() {
 				Expect(ctx).To(ProduceYAML(
 					And(
 						WithSecret("cf-api-controllers-client-secret", "cf-system").WithStringDataValue("password", "squirrel"),

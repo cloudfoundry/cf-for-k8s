@@ -253,7 +253,7 @@ stringData:
   uaa.key: #@ data.values.internal_certificate.key
   uaa.crt: #@ data.values.internal_certificate.crt
 
-#@ def uaa_client_credential_data(client_name, credential):
+#@ def secret_uaa_client_credential_data(client_name, credential):
 oauth:
   #@yaml/text-templated-strings
   clients:
@@ -261,7 +261,8 @@ oauth:
       secret: #@ credential
 #@ end
 
-#@ def uaa_client_credential(client_name, credential, secret_name):
+#@ def secret_uaa_client_credential(client_name, credential, secret_name):
+---
 apiVersion: v1
 kind: Secret
 metadata:
@@ -269,7 +270,7 @@ metadata:
   namespace: #@ system_namespace()
 type: Opaque
 stringData:
-  client_credentials.yml: #@ yaml.encode(uaa_client_credential_data(client_name, credential))
+  client_credentials.yml: #@ yaml.encode(secret_uaa_client_credential_data(client_name, credential))
 #@ end
 
 #@ def uaa_cf_admin_user_credentials():
@@ -278,26 +279,17 @@ scim:
   - #@ "admin|" + data.values.cf_admin_password + "|admin@admin.tld|first|last|clients.read,cloud_controller.admin,doppler.firehose,network.admin,openid,routing.router_groups.read,routing.router_groups.write,scim.read,scim.write|uaa"
 #@ end
 
-#@ if not quarks_secret_enabled():
+#@ if quarks_secret_enabled():
 #! Remove UAA-templated admin client-secret so we can generate the credential w/ Quarks
 #@overlay/match by=overlay.subset({"kind":"Secret", "metadata":{"name":"uaa-admin-client-credentials"}})
 #@overlay/remove
 ---
---- #@ uaa_client_credential("cf_api_controllers", data.values.capi.cf_api_controllers_client_secret, "uaa-cf-api-controllers-client-secret")
---- #@ uaa_client_credential("cf_api_backup_metadata_generator", data.values.capi.cf_api_backup_metadata_generator_client_secret, "uaa-cf-api-backup-metadata-generator-client-secret")
-
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: dummy-secret
-  namespace: #@ system_namespace()
-type: Opaque
-stringData:
-  cf_admin_user_credentials.yml: #@ yaml.encode(uaa_cf_admin_user_credentials())
+#@ else:
+--- #@ template.replace(secret_uaa_client_credential("cf_api_controllers", data.values.capi.cf_api_controllers_client_secret, "uaa-cf-api-controllers-client-secret"))
+--- #@ template.replace(secret_uaa_client_credential("cf_api_backup_metadata_generator", data.values.capi.cf_api_backup_metadata_generator_client_secret, "uaa-cf-api-backup-metadata-generator-client-secret"))
 #@ end
 
---- #@ uaa_client_credential("cf", "", "uaa-cf-client-secret")
+--- #@ template.replace(secret_uaa_client_credential("cf", "", "uaa-cf-client-secret"))
 
 ---
 apiVersion: v1

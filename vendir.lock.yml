@@ -10,10 +10,10 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: 'docs: increment adr number...'
-      sha: 56de9172becc12cc2673d8070ed7f2841220a243
+      commitTitle: return after deleting cf...
+      sha: b4b038dcf71339a9cd6d6c61d83804b946c0163b
       tags:
-      - v0.0.6-300-g56de917
+      - v0.0.6-306-gb4b038d
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

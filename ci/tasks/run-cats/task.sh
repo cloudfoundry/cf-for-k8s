@@ -35,13 +35,13 @@ echo '{}' | jq \
 --argjson include_services "${INCLUDE_SERVICES}" \
 --argjson include_tasks "${INCLUDE_TASKS}" \
 --argjson include_v3 "${INCLUDE_V3}" \
---argjson ruby_buildpack "${RUBY_BUILDPACK}" \
---argjson python_buildpack "${PYTHON_BUILDPACK}" \
---argjson go_buildpack "${GO_BUILDPACK}" \
---argjson java_buildpack "${JAVA_BUILDPACK}" \
---argjson nodejs_buildpack "${NODEJS_BUILDPACK}" \
---argjson php_buildpack "${PHP_BUILDPACK}" \
---argjson binary_buildpack "${BINARY_BUILDPACK}" \
+--arg ruby_buildpack "${RUBY_BUILDPACK}" \
+--arg python_buildpack "${PYTHON_BUILDPACK}" \
+--arg go_buildpack "${GO_BUILDPACK}" \
+--arg java_buildpack "${JAVA_BUILDPACK}" \
+--arg nodejs_buildpack "${NODEJS_BUILDPACK}" \
+--arg php_buildpack "${PHP_BUILDPACK}" \
+--arg binary_buildpack "${BINARY_BUILDPACK}" \
 '{
   "api": $cf_api_url,
   "admin_user": "admin",

@@ -8,11 +8,15 @@ image_resource:
 
 inputs:
 - name: cf-for-k8s
+  optional: true # Should remove as this is unused in sh file.
 - name: cf-for-k8s-ci
 - name: env-metadata
+  optional: true
 - name: cf-acceptance-tests
 
 params:
+  DNS_DOMAIN:
+  CF_ADMIN_PASSWORD:
   NUM_FLAKE_ATTEMPTS: 2
   NUM_NODES: 6
   SKIP_SSL_VALIDATION: true

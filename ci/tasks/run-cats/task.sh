@@ -5,8 +5,10 @@ CONFIG_DIR="$(pwd)/config"
 mkdir -p ${CONFIG_DIR}
 CATS_CONFIG_FILE="${CONFIG_DIR}/cats_config.json"
 
-DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
-CF_ADMIN_PASSWORD="$(cat env-metadata/cf-admin-password.txt)"
+if [[ -e env-metadata ]]; then
+  DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
+  CF_ADMIN_PASSWORD="$(cat env-metadata/cf-admin-password.txt)"
+fi
 
 set +x
 echo '{}' | jq \

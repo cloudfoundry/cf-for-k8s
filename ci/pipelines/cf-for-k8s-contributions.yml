@@ -1063,7 +1063,7 @@ jobs:
           GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
           GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
           GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          EXTERNAL_BLOBSTORE: s3
+          EXTERNAL_BLOBSTORE: incluster
       - task: run-smoke-tests
         file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
         input_mapping:

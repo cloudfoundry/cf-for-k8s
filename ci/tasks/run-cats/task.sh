@@ -8,12 +8,15 @@ CATS_CONFIG_FILE="${CONFIG_DIR}/cats_config.json"
 if [[ -e env-metadata ]]; then
   DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
   CF_ADMIN_PASSWORD="$(cat env-metadata/cf-admin-password.txt)"
+
+  CF_APPS_DOMAIN="apps.${DNS_DOMAIN}"
+  CF_API_DOMAIN="api.${DNS_DOMAIN}"
 fi
 
 set +x
 echo '{}' | jq \
---arg cf_api_url "api.${DNS_DOMAIN}" \
---arg cf_apps_url "apps.${DNS_DOMAIN}" \
+--arg cf_api_url "${CF_API_DOMAIN}" \
+--arg cf_apps_url "${CF_APPS_DOMAIN}" \
 --arg cf_admin_password "${CF_ADMIN_PASSWORD}" \
 --argjson cf_push_timeout "${CF_PUSH_TIMEOUT}" \
 --argjson default_timeout "${DEFAULT_TIMEOUT}" \
@@ -77,9 +80,6 @@ pushd cf-acceptance-tests
   # As of 2020-08-02, we're seeing CATS failures when using >6 nodes
   # CATS run time looks like
   # nodes | run time
-  #     1 | 47min
-  #     3 | 17min
-  #     6 | 11min
-  #    12 | fails
+  #     6 | 20min
 
 popd

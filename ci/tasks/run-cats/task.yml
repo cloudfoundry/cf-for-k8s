@@ -15,7 +15,8 @@ inputs:
 - name: cf-acceptance-tests
 
 params:
-  DNS_DOMAIN:
+  CF_APPS_DOMAIN:
+  CF_API_DOMAIN:
   CF_ADMIN_PASSWORD:
   NUM_FLAKE_ATTEMPTS: 2
   NUM_NODES: 6

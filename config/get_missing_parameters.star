@@ -46,11 +46,19 @@ blobstore.secret_access_key'''.split("\n")
         required_parameters += '''\
 capi.cc_username_lookup_client_secret
 capi.cf_api_controllers_client_secret
-capi.cf_api_backup_metadata_generator_client_secret'''.split("\n")
+capi.cf_api_backup_metadata_generator_client_secret
+capi.database.encryption_key'''.split("\n")
     end
 
     required_parameters += '''\
-capi.database.password
+capi.database.password'''.split("\n")
+
+    if not values.quarks_secret.enable:
+        required_parameters += '''\
+cf_admin_password'''.split("\n")
+    end
+
+    required_parameters += '''\
 internal_certificate.ca
 internal_certificate.crt
 internal_certificate.key
@@ -60,8 +68,6 @@ system_domain'''.split("\n")
 
     if not values.quarks_secret.enable:
         required_parameters += '''\
-capi.database.encryption_key
-cf_admin_password
 uaa.admin_client_secret'''.split("\n")
     end
 

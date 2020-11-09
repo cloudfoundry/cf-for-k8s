@@ -112,6 +112,7 @@ use_external_dns_for_wildcard: true
 enable_automount_service_account_token: true
 metrics_server_prefer_internal_kubelet_address: true
 use_first_party_jwt_tokens: true
+enable_proxy_protocol: true
 
 load_balancer:
   enable: false

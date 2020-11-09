@@ -1,0 +1,21 @@
+#@ load("@ytt:data", "data")
+#@ if data.values.enable_proxy_protocol:
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: proxy-protocol
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+  - applyTo: LISTENER
+    patch:
+      operation: MERGE
+      value:
+        listener_filters:
+        - name: envoy.listener.proxy_protocol
+        - name: envoy.listener.tls_inspector
+#@ end

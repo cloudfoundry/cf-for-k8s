@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-DESIRED_CONTOUR_VERSION="main"
+DESIRED_CONTOUR_VERSION="v1.10.0"
 
 set +eu
 

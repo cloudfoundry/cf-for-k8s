@@ -37,3 +37,25 @@ Balancer Service. The external Load Balancer would be configured to receive and
 forward traffic to the Kubernetes Worker nodes on ports 80 and 443.
 
 ![Ingress Routing with external load balancer](./../assets/ingress-gateway-topology-external-lb.jpg)
+
+### Load balancing behavior between instances and apps
+
+Traffic is balanced equally between all apps mapped to a route, and subsequently
+all instances of an app. So if an app has many instances, expect all of them
+to receive equal load. If multiple apps are bound to a route, expect each app to
+receive an equal portion of the load to the route, regardless of the number of
+instances each app has.
+
+So given a foundation where AppA is deployed with 10 instances, and AppB is
+deployed with one instance:
+
+Requests to a route mapped only to AppB will always hit its single instance.
+
+Requests to a route mapped only to AppA will be distributed equally across all
+10 instances.
+
+Requests to a route mapped to both AppA and AppB will be distributed 50/50
+between each app. The 50% of requests which are assigned to AppA will further be
+distributed equally between the 10 instances of AppA, but the 50% of requests
+which are assigned to AppB will all hit its single instance.
+

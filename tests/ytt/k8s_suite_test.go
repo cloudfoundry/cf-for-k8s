@@ -14,7 +14,7 @@ import (
 var templateBasePath string
 
 func init() {
-	SetDefaultEventuallyTimeout(10 * time.Second)
+	SetDefaultEventuallyTimeout(20 * time.Second)
 
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {

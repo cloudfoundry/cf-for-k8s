@@ -5,13 +5,18 @@ CONFIG_DIR="$(pwd)/config"
 mkdir -p ${CONFIG_DIR}
 CATS_CONFIG_FILE="${CONFIG_DIR}/cats_config.json"
 
-DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
-CF_ADMIN_PASSWORD="$(cat env-metadata/cf-admin-password.txt)"
+if [[ -e env-metadata ]]; then
+  DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
+  CF_ADMIN_PASSWORD="$(cat env-metadata/cf-admin-password.txt)"
+
+  CF_APPS_DOMAIN="apps.${DNS_DOMAIN}"
+  CF_API_DOMAIN="api.${DNS_DOMAIN}"
+fi
 
 set +x
 echo '{}' | jq \
---arg cf_api_url "api.${DNS_DOMAIN}" \
---arg cf_apps_url "apps.${DNS_DOMAIN}" \
+--arg cf_api_url "${CF_API_DOMAIN}" \
+--arg cf_apps_url "${CF_APPS_DOMAIN}" \
 --arg cf_admin_password "${CF_ADMIN_PASSWORD}" \
 --argjson cf_push_timeout "${CF_PUSH_TIMEOUT}" \
 --argjson default_timeout "${DEFAULT_TIMEOUT}" \
@@ -30,6 +35,13 @@ echo '{}' | jq \
 --argjson include_services "${INCLUDE_SERVICES}" \
 --argjson include_tasks "${INCLUDE_TASKS}" \
 --argjson include_v3 "${INCLUDE_V3}" \
+--arg ruby_buildpack "${RUBY_BUILDPACK}" \
+--arg python_buildpack "${PYTHON_BUILDPACK}" \
+--arg go_buildpack "${GO_BUILDPACK}" \
+--arg java_buildpack "${JAVA_BUILDPACK}" \
+--arg nodejs_buildpack "${NODEJS_BUILDPACK}" \
+--arg php_buildpack "${PHP_BUILDPACK}" \
+--arg binary_buildpack "${BINARY_BUILDPACK}" \
 '{
   "api": $cf_api_url,
   "admin_user": "admin",
@@ -54,13 +66,13 @@ echo '{}' | jq \
   "include_tasks": $include_tasks,
   "include_v3": $include_v3,
   "infrastructure": "kubernetes",
-  "ruby_buildpack_name": "paketo-buildpacks/ruby",
-  "python_buildpack_name": "paketo-community/python",
-  "go_buildpack_name": "paketo-buildpacks/go",
-  "java_buildpack_name": "paketo-buildpacks/java",
-  "nodejs_buildpack_name": "paketo-buildpacks/nodejs",
-  "php_buildpack_name": "paketo-buildpacks/php",
-  "binary_buildpack_name": "paketo-buildpacks/procfile"
+  "ruby_buildpack_name": $ruby_buildpack,
+  "python_buildpack_name": $python_buildpack,
+  "go_buildpack_name": $go_buildpack,
+  "java_buildpack_name": $java_buildpack,
+  "nodejs_buildpack_name": $nodejs_buildpack,
+  "php_buildpack_name": $php_buildpack,
+  "binary_buildpack_name": $binary_buildpack
 }' > "${CATS_CONFIG_FILE}"
 # `cf_push_timeout` and `default_timeout` are set fairly arbitrarily
 
@@ -72,12 +84,15 @@ pushd cf-acceptance-tests
     -randomizeAllSpecs \
     -flakeAttempts=${NUM_FLAKE_ATTEMPTS} \
     -nodes=${NUM_NODES}
-  # As of 2020-08-02, we're seeing CATS failures when using >6 nodes
-  # CATS run time looks like
+  # Around 2020-08-02, we saw CATS failures when using >6 nodes.
+  #
+  # Proportional CATS run time looks like
   # nodes | run time
-  #     1 | 47min
-  #     3 | 17min
-  #     6 | 11min
-  #    12 | fails
+  #     6 | x minutes
+  #     3 | 1.5x minutes
+  #     1 | 4x minutes
+  #
+  # For current CATS runtime using GKE and 6 nodes, see:
+  # https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s-main/jobs/run-cats
 
 popd

@@ -41,7 +41,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/uaa
-      ref: v74.27.0
+      ref: v74.28.0
     includePaths:
     - k8s/templates/**/*
 - path: config/kpack/_ytt_lib/kpack

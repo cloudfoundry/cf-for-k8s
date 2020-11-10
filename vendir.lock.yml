@@ -28,10 +28,10 @@ directories:
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:
   - git:
-      commitTitle: Update UAA image reference in k8s deployment template to 74.27.0
-      sha: 7464e2700316d13daa2ca4d8369015f86ed7054c
+      commitTitle: Update UAA image reference in k8s deployment template to 74.28.0
+      sha: 6700bbdac204a8c97ac80f326d6ca03702f5e5c8
       tags:
-      - v74.27.0
+      - v74.28.0
     path: .
   path: config/uaa/_ytt_lib/uaa
 - contents:

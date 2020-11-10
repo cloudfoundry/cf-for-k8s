@@ -7,8 +7,6 @@ image_resource:
     repository: relintdockerhubpushbot/cf-for-k8s-ci
 
 inputs:
-- name: cf-for-k8s
-  optional: true # Should remove as this is unused in sh file.
 - name: cf-for-k8s-ci
 - name: env-metadata
   optional: true

@@ -31,6 +31,8 @@ If you find you must rotate one of the above fields:
 
 * [Support rotation of `capi.database.password`](https://github.com/cloudfoundry/cf-for-k8s/issues/530)
 
+* [Support rotation of `uaa.database.password`](https://github.com/cloudfoundry/cf-for-k8s/issues/566)
+
 ### Concourse/CI Issues
 
 The following fields can be modified and are updated eventually, but
@@ -39,7 +41,7 @@ use either the old password or the new one, and will fail.
 
 * `cf_admin_password` - manual upgrade works, CI/upgrade fails
 
-* `uaa.database.password` - manual upgrade works, CI/upgrade fails: "Error unmarshalling the following into a cloud controller error: no healthy upstream"
+* `ci/pipelines/cf-for-k8s-stability-tests.yml` - manual upgrade works, CI/upgrade fails: "Error unmarshalling the following into a cloud controller error: no healthy upstream"
 
 ## Notes on Currently Supported Rotations
 

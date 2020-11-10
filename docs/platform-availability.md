@@ -28,4 +28,4 @@ For post v1.0.0 releases, we'll include downtime information in release notes. F
 
 ## Maintaining the long-running environment
 
-please see https://github.com/cloudfoundry/cf-for-k8s/blob/develop/docs/maintaining/long-running-environment.md
+please see [docs/maintaining/long-running-environment.md](../docs/maintaining/long-running-environment.md)

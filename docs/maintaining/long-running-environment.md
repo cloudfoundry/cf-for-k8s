@@ -10,7 +10,7 @@ The [long-lived-env section of the cf-for-k8s stability pipeline](https://releas
 
 ### SLIs / Recurring Measurements
 
-see [platform-availability.md](docs/platform-availability.md#availability-during-normal-operation), which explains the SLIs and includes some SLI results, at least from the weeks leading up to the 1.0 release.
+see [platform-availability.md](../../docs/platform-availability.md#availability-during-normal-operation), which explains the SLIs and includes some SLI results, at least from the weeks leading up to the 1.0 release.
 
 For configuring the Pingdom Uptime check, Release Integration team members have access to https://my.pingdom.com/app/reports/uptime#check=6350471 through the cf-mega@pivotal.io Pingdom account in Lastpass.
 

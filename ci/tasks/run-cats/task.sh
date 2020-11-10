@@ -84,9 +84,15 @@ pushd cf-acceptance-tests
     -randomizeAllSpecs \
     -flakeAttempts=${NUM_FLAKE_ATTEMPTS} \
     -nodes=${NUM_NODES}
-  # As of 2020-08-02, we're seeing CATS failures when using >6 nodes
-  # CATS run time looks like
+  # Around 2020-08-02, we saw CATS failures when using >6 nodes.
+  #
+  # Proportional CATS run time looks like
   # nodes | run time
-  #     6 | 20min
+  #     6 | x minutes
+  #     3 | 1.5x minutes
+  #     1 | 4x minutes
+  #
+  # For current CATS runtime using GKE and 6 nodes, see:
+  # https://release-integration.ci.cf-app.com/teams/main/pipelines/cf-for-k8s-main/jobs/run-cats
 
 popd

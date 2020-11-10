@@ -58,12 +58,12 @@ spec:
         - name: CF_API_HOST
           value: #@ "http://capi.{}.svc.cluster.local".format(data.values.system_namespace)
         - name: CF_CLIENT
-          value: cf_api_controllers
+          value: cf_api_backup_metadata_generator
         - name: CF_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
               key: password
-              name: #@ data.values.uaa.clients.cf_api_controllers.secret_name
+              name: #@ data.values.uaa.clients.cf_api_backup_metadata_generator.secret_name
         resources:
           requests:
             cpu: 10m

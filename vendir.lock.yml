@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: 'Merge pull request #103 from cloudfoundry/pr/matt-royal-delete-images-from-dockerhub...'
-      sha: 5891352ba68afa52d8b172f65d123c48cb6340fc
+      commitTitle: images.yml updated by CI...
+      sha: 87fd83982aa1b444f1cf0a92a96897775e9d5085
       tags:
-      - v0.4.0-90-g5891352
+      - v0.4.0-94-g87fd839
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:

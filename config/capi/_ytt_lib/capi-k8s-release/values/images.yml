@@ -1,10 +1,10 @@
 #@data/values
 ---
 images:
-  backup_metadata: cloudfoundry/cf-api-backup-metadata-generator@sha256:b4a76bd7ea43782e2e0d624d86c6d04175ca5c5e6a29ff0210179a96a21e6d9c
-  ccng: cloudfoundry/cloud-controller-ng@sha256:e0b811e3d4c732b00708217f91b752d18220290f7ff4e3044ffd87e55db8693e
+  backup_metadata: cloudfoundry/cf-api-backup-metadata-generator@sha256:78009cd3462ca461c1c5c08556ca16a3a958f9466c88fc9661be340d97e737fd
+  ccng: cloudfoundry/cloud-controller-ng@sha256:791bc826eb7fd9141720c684ee0ebb9416ead57e443bff6d6a25fca636bfd8d6
   cf_api_controllers: cloudfoundry/cf-api-controllers@sha256:6f930f83acc829eecb0f5ee2588ed0f5b527fe1a2cc40962e2a62d2c7ed943b1
   cf_autodetect_builder: cloudfoundry/cnb:0.0.94-bionic@sha256:5b03a853e636b78c44e475bbc514e2b7b140cc41cca8ab907e9753431ae8c0b0
   nginx: cloudfoundry/capi-nginx@sha256:04dbaba65a3002f2225735c312788317035afc8971864ce34a91e077a90742c4
-  registry_buddy: cloudfoundry/cf-api-package-registry-buddy@sha256:7ef5937dc5e8969aaa9de771d71e6972c264d2218c9b33bb76dcfd521eeaf47d
+  registry_buddy: cloudfoundry/cf-api-package-registry-buddy@sha256:77f631c8cc3b6887ec3bb8e08d283f2954c2f4fac6a72ffb4e8c6c9c7a093c7a
   statsd_exporter: cloudfoundry/statsd_exporter:v0.15.0@sha256:10a64dc4ad0a3e3fe88372f0481dea5c02595c38d168617836a99a649d3ac407

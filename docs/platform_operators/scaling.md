@@ -120,20 +120,73 @@ Please see https://docs.cloudfoundry.org/running/managing-cf/scaling-cloud-contr
 
 ### Scaling Networking
 
-This describes how to scale the cf-for-k8s networking components for production use cases. It uses the ideas and principles described above and includes an example overlay implementation.
+#### RouteController
+
+This describes how to scale the cf-for-k8s networking routecontroller for production
+use cases. It uses the ideas and principles described above and includes an
+example overlay implementation.
+
+If you would like to scale up the networking components for a larger scale
+environment, simply:
+1. Copy the following example into a `scaling-routecontroller.yml` file
+1. Adjust the values to your liking
+1. Append `-f scaling-routecontroller.yml` to the `ytt` command you run for rendering
+   your cf-for-k8s yaml
+
+We recommend two routecontrollers for high availability; you likely won't
+need more than that.
+
+```yaml
+#@ load("@ytt:overlay", "overlay")
+
+#! Modify these values to adjust scaling characteristics
+#@ routecontroller_replicas = 2
+#@ routecontroller_cpu_request = "200m"
+#@ routecontroller_cpu_limit = "400m"
+#@ routecontroller_mem_request = "32Mi"
+#@ routecontroller_mem_limit = "1024Mi"
+
+#! the intent is that the overlays below shouldn't need to be changed [much] but we are not testing them in CI
+#! if you notice that they've become outdated, please suggest changes via a pull request
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": { "name": "routecontroller"}}),expects=1
+---
+spec:
+  #@overlay/replace
+  replicas: #@ routecontroller_replicas
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name", expects=1
+      - name: routecontroller
+        #@overlay/match missing_ok=True
+        resources:
+          limits:
+            cpu: #@ routecontroller_cpu_limit
+            memory: #@ routecontroller_mem_limit
+          requests:
+            cpu: #@ routecontroller_cpu_request
+            memory: #@ routecontroller_mem_request
+```
+
+#### Istio
+
+This describes how to scale the cf-for-k8s networking components for production
+use cases. It uses the ideas and principles described above and includes an
+example overlay implementation.
 
 If you would like to scale up the networking components for a larger scale
 environment, simply:
 1. Copy the following example into a `scaling-networking.yml` file
 1. Adjust the values to your liking
-1. Append `-f scaling-networking.yml` to the `ytt` command you run for rendering your cf-for-k8s yaml
+1. Append `-f scaling-networking.yml` to the `ytt` command you run for rendering
+   your cf-for-k8s yaml
 
-The number of ingressgateway replicas depends on load profile of your cluster. Based on the Istio team's testing, in an unknown test environment, a single Envoy consumes 0.5 vCPU and 50 MB memory per 1000 requests per second.
+The number of ingressgateway replicas depends on load profile of your cluster.
+Based on the Istio team's testing, in an unknown test environment, a single
+Envoy consumes 0.5 vCPU and 50 MB memory per 1000 requests per second.
 
 The number of istiod replicas depends on the number of application instances.
-
-We recommend two routecontrollers for high availability; you likely won't
-need more than that.
 
 Sidecar resource usage depends on the load profile of your AIs.
 
@@ -151,11 +204,6 @@ Sidecar resource usage depends on the load profile of your AIs.
 #@ istiod_cpu_limit = "2"
 #@ istiod_mem_request = "1Gi"
 #@ istiod_mem_limit = "2Gi"
-#@ routecontroller_replicas = 2
-#@ routecontroller_cpu_request = "200m"
-#@ routecontroller_cpu_limit = "400m"
-#@ routecontroller_mem_request = "32Mi"
-#@ routecontroller_mem_limit = "1024Mi"
 #@ sidecar_cpu_request = "100m"
 #@ sidecar_cpu_limit = "2000m"
 #@ sidecar_mem_request = "128Mi"
@@ -226,24 +274,84 @@ spec:
             cpu: #@ istiod_cpu_request
             memory: #@ istiod_mem_request
 
-#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": { "name": "routecontroller"}}),expects=1
+```
+
+#### Contour
+
+This describes how to scale the cf-for-k8s networking components for production
+use cases. It uses the ideas and principles described above and includes an
+example overlay implementation.
+
+If you would like to scale up the networking components for a larger scale
+environment, simply:
+1. Copy the following example into a `scaling-networking.yml` file
+1. Adjust the values to your liking
+1. Append `-f scaling-networking.yml` to the `ytt` command you run for rendering
+   your cf-for-k8s yaml
+
+The number of ingress gateway replicas depends on load profile of your cluster.
+Contour also uses Envoy, so you can use Istio's guidance of 0.5 vCPU and 50 MB
+memory per 1000 requests per second.
+
+The number of contour replicas depends on the number of application instances.
+
+```yaml
+#@ load("@ytt:overlay", "overlay")
+
+#! Modify these values to adjust scaling characteristics
+#@ ingress_gateway_replicas = 2
+#@ ingress_gateway_cpu_request = "1"
+#@ ingress_gateway_cpu_limit = "2"
+#@ ingress_gateway_mem_request = "1Gi"
+#@ ingress_gateway_mem_limit = "2Gi"
+#@ contour_replicas = 2
+#@ contour_cpu_request = "1"
+#@ contour_cpu_limit = "2"
+#@ contour_mem_request = "1Gi"
+#@ contour_mem_limit = "2Gi"
+
+#! the intent is that the overlays below shouldn't need to be changed [much] but we are not testing them in CI
+#! if you notice that they've become outdated, please suggest changes via a pull request
+
+#@overlay/match by=overlay.subset({"kind": "DaemonSet", "metadata":{"name":"envoy"}}),expects=1
 ---
+#@overlay/replace
+kind: Deployment
 spec:
-  #@overlay/replace
-  replicas: #@ routecontroller_replicas
+  #@overlay/match missing_ok=True
+  replicas: #@ ingress_gateway_replicas
   template:
     spec:
       containers:
       #@overlay/match by="name", expects=1
-      - name: routecontroller
+      - name: envoy
         #@overlay/match missing_ok=True
         resources:
           limits:
-            cpu: #@ routecontroller_cpu_limit
-            memory: #@ routecontroller_mem_limit
+            cpu: #@ ingress_gateway_cpu_limit
+            memory: #@ ingress_gateway_mem_limit
           requests:
-            cpu: #@ routecontroller_cpu_request
-            memory: #@ routecontroller_mem_request
+            cpu: #@ ingress_gateway_cpu_request
+            memory: #@ ingress_gateway_mem_request
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"contour"}}),expects=1
+---
+spec:
+  #@overlay/replace
+  replicas: #@ contour_replicas
+  template:
+    spec:
+      containers:
+      #@overlay/match by="name", expects=1
+      - name: contour
+        #@overlay/match missing_ok=True
+        resources:
+          limits:
+            cpu: #@ contour_cpu_limit
+            memory: #@ contour_mem_limit
+          requests:
+            cpu: #@ contour_cpu_request
+            memory: #@ contour_mem_request
 ```
 
 ## Discovering all cf-for-k8s Pods

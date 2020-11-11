@@ -55,7 +55,7 @@ Configuration Notes:
 
    ```console
    # from the cf-for-k8s repo/directory
-   k8s_minor_version="$(yq -r .newest_version supported_k8s_versions.yml)"  # or k8s_minor_version="1.17"
+   k8s_minor_version="$(yq r supported_k8s_versions.yml newest_version)"  # or k8s_minor_version="1.17"
    patch_version=$(wget -q https://registry.hub.docker.com/v1/repositories/kindest/node/tags -O - | \
      jq -r '.[].name' | grep -E "^v${k8s_minor_version}.[0-9]+$" | \
      cut -d. -f3 | sort -rn | head -1)

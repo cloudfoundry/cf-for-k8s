@@ -51,7 +51,7 @@ spec:
           - name: uaa-client-secret
             mountPath: /config/uaa_client_secret
       - name: backup-metadata-generator
-        image: #@ data.values.images.backup_metadata
+        image: #@ data.values.images.backup_metadata_generator
         imagePullPolicy: Always
         command: [ "/cnb/process/wait" ]
         env:

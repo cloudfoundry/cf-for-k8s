@@ -80,18 +80,12 @@ var _ = Describe("Smoke Tests", func() {
 			}
 		})
 
-		mapRoute := func(appName string) {
-			session := cf.Cf("map-route", appName, appsDomain, "--hostname", appName)
-			Eventually(session).Should(Exit(0))
-		}
-
 		It("creates a routable app pod in Kubernetes from a source-based app", func() {
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
-			cfPush := cf.Cf("push", appName, "-p", "assets/test-node-app", "--no-route")
+			cfPush := cf.Cf("push", appName, "-p", "assets/test-node-app")
 			Eventually(cfPush).Should(Exit(0))
-			mapRoute(appName)
 
 			By("querying the app")
 			var resp *http.Response
@@ -106,12 +100,6 @@ var _ = Describe("Smoke Tests", func() {
 			body, err := ioutil.ReadAll(resp.Body)
 			Expect(err).NotTo(HaveOccurred())
 			Expect(string(body)).To(Equal("Hello World\n"))
-
-			By("verifying that the application's logs are available.")
-			Eventually(func() string {
-				cfLogs := cf.Cf("logs", appName, "--recent")
-				return string(cfLogs.Wait().Out.Contents())
-			}, 2*time.Minute, 2*time.Second).Should(ContainSubstring("Console output from test-node-app"))
 		})
 
 		It("creates a routable app pod in Kubernetes from a docker app", func() {
@@ -120,9 +108,8 @@ var _ = Describe("Smoke Tests", func() {
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
-			cfPush := cf.Cf("push", appName, "-o", "cfrouting/httpbin", "--no-route")
+			cfPush := cf.Cf("push", appName, "-o", "cfrouting/httpbin")
 			Eventually(cfPush).Should(Exit(0))
-			mapRoute(appName)
 
 			By("querying the app")
 			var resp *http.Response

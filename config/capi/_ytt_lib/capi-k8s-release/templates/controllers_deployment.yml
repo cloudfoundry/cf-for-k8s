@@ -23,6 +23,7 @@ spec:
         pre.hook.backup.velero.io/container: backup-metadata-generator
         pre.hook.backup.velero.io/command: '["/cnb/process/generate-metadata"]'
       labels:
+        app: cf-api-controllers
         app.kubernetes.io/name: cf-api-controllers
     spec:
       serviceAccountName: cf-api-controllers-service-account

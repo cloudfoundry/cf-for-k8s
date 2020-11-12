@@ -30,6 +30,7 @@ echo '{}' | jq \
 --argjson include_services "${INCLUDE_SERVICES}" \
 --argjson include_tasks "${INCLUDE_TASKS}" \
 --argjson include_v3 "${INCLUDE_V3}" \
+--arg ingress_provider "${INGRESS_PROVIDER}" \
 '{
   "api": $cf_api_url,
   "admin_user": "admin",
@@ -60,7 +61,8 @@ echo '{}' | jq \
   "java_buildpack_name": "paketo-buildpacks/java",
   "nodejs_buildpack_name": "paketo-buildpacks/nodejs",
   "php_buildpack_name": "paketo-buildpacks/php",
-  "binary_buildpack_name": "paketo-buildpacks/procfile"
+  "binary_buildpack_name": "paketo-buildpacks/procfile",
+  "ingress_provider": $ingress_provider
 }' > "${CATS_CONFIG_FILE}"
 # `cf_push_timeout` and `default_timeout` are set fairly arbitrarily
 

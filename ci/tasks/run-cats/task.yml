@@ -32,6 +32,7 @@ params:
   INCLUDE_SERVICES: false
   INCLUDE_TASKS: false
   INCLUDE_V3: false
+  INGRESS_PROVIDER: "istio"
 
 run:
   path: cf-for-k8s-ci/ci/tasks/run-cats/task.sh

@@ -42,6 +42,7 @@ echo '{}' | jq \
 --arg nodejs_buildpack "${NODEJS_BUILDPACK}" \
 --arg php_buildpack "${PHP_BUILDPACK}" \
 --arg binary_buildpack "${BINARY_BUILDPACK}" \
+--arg ingress_provider "${INGRESS_PROVIDER}" \
 '{
   "api": $cf_api_url,
   "admin_user": "admin",
@@ -72,7 +73,8 @@ echo '{}' | jq \
   "java_buildpack_name": $java_buildpack,
   "nodejs_buildpack_name": $nodejs_buildpack,
   "php_buildpack_name": $php_buildpack,
-  "binary_buildpack_name": $binary_buildpack
+  "binary_buildpack_name": $binary_buildpack,
+  "ingress_provider": $ingress_provider
 }' > "${CATS_CONFIG_FILE}"
 # `cf_push_timeout` and `default_timeout` are set fairly arbitrarily
 

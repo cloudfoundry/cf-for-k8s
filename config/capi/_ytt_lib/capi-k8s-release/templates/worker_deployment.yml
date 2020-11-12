@@ -15,6 +15,7 @@ spec:
   template:
     metadata:
       labels:
+        app: cf-api-worker
         app.kubernetes.io/name: cf-api-worker
     spec:
       #@ if/end data.values.imagePullSecrets:

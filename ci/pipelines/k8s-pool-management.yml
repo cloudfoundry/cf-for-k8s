@@ -95,14 +95,14 @@ resources:
   type: git
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
-    branch: master
+    branch: main
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
 
 - name: building-pool
   type: pool
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
-    branch: master
+    branch: main
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
     pool: k8s-dev/building
 
@@ -111,7 +111,7 @@ resources:
   check_every: 10s
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
-    branch: master
+    branch: main
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
     pool: k8s-dev/building
 
@@ -119,7 +119,7 @@ resources:
   type: pool
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
-    branch: master
+    branch: main
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
     pool: k8s-dev/ready
 
@@ -127,7 +127,7 @@ resources:
   type: pool
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
-    branch: master
+    branch: main
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
     pool: k8s-dev/destroy
 
@@ -135,7 +135,7 @@ resources:
   type: pool-trigger
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
-    branch: master
+    branch: main
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
     pool: k8s-dev/destroy
 

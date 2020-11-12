@@ -19,6 +19,7 @@ spec:
   template:
     metadata:
       labels:
+        app: cf-api-deployment-updater
         app.kubernetes.io/name: cf-api-deployment-updater
     spec:
       #@ if/end data.values.imagePullSecrets:

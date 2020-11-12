@@ -19,6 +19,7 @@ spec:
   template:
     metadata:
       labels:
+        app: cf-api-clock
         app.kubernetes.io/name: cf-api-clock
     spec:
       #@ if/end data.values.imagePullSecrets:

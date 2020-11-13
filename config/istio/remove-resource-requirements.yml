@@ -1,13 +1,15 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:json", "json")
 
 #@ if data.values.remove_resource_requirements:
 #! remove resource requirements to allow installation on smaller environments
-#@ for/end kind in ["Deployment", "DaemonSet"]:
+#@ for/end kind in ["Deployment", "DaemonSet", "StatefulSet", "Job"]:
 #@overlay/match by=overlay.subset({"kind": kind}),expects="1+"
 ---
 spec:
   template:
+    #@overlay/match missing_ok=True
     metadata:
       #@overlay/match missing_ok=True
       annotations:
@@ -19,7 +21,21 @@ spec:
       containers:
       #@overlay/match by=overlay.all,expects="1+"
       -
-        #@overlay/replace
+        #@overlay/remove
         #@overlay/match missing_ok=True
-        resources: {}
+        resources:
+
+#@ def remove_proxy_init_resources():
+global:
+  proxy_init: 
+  #@overlay/remove
+    resources:
+#@ end
+
+#@overlay/match by=overlay.subset({"kind":"ConfigMap","metadata":{"name":"istio-sidecar-injector", "namespace" : "istio-system"}})
+---
+data:
+  #@overlay/replace via=lambda a,_: json.encode(overlay.apply(json.decode(a), remove_proxy_init_resources()))
+  values:
+
 #@ end

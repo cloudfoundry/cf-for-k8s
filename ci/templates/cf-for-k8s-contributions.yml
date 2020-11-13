@@ -131,7 +131,6 @@ resources:
   icon: pool
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
-    branch: main
     pool: k8s-dev/ready
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
 
@@ -140,7 +139,6 @@ resources:
   icon: pool
   source:
     uri: git@github.com:cloudfoundry/relint-ci-pools
-    branch: master
     pool: k8s-dev/destroy
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
 

@@ -1031,6 +1031,7 @@ jobs:
   - task: create-tf-vars-file
     file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
     params:
+      CLUSTER_NAME: pr-newest-k8s-kind
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
@@ -1126,6 +1127,7 @@ jobs:
   - task: create-tf-vars-file
     file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
     params:
+      CLUSTER_NAME: pr-oldest-k8s-kind
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
@@ -1265,6 +1267,7 @@ jobs:
   - task: create-tf-vars-file
     file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
     params:
+      CLUSTER_NAME: #@ "{}-oldest-k8s-kind".format(release.name)
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
@@ -1348,6 +1351,7 @@ jobs:
   - task: create-tf-vars-file
     file: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.yml
     params:
+      CLUSTER_NAME: #@ "{}-newest-k8s-kind".format(release.name)
       GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
       GCP_PROJECT_REGION: ((ci_k8s_gcp_project_region))
       GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))

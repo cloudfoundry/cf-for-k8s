@@ -16,6 +16,7 @@ groups:
   - build-cf-for-k8s-deplab-image
   - build-cf-for-k8s-gh-pages-image
   - build-cf-for-k8s-azure-image
+  - build-cf-for-k8s-aws-image
 - name: rds-databases
   jobs:
   - create-rds-database
@@ -164,6 +165,25 @@ resources:
     paths:
     - ci/dockerfiles/cf-for-k8s-azure/Dockerfile
 
+- name: cf-for-k8s-aws-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-aws
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
+
+- name: cf-for-k8s-aws-dockerfile
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - ci/dockerfiles/cf-for-k8s-aws/Dockerfile
+
 - name: terraform-rds
   type: terraform
   source:
@@ -256,6 +276,24 @@ jobs:
     - put: cf-for-k8s-azure-image
       params:
         build: cf-for-k8s-azure-dockerfile/ci/dockerfiles/cf-for-k8s-azure/
+        push: true
+
+- name: build-cf-for-k8s-aws-image
+  public: true
+  plan:
+  - timeout: 4h
+    do:
+    - in_parallel:
+      - get: weekly
+        trigger: true
+      - get: cf-for-k8s-aws-dockerfile
+        trigger: true
+      - get: k14s-io
+        trigger: true
+
+    - put: cf-for-k8s-aws-image
+      params:
+        build: cf-for-k8s-aws-dockerfile/ci/dockerfiles/cf-for-k8s-aws/
         push: true
 
 - name: create-stability-cluster

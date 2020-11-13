@@ -13,13 +13,13 @@ inputs:
   - name: terraform-s3
     optional: true
 
-params:
-  AWS_ACCESS_KEY_ID: 
-  AWS_SECRET_ACCESS_KEY: 
-  AWS_REGION:
-
 outputs:
   - name: blobstore-metadata
+
+params:
+  AWS_ACCESS_KEY_ID:
+  AWS_SECRET_ACCESS_KEY:
+  AWS_REGION:
 
 run:
   path: cf-for-k8s-ci/ci/tasks/create-s3-bucket-data-values-file/task.sh

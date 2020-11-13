@@ -13,8 +13,8 @@ inputs:
 - name: terraform
 
 params:
-  GCP_KEY: ~
-  GCP_PROJECT_NAME: ~
+  GCP_KEY:
+  GCP_PROJECT_NAME:
 
 run:
   path: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-minikube/task.sh

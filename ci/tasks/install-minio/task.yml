@@ -15,13 +15,13 @@ inputs:
   - name: terraform
     optional: true
 
+outputs:
+  - name: blobstore-metadata
+
 params:
   GCP_SERVICE_ACCOUNT_JSON:
   GCP_PROJECT_NAME:
   GCP_PROJECT_ZONE:
-
-outputs:
-  - name: blobstore-metadata
 
 run:
   path: cf-for-k8s-ci/ci/tasks/install-minio/task.sh

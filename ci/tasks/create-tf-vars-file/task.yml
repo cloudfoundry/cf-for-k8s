@@ -13,6 +13,7 @@ outputs:
   - name: tf-vars
 
 params:
+  CLUSTER_NAME:
   GCP_PROJECT_NAME:
   GCP_PROJECT_REGION:
   GCP_PROJECT_ZONE:

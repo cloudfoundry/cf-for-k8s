@@ -13,10 +13,10 @@ outputs:
   - name: tf-vars
 
 params:
-  GCP_PROJECT_NAME: ~
-  GCP_PROJECT_REGION: ~
-  GCP_PROJECT_ZONE: ~
-  SERVICE_ACCOUNT_JSON: ~
+  GCP_PROJECT_NAME:
+  GCP_PROJECT_REGION:
+  GCP_PROJECT_ZONE:
+  SERVICE_ACCOUNT_JSON:
 
 run:
   path: cf-for-k8s-ci/ci/tasks/create-tf-vars-file/task.sh

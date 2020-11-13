@@ -15,8 +15,8 @@ outputs:
 - name: cf-install-values
 
 params:
-  GCP_KEY: ~
-  GCP_PROJECT_NAME: ~
+  GCP_KEY:
+  GCP_PROJECT_NAME:
 
 run:
   path: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.sh

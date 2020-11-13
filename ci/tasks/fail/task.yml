@@ -9,9 +9,5 @@ image_resource:
 inputs:
   - name: cf-for-k8s-ci
 
-params: {}
-
-outputs: []
-
 run:
   path: cf-for-k8s-ci/ci/tasks/fail/task.sh

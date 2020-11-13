@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: add `app` label to Pod templates...
-      sha: 4999958ee5f05c7527eef44b1710ad0b1a05af49
+      commitTitle: images.yml updated by CI...
+      sha: 8028387668b083ac5b9574bc65e78bf0a20f015b
       tags:
-      - v0.4.0-103-g4999958
+      - v0.4.0-104-g8028387
     path: .
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:

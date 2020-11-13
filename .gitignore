@@ -2,7 +2,7 @@
 **/*.tfstate.backup
 **/.terraform/
 **/*.tfvars
+**/kubeconfig_*
 tmp
-
 .idea
 *~

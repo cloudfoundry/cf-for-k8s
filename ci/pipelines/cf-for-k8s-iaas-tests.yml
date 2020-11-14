@@ -2,9 +2,13 @@
 groups:
 - name: all
   jobs:
+  - validate-aws
   - validate-azure
   - validate-minikube-on-gcp
   - validate-minikube-dev-minimal-on-gcp
+- name: aws
+  jobs:
+  - validate-aws
 - name: azure
   jobs:
   - validate-azure
@@ -72,6 +76,15 @@ resources:
     paths:
     - deploy/aks/terraform/**
 
+- name: cf-for-k8s-eks-terraform-templates
+  type: git
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - deploy/eks/terraform/**
+
 - name: cf-for-k8s-minikube-gcp-terraform-templates
   type: git
   source:
@@ -90,6 +103,228 @@ resources:
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
 jobs:
+- name: validate-aws
+  public: true
+  serial: true
+  serial_groups:
+  - aws
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-main
+    - get: cf-for-k8s-ci
+    - get: cf-acceptance-tests
+    - get: weekday-am
+      trigger: true
+    - get: cf-for-k8s-eks-terraform-templates
+
+  - task: create-tf-vars-file
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+      outputs:
+        - name: tf-vars
+      run:
+        path: /bin/bash
+        args:
+          - -ec
+          - |
+            echo "ci-test-cluster" > tf-vars/env-name.txt
+            cat <<EOT > tf-vars/input.tfvars
+            access_key_id = "((ci_k8s_aws_access_key_id))"
+            secret_access_key = "((ci_k8s_aws_secret_access_key))"
+            env_name = "$(cat tf-vars/env-name.txt)"
+            EOT
+
+  - put: terraform
+    params:
+      terraform_source: cf-for-k8s-eks-terraform-templates/deploy/eks/terraform
+      env_name_file: tf-vars/env-name.txt
+      delete_on_failure: true
+      var_files: [tf-vars/input.tfvars]
+
+  - do:
+    - task: install-cf
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: relintdockerhubpushbot/cf-for-k8s-aws
+        inputs:
+        - name: cf-for-k8s-main
+        - name: terraform
+        outputs:
+        - name: env-metadata
+        params:
+          AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
+          AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
+          AWS_DEFAULT_REGION: us-west-2
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            echo '((gcp_dns_admin_service_account_json))' > dns-service-account.json
+            gcloud auth activate-service-account  --key-file dns-service-account.json
+            gcloud config set project ((ci_k8s_gcp_project_name))
+
+            export KUBECONFIG=kube-config.yml
+            cluster_name="$(cat terraform/name)"
+            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
+            jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
+
+            export DNS_DOMAIN="aws-$(cat terraform/name).((ci_k8s_root_domain))"
+
+            echo "Generating install values..."
+            cf-for-k8s-main/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
+            cat <<EOT >> cf-install-values.yml
+            add_metrics_server_components: true
+            metrics_server_prefer_internal_kubelet_address: true
+            EOT
+
+            echo "Installing CF..."
+            kapp deploy -a cf -f <(ytt -f cf-for-k8s-main/config -f cf-install-values.yml) -y
+
+            bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+            echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
+            bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
+
+            old_zone_info=$(gcloud dns record-sets list --zone=((ci_k8s_dns_zone_name)) --filter "${DNS_DOMAIN}")
+
+            gcloud dns record-sets transaction start --zone=((ci_k8s_dns_zone_name))
+
+            if [[ -n "${old_zone_info}" ]]; then
+              cat <<EOT
+              Deleting old DNS records:
+
+              ${old_zone_info}
+              EOT
+
+              old_lb_dns_name=$(echo ${old_zone_info} | awk '$2 == "CNAME" { print $4 }' | head -1)
+
+              gcloud dns record-sets transaction remove \
+                --name="*.${DNS_DOMAIN}" \
+                --ttl="30" \
+                --type="CNAME" \
+                --zone="((ci_k8s_dns_zone_name))" \
+                "${old_lb_dns_name}."
+              gcloud dns record-sets transaction remove \
+                --name="*.apps.${DNS_DOMAIN}" \
+                --ttl="30" \
+                --type="CNAME" \
+                --zone="((ci_k8s_dns_zone_name))" \
+                "${old_lb_dns_name}."
+            fi
+
+            LB_DNS_NAME="$(kubectl get service -n istio-system istio-ingressgateway -o json | jq -r '.status.loadBalancer.ingress[0].hostname')"
+
+            gcloud dns record-sets transaction add \
+              --name="*.${DNS_DOMAIN}" \
+              --ttl="30" \
+              --type="CNAME" \
+              --zone="((ci_k8s_dns_zone_name))" \
+              "${LB_DNS_NAME}."
+            gcloud dns record-sets transaction add \
+              --name="*.apps.${DNS_DOMAIN}" \
+              --ttl="30" \
+              --type="CNAME" \
+              --zone="((ci_k8s_dns_zone_name))" \
+              "${LB_DNS_NAME}."
+            gcloud dns record-sets transaction execute --zone=((ci_k8s_dns_zone_name))
+
+            sleep 90
+            gcloud dns record-sets list --zone=((ci_k8s_dns_zone_name)) --filter "${LB_DNS_NAME}"
+
+    - task: run-smoke-test
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-main
+      params:
+        SMOKE_TEST_SKIP_SSL: false
+
+    - task: run-cats
+      file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-main
+      params:
+        CF_PUSH_TIMEOUT: 360
+        INCLUDE_APPS: true
+        INCLUDE_ROUTING: true
+        INCLUDE_DETECT: true
+        INCLUDE_INTERNET_DEPENDENT: true
+
+    ensure:
+      do:
+      - task: delete-cf
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: relintdockerhubpushbot/cf-for-k8s-aws
+          inputs:
+          - name: terraform
+          params:
+            AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
+            AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
+            AWS_DEFAULT_REGION: us-west-2
+          run:
+            path: /bin/bash
+            args:
+            - -ec
+            - |
+              echo '((gcp_dns_admin_service_account_json))' > dns-service-account.json
+              gcloud auth activate-service-account  --key-file dns-service-account.json
+              gcloud config set project ((ci_k8s_gcp_project_name))
+
+              cluster_name="$(cat terraform/name)"
+              export KUBECONFIG=kube-config.yml
+              jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
+
+              LB_DNS_NAME="$(kubectl get service -n istio-system istio-ingressgateway -o json | jq -r '.status.loadBalancer.ingress[0].hostname')"
+
+              kapp delete -a cf --yes
+
+              export DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
+              zone_info=$(gcloud dns record-sets list --zone=((ci_k8s_dns_zone_name)) --filter "${DNS_DOMAIN}")
+
+              if [[ -z "${zone_info}" ]]; then
+                echo "${LB_DNS_NAME} not found in DNS."
+                exit 0
+              fi
+
+              cat <<EOT
+              Deleting DNS records:
+
+              ${zone_info}
+              EOT
+
+              gcloud dns record-sets transaction start --zone=((ci_k8s_dns_zone_name))
+              gcloud dns record-sets transaction remove \
+                --name="*.${DNS_DOMAIN}" \
+                --ttl="30" \
+                --type="CNAME" \
+                --zone="((ci_k8s_dns_zone_name))" \
+                "${LB_DNS_NAME}."
+              gcloud dns record-sets transaction remove \
+                --name="*.apps.${DNS_DOMAIN}" \
+                --ttl="30" \
+                --type="CNAME" \
+                --zone="((ci_k8s_dns_zone_name))" \
+                "${LB_DNS_NAME}."
+              gcloud dns record-sets transaction execute --zone=((ci_k8s_dns_zone_name))
+
+      - put: terraform
+        params:
+          terraform_source: cf-for-k8s-eks-terraform-templates/deploy/eks/terraform
+          env_name_file: tf-vars/env-name.txt
+          action: destroy
+          var_files: [tf-vars/input.tfvars]
+        get_params:
+          action: destroy
+
 - name: validate-azure
   public: true
   serial: true

@@ -332,7 +332,7 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat stability-pool/name)"
           env_dns_domain = "$(cat stability-pool/name).${DOMAIN}"
-          dns_zone_name = "cf-for-k8s-relint-rocks"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
           EOT
 
   - put: terraform
@@ -411,7 +411,7 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           env_name = "$(cat stability-pool/name)"
           env_dns_domain = "$(cat stability-pool/name).${DOMAIN}"
-          dns_zone_name = "cf-for-k8s-relint-rocks"
+          dns_zone_name = "((ci_k8s_dns_zone_name))"
           EOT
 
   - put: terraform

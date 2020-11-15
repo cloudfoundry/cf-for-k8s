@@ -176,6 +176,7 @@ jobs:
             jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
             export DNS_DOMAIN="aws-$(cat terraform/name).((ci_k8s_root_domain))"
+            echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
             echo "Generating install values..."
             cf-for-k8s-main/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
@@ -184,41 +185,41 @@ jobs:
             metrics_server_prefer_internal_kubelet_address: true
             EOT
 
+            bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
+            bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
+
             echo "Installing CF..."
             kapp deploy -a cf -f <(ytt -f cf-for-k8s-main/config -f cf-install-values.yml) -y
 
-            bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
-            echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
-            bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
+            LB_DNS_NAME="$(kubectl get service -n istio-system istio-ingressgateway -o json | jq -r '.status.loadBalancer.ingress[0].hostname')"
+
+            echo "Updating DNS: ${DNS_DOMAIN} => ${LB_DNS_NAME}"
+            gcloud dns record-sets transaction start --zone=((ci_k8s_dns_zone_name))
 
             old_zone_info=$(gcloud dns record-sets list --zone=((ci_k8s_dns_zone_name)) --filter "${DNS_DOMAIN}")
 
-            gcloud dns record-sets transaction start --zone=((ci_k8s_dns_zone_name))
-
             if [[ -n "${old_zone_info}" ]]; then
               cat <<EOT
-              Deleting old DNS records:
+            Deleting old DNS records:
 
-              ${old_zone_info}
-              EOT
+            ${old_zone_info}
+            EOT
 
-              old_lb_dns_name=$(echo ${old_zone_info} | awk '$2 == "CNAME" { print $4 }' | head -1)
+              old_lb_dns_name=$(gcloud dns record-sets list --zone=((ci_k8s_dns_zone_name)) --filter "${DNS_DOMAIN}" | awk '$2 == "CNAME" { print $4 }' | head -1)
 
               gcloud dns record-sets transaction remove \
                 --name="*.${DNS_DOMAIN}" \
                 --ttl="30" \
                 --type="CNAME" \
                 --zone="((ci_k8s_dns_zone_name))" \
-                "${old_lb_dns_name}."
+                "${old_lb_dns_name}"
               gcloud dns record-sets transaction remove \
                 --name="*.apps.${DNS_DOMAIN}" \
                 --ttl="30" \
                 --type="CNAME" \
                 --zone="((ci_k8s_dns_zone_name))" \
-                "${old_lb_dns_name}."
+                "${old_lb_dns_name}"
             fi
-
-            LB_DNS_NAME="$(kubectl get service -n istio-system istio-ingressgateway -o json | jq -r '.status.loadBalancer.ingress[0].hostname')"
 
             gcloud dns record-sets transaction add \
               --name="*.${DNS_DOMAIN}" \
@@ -232,6 +233,7 @@ jobs:
               --type="CNAME" \
               --zone="((ci_k8s_dns_zone_name))" \
               "${LB_DNS_NAME}."
+
             gcloud dns record-sets transaction execute --zone=((ci_k8s_dns_zone_name))
 
             sleep 90
@@ -265,6 +267,7 @@ jobs:
             source:
               repository: relintdockerhubpushbot/cf-for-k8s-aws
           inputs:
+          - name: env-metadata
           - name: terraform
           params:
             AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
@@ -283,38 +286,44 @@ jobs:
               export KUBECONFIG=kube-config.yml
               jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
-              LB_DNS_NAME="$(kubectl get service -n istio-system istio-ingressgateway -o json | jq -r '.status.loadBalancer.ingress[0].hostname')"
-
+              echo "Deleting CF..."
               kapp delete -a cf --yes
 
               export DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
-              zone_info=$(gcloud dns record-sets list --zone=((ci_k8s_dns_zone_name)) --filter "${DNS_DOMAIN}")
 
-              if [[ -z "${zone_info}" ]]; then
-                echo "${LB_DNS_NAME} not found in DNS."
-                exit 0
+              if [[ -z "${DNS_DOMAIN}" ]]; then
+                echo "ERROR: Cannot delete DNS records; DNS_DOMAIN is empty"
+                exit 1
               fi
 
-              cat <<EOT
+              old_zone_info=$(gcloud dns record-sets list --zone=((ci_k8s_dns_zone_name)) --filter "${DNS_DOMAIN}")
+
+              if [[ -n "${old_zone_info}" ]]; then
+                cat <<EOT
               Deleting DNS records:
 
-              ${zone_info}
+              ${old_zone_info}
               EOT
 
-              gcloud dns record-sets transaction start --zone=((ci_k8s_dns_zone_name))
-              gcloud dns record-sets transaction remove \
-                --name="*.${DNS_DOMAIN}" \
-                --ttl="30" \
-                --type="CNAME" \
-                --zone="((ci_k8s_dns_zone_name))" \
-                "${LB_DNS_NAME}."
-              gcloud dns record-sets transaction remove \
-                --name="*.apps.${DNS_DOMAIN}" \
-                --ttl="30" \
-                --type="CNAME" \
-                --zone="((ci_k8s_dns_zone_name))" \
-                "${LB_DNS_NAME}."
-              gcloud dns record-sets transaction execute --zone=((ci_k8s_dns_zone_name))
+                gcloud dns record-sets transaction start --zone=((ci_k8s_dns_zone_name))
+
+                old_lb_dns_name=$(gcloud dns record-sets list --zone=((ci_k8s_dns_zone_name)) --filter "${DNS_DOMAIN}" | awk '$2 == "CNAME" { print $4 }' | head -1)
+
+                gcloud dns record-sets transaction remove \
+                  --name="*.${DNS_DOMAIN}" \
+                  --ttl="30" \
+                  --type="CNAME" \
+                  --zone="((ci_k8s_dns_zone_name))" \
+                  "${old_lb_dns_name}"
+                gcloud dns record-sets transaction remove \
+                  --name="*.apps.${DNS_DOMAIN}" \
+                  --ttl="30" \
+                  --type="CNAME" \
+                  --zone="((ci_k8s_dns_zone_name))" \
+                  "${old_lb_dns_name}"
+
+                gcloud dns record-sets transaction execute --zone=((ci_k8s_dns_zone_name))
+              fi
 
       - put: terraform
         params:

@@ -137,6 +137,16 @@ jobs:
             env_name = "$(cat tf-vars/env-name.txt)"
             EOT
 
+  - try:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-eks-terraform-templates/deploy/eks/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy
+
   - put: terraform
     params:
       terraform_source: cf-for-k8s-eks-terraform-templates/deploy/eks/terraform

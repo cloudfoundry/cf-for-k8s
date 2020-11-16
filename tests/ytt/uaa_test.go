@@ -103,7 +103,7 @@ var _ = Describe("UAA", func() {
 	Context("when using quarks secrets", func() {
 		BeforeEach(func() {
 			data = map[string]interface{}{}
-			data["quarks_secret.enable"] = true
+			data["experimental.quarks_secret.enable"] = true
 		})
 
 		It("should render quarks secrets for uaa client secrets", func() {

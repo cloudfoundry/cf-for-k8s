@@ -62,7 +62,7 @@ var _ = Describe("QuarksSecret", func() {
 	Context("when quarks secrets is specified", func() {
 		BeforeEach(func() {
 			data = map[string]interface{}{}
-			data["quarks_secret.enable"] = true
+			data["experimental.quarks_secret.enable"] = true
 		})
 
 		It("should have a deployment for quarks secret", func() {

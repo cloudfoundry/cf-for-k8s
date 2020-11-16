@@ -22,6 +22,8 @@ code.cloudfoundry.org/yttk8smatchers v0.0.0-20201021210854-b2f54a715373 h1:CDbV2
 code.cloudfoundry.org/yttk8smatchers v0.0.0-20201021210854-b2f54a715373/go.mod h1:e0kYb3vSS0F+gWAS9He0s+hpwKXB2F3BOnXF1GmVUSg=
 code.cloudfoundry.org/yttk8smatchers v0.0.0-20201022204522-348b97fdebc7 h1:wBIXyjNCSPROu8e9Cl2TNUAP8+VUjM0ZF3yCeQ6yz8Q=
 code.cloudfoundry.org/yttk8smatchers v0.0.0-20201022204522-348b97fdebc7/go.mod h1:e0kYb3vSS0F+gWAS9He0s+hpwKXB2F3BOnXF1GmVUSg=
+code.cloudfoundry.org/yttk8smatchers v0.0.0-20201106003211-1ce6971c624c h1:N+sR2Dsymu8h8hJu/nqAm/4PL4765pMp1WzGqvJQ5uA=
+code.cloudfoundry.org/yttk8smatchers v0.0.0-20201106003211-1ce6971c624c/go.mod h1:0Ig2wnuUR9/xl4/uw2QRobYGeJXYamckIGjwGS+/WrE=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/Azure/azure-sdk-for-go v16.2.1+incompatible/go.mod h1:9XXNKU+eRnpl9moKnB4QOLf1HestfXbmab5FXxiDBjc=
 github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78/go.mod h1:LmzpDX56iTiv29bbRTIsUNlaFfuhWRQBWjQdVyAevI8=

@@ -21,8 +21,9 @@ capi:
     ca_cert: ""
   log_level: ""
 
-quarks_secret:
-  enable:
+experimental:
+  quarks_secret:
+    enable:
 
 app_registry:
   hostname: ""

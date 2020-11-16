@@ -50,7 +50,7 @@ var _ = Describe("CAPI", func() {
 		Context("when using quarks secrets", func() {
 			BeforeEach(func() {
 				data = map[string]interface{}{}
-				data["quarks_secret.enable"] = true
+				data["experimental.quarks_secret.enable"] = true
 			})
 
 			It("should not have k8s capi secrets", func() {
@@ -74,7 +74,7 @@ var _ = Describe("CAPI", func() {
 		Context("when using k8s secrets", func() {
 			BeforeEach(func() {
 				data = map[string]interface{}{}
-				data["quarks_secret.enable"] = false
+				data["experimental.quarks_secret.enable"] = false
 				data["capi.cf_api_controllers_client_secret"] = "squirrel"
 				data["capi.cf_api_backup_metadata_generator_client_secret"] = "mole"
 				data["capi.cc_username_lookup_client_secret"] = "weasel"

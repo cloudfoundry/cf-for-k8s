@@ -14,10 +14,6 @@ load_balancer:
   enable: true
   static_ip: ""
 
-experimental:
-  quarks_secret:
-    enable: false
-
 system_certificate:
   #! Certificate for the wildcard subdomain of the system domain
   #! For example, CN=*.system.cf.example.com

@@ -42,7 +42,7 @@ Next, create the local kubernetes cluster that we will deploy cf-for-k8s to pres
 ```
 kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.19.1
 ```
-NOTE: the versions of kubernetes that cf-for-k8s supports are [here](https://github.com/cloudfoundry/cf-for-k8s/blob/master/supported_k8s_versions.yml).
+NOTE: the versions of kubernetes that cf-for-k8s supports are [here](https://github.com/cloudfoundry/cf-for-k8s/blob/develop/supported_k8s_versions.yml).
 
 Create your cf values file. This is the file that configures your deployment:
 

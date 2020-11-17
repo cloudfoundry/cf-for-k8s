@@ -297,6 +297,7 @@ scim:
 #@ else:
 --- #@ template.replace(secret_uaa_client_credentials("cf_api_controllers", data.values.capi.cf_api_controllers_client_secret, "uaa-cf-api-controllers-client-secret"))
 --- #@ template.replace(secret_uaa_client_credentials("cf_api_backup_metadata_generator", data.values.capi.cf_api_backup_metadata_generator_client_secret, "uaa-cf-api-backup-metadata-generator-client-secret"))
+--- #@ template.replace(secret_uaa_client_credentials("cloud_controller_username_lookup", data.values.capi.cc_username_lookup_client_secret, "uaa-cloud-controller-username-lookup-client-secret"))
 
 ---
 apiVersion: v1

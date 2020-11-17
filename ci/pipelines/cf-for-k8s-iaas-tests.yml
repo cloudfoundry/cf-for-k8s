@@ -130,7 +130,8 @@ jobs:
         args:
           - -ec
           - |
-            echo "ci-test-cluster" > tf-vars/env-name.txt
+            env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+            echo "ci-test-eks-cluster-${env_suffix}" > tf-vars/env-name.txt
             cat <<EOT > tf-vars/input.tfvars
             access_key_id = "((ci_k8s_aws_access_key_id))"
             secret_access_key = "((ci_k8s_aws_secret_access_key))"
@@ -379,7 +380,8 @@ jobs:
         args:
           - -ec
           - |
-            echo "ci-test-cluster" > tf-vars/env-name.txt
+            env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
+            echo "ci-test-aks-cluster-${env_suffix}" > tf-vars/env-name.txt
             cat <<EOT > tf-vars/input.tfvars
             service_principal_id = "((aks_cluster_creation_service_principal_username))"
             service_principal_secret = "((aks_cluster_creation_service_principal_password))"
@@ -510,7 +512,7 @@ jobs:
         - -ec
         - |
           env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          echo "ci-test-minikube-cluster-${env_suffix}" > tf-vars/env-name.txt
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
           region = "((ci_k8s_gcp_project_region))"
@@ -591,7 +593,7 @@ jobs:
         - -ec
         - |
           env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-          echo "ci-test-cluster-${env_suffix}" > tf-vars/env-name.txt
+          echo "ci-test-minikube-dev-minimal-cluster-${env_suffix}" > tf-vars/env-name.txt
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
           region = "((ci_k8s_gcp_project_region))"

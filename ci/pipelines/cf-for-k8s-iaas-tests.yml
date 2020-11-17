@@ -183,7 +183,7 @@ jobs:
             echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
             jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
-            export DNS_DOMAIN="aws-$(cat terraform/name).((ci_k8s_root_domain))"
+            export DNS_DOMAIN="$(cat terraform/name).((ci_k8s_root_domain))"
             echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
             echo "Generating install values..."
@@ -383,7 +383,7 @@ jobs:
             google_region = "((ci_k8s_gcp_project_region))"
             google_service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
             env_name = "$(cat tf-vars/env-name.txt)"
-            env_dns_domain = "azure-$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
+            env_dns_domain = "$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
             dns_zone_name = "((ci_k8s_dns_zone_name))"
             EOT
 
@@ -423,7 +423,7 @@ jobs:
             echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
             jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
-            export DNS_DOMAIN="azure-$(cat terraform/name).((ci_k8s_root_domain))"
+            export DNS_DOMAIN="$(cat terraform/name).((ci_k8s_root_domain))"
 
             echo "Generating install values..."
             cf-for-k8s-main/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml

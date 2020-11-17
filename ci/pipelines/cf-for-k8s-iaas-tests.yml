@@ -130,8 +130,7 @@ jobs:
         args:
           - -ec
           - |
-            env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-            echo "ci-test-eks-cluster-${env_suffix}" > tf-vars/env-name.txt
+            echo "ci-test-eks-cluster" > tf-vars/env-name.txt
             cat <<EOT > tf-vars/input.tfvars
             access_key_id = "((ci_k8s_aws_access_key_id))"
             secret_access_key = "((ci_k8s_aws_secret_access_key))"
@@ -378,8 +377,7 @@ jobs:
         args:
           - -ec
           - |
-            env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-            echo "ci-test-aks-cluster-${env_suffix}" > tf-vars/env-name.txt
+            echo "ci-test-aks-cluster" > tf-vars/env-name.txt
             cat <<EOT > tf-vars/input.tfvars
             service_principal_id = "((aks_cluster_creation_service_principal_username))"
             service_principal_secret = "((aks_cluster_creation_service_principal_password))"
@@ -392,6 +390,16 @@ jobs:
             env_dns_domain = "azure-$(cat tf-vars/env-name.txt).((ci_k8s_root_domain))"
             dns_zone_name = "((ci_k8s_dns_zone_name))"
             EOT
+
+  - try:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-aks-terraform-templates/deploy/aks/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy
 
   - put: terraform
     params:
@@ -507,8 +515,7 @@ jobs:
         args:
         - -ec
         - |
-          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-          echo "ci-test-minikube-cluster-${env_suffix}" > tf-vars/env-name.txt
+          echo "ci-test-minikube-cluster" > tf-vars/env-name.txt
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
           region = "((ci_k8s_gcp_project_region))"
@@ -516,6 +523,16 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           machine_type = "n1-standard-8"
           EOT
+
+  - try:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-minikube-gcp-terraform-templates/deploy/minikube-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy
 
   - put: terraform
     params:
@@ -588,8 +605,7 @@ jobs:
         args:
         - -ec
         - |
-          env_suffix=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1)
-          echo "ci-test-minikube-dev-minimal-cluster-${env_suffix}" > tf-vars/env-name.txt
+          echo "ci-test-minikube-dev-minimal-cluster" > tf-vars/env-name.txt
           cat <<EOT > tf-vars/input.tfvars
           project = "((ci_k8s_gcp_project_name))"
           region = "((ci_k8s_gcp_project_region))"
@@ -597,6 +613,16 @@ jobs:
           service_account_key = "$(echo ${SERVICE_ACCOUNT_JSON} | jq -c '.' | sed -e 's#"#\\"#g' -e 's#\\n#\\\\n#g')"
           machine_type = "n1-standard-4"
           EOT
+
+  - try:
+      put: terraform
+      params:
+        terraform_source: cf-for-k8s-minikube-gcp-terraform-templates/deploy/minikube-on-gcp/terraform
+        env_name_file: tf-vars/env-name.txt
+        action: destroy
+        var_files: [tf-vars/input.tfvars]
+      get_params:
+        action: destroy
 
   - put: terraform
     params:

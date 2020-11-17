@@ -296,6 +296,12 @@ jobs:
               export KUBECONFIG=kube-config.yml
               jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
+              echo "Doing some special deletion of postgres resources..."
+              set +x
+              kubectl delete statefulset cf-db-postgresql -n cf-db
+              kubectl delete pod cf-db-postgresql-0 -n cf-db --force --grace-period 0
+              set -x
+
               echo "Deleting CF..."
               kapp delete -a cf --yes
 
@@ -460,6 +466,12 @@ jobs:
               cluster_name="$(cat terraform/name)"
               export KUBECONFIG=kube-config.yml
               jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
+
+              echo "Doing some special deletion of postgres resources..."
+              set +x
+              kubectl delete statefulset cf-db-postgresql -n cf-db
+              kubectl delete pod cf-db-postgresql-0 -n cf-db --force --grace-period 0
+              set -x
 
               kapp delete -a cf --yes
 

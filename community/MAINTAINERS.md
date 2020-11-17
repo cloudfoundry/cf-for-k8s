@@ -12,6 +12,7 @@
 | Eric Promislow | [ericpromislow](https://github.com/ericpromislow/) | [SUSE](https://www.github.com/SUSE/) |
 | James Pollard | [jamespollard8](https://github.com/jamespollard8) | [VMware](https://www.github.com/vmware/) |
 | Paul Warren | [paulcwarren](https://github.com/paulcwarren) | [VMware](https://www.github.com/vmware/) |
+| Raina Masand | [rainmaker](https://github.com/rainmaker) | [VMware](https://www.github.com/vmware/) |
 | Renee Chu | [reneighbor](https://github.com/reneighbor) | [VMware](https://www.github.com/vmware/) |
 
 ## Have a question or feedback, reach out to us

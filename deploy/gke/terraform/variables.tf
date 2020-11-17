@@ -48,5 +48,5 @@ variable "node_machine_type" {
 
 variable "release_channel" {
   type = string
-  default = "REGULAR"
+  default = "RAPID"
 }

@@ -106,8 +106,6 @@ jobs:
 - name: validate-aws
   public: true
   serial: true
-  serial_groups:
-  - aws
   plan:
   - in_parallel:
     - get: cf-for-k8s-main
@@ -351,8 +349,6 @@ jobs:
 - name: validate-azure
   public: true
   serial: true
-  serial_groups:
-  - azure
   plan:
   - in_parallel:
     - get: cf-for-k8s-main
@@ -492,6 +488,7 @@ jobs:
 
 - name: validate-minikube-on-gcp
   public: true
+  serial: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-main
@@ -581,6 +578,7 @@ jobs:
 
 - name: validate-minikube-dev-minimal-on-gcp
   public: true
+  serial: true
   plan:
   - in_parallel:
     - get: cf-for-k8s-main

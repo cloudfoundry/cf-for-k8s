@@ -41,8 +41,6 @@ use either the old password or the new one, and will fail.
 
 * `cf_admin_password` - manual upgrade works, CI/upgrade fails
 
-* `ci/pipelines/cf-for-k8s-stability-tests.yml` - manual upgrade works, CI/upgrade fails: "Error unmarshalling the following into a cloud controller error: no healthy upstream"
-
 ## Notes on Currently Supported Rotations
 
 ### Rotating Ingress Certificates

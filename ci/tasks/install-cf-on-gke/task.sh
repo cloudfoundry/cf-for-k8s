@@ -67,10 +67,13 @@ fi
 
 echo "load_balancer:" >> cf-values.yml
 echo "  static_ip: ${load_balancer_static_ip}" >> cf-values.yml
-password="$(bosh interpolate --path /cf_admin_password cf-values.yml)"
 
-if [[ -n "${ADDITIONAL_PROPERTIES:-}" ]] ; then
-  echo "${ADDITIONAL_PROPERTIES}" >> cf-values.yml
+if [[ "${QUARKS_SECRET}" == "true" ]] ; then
+  echo "experimental:" >> cf-values.yml
+  echo "  quarks_secret:" >> cf-values.yml
+  echo "    enable: true" >> cf-values.yml
+else
+  password="$(bosh interpolate --path /cf_admin_password cf-values.yml)"
 fi
 
 echo "Installing CF..."
@@ -115,6 +118,11 @@ if [[ "${UPTIMER}" == "true" ]]; then
   fi
 else
   kapp deploy -a cf -f ${rendered_yaml} -y
+  if [[ "${QUARKS_SECRET}" == "true" ]] ; then
+    password="$(kubectl get secret -n cf-system cf-admin-user-credentials -o yaml |
+                yq -r '.data["password"]' |
+                base64 --decode)"
+  fi
 fi
 
 echo "${password}" > env-metadata/cf-admin-password.txt

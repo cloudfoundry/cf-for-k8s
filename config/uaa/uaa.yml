@@ -4,6 +4,7 @@
 #@ load("@ytt:template", "template")
 #@ load("@ytt:yaml", "yaml")
 #@ load("/namespaces.star", "system_namespace")
+#@ load("/quarks-secret/quarks-secret.star", "quarks_secret_enabled")
 
 #@ def uaa_db_host():
 #@   if len(data.values.uaa.database.host) > 0:
@@ -32,9 +33,19 @@
 #@     database_query_params(data.values.uaa.database.adapter))
 #@ end
 
+#! When Quarks is enabled we need to provide an unused value for the uaa admin client secret
+#! and subsequently overlay remove the rendered Secret. Otherwise the data value flows normally.
+#@ def uaa_admin_client_secret_value():
+#@ if quarks_secret_enabled():
+#@ return "SecretValueNotUsed"
+#@ else:
+#@ return data.values.uaa.admin_client_secret
+#@ end
+#@ end
+
 #@ def uaa_values():
 admin:
-  client_secret: #@ data.values.uaa.admin_client_secret
+  client_secret: #@ uaa_admin_client_secret_value()
 
 database:
   url: #@ uaa_db_jdbc_url()
@@ -252,15 +263,16 @@ stringData:
   uaa.key: #@ data.values.internal_certificate.key
   uaa.crt: #@ data.values.internal_certificate.crt
 
-#@ def uaa_client_credential_data(client_name, credential):
+#@ def secret_uaa_client_credential_data(client_name, credentials):
 oauth:
   #@yaml/text-templated-strings
   clients:
     (@= client_name @):
-      secret: #@ credential
+      secret: #@ credentials
 #@ end
 
-#@ def uaa_client_credential(client_name, credential, secret_name):
+#@ def secret_uaa_client_credentials(client_name, credentials, secret_name):
+---
 apiVersion: v1
 kind: Secret
 metadata:
@@ -268,7 +280,7 @@ metadata:
   namespace: #@ system_namespace()
 type: Opaque
 stringData:
-  client_credentials.yml: #@ yaml.encode(uaa_client_credential_data(client_name, credential))
+  client_credentials.yml: #@ yaml.encode(secret_uaa_client_credential_data(client_name, credentials))
 #@ end
 
 #@ def uaa_cf_admin_user_credentials():
@@ -277,10 +289,15 @@ scim:
   - #@ "admin|" + data.values.cf_admin_password + "|admin@admin.tld|first|last|clients.read,cloud_controller.admin,doppler.firehose,network.admin,openid,routing.router_groups.read,routing.router_groups.write,scim.read,scim.write|uaa"
 #@ end
 
---- #@ uaa_client_credential("cf", "", "uaa-cf-client-secret")
---- #@ uaa_client_credential("cloud_controller_username_lookup", data.values.capi.cc_username_lookup_client_secret, "uaa-cloud-controller-username-lookup-client-secret")
---- #@ uaa_client_credential("cf_api_controllers", data.values.capi.cf_api_controllers_client_secret, "uaa-cf-api-controllers-client-secret")
---- #@ uaa_client_credential("cf_api_backup_metadata_generator", data.values.capi.cf_api_backup_metadata_generator_client_secret, "uaa-cf-api-backup-metadata-generator-client-secret")
+#@ if quarks_secret_enabled():
+#! Remove UAA-templated admin client-secret so we can generate the credentials w/ Quarks
+#@overlay/match by=overlay.subset({"kind":"Secret", "metadata":{"name":"uaa-admin-client-credentials"}})
+#@overlay/remove
+---
+#@ else:
+--- #@ template.replace(secret_uaa_client_credentials("cf_api_controllers", data.values.capi.cf_api_controllers_client_secret, "uaa-cf-api-controllers-client-secret"))
+--- #@ template.replace(secret_uaa_client_credentials("cf_api_backup_metadata_generator", data.values.capi.cf_api_backup_metadata_generator_client_secret, "uaa-cf-api-backup-metadata-generator-client-secret"))
+--- #@ template.replace(secret_uaa_client_credentials("cloud_controller_username_lookup", data.values.capi.cc_username_lookup_client_secret, "uaa-cloud-controller-username-lookup-client-secret"))
 
 ---
 apiVersion: v1
@@ -291,6 +308,10 @@ metadata:
 type: Opaque
 stringData:
   cf_admin_user_credentials.yml: #@ yaml.encode(uaa_cf_admin_user_credentials())
+#@ end
+
+--- #@ template.replace(secret_uaa_client_credentials("cf", "", "uaa-cf-client-secret"))
+
 
 #@ load("@uaa/k8s:templates/deployment.star",
 #@  "secrets_dir")

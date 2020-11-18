@@ -121,7 +121,7 @@ else
   if [[ "${QUARKS_SECRET}" == "true" ]] ; then
     password="$(kubectl get secret -n cf-system cf-admin-user-credentials -o yaml |
                 yq -r '.data["password"]' |
-                base64 --decode)"
+                base64 -d)"
   fi
 fi
 

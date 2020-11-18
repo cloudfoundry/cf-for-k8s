@@ -25,6 +25,7 @@ inputs:
     optional: true
 
 params:
+  ADDITIONAL_PROPERTIES:
   GCP_SERVICE_ACCOUNT_JSON:
   GCP_PROJECT_NAME:
   GCP_PROJECT_ZONE:

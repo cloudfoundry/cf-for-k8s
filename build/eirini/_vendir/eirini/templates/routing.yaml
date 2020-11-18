@@ -27,11 +27,11 @@ spec:
       containers:
       - name: route-collector
         {{- if .Values.opi.route_collector_image }}
-        image: {{ .Values.opi.route_collector_image }}:{{ .Values.opi.image_tag }}
+        image: {{ .Values.opi.route_collector_image }}
         {{- else }}
         image: eirini/route-collector@{{ .Files.Get "versions/route-collector" }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         env:
         - name: "NATS_PASSWORD"
           valueFrom:
@@ -50,11 +50,11 @@ spec:
             memory: {{ .Values.kube.resources.routing.limits.memory }}
       - name: route-pod-informer
         {{- if .Values.opi.route_pod_informer_image }}
-        image: {{ .Values.opi.route_pod_informer_image }}:{{ .Values.opi.image_tag }}
+        image: {{ .Values.opi.route_pod_informer_image }}
         {{- else }}
         image: eirini/route-pod-informer@{{ .Files.Get "versions/route-pod-informer" }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         env:
         - name: "NATS_PASSWORD"
           valueFrom:
@@ -70,11 +70,11 @@ spec:
             memory: 45Mi
       - name: route-statefulset-informer
         {{- if .Values.opi.route_statefulset_informer_image }}
-        image: {{ .Values.opi.route_statefulset_informer_image }}:{{ .Values.opi.image_tag }}
+        image: {{ .Values.opi.route_statefulset_informer_image }}
         {{- else }}
         image: eirini/route-statefulset-informer@{{ .Files.Get "versions/route-statefulset-informer" }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         env:
         - name: "NATS_PASSWORD"
           valueFrom:

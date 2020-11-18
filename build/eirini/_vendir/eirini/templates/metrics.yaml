@@ -29,29 +29,29 @@ spec:
                 name: "{{ .Values.opi.metrics.tls.client.secretName }}"
                 items:
                 - key: "{{ .Values.opi.metrics.tls.client.certPath }}"
-                  path: doppler.crt
+                  path: tls.crt
                 - key: "{{ .Values.opi.metrics.tls.client.keyPath }}"
-                  path: doppler.key
+                  path: tls.key
             - secret:
                 name: "{{ .Values.opi.metrics.tls.server.secretName }}"
                 items:
                 - key: "{{ .Values.opi.metrics.tls.server.caPath }}"
-                  path: doppler.ca
+                  path: ca.crt
       securityContext:
         runAsNonRoot: true
       containers:
       - name: metrics-collector
         {{- if .Values.opi.metrics_collector_image }}
-        image: {{ .Values.opi.metrics_collector_image }}:{{ .Values.opi.image_tag }}
+        image: {{ .Values.opi.metrics_collector_image }}
         {{- else }}
         image: eirini/metrics-collector@{{ .Files.Get "versions/metrics-collector" }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: config-map-volume
-          mountPath: /etc/eirini/config
+          mountPath: /etc/eirini-metrics/config
         - name: cf-secrets
-          mountPath: /etc/eirini/secrets
+          mountPath: /etc/loggregator/certs
         resources:
           requests:
             cpu: {{ .Values.kube.resources.metrics.requests.cpu }}

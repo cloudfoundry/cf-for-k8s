@@ -28,11 +28,11 @@ spec:
       containers:
       - name: instance-index-env-injector
         {{- if .Values.instanceIndexEnvInjector.image }}
-        image: {{ .Values.instanceIndexEnvInjector.image }}:{{ .Values.instanceIndexEnvInjector.image_tag }}
+        image: {{ .Values.instanceIndexEnvInjector.image }}
         {{- else }}
         image: eirini/instance-index-env-injector@{{ .Files.Get "versions/instance-index-env-injector" }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: config-map-volume
           mountPath: /etc/eirini/config

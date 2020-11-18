@@ -1,9 +1,10 @@
 {{- if .Values.opi.deny_app_ingress }}
+{{- range prepend (.Values.opi.namespaces | default list) .Values.opi.namespace }}
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: deny-app-ingress
-  namespace: {{ .Values.opi.namespace }}
+  namespace: {{ . }}
 spec:
   podSelector: {}
   policyTypes:
@@ -12,14 +13,15 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          name: {{ .Release.Namespace }}
+          name: {{ $.Release.Namespace }}
       podSelector:
         matchLabels:
           app.kubernetes.io/component: router
     - namespaceSelector:
         matchLabels:
-          name: {{ .Release.Namespace }}
+          name: {{ $.Release.Namespace }}
       podSelector:
         matchLabels:
           app.kubernetes.io/component: adapter
+{{- end }}
 {{- end }}

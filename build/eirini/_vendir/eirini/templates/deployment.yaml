@@ -12,7 +12,6 @@ spec:
     metadata:
       labels:
         name: "eirini"
-        eirinifs_version: "{{  .Values.global.rootfs_version  }}"
     spec:
       dnsPolicy: "ClusterFirst"
       serviceAccountName: "opi"
@@ -60,11 +59,11 @@ spec:
       containers:
       - name: opi
         {{- if .Values.opi.image }}
-        image: {{ .Values.opi.image }}:{{ .Values.opi.image_tag }}
+        image: {{ .Values.opi.image }}
         {{- else }}
         image: eirini/opi@{{ .Files.Get "versions/opi" }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: config-map-volume
           mountPath: /etc/eirini/config

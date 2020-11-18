@@ -21,11 +21,11 @@ spec:
       containers:
       - name: task-reporter
         {{- if .Values.opi.task_reporter_image }}
-        image: {{ .Values.opi.task_reporter_image }}:{{ .Values.opi.task_reporter_image_tag }}
+        image: {{ .Values.opi.task_reporter_image }}
         {{- else }}
         image: eirini/task-reporter@{{ .Files.Get "versions/task-reporter" }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         resources:
           requests:
             cpu: {{ .Values.kube.resources.task_reporter.requests.cpu }}
@@ -38,7 +38,7 @@ spec:
           mountPath: /etc/eirini/config
         {{- if not .Values.opi.cc_api.tls_disabled }}
         - name: cf-secrets
-          mountPath: /etc/eirini/secrets
+          mountPath: /etc/cf-api/certs
         {{- end }}
       volumes:
         - name: config-map-volume
@@ -53,10 +53,10 @@ spec:
              secretName: "{{ .Values.opi.tasks.tls.taskReporter.secretName }}"
              items:
              - key: "{{ .Values.opi.tasks.tls.taskReporter.certPath }}"
-               path: cc.crt
+               path: tls.crt
              - key: "{{ .Values.opi.tasks.tls.taskReporter.keyPath }}"
-               path: cc.key
+               path: tls.key
              - key: "{{ .Values.opi.tasks.tls.taskReporter.caPath }}"
-               path: cc.ca
+               path: ca.crt
         {{- end }}
 {{- end }}

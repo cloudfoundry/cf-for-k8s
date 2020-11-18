@@ -1,44 +1,46 @@
+{{- range prepend (.Values.opi.namespaces | default list) .Values.opi.namespace }}
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: eirini
-  namespace: {{ .Values.opi.namespace }}
+  namespace: {{ . }}
 automountServiceAccountToken: false
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ .Values.opi.namespace }}-app-role
-  namespace: {{ .Values.opi.namespace }}
+  name: eirini-app-role
+  namespace: {{ . }}
 rules:
 - apiGroups: ['policy']
   resources: ['podsecuritypolicies']
   verbs:     ['use']
   resourceNames:
-  - {{ .Values.opi.namespace }}-app-psp
+  - eirini-app-psp
 
 ---
 # Bind to the default service account
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ .Values.opi.namespace }}-app-rolebinding
-  namespace: {{ .Values.opi.namespace }}
+  name: eirini-app-rolebinding
+  namespace: {{ . }}
 roleRef:
   kind: Role
-  name: {{ .Values.opi.namespace }}-app-role
+  name: eirini-app-role
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
   name: eirini
-  namespace: {{ .Values.opi.namespace }}
+  namespace: {{ . }}
+{{- end }}
 
 ---
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: {{ .Values.opi.namespace }}-app-psp
+  name: eirini-app-psp
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default,runtime/default'
     seccomp.security.alpha.kubernetes.io/defaultProfileName:  'runtime/default'

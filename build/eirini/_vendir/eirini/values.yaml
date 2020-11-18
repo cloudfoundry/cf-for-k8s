@@ -1,14 +1,12 @@
 opi:
-  # used when bits service is using ingress
-  use_registry_ingress: false
-  # set ingress_endoint when 'use_registry_ingress' is set to true
-  ingress_endpoint: ~
 
   deny_app_ingress: true
-  # secret name in app namespace. Created by secret smuggler
+  # secret name in app namespace
   registry_secret_name: registry-credentials
   disk_limit_mb: 2048
   namespace: eirini
+  # list of additional workload namespaces
+  namespaces: []
   version: 0.0.0
   serviceName: "eirini-opi"
 
@@ -79,30 +77,6 @@ opi:
       passwordPath: "nats-password"
       serviceName: "nats-nats"
 
-  secretSmuggler:
-    enable: true
-    scfSecretName: "secrets-2.16.4-2"
-
-  staging:
-    enable: true
-    tls:
-      client:
-        secretName: "secrets-2.16.4-2"
-        certPath: "eirini-client-crt"
-        keyPath: "eirini-client-crt-key"
-      cc_uploader:
-        secretName: "secrets-2.16.4-2"
-        certPath: "cc-server-crt"
-        keyPath: "cc-server-crt-key"
-      ca:
-        secretName: "secrets-2.16.4-2"
-        path: "internal-ca-cert"
-      stagingReporter:
-        secretName: "secrets-2.16.4-2"
-        certPath: "eirini-client-crt"
-        keyPath: "eirini-client-crt-key"
-        caPath: "internal-ca-cert"
-
   tasks:
     enable: true
     tls:
@@ -111,6 +85,8 @@ opi:
         keyPath: "cc-server-crt-key"
         certPath: "cc-server-crt"
         caPath: "internal-ca-cert"
+    completionCallbackRetryLimit: 10
+    ttlSeconds: 5
 
   lrpController:
     enable: true
@@ -120,20 +96,7 @@ opi:
       keyPath: "eirini-client-crt-key"
       caPath: "internal-ca-cert"
 
-  kubecf:
-    enable: false
-
-services:
-  loadbalanced: false
-env:
-  # Base domain of the SCF cluster.
-  # Example: "my-scf-cluster.com"
-  # used to get bits service URL if it is load balanced and not behind ingress
-  DOMAIN: ~
-
 kube:
-  # used to construct bits service URL if it is not load balanced and does not behind ingress
-  external_ips: []
   resources:
     opi:
       requests:
@@ -184,16 +147,5 @@ kube:
       limits:
         cpu: 200m
         memory: 300Mi
-    staging:
-      requests:
-        cpu: 15m
-        memory: 15Mi
-      limits:
-        cpu: 100m
-        memory: 100Mi
-
-
-global:
-  rootfs_version: v75.0.0
 
 instanceIndexEnvInjector: {}

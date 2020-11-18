@@ -44,11 +44,11 @@ spec:
       containers:
       - name: event-reporter
         {{- if .Values.opi.event_reporter_image }}
-        image: {{ .Values.opi.event_reporter_image }}:{{ .Values.opi.event_reporter_image_tag }}
+        image: {{ .Values.opi.event_reporter_image }}
         {{- else }}
         image: eirini/event-reporter@{{ .Files.Get "versions/event-reporter" }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: config-map-volume
           mountPath: /etc/eirini-event-reporter/config

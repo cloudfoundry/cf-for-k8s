@@ -71,7 +71,6 @@ password="$(bosh interpolate --path /cf_admin_password cf-values.yml)"
 
 if [[ -n "${ADDITIONAL_PROPERTIES:-}" ]] ; then
   echo "${ADDITIONAL_PROPERTIES}" >> cf-values.yml
-  tail -n 5 cf-values.yml
 fi
 
 echo "Installing CF..."

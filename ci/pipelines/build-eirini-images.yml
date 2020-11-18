@@ -20,35 +20,35 @@ resources:
 - name: cf-for-k8s-eirini-opi
   type: registry-image
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-eirini-opi
+    repository: cloudfoundry/eirini-opi-cf-for-k8s
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     tag: 1.9.0
 - name: cf-for-k8s-eirini-event-reporter
   type: registry-image
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter
+    repository: cloudfoundry/eirini-event-reporter-cf-for-k8s
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     tag: 1.9.0
 - name: cf-for-k8s-eirini-eirini-controller
   type: registry-image
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-eirini-eirini-controller
+    repository: cloudfoundry/eirini-eirini-controller-cf-for-k8s
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     tag: 1.9.0
 - name: cf-for-k8s-eirini-task-reporter
   type: registry-image
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter
+    repository: cloudfoundry/eirini-task-reporter-cf-for-k8s
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     tag: 1.9.0
 - name: cf-for-k8s-eirini-instance-index-env-injector
   type: registry-image
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-eirini-instance-index-env-injector
+    repository: cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     tag: 1.9.0
@@ -66,7 +66,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 6abae6fcfdc78c97176a5b0053c7241d5f28b9b2 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 2c03e647d6d21fd15545ea9b210f124b47266241 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - get: eirini-release
     trigger: true
@@ -153,7 +153,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 6abae6fcfdc78c97176a5b0053c7241d5f28b9b2 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 2c03e647d6d21fd15545ea9b210f124b47266241 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - get: eirini-release
     trigger: true
@@ -240,7 +240,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 6abae6fcfdc78c97176a5b0053c7241d5f28b9b2 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 2c03e647d6d21fd15545ea9b210f124b47266241 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - get: eirini-release
     trigger: true
@@ -327,7 +327,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 6abae6fcfdc78c97176a5b0053c7241d5f28b9b2 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 2c03e647d6d21fd15545ea9b210f124b47266241 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - get: eirini-release
     trigger: true
@@ -414,7 +414,7 @@ jobs:
         path: /bin/echo
         args:
         - -e
-        - git@github.com:cloudfoundry/cf-for-k8s.git 6abae6fcfdc78c97176a5b0053c7241d5f28b9b2 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
+        - git@github.com:cloudfoundry/cf-for-k8s.git 2c03e647d6d21fd15545ea9b210f124b47266241 ci/templates/build-eirini-images.yml \e[31mdirty\e[0m
   - get: eirini
   - get: eirini-release
     trigger: true

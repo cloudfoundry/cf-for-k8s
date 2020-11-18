@@ -23,7 +23,7 @@ resources:
 - name: #@ "cf-for-k8s-eirini-{}".format(img)
   type: registry-image
   source:
-    repository: #@ "relintdockerhubpushbot/cf-for-k8s-eirini-{}".format(img)
+    repository: #@ "cloudfoundry/eirini-{}-cf-for-k8s".format(img)
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     tag: #@ eirini_tag

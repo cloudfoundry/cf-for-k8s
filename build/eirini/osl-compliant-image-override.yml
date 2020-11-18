@@ -3,17 +3,17 @@ kind: Config
 minimumRequiredVersion: 0.22.0
 overrides:
   - image: eirini/opi@sha256:658f14a51c0a77fbc685f867a54ca56504993f299c43d1a63de757206484506b
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-opi@sha256:d20c957c36644e8f9878bfee1633f319b2e94c82b66b16f9565b5796ed20817b
+    newImage: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:cc76c47243011ad38eab451de0b6267a060de8a754058dc66b14bd1f70da75b4
     preresolved: true
   - image: eirini/event-reporter@sha256:8971db664d1ccfe7df0f624ebaa71c14f90181fb2f29d0cbbc5275f08b208ff1
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-event-reporter@sha256:b06e19ac5232a1077474933e412143f1e4449df94b5899d1e6b29fa823c92b3f
+    newImage: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s@sha256:fec0d3138a373d4d19bf5d08dad8b4fc42b40ca4dc8d8bef33ceb5ca5dc407d3
     preresolved: true
   - image: eirini/eirini-controller@sha256:8bce7ed08c3914edee916012e0277012d8d3a54e90bc563bc822c2006d26cf7d
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-eirini-controller@sha256:52a7892033893d3d09b2582ae3d562433b30372dcb3678a37e0efd73d174d342
+    newImage: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s@sha256:d0a2cca1b32f412f38677302db8189d46bdb42a7efa04c1457476ecb066c68d1
     preresolved: true
   - image: eirini/task-reporter@sha256:4c105c94d1dad2c9e81ad440335d5561c32e2822372643f55c70d5cff9d5603f
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-task-reporter@sha256:b6173cbf13ecff7f789acc9fb38667caacbdef8a7ee5e0667e7c1470564fa5da
+    newImage: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s@sha256:3d7a67628f67255cd86f106ff2a729a743cb790b55c309a1155621f4d574a109
     preresolved: true
   - image: eirini/instance-index-env-injector@sha256:b33fe1df8112c59f5cac6a3a73a063b31c1089ac3bf76e5091de34103432111f
-    newImage: index.docker.io/relintdockerhubpushbot/cf-for-k8s-eirini-instance-index-env-injector@sha256:ad9adc876d588fbc6b0592a1f8a9b24efd41e8dcd06ae2244192a7651499def8
+    newImage: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s@sha256:141ac75dc212fff1909a7fd155449ff4eeea0d8f9d7dc4a75d81ca46753e7e72
     preresolved: true

@@ -1123,7 +1123,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      null
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:4936d0a6012b6a06f9a09b7fcdf7aaf2884e7339a10828fc25c01771c4fa5c83
+        URL: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:4936d0a6012b6a06f9a09b7fcdf7aaf2884e7339a10828fc25c01771c4fa5c83
   name: eirini
   namespace: cf-system
 spec:
@@ -1136,7 +1139,7 @@ spec:
         name: eirini
     spec:
       containers:
-      - image: index.docker.io/eirini/opi@sha256:1b2b281949197294954ab035749fcaa1b1e93591b2c028747e217e539a27a65b
+      - image: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:4936d0a6012b6a06f9a09b7fcdf7aaf2884e7339a10828fc25c01771c4fa5c83
         imagePullPolicy: IfNotPresent
         name: opi
         ports:
@@ -1203,7 +1206,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      null
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s@sha256:d0a2cca1b32f412f38677302db8189d46bdb42a7efa04c1457476ecb066c68d1
+        URL: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s@sha256:d0a2cca1b32f412f38677302db8189d46bdb42a7efa04c1457476ecb066c68d1
   name: eirini-controller
   namespace: cf-system
 spec:
@@ -1216,7 +1222,7 @@ spec:
         name: eirini-controller
     spec:
       containers:
-      - image: index.docker.io/eirini/eirini-controller@sha256:c802ca5623b970686c77e5497a43daebc4911306d8043e4ecfda4746d20383eb
+      - image: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s@sha256:d0a2cca1b32f412f38677302db8189d46bdb42a7efa04c1457476ecb066c68d1
         imagePullPolicy: IfNotPresent
         name: eirini-controller
         resources:
@@ -1246,7 +1252,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      null
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s@sha256:fec0d3138a373d4d19bf5d08dad8b4fc42b40ca4dc8d8bef33ceb5ca5dc407d3
+        URL: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s@sha256:fec0d3138a373d4d19bf5d08dad8b4fc42b40ca4dc8d8bef33ceb5ca5dc407d3
   name: eirini-events
   namespace: cf-system
 spec:
@@ -1259,7 +1268,7 @@ spec:
         name: eirini-events
     spec:
       containers:
-      - image: index.docker.io/eirini/event-reporter@sha256:9743bb498c4c4f89e8e38a61ba594ef9af00dbaa99a2eb081b2ddabe69cb72ca
+      - image: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s@sha256:fec0d3138a373d4d19bf5d08dad8b4fc42b40ca4dc8d8bef33ceb5ca5dc407d3
         imagePullPolicy: IfNotPresent
         name: event-reporter
         resources:
@@ -1306,7 +1315,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      null
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s@sha256:141ac75dc212fff1909a7fd155449ff4eeea0d8f9d7dc4a75d81ca46753e7e72
+        URL: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s@sha256:141ac75dc212fff1909a7fd155449ff4eeea0d8f9d7dc4a75d81ca46753e7e72
   name: instance-index-env-injector
   namespace: cf-system
 spec:
@@ -1321,7 +1333,7 @@ spec:
         name: instance-index-env-injector
     spec:
       containers:
-      - image: index.docker.io/eirini/instance-index-env-injector@sha256:fa7bef28c805e8fd23d23d9d4312eab6ac92eff69817b2312db2bf71daedb496
+      - image: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s@sha256:141ac75dc212fff1909a7fd155449ff4eeea0d8f9d7dc4a75d81ca46753e7e72
         imagePullPolicy: IfNotPresent
         name: instance-index-env-injector
         ports:
@@ -1353,7 +1365,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      null
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s@sha256:3d7a67628f67255cd86f106ff2a729a743cb790b55c309a1155621f4d574a109
+        URL: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s@sha256:3d7a67628f67255cd86f106ff2a729a743cb790b55c309a1155621f4d574a109
   name: eirini-task-reporter
   namespace: cf-system
 spec:
@@ -1366,7 +1381,7 @@ spec:
         name: eirini-task-reporter
     spec:
       containers:
-      - image: index.docker.io/eirini/task-reporter@sha256:fe45f32d739213e301eaaea152db505225c9d17a6ca8b7502f3a14d2e2f5bf69
+      - image: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s@sha256:3d7a67628f67255cd86f106ff2a729a743cb790b55c309a1155621f4d574a109
         imagePullPolicy: IfNotPresent
         name: task-reporter
         resources:

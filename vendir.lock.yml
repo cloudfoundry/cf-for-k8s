@@ -74,10 +74,11 @@ directories:
   path: build/postgres/_vendir
 - contents:
   - git:
-      commitTitle: Add delete secret permission to cluster role (#20)
-      sha: 01d7be017c3cec812a056e364a47dc6ca1d27d90
+      commitTitle: Fix quarks secret `SecretLabels` & `SecretAnnotations` update bug
+        (#59)...
+      sha: 4171053d17e66a93044795924abdca66cac09785
       tags:
-      - v1.0.692
+      - v1.0.744
     path: .
   path: build/quarks-secret/_vendir
 kind: LockConfig

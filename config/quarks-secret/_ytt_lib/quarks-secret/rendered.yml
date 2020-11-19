@@ -38,6 +38,9 @@ spec:
               request:
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
+              secretAnnotations:
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               secretLabels:
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
@@ -172,8 +175,8 @@ metadata:
     kbld.k14s.io/images: |
       - Metas:
         - Type: preresolved
-          URL: index.docker.io/cloudfoundry/quarks-secret@sha256:c8eca9268cfd1c66966ccfd2dab7151067fdeca483bad62865affe04a09980a4
-        URL: index.docker.io/cloudfoundry/quarks-secret@sha256:c8eca9268cfd1c66966ccfd2dab7151067fdeca483bad62865affe04a09980a4
+          URL: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd
+        URL: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd
   name: cf-quarks-secret
   namespace: cf-system
 spec:
@@ -210,7 +213,7 @@ spec:
               fieldPath: metadata.name
         - name: OPERATOR_NAME
           value: quarks-secret
-        image: index.docker.io/cloudfoundry/quarks-secret@sha256:c8eca9268cfd1c66966ccfd2dab7151067fdeca483bad62865affe04a09980a4
+        image: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd
         imagePullPolicy: IfNotPresent
         name: quarks-secret
         ports:

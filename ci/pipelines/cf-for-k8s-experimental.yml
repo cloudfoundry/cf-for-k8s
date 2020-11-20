@@ -1,0 +1,120 @@
+---
+#! Extract common platform and image_resource details so task configs can be more concise
+x-config: &common-task-config
+  platform: linux
+  image_resource:
+    type: docker-image
+    source:
+      repository: relintdockerhubpushbot/cf-for-k8s-ci
+
+resource_types:
+
+resources:
+- name: cf-for-k8s-develop
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    ignore_paths:
+    - ci/**
+
+- name: cf-for-k8s-ci
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - ci/**
+
+- name: ready-pool
+  type: pool
+  icon: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: main
+    pool: k8s-dev/ready
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
+- name: destroy-pool
+  type: pool
+  icon: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: main
+    pool: k8s-dev/destroy
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
+- name: weekday-pm
+  type: time
+  icon: clock-outline
+  source:
+    days:
+      - Monday
+      - Tuesday
+      - Wednesday
+      - Thursday
+      - Friday
+    start: 6:00 PM
+    stop: 7:00 PM
+    location: America/Los_Angeles
+
+jobs:
+
+- name: validate-quarks-secrets-on-gke
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-develop
+    - get: cf-for-k8s-ci
+    - get: weekday-pm
+      trigger: true
+
+  - put: ready-pool
+    params:
+      acquire: true
+
+  - task: install-cf
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+      cf-for-k8s: cf-for-k8s-develop
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+      DOMAIN: k8s-dev.relint.rocks
+      QUARKS_SECRET: true
+
+
+  - task: run-smoke-tests
+    file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+    input_mapping:
+      cf-for-k8s: cf-for-k8s-develop
+    params:
+      SMOKE_TEST_SKIP_SSL: true
+
+  - task: delete-cf
+    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+  - put: destroy-pool
+    params:
+      add: ready-pool
+
+  - put: ready-pool
+    params:
+      remove: ready-pool
+

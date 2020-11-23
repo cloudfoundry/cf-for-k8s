@@ -7,6 +7,7 @@ groups:
   jobs:
   - install-and-smoketest-sli
   - long-lived-env-sli
+  - release-stability-pool-lock-manual
 - name: long-lived-env
   jobs:
   - upgrade-long-lived-env-to-latest-main
@@ -383,6 +384,15 @@ jobs:
           emit_metric "${METRIC_NAME}" "${METRIC_VALUE}" ""
 
           exit ${smoke_tests_exit_code}
+
+- name: release-stability-pool-lock-manual
+  public: true
+  plan:
+  - get: stability-pool
+  ensure:
+    try:
+      put: stability-pool
+      params: {release: stability-pool}
 
 - name: upgrade-long-lived-env-to-latest-main
   serial: true

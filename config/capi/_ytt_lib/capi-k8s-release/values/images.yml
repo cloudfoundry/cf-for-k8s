@@ -2,7 +2,7 @@
 ---
 images:
   backup_metadata_generator: cloudfoundry/cf-api-backup-metadata-generator@sha256:9049945ede457502ef6ee89bb99bacb3dea798d48eb6b23216274c03a6355bde
-  ccng: cloudfoundry/cloud-controller-ng@sha256:3cc3876f0730b495b345237ea63caf8be2ce829fe457b619f94087ad747c020c
+  ccng: cloudfoundry/cloud-controller-ng@sha256:7c89f99fa40d34a182c112c1c67c667c813f5ac0bb78e8e62dd0ec078425a79b
   cf_api_controllers: cloudfoundry/cf-api-controllers@sha256:4f8247163c1e7b72c28f2ff3fafd54847f195c557c064c035166123d001c15af
   cf_autodetect_builder: cloudfoundry/cnb:0.0.94-bionic@sha256:5b03a853e636b78c44e475bbc514e2b7b140cc41cca8ab907e9753431ae8c0b0
   nginx: cloudfoundry/capi-nginx@sha256:04dbaba65a3002f2225735c312788317035afc8971864ce34a91e077a90742c4

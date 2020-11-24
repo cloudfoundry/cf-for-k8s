@@ -259,7 +259,6 @@ jobs:
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
       params:
-        CF_PUSH_TIMEOUT: 360
         INCLUDE_APPS: true
         INCLUDE_ROUTING: true
         INCLUDE_DETECT: true
@@ -449,7 +448,6 @@ jobs:
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
       params:
-        CF_PUSH_TIMEOUT: 360
         INCLUDE_APPS: true
         INCLUDE_ROUTING: true
         INCLUDE_DETECT: true

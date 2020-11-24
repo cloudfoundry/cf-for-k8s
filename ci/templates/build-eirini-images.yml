@@ -1,15 +1,13 @@
 #@ load("@ytt:data", "data")
 
 #@ image_list = [ "opi", "event-reporter", "eirini-controller", "task-reporter", "instance-index-env-injector" ]
-#@ eirini_tag = "1.9.0"
 ---
 resources:
 - name: eirini
   type: git
   source:
-    uri: git@github.com:Birdrock/eirini.git
-    branch: 1.9.0-backport-stop-hardcoding-uid-2000
-    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    uri: git@github.com:cloudfoundry-incubator/eirini.git
+    private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
 
 - name: eirini-release
   type: github-release
@@ -18,16 +16,6 @@ resources:
     owner: cloudfoundry-incubator
     repository: eirini-release
     access_token: ((cf_deployment_release_bot_access_token))
-
-#@ for img in image_list:
-- name: #@ "cf-for-k8s-eirini-{}".format(img)
-  type: registry-image
-  source:
-    repository: #@ "cloudfoundry/eirini-{}-cf-for-k8s".format(img)
-    username: ((dockerhub.username))
-    password: ((dockerhub.password))
-    tag: #@ eirini_tag
-#@ end
 
 jobs:
 #@ for img in image_list:
@@ -52,6 +40,7 @@ jobs:
         args:
         - -c
         - |
+          set -e
           pushd eirini
             git rev-parse HEAD > ../revision/revision
             git describe --tags > ../revision/tag
@@ -104,7 +93,34 @@ jobs:
           deplab --image-tar image/image.tar \
             --git eirini \
             --output-tar deplab-image/image.tar
-  - put: #@ "cf-for-k8s-eirini-{}".format(img)
-    params:
-      image: deplab-image/image.tar
+
+  - task: #@ "publish-{}".format(img)
+    privileged: true
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: cfpersi/smb-k8s-kind-tests
+          tag: latest
+      inputs:
+        - name: deplab-image
+        - name: eirini-release
+      params:
+        DOCKER_USERNAME: ((dockerhub.username))
+        DOCKER_PASSWORD: ((dockerhub.password))
+        REPOSITORY: #@ "cloudfoundry/eirini-{}-cf-for-k8s".format(img)
+      run:
+        path: /bin/sh
+        args:
+          - -c
+          - |
+            /etc/init.d/docker start
+            docker login -u "${DOCKER_USERNAME}" -p "${DOCKER_PASSWORD}"
+            docker load -i deplab-image/image.tar
+            image_id=$(docker images --format '{{.ID}}' | head -n 1)
+            tag=$(cat eirini-release/version)
+            docker tag "${image_id}" "${REPOSITORY}":"${tag}"
+            docker push "${REPOSITORY}":"${tag}"
+            /etc/init.d/docker stop
 #@ end

@@ -108,7 +108,14 @@ var _ = Describe("Smoke Tests", func() {
 			appName = generator.PrefixedRandomName(NamePrefix, "app")
 
 			By("pushing an app and checking that the CF CLI command succeeds")
-			cfPush := cf.Cf("push", appName, "-o", "cfrouting/httpbin")
+
+			var cfPush *Session
+			dockerUsername, userExists := os.LookupEnv("CF_DOCKER_USERNAME")
+			if userExists {
+				cfPush = cf.Cf("push", appName, "-o", "cfrouting/httpbin", "--docker-username", dockerUsername)
+			} else {
+				cfPush = cf.Cf("push", appName, "-o", "cfrouting/httpbin")
+			}
 			Eventually(cfPush).Should(Exit(0))
 
 			By("querying the app")

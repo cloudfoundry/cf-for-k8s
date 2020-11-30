@@ -1,13 +1,12 @@
+#!/usr/bin/env bash
+
+set -eu
+
 # for our built dependencies (eirini, istio, minio, postgres)
 # make sure that PRs that updated the vendir.yml were properly
 # synced to cf-for-k8s. Specifically that vendir.lock reflects
 # the new dependency version and that the `build` and `config` directories
 # contains an updated version of the dependency.
-
-
-#!/bin/bash
-
-set -exu
 
 # ENV
 : "${REPO_DIR:?}"
@@ -51,4 +50,3 @@ set -e
 
 git diff --unified=0 | grep '^[-+][^-+]' | awk -f "$HOMEDIR/ignore-moved-lines.awk"
 echo "Successfully verified the build scripts did not create new changes"
-

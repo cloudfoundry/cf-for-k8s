@@ -1,3 +1,10 @@
+# for our built dependencies (eirini, istio, minio, postgres)
+# make sure that PRs that updated the vendir.yml were properly
+# synced to cf-for-k8s. Specifically that vendir.lock reflects
+# the new dependency version and that the `build` and `config` directories
+# contains an updated version of the dependency.
+
+
 #!/bin/bash
 
 set -exu

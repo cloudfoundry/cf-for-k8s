@@ -8,11 +8,13 @@ image_resource:
 
 inputs:
 - name: cf-for-k8s-ci
+- name: deplab-image
+- name: eirini-release
 
 params:
-  GCP_SERVICE_ACCOUNT_JSON:
-  GCP_PROJECT_NAME:
-  GCP_PROJECT_ZONE:
+  DOCKER_USERNAME: ((dockerhub.username))
+  DOCKER_PASSWORD: ((dockerhub.password))
+  REPOSITORY: cloudfoundry/eirini-opi-cf-for-k8s
 
 run:
-  path: cf-for-k8s-ci/ci/tasks/aaaa/task.sh
+  path: cf-for-k8s-ci/ci/tasks/publish-eirini-image/task.sh

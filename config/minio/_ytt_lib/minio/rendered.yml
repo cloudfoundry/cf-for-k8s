@@ -4,7 +4,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: minio-update-prometheus-secret
-    chart: minio-5.0.30
+    chart: minio-8.0.5
     heritage: Helm
     release: cf-blobstore
   name: cf-blobstore-minio-update-prometheus-secret
@@ -12,6 +12,10 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  labels:
+    app: minio
+    chart: minio-8.0.5
+    release: cf-blobstore
   name: cf-blobstore-minio
   namespace: cf-blobstore
 ---
@@ -23,7 +27,7 @@ kind: Secret
 metadata:
   labels:
     app: minio
-    chart: minio-5.0.30
+    chart: minio-8.0.5
     heritage: Helm
     release: cf-blobstore
   name: cf-blobstore-minio
@@ -35,7 +39,7 @@ data:
     #!/bin/sh
     set -e ; # Have script exit in the event of a failed command.
     MC_CONFIG_DIR="/etc/minio/mc/"
-    MC="/usr/bin/mc --config-dir ${MC_CONFIG_DIR}"
+    MC="/usr/bin/mc --insecure --config-dir ${MC_CONFIG_DIR}"
 
     # connectToMinio
     # Use a check-sleep-check loop to wait for Minio service to be available
@@ -78,6 +82,7 @@ data:
       BUCKET=$1
       POLICY=$2
       PURGE=$3
+      VERSIONING=$4
 
       # Purge the bucket, if set & exists
       # Since PURGE is user input, check explicitly for `true`
@@ -100,6 +105,20 @@ data:
         echo "Bucket '$BUCKET' already exists."
       fi
 
+
+      # set versioning for bucket
+      if [ ! -z $VERSIONING ] ; then
+        if [ $VERSIONING = true ] ; then
+            echo "Enabling versioning for '$BUCKET'"
+            ${MC} version enable myminio/$BUCKET
+        elif [ $VERSIONING = false ] ; then
+            echo "Suspending versioning for '$BUCKET'"
+            ${MC} version suspend myminio/$BUCKET
+        fi
+      else
+          echo "Bucket '$BUCKET' versioning unchanged."
+      fi
+
       # At this point, the bucket should exist, skip checking for existence
       # Set policy on the bucket
       echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
@@ -113,7 +132,7 @@ kind: ConfigMap
 metadata:
   labels:
     app: minio
-    chart: minio-5.0.30
+    chart: minio-8.0.5
     heritage: Helm
     release: cf-blobstore
   name: cf-blobstore-minio
@@ -123,7 +142,7 @@ kind: PersistentVolumeClaim
 metadata:
   labels:
     app: minio
-    chart: minio-5.0.30
+    chart: minio-8.0.5
     heritage: Helm
     release: cf-blobstore
   name: cf-blobstore-minio
@@ -139,7 +158,7 @@ kind: Role
 metadata:
   labels:
     app: minio-update-prometheus-secret
-    chart: minio-5.0.30
+    chart: minio-8.0.5
     heritage: Helm
     release: cf-blobstore
   name: cf-blobstore-minio-update-prometheus-secret
@@ -175,7 +194,7 @@ kind: RoleBinding
 metadata:
   labels:
     app: minio-update-prometheus-secret
-    chart: minio-5.0.30
+    chart: minio-8.0.5
     heritage: Helm
     release: cf-blobstore
   name: cf-blobstore-minio-update-prometheus-secret
@@ -193,7 +212,7 @@ kind: Service
 metadata:
   labels:
     app: minio
-    chart: minio-5.0.30
+    chart: minio-8.0.5
     heritage: Helm
     release: cf-blobstore
   name: cf-blobstore-minio
@@ -214,13 +233,13 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: RELEASE.2020-06-14T18-32-17Z
+        - Tag: RELEASE.2020-11-19T23-48-16Z
           Type: resolved
-          URL: minio/minio:RELEASE.2020-06-14T18-32-17Z
-        URL: index.docker.io/minio/minio@sha256:35d654988af3b5761162d5ce06243c1517ec34beeae271c8b5983b5082968858
+          URL: minio/minio:RELEASE.2020-11-19T23-48-16Z
+        URL: index.docker.io/minio/minio@sha256:1532f2692af33bf3ccd66bfbe83c96055d358edceb248a27046aa90ac942f6b6
   labels:
     app: minio
-    chart: minio-5.0.30
+    chart: minio-8.0.5
     heritage: Helm
     release: cf-blobstore
   name: cf-blobstore-minio
@@ -237,8 +256,8 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 6f2dbe8a0c3f59cb8d9e7051cd9370791c2df5ec3cbe0bad179295559a282d2f
-        checksum/secrets: debfe7f1d286d311ff318bdae05da710f2c6b260e296564745e6e261a630dccb
+        checksum/config: a77c21e50443b2251bf09e16e51ad7cbe4a46044cc6802a681d78807455bdaa9
+        checksum/secrets: f2dd559ba09753ecff223b5fbd53dfac131e940178f37e536327600a3908213c
       labels:
         app: minio
         release: cf-blobstore
@@ -260,33 +279,12 @@ spec:
             secretKeyRef:
               key: secretkey
               name: cf-blobstore-minio
-        - name: MINIO_API_READY_DEADLINE
-          value: 5s
-        image: index.docker.io/minio/minio@sha256:35d654988af3b5761162d5ce06243c1517ec34beeae271c8b5983b5082968858
+        image: index.docker.io/minio/minio@sha256:1532f2692af33bf3ccd66bfbe83c96055d358edceb248a27046aa90ac942f6b6
         imagePullPolicy: IfNotPresent
-        livenessProbe:
-          failureThreshold: 1
-          httpGet:
-            path: /minio/health/live
-            port: http
-            scheme: HTTP
-          initialDelaySeconds: 5
-          periodSeconds: 5
-          successThreshold: 1
-          timeoutSeconds: 1
         name: minio
         ports:
         - containerPort: 9000
           name: http
-        readinessProbe:
-          failureThreshold: 3
-          httpGet:
-            path: /minio/health/ready
-            port: http
-          initialDelaySeconds: 30
-          periodSeconds: 5
-          successThreshold: 1
-          timeoutSeconds: 6
         resources:
           requests:
             cpu: 250m

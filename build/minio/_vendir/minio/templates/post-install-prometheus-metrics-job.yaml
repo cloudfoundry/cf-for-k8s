@@ -1,5 +1,9 @@
 {{- if .Values.metrics.serviceMonitor.enabled }}
 {{- $fullName := include "minio.fullname" . -}}
+{{ $scheme := "http" }}
+{{- if .Values.tls.enabled }}
+{{ $scheme = "https" }}
+{{ end }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -12,7 +16,7 @@ metadata:
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "-5"
-    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
   {{ toYaml .Values.updatePrometheusJob.annotations | indent 4 }}
 spec:
   template:
@@ -23,11 +27,16 @@ spec:
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
+{{- if .Values.updatePrometheusJob.podAnnotations }}
+      annotations:
+{{ toYaml .Values.updatePrometheusJob.podAnnotations | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ $fullName }}-update-prometheus-secret
 {{- end }}
       restartPolicy: OnFailure
+{{- include "minio.imagePullSecrets" . | indent 6 }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -40,6 +49,12 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
+{{- if .Values.updatePrometheusJob.securityContext.enabled }}
+      securityContext:
+        runAsUser: {{ .Values.updatePrometheusJob.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.updatePrometheusJob.securityContext.runAsGroup }}
+        fsGroup: {{ .Values.updatePrometheusJob.securityContext.fsGroup }}
+{{- end }}
       volumes:
         - name: workdir
           emptyDir: {}
@@ -50,11 +65,21 @@ spec:
           command:
             - /bin/sh
             - "-c"
-            - mc admin prometheus generate target --json --no-color -q > /workdir/mc.json
+            - mc --config-dir {{ .Values.configPathmc }} admin prometheus generate target --json --no-color -q > /workdir/mc.json
           env:
-            # mc admin prometheus generate don't really connect to remote server, TLS cert isn't required
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "minio.secretName" . }}
+                  key: accesskey
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "minio.secretName" . }}
+                  key: secretkey
+            #  mc admin prometheus generate don't really connect to remote server, TLS cert isn't required
             - name: MC_HOST_target
-              value: http{{ if .Values.tls.enabled }}s{{ end }}://{{ .Values.accessKey }}:{{ .Values.secretKey }}@{{ $fullName }}:{{ .Values.service.port }}
+              value: {{ $scheme }}://$(MINIO_ACCESS_KEY):$(MINIO_SECRET_KEY)@{{ $fullName }}:{{ .Values.service.port }}
           volumeMounts:
             - name: workdir
               mountPath: /workdir

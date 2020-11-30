@@ -3,9 +3,9 @@ set -e ; # Have script exit in the event of a failed command.
 
 {{- if .Values.configPathmc }}
 MC_CONFIG_DIR="{{ .Values.configPathmc }}"
-MC="/usr/bin/mc --config-dir ${MC_CONFIG_DIR}"
+MC="/usr/bin/mc --insecure --config-dir ${MC_CONFIG_DIR}"
 {{- else }}
-MC="/usr/bin/mc"
+MC="/usr/bin/mc --insecure"
 {{- end }}
 
 # connectToMinio
@@ -49,6 +49,7 @@ createBucket() {
   BUCKET=$1
   POLICY=$2
   PURGE=$3
+  VERSIONING=$4
 
   # Purge the bucket, if set & exists
   # Since PURGE is user input, check explicitly for `true`
@@ -71,6 +72,20 @@ createBucket() {
     echo "Bucket '$BUCKET' already exists."
   fi
 
+
+  # set versioning for bucket
+  if [ ! -z $VERSIONING ] ; then
+    if [ $VERSIONING = true ] ; then
+        echo "Enabling versioning for '$BUCKET'"
+        ${MC} version enable myminio/$BUCKET
+    elif [ $VERSIONING = false ] ; then
+        echo "Suspending versioning for '$BUCKET'"
+        ${MC} version suspend myminio/$BUCKET
+    fi
+  else
+      echo "Bucket '$BUCKET' versioning unchanged."
+  fi
+
   # At this point, the bucket should exist, skip checking for existence
   # Set policy on the bucket
   echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
@@ -87,10 +102,10 @@ connectToMinio $scheme
 
 {{- if or .Values.defaultBucket.enabled }}
 # Create the bucket
-createBucket {{ .Values.defaultBucket.name }} {{ .Values.defaultBucket.policy }} {{ .Values.defaultBucket.purge }}
+createBucket {{ .Values.defaultBucket.name }} {{ .Values.defaultBucket.policy }} {{ .Values.defaultBucket.purge }} {{ .Values.defaultBucket.versioning }}
 {{ else if .Values.buckets }}
 # Create the buckets
 {{- range .Values.buckets }}
-createBucket {{ .name }} {{ .policy }} {{ .purge }} 
+createBucket {{ .name }} {{ .policy }} {{ .purge }} {{ .versioning }}
 {{- end }}
 {{- end }}

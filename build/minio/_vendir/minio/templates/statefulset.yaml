@@ -26,11 +26,7 @@ spec:
   publishNotReadyAddresses: true
   clusterIP: None
   ports:
-    {{- if .Values.tls.enabled }}
-    - name: https
-    {{ else }}
-    - name: http
-    {{- end }}
+    - name: {{ $scheme }}
       port: {{ .Values.service.port }}
       protocol: TCP
   selector:
@@ -108,74 +104,32 @@ spec:
               {{- end }}
             {{- end }}
             {{- end }}
-            {{- if .Values.tls.enabled }}
-            - name: cert-secret-volume
-              mountPath: {{ .Values.certsPath }}
-            {{ end }}
+            {{- include "minio.tlsKeysVolumeMount" . | indent 12 }}
           ports:
-            {{- if .Values.tls.enabled }}
-            - name: https
-            {{ else }}
-            - name: http
-            {{- end }}
+            - name: {{ $scheme }}
               containerPort: 9000
           env:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
+                  name: {{ template "minio.secretName" . }}
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
+                  name: {{ template "minio.secretName" . }}
                   key: secretkey
             {{- range $key, $val := .Values.environment }}
             - name: {{ $key }}
               value: {{ $val | quote }}
             {{- end}}
-          livenessProbe:
-            httpGet:
-              path: /minio/health/live
-              {{- if .Values.tls.enabled }}
-              port: https
-              {{ else }}
-              port: http
-              {{- end }}
-              {{- if .Values.tls.enabled }}
-              scheme: HTTPS
-              {{ else }}
-              scheme: HTTP
-              {{- end }}
-            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.livenessProbe.successThreshold }}
-            failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
-          readinessProbe:
-            httpGet:
-              path: /minio/health/ready
-              {{- if .Values.tls.enabled }}
-              port: https
-              {{ else }}
-              port: http
-              {{- end }}
-              {{- if .Values.tls.enabled }}
-              scheme: HTTPS
-              {{ else }}
-              scheme: HTTP
-              {{- end }}
-            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-            successThreshold: {{ .Values.readinessProbe.successThreshold }}
-            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- include "minio.imagePullSecrets" . | indent 6 }}
     {{- with .Values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
@@ -187,19 +141,8 @@ spec:
       volumes:
         - name: minio-user
           secret:
-            secretName: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
-        {{- if .Values.tls.enabled }}
-        - name: cert-secret-volume
-          secret:
-            secretName: {{ .Values.tls.certSecret }}
-            items:
-            - key: {{ .Values.tls.publicCrt }}
-              path: public.crt
-            - key: {{ .Values.tls.privateKey }}
-              path: private.key
-            - key: {{ .Values.tls.publicCrt }}
-              path: CAs/public.crt
-        {{ end }}
+            secretName: {{ template "minio.secretName" . }}
+        {{- include "minio.tlsKeysVolume" . | indent 8 }}
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   {{- if gt $drivesPerNode 1 }}

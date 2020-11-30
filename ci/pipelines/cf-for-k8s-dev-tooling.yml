@@ -17,6 +17,7 @@ groups:
   - build-cf-for-k8s-gh-pages-image
   - build-cf-for-k8s-azure-image
   - build-cf-for-k8s-aws-image
+  - build-cf-for-k8s-dind-image
 - name: rds-databases
   jobs:
   - create-rds-database
@@ -68,6 +69,25 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
     - ci/dockerfiles/cf-for-k8s-gh-pages/Dockerfile
+
+- name: cf-for-k8s-dind-dockerfile
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - ci/dockerfiles/cf-for-k8s-dind/**
+
+- name: cf-for-k8s-dind-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: relintdockerhubpushbot/cf-for-k8s-dind
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 
 - name: weekly
   type: time
@@ -295,6 +315,22 @@ jobs:
       params:
         build: cf-for-k8s-aws-dockerfile/ci/dockerfiles/cf-for-k8s-aws/
         push: true
+
+- name: build-cf-for-k8s-dind-image
+  public: true
+  plan:
+    - timeout: 4h
+      do:
+        - in_parallel:
+            - get: weekly
+              trigger: true
+            - get: cf-for-k8s-dind-dockerfile
+              trigger: true
+
+        - put: cf-for-k8s-dind-image
+          params:
+            build: cf-for-k8s-dind-dockerfile/ci/dockerfiles/cf-for-k8s-dind/
+            push: true
 
 - name: create-stability-cluster
   serial: true

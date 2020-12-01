@@ -20,9 +20,6 @@ metadata:
   namespace: cf-blobstore
 ---
 apiVersion: v1
-data:
-  accesskey: null
-  secretkey: null
 kind: Secret
 metadata:
   labels:
@@ -255,9 +252,7 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      annotations:
-        checksum/config: a77c21e50443b2251bf09e16e51ad7cbe4a46044cc6802a681d78807455bdaa9
-        checksum/secrets: f2dd559ba09753ecff223b5fbd53dfac131e940178f37e536327600a3908213c
+      annotations: {}
       labels:
         app: minio
         release: cf-blobstore

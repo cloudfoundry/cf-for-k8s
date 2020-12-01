@@ -3,6 +3,10 @@ set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+cd "${SCRIPT_DIR}/_vendir/bitnami/postgresql"
+helm dependency update
+cd -
+
 echo "generating Postgresql resource definitions..."
 helm template cf-db --namespace=cf-db "${SCRIPT_DIR}/_vendir/bitnami/postgresql" \
         --values="${SCRIPT_DIR}/init-db-values.yml" |

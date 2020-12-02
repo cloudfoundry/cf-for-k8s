@@ -75,12 +75,12 @@ directories:
     - path: quarks-secret
       manual: {}
 
-# When adding a helm chart to our set of components:
-# 1. Find the chart you need from https://hub.helm.sh/charts/stable
-# 2. Note the latest (or desired) version from the "Chart Versions" section on the right.
-# 3. Navigate to the corresponding directory of https://github.com/helm/charts/tree/master/stable or related repo
-# 4. Look at the history or blame log of the Chart.yaml file to find when the version was bumped to the version you found earlier.
-# 5. The SHA of the commit that bumped the version will be the SHA you use as the 'ref' of the git section below.
+# When adding or updating a helm chart to our set of components:
+# 1. Navigate Chart.yaml in the chart source repo.
+# 2. Note the `version` property specified on the Chart resource.
+# 3. Use the `git blame` tool to find the latest commit that bumped the verion.
+# 4. The SHA of the commit that bumped the version will be the SHA you use as the 'ref' of the git section below.
+# 5. Also make note of the version in a comment.
 - path: build/minio/_vendir
   contents:
   - path: .
@@ -104,7 +104,7 @@ directories:
   - path: .
     git:
       url: https://github.com/bitnami/charts
-      ref: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe # version: 8.10.6
+      ref: e0c026c74b1efa60fa7b142be5e877e5b200c869 # version: 10.1.1
     includePaths:
     - bitnami/postgresql/**/*
 

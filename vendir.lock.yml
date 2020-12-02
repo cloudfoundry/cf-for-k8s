@@ -68,8 +68,10 @@ directories:
   path: build/eirini/_vendir
 - contents:
   - git:
-      commitTitle: '[bitnami/postgresql] Release 8.10.6 updating components versions...'
-      sha: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe
+      commitTitle: '[bitnami/postgresql] `postgresql-postgres-password` doesn''t work
+        with `global.postgresqlUsername` and without `postgresqlPostgresPassword`
+        #3130 (#4380)...'
+      sha: e0c026c74b1efa60fa7b142be5e877e5b200c869
     path: .
   path: build/postgres/_vendir
 - contents:

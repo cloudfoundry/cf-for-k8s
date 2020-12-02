@@ -2,6 +2,16 @@
 
 #@overlay/match by=overlay.subset({"kind": "Secret", "metadata": {"name": "cf-blobstore-minio"}})
 ---
+#@overlay/remove
 data:
-  accesskey: ~
-  secretkey: ~
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata": {"name": "cf-blobstore-minio"}})
+---
+spec:
+  template:
+    metadata:
+      annotations:
+        #@overlay/remove
+        checksum/config:
+        #@overlay/remove
+        checksum/secrets:

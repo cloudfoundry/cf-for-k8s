@@ -25,11 +25,15 @@ spec:
           image: #@ data.values.images.ccng
           imagePullPolicy: Always
           command: [ "/cnb/process/api-worker" ]
+          ports:
+          - containerPort: 4444
           env:
           - name: CLOUD_CONTROLLER_NG_CONFIG
             value: #@ ccng_config_mount_path
           - name: CLOUD_CONTROLLER_NG_SECRETS
             value: #@ ccng_secrets_mount_path
+          - name: INDEX
+            value: "1"
           resources:
             requests:
               cpu: 300m
@@ -52,9 +56,6 @@ spec:
         - name: registry-buddy
           image: #@ data.values.images.registry_buddy
           imagePullPolicy: Always
-          readinessProbe:
-            tcpSocket:
-              port: 8080
           env:
             - name: REGISTRY_USERNAME
               valueFrom:

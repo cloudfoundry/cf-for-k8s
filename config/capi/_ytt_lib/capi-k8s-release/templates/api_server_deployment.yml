@@ -84,9 +84,6 @@ spec:
         - name: registry-buddy
           image: #@ data.values.images.registry_buddy
           imagePullPolicy: Always
-          readinessProbe:
-            tcpSocket:
-              port: 8080
           volumeMounts:
           - name: tmp-packages
             mountPath: /tmp/packages

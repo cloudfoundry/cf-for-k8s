@@ -67,6 +67,13 @@ spec:
                 secretKeyRef:
                   name: cc-package-registry-upload-secret
                   key: password
+          resources:
+            requests:
+              cpu: 500m
+              memory: 15Mi
+            limits:
+              cpu: 15000m
+              memory: 150Mi
       serviceAccountName: cf-api-worker-service-account
       volumes:
       - #@ template.replace(shared_config_volumes())

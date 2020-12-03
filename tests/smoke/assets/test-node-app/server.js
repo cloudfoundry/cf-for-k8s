@@ -4,4 +4,8 @@ http.createServer(function (request, response) {
    response.end('Hello World\n');
 }).listen(process.env.PORT);
 
-console.log('Console output from test-node-app');
+function logger() {
+    console.log('Console output from test-node-app');
+}
+
+setInterval(logger, 1000);

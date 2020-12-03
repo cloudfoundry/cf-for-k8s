@@ -84,6 +84,13 @@ spec:
         - name: registry-buddy
           image: #@ data.values.images.registry_buddy
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 500m
+              memory: 15Mi
+            limits:
+              cpu: 15000m
+              memory: 150Mi
           volumeMounts:
           - name: tmp-packages
             mountPath: /tmp/packages

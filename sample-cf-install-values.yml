@@ -85,7 +85,7 @@ uaa:
 
 app_registry:
   hostname: https://index.docker.io/v1/
-  #! often times this is just your `docker_user`
+  #! often times the repository_prefix is just your `docker_user`
   repository_prefix: <docker_hub_repository>
   username: <docker_user>
   password: <docker_password>
@@ -98,12 +98,21 @@ app_registry:
 #!   password: |
 #!     contents_of_service_account_json
 
-#! example below is for a Azure container registry. Make sure to remove other registry blocks if you intend to use ACR
+#! example below is for an Azure container registry. Make sure to remove other registry blocks if you intend to use ACR
 #! app_registry:
 #!   hostname: <registry-name>.azurecr.io
 #!   repository_prefix: <registry-name>.azurecr.io
 #!   username: <username>
 #!   password: <password>
+
+#! example below is for an Amazon container registry. Make sure to remove other registry blocks if you intend to use ECR
+#! ecr_hostname="$(aws sts get-caller-identity --query 'Account' --output text).dkr.ecr.${region}.amazonaws.com"
+#! ecr_token=$(aws ecr get-login-password)
+#! app_registry:
+#!   hostname: https://${ecr_hostname}
+#!   repository_prefix: "${ecr_hostname}/my_env" # ensure ${ecr_hostname}/my_env/cf-default-builder exists
+#!   username: AWS
+#!   password: ${ecr_token}
 
 remove_resource_requirements: true
 add_metrics_server_components: true

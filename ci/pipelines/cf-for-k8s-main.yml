@@ -1,4 +1,28 @@
 ---
+groups:
+- name: cf-for-k8s-main
+  jobs:
+  - run-unit-tests
+  - branch-freshness
+  - test-vendir-sync
+  - validate-gke
+  - validate-upgrade
+  - run-cats
+  - validate-external-db
+  - validate-external-blobstore
+  - validate-rds
+  - validate-s3
+  - validate-oldest-k8s
+  - validate-newest-k8s
+  - promote-main-deliver-stories
+- name: ship-it
+  jobs:
+  - create-rc-tag-for-major-release
+  - create-rc-tag-for-minor-release
+  - create-rc-tag-for-patch-release
+  - bump-rc-tag-for-release
+  - finalize-release
+
 #! Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
   platform: linux
@@ -18,34 +42,51 @@ resources:
   type: git
   icon: github
   source:
-    branch: develop
     uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     ignore_paths:
     - ci/**
+
+- name: cf-for-k8s-main
+  type: git
+  icon: github
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: main
+    private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
 
 - name: cf-for-k8s-last-release
   type: git
   icon: github
   source:
-    branch: main
-    tag_filter: "v*"
     uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: main
     private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
+    tag_filter: "v*"
+
+- name: cf-for-k8s-last-rc
+  type: git
+  icon: github
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: main
+    private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
+    tag_filter: "v*-rc.*"
 
 - name: cf-for-k8s-all-branches
   type: git
   icon: github
   source:
-    branch: develop
     uri: https://github.com/cloudfoundry/cf-for-k8s.git
+    branch: develop
 
 - name: cf-for-k8s-ci
   type: git
   icon: github
   source:
-    branch: develop
     uri: git@github.com:cloudfoundry/cf-for-k8s
+    branch: develop
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
     - ci/**
@@ -54,16 +95,16 @@ resources:
   type: git
   icon: github
   source:
-    branch: develop
     uri: git@github.com:cloudfoundry/cf-acceptance-tests
+    branch: develop
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 
 - name: runtime-ci
   type: git
   icon: github
   source:
-    branch: main
     uri: https://github.com/cloudfoundry/runtime-ci.git
+    branch: main
 
 - name: ready-pool
   type: pool
@@ -100,14 +141,6 @@ resources:
       bucket: relint-k8s-cluster-state
       credentials: ((dev_cluster_pool_gcs_admin_service_account_json))
 
-- name: cf-for-k8s-main-push
-  type: git
-  icon: github
-  source:
-    branch: main
-    uri: git@github.com:cloudfoundry/cf-for-k8s
-    private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
-
 - name: deliver-tracker-stories
   type: tracker
   source:
@@ -141,6 +174,17 @@ resources:
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     paths:
       - deploy/s3/terraform/**
+
+- name: cf-for-k8s-version
+  type: semver
+  source:
+    driver: git
+    uri: git@github.com:cloudfoundry/cf-relint-ci-semver.git
+    branch: main
+    private_key: ((cf_relint_ci_semver_readwrite_deploy_key.private_key))
+    git_user: "CF MEGA BOT <cf-mega@pivotal.io>"
+    file: cf-for-k8s-version
+    initial_version: 1.0.0
 
 jobs:
 - name: run-unit-tests
@@ -1007,7 +1051,7 @@ jobs:
     - run-cats
     trigger: true
 
-  - put: cf-for-k8s-main-push
+  - put: cf-for-k8s-main
     params:
       repository: cf-for-k8s-develop
 
@@ -1015,3 +1059,112 @@ jobs:
     params:
       repos:
       - cf-for-k8s-develop
+
+- name: create-rc-tag-for-major-release
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-version
+      params:
+        bump: major
+        pre: rc
+    - get: cf-for-k8s-main
+      passed:
+      - promote-main-deliver-stories
+
+  - put: cf-for-k8s-main
+    params:
+      repository: cf-for-k8s-main
+      tag: cf-for-k8s-version/cf-for-k8s-version
+      tag_prefix: v
+      only_tag: true
+
+  - put: cf-for-k8s-version
+    params:
+      bump: major
+      pre: rc
+
+- name: create-rc-tag-for-minor-release
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-version
+      params:
+        bump: minor
+        pre: rc
+    - get: cf-for-k8s-main
+      passed:
+      - promote-main-deliver-stories
+
+  - put: cf-for-k8s-main
+    params:
+      repository: cf-for-k8s-main
+      tag: cf-for-k8s-version/cf-for-k8s-version
+      tag_prefix: v
+      only_tag: true
+
+  - put: cf-for-k8s-version
+    params:
+      bump: minor
+      pre: rc
+
+- name: create-rc-tag-for-patch-release
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-version
+      params:
+        bump: patch
+        pre: rc
+    - get: cf-for-k8s-main
+      passed:
+      - promote-main-deliver-stories
+
+  - put: cf-for-k8s-main
+    params:
+      repository: cf-for-k8s-main
+      tag: cf-for-k8s-version/cf-for-k8s-version
+      tag_prefix: v
+      only_tag: true
+
+  - put: cf-for-k8s-version
+    params:
+      bump: patch
+      pre: rc
+
+- name: bump-rc-tag-for-release
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-version
+      params:
+        pre: rc
+    - get: cf-for-k8s-main
+      passed:
+      - promote-main-deliver-stories
+
+  - put: cf-for-k8s-main
+    params:
+      repository: cf-for-k8s-main
+      tag: cf-for-k8s-version/cf-for-k8s-version
+      tag_prefix: v
+      only_tag: true
+
+  - put: cf-for-k8s-version
+    params:
+      pre: rc
+
+- name: finalize-release
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-version
+      params:
+        bump: final
+    - get: cf-for-k8s-last-rc
+
+  - put: cf-for-k8s-main
+    params:
+      repository: cf-for-k8s-last-rc
+      tag: cf-for-k8s-version/cf-for-k8s-version
+      tag_prefix: v
+      only_tag: true
+
+  - put: cf-for-k8s-version
+    params:
+      bump: final

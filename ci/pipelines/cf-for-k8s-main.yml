@@ -1074,7 +1074,7 @@ jobs:
   - put: cf-for-k8s-main
     params:
       repository: cf-for-k8s-main
-      tag: cf-for-k8s-version/cf-for-k8s-version
+      tag: cf-for-k8s-version/version
       tag_prefix: v
       only_tag: true
 
@@ -1097,7 +1097,7 @@ jobs:
   - put: cf-for-k8s-main
     params:
       repository: cf-for-k8s-main
-      tag: cf-for-k8s-version/cf-for-k8s-version
+      tag: cf-for-k8s-version/version
       tag_prefix: v
       only_tag: true
 
@@ -1120,7 +1120,7 @@ jobs:
   - put: cf-for-k8s-main
     params:
       repository: cf-for-k8s-main
-      tag: cf-for-k8s-version/cf-for-k8s-version
+      tag: cf-for-k8s-version/version
       tag_prefix: v
       only_tag: true
 
@@ -1142,7 +1142,7 @@ jobs:
   - put: cf-for-k8s-main
     params:
       repository: cf-for-k8s-main
-      tag: cf-for-k8s-version/cf-for-k8s-version
+      tag: cf-for-k8s-version/version
       tag_prefix: v
       only_tag: true
 
@@ -1161,7 +1161,7 @@ jobs:
   - put: cf-for-k8s-main
     params:
       repository: cf-for-k8s-last-rc
-      tag: cf-for-k8s-version/cf-for-k8s-version
+      tag: cf-for-k8s-version/version
       tag_prefix: v
       only_tag: true
 

@@ -38,6 +38,12 @@ resource_types:
   source:
     repository: ljfranklin/terraform-resource
 
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+    tag: latest
+
 resources:
 - name: cf-for-k8s-develop
   type: git

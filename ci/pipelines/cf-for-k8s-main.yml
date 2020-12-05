@@ -22,6 +22,7 @@ groups:
   - create-rc-tag-for-patch-release
   - bump-rc-tag-for-release
   - finalize-release
+  - announce-new-release
 
 #! Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
@@ -185,6 +186,20 @@ resources:
     git_user: "CF MEGA BOT <cf-mega@pivotal.io>"
     file: cf-for-k8s-version
     initial_version: 1.0.0
+
+- name: cf-for-k8s-release
+  type: github-release
+  source:
+    owner: cloudfoundry
+    repository: cf-for-k8s
+    access_token: ((cf_for_k8s_release_bot_access_token))
+    drafts: true
+
+- name: cf-for-k8s-slack-alert
+  type: slack-notification
+  icon: slack
+  source:
+    url: ((cf_for_k8s_slack_incoming_webhook))
 
 jobs:
 - name: run-unit-tests
@@ -1156,7 +1171,11 @@ jobs:
     - get: cf-for-k8s-version
       params:
         bump: final
+    - get: cf-for-k8s-rc-version
+      resource: cf-for-k8s-version
     - get: cf-for-k8s-last-rc
+    - get: cf-for-k8s-last-release
+    - get: cf-for-k8s-ci
 
   - put: cf-for-k8s-main
     params:
@@ -1165,6 +1184,37 @@ jobs:
       tag_prefix: v
       only_tag: true
 
+  - task: generate-release-notes-template
+    file: cf-for-k8s-ci/ci/tasks/generate-release-notes/task.yml
+    input_mapping:
+      cf-for-k8s-rc: cf-for-k8s-last-rc
+    params:
+      GITHUB_API_USER: cf-for-k8s-release-bot
+      GITHUB_API_TOKEN: ((cf_for_k8s_release_bot_access_token))
+
+  - put: cf-for-k8s-release
+    params:
+      name: release-notes/name.txt
+      tag: cf-for-k8s-version/version
+      tag_prefix: v
+      body: release-notes/body.txt
+
   - put: cf-for-k8s-version
     params:
       bump: final
+
+- name: announce-new-release
+  plan:
+  - get: cf-for-k8s-version
+    passed:
+    - finalize-release
+
+  - put: cf-for-k8s-slack-alert
+    params:
+      icon_emoji: ':cloudfoundrylogo:'
+      text: |
+        Releasing new cf-for-k8s v$TEXT_FILE_CONTENT
+
+        https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v$TEXT_FILE_CONTENT
+      text_file: cf-for-k8s-version/version
+      username: Release Integration

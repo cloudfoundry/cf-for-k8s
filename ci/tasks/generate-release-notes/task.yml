@@ -1,0 +1,23 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: relintdockerhubpushbot/cf-deployment-concourse-tasks
+
+inputs:
+- name: cf-for-k8s-ci
+- name: cf-for-k8s-last-release
+- name: cf-for-k8s-rc
+- name: cf-for-k8s-rc-version
+
+outputs:
+- name: release-notes
+
+params:
+  GITHUB_API_USER:
+  GITHUB_API_TOKEN:
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/generate-release-notes/task.sh

@@ -31,6 +31,13 @@ for dir in * ; do
   if [[ -d "$dir" ]] ; then
     cd $dir
     ./build.sh
+    if [[ $dir = "minio" ]] ; then
+      # Ignore the change to the `rollme` random value
+      minio_rendered_file="$DIR/config/minio/_ytt_lib/minio/rendered.yml"
+      if [[ $(git diff --unified=0 "$minio_rendered_file" | egrep "^(\+|-) " | grep -v rollme | wc -l) == 0 ]] ; then
+        git checkout "$minio_rendered_file"
+      fi
+    fi
     cd ..
   fi
 done

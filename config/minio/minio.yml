@@ -29,6 +29,8 @@ metadata:
 stringData:
   accesskey: #@ must_exist(data.values, "blobstore.access_key_id")
   secretkey: #@ must_exist(data.values, "blobstore.secret_access_key")
+#@overlay/remove
+data:
 
 --- #@ template.replace(overlay.apply(library.get("minio").eval(), add_cf_blobstore_namespace()))
 

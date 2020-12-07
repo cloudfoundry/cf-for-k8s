@@ -57,10 +57,8 @@ directories:
   path: config/quarks-secret/_ytt_lib
 - contents:
   - git:
-      commitTitle: update to 8.0.5
-      sha: 5c4657deb6783102aedc455266b4d67cf60451c2
-      tags:
-      - 8.0.5
+      commitTitle: '[stable/minio] Support imagePullSecrets (#22812)...'
+      sha: 921eb8a969fb9d7b7b7d13904f740c76748ec2c9
     path: .
   path: build/minio/_vendir
 - contents:

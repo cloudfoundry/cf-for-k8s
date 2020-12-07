@@ -85,11 +85,10 @@ directories:
   contents:
   - path: .
     git:
-      url: https://github.com/minio/charts
-      ref: 8.0.5
+      url: https://github.com/helm/charts
+      ref: 921eb8a969fb9d7b7b7d13904f740c76748ec2c9 # version: 5.0.30
     includePaths:
-    - minio/**/*
-    - README.md
+    - stable/minio/**/*
 
 - path: build/eirini/_vendir
   contents:

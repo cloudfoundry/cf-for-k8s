@@ -1,8 +1,4 @@
 {{- if .Values.metrics.serviceMonitor.enabled }}
-{{ $scheme := "http" }}
-{{- if .Values.tls.enabled }}
-{{ $scheme = "https" }}
-{{ end }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
@@ -20,7 +16,11 @@ metadata:
     {{- end }}
 spec:
   endpoints:
-    - port: {{ $scheme }}
+    {{- if .Values.tls.enabled }}
+    - port: https
+    {{ else }}
+    - port: http
+    {{- end }}
       path: /minio/prometheus/metrics
       {{- if .Values.metrics.serviceMonitor.interval }}
       interval: {{ .Values.metrics.serviceMonitor.interval }}

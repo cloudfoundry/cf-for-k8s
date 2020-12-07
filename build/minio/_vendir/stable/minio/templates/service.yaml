@@ -1,7 +1,3 @@
-{{ $scheme := "http" }}
-{{- if .Values.tls.enabled }}
-{{ $scheme = "https" }}
-{{ end }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -28,7 +24,11 @@ spec:
   type: {{ .Values.service.type }}
 {{- end }}
   ports:
-    - name: {{ $scheme }}
+    {{- if .Values.tls.enabled }}
+    - name: https
+    {{ else }}
+    - name: http
+    {{- end }}
       port: {{ .Values.service.port }}
       protocol: TCP
 {{- if (and (eq .Values.service.type "NodePort") ( .Values.service.nodePort)) }}

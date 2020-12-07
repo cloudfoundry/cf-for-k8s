@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
   annotations:
     "helm.sh/hook": post-install,post-upgrade
-    "helm.sh/hook-delete-policy": hook-succeeded,before-hook-creation
+    "helm.sh/hook-delete-policy": hook-succeeded
 {{- with .Values.makeBucketJob.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
@@ -23,13 +23,8 @@ spec:
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
-{{- if .Values.makeBucketJob.podAnnotations }}
-      annotations:
-{{ toYaml .Values.makeBucketJob.podAnnotations | indent 8 }}
-{{- end }}
     spec:
       restartPolicy: OnFailure
-{{- include "minio.imagePullSecrets" . | indent 6 }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -42,12 +37,6 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- if .Values.makeBucketJob.securityContext.enabled }}
-      securityContext:
-        runAsUser: {{ .Values.makeBucketJob.securityContext.runAsUser }}
-        runAsGroup: {{ .Values.makeBucketJob.securityContext.runAsGroup }}
-        fsGroup: {{ .Values.makeBucketJob.securityContext.fsGroup }}
-{{- end }}
       volumes:
         - name: minio-configuration
           projected:
@@ -55,7 +44,7 @@ spec:
             - configMap:
                 name: {{ template "minio.fullname" . }}
             - secret:
-                name: {{ template "minio.secretName" . }}
+                name: {{ if .Values.existingSecret }}{{ .Values.existingSecret }}{{ else }}{{ template "minio.fullname" . }}{{ end }}
         {{- if .Values.tls.enabled }}
         - name: cert-secret-volume-mc
           secret:
@@ -83,5 +72,5 @@ spec:
             mountPath: {{ .Values.configPathmc }}certs
           {{ end }}
         resources:
-{{ toYaml .Values.makeBucketJob.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
 {{- end }}

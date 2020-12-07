@@ -18,7 +18,7 @@ load_balancer:
 #! - the certificates and keys are base64 encoded
 #! - all of the certs should have KeyUsage that includes server and client authentication
 
-#! certificate, private key, and certificate authority used to identify the CF installation (i.e. the ingress gateway).
+#! certificate, private key, and certificate authority used to identify the CF installation (i.e. the ingress gateway)
 #! - should be valid for *.vcap.me
 system_certificate:
   crt: |

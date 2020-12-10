@@ -15,6 +15,25 @@ function get_merged_prs() {
   done
 }
 
+# git log -n1 --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}'
+
+function get_closed_issues() {
+  local github_api_user="$1"
+  local github_api_token="$2"
+  local last_release_version="$3"
+  local release_candidate_version="$4"
+
+  dt=$(git show "${last_release_version}" --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}')
+  issues=$(curl -s -u "${github_api_user}:${github_api_token}" https://api.github.com/repos/cloudfoundry/cf-for-k8s/issues?since=$dt\&state=closed | jq '[.[] | select(.pull_request == null)]')
+
+  # we base64 encode/decode here otherwise, because the title field will almost certainly contain spaces, for will
+  # break on the spaces
+  for issue in $(echo "${issues}" | jq -rc '.[] | {number, title, html_url} | @base64'); do
+    issue_json=$(echo $(echo $issue | base64 --decode))
+    echo "$issue_json" | jq -r '"- " + .title + " [" + (.number|tostring) + "](" + .html_url + ")"'
+  done
+}
+
 function get_component_ref_from_vendir() {
   local line_to_find="$1"
   local vendir_path="$2"
@@ -105,6 +124,7 @@ function main() {
 $(get_merged_prs "${GITHUB_API_USER}" "${GITHUB_API_TOKEN}" "${last_release_version}" "${release_candidate_version}")
 
 ## Issues Closed
+$(get_closed_issues "${GITHUB_API_USER}" "${GITHUB_API_TOKEN}" "${last_release_version}" "${release_candidate_version}")
 
 ## Release Updates
 
@@ -116,4 +136,4 @@ EOT
   popd > /dev/null
 }
 
-# main "${PWD}"
+main "${PWD}"

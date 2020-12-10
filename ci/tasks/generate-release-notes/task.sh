@@ -15,8 +15,6 @@ function get_merged_prs() {
   done
 }
 
-# git log -n1 --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}'
-
 function get_closed_issues() {
   local github_api_user="$1"
   local github_api_token="$2"
@@ -26,11 +24,9 @@ function get_closed_issues() {
   dt=$(git show "${last_release_version}" --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}')
   issues=$(curl -s -u "${github_api_user}:${github_api_token}" https://api.github.com/repos/cloudfoundry/cf-for-k8s/issues?since=$dt\&state=closed | jq '[.[] | select(.pull_request == null)]')
 
-  # we base64 encode/decode here otherwise, because the title field will almost certainly contain spaces, for will
-  # break on the spaces
-  for issue in $(echo "${issues}" | jq -rc '.[] | {number, title, html_url} | @base64'); do
-    issue_json=$(echo $(echo $issue | base64 --decode))
-    echo "$issue_json" | jq -r '"- " + .title + " [" + (.number|tostring) + "](" + .html_url + ")"'
+  IFS=$'\n'
+  for issue in $(echo "${issues}" | jq -rc '.[] | {number, title, html_url}'); do
+    echo "${issue}" | jq -r '"- " + .title + " [" + (.number|tostring) + "](" + .html_url + ")"'
   done
 }
 

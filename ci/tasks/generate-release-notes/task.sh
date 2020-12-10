@@ -42,7 +42,7 @@ function append_component_line() {
   local line_to_find="$2"
 
   from_sha=$(get_component_ref_from_vendir "${line_to_find}" cf-for-k8s-last-release/vendir.yml)
-  to_sha=$(get_component_ref_from_vendir "${line_to_find}" cf-for-k8s-last-rc/vendir.yml)
+  to_sha=$(get_component_ref_from_vendir "${line_to_find}" cf-for-k8s-rc/vendir.yml)
   if [[ -z ${from_sha} ]] || [[ -z ${to_sha} ]]; then
     echo "ERROR: Parsing of vendir version for component ${component_name} failed"
     echo "exit 1"
@@ -104,6 +104,8 @@ function main() {
 
   local last_release_version
   last_release_version="v$(cat cf-for-k8s-last-release/version)"
+
+  build_component_bump_table_content
 
   pushd cf-for-k8s-rc > /dev/null
     echo "v${release_candidate_version}" > "${cwd}/release-notes/name.txt"

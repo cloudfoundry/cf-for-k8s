@@ -30,6 +30,9 @@ resource_types:
   type: docker-image
   source:
     repository: ljfranklin/terraform-resource
+    # pinning this because of the following issue: https://github.com/terraform-aws-modules/terraform-aws-eks/issues/978
+    # at least as of 0.14.0, there are failures to `terraform destroy` for EKS clusters
+    tag: 0.13.5
 
 resources:
 - name: cf-for-k8s-main

@@ -9,7 +9,7 @@
 | Andrew Costa | [acosta11](https://github.com/acosta11) | [VMware](https://www.github.com/vmware/) |
 | Andrew Wittrock | [Birdrock](https://github.com/Birdrock) | [VMware](https://www.github.com/vmware/) |
 | Dave Walter | [davewalter](https://github.com/davewalter) | [VMware](https://www.github.com/vmware/) |
-| Eric Promislow | [ericpromislow](https://github.com/ericpromislow/) | [SUSE](https://www.github.com/SUSE/) |
+| Jwal Pawar | [jspawar](https://github.com/jspawar/) | [VMware](https://www.github.com/vmware/) |
 | James Pollard | [jamespollard8](https://github.com/jamespollard8) | [VMware](https://www.github.com/vmware/) |
 | Paul Warren | [paulcwarren](https://github.com/paulcwarren) | [VMware](https://www.github.com/vmware/) |
 | Raina Masand | [rainmaker](https://github.com/rainmaker) | [VMware](https://www.github.com/vmware/) |

@@ -10,10 +10,10 @@ fluentd:
     port: '24231'
 
 images:
-  log_cache: "logcache/log-cache@sha256:e28a91c324f932a0e867a820210a3645e8ec87026e6195e8d23e4ab8fb7d2bbe"
-  syslog_server: "logcache/syslog-server@sha256:fdd2fb92bed0c2dec4d1ea96c8253304fed8abc2fdf4eb0174bc6f7a50facf35"
-  log_cache_gateway: "logcache/log-cache-gateway@sha256:4d85c35ff30b5d1ba22d5fdc2e2d1ccd1782644c5a58ea95a42a6b0da71bb7d2"
-  fluent: "logcache/cf-k8s-logging@sha256:fed765745c41c656f409ff5e264a4cd5f13f89f33cfe468c7f534d40792f647a"
-  cf_auth_proxy: "logcache/log-cache-cf-auth-proxy@sha256:c37c1065f026aba7b581f357a9d4268c8724a93630184b76307343195370d0cb"
+  log_cache: "cloudfoundry/log-cache@sha256:b247b0658053bd416d18ab7e87d5b3df8d5637ad397ea71b613ab23c48b76130"
+  syslog_server: "cloudfoundry/syslog-server@sha256:bb1aa0d603eff716245f25c832ad9b9bca569059f48bd2b5a9a792486f453427"
+  log_cache_gateway: "cloudfoundry/log-cache-gateway@sha256:de52fdff79318a3dd1cbf5f564ad9321c150042c8075a9a8da483df86ca5f92a"
+  fluent: "cloudfoundry/cf-k8s-logging@sha256:c1c8fd251fd9ffbda26da394fc43e4859361e8d9810269093559749345c51bdc"
+  cf_auth_proxy: "cloudfoundry/log-cache-cf-auth-proxy@sha256:c4cd637f31ef97958f0d521597c670ef476675af7f469e73b071a419ce79c2ac"
 
 debug: false

@@ -16,7 +16,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: log-cache
+          app: log-cache-api
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
@@ -36,7 +36,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          app: log-cache
+          app: log-cache-api
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
@@ -52,10 +52,36 @@ metadata:
 spec:
   policyTypes:
   - Ingress
-  - Egress
   podSelector:
     matchLabels:
       app: log-cache
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: log-cache-api
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app: fluentd
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+---
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: log-cache-api-network-policy
+  namespace: #@ data.values.system_namespace
+spec:
+  policyTypes:
+  - Ingress
+  - Egress
+  podSelector:
+    matchLabels:
+      app: log-cache-api
   ingress:
   - from:
     - podSelector:
@@ -64,17 +90,17 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
-    - podSelector:
-        matchLabels:
-          app: fluentd
-      namespaceSelector:
-        matchLabels:
-          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
   egress:
   - to:
     - podSelector:
         matchLabels:
           app.kubernetes.io/name: uaa
+      namespaceSelector:
+        matchLabels:
+          cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
+    - podSelector:
+        matchLabels:
+          app: log-cache
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""

@@ -10,5 +10,4 @@ spec:
     app: log-cache
   ports:
   - protocol: TCP
-    port: 8083
-    name: http
+    port: 8080

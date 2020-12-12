@@ -3,23 +3,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: log-cache
+  name: log-cache-frontend
   namespace: #@ data.values.system_namespace
   labels:
-    app: log-cache
+    app: log-cache-api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: log-cache
+      app: log-cache-api
   template:
     metadata:
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "6060"
+        prometheus.io/port: "6065"
         prometheus.io/path: "/metrics"
       labels:
-        app: log-cache
+        app: log-cache-api
     spec:
       containers:
       - name: cf-auth-proxy
@@ -48,46 +48,13 @@ spec:
           requests:
             cpu: 15m
             memory: 100Mi
-      - name: syslog-server
-        image: #@ data.values.images.syslog_server
-        ports:
-        - containerPort: 8082
-        env:
-        - name: LOG_CACHE_ADDR
-          value: localhost:8080
-        resources:
-          limits:
-            cpu: 500m
-            memory: 200Mi
-          requests:
-            cpu: 200m
-            memory: 100Mi
-      - name: log-cache
-        image: #@ data.values.images.log_cache
-        resources:
-          limits:
-            cpu: 2
-            memory: 3500Mi
-          requests:
-            cpu: 500m
-            memory: 1500Mi
-        env:
-        - name: MEMORY_LIMIT_BYTES
-          valueFrom:
-            resourceFieldRef:
-              containerName: log-cache
-              resource: limits.memory
-        - name: MEMORY_LIMIT_PERCENT
-          value: "85"
-        - name: MAX_PER_SOURCE
-          value: "1000"
       - name: gateway
         image: #@ data.values.images.log_cache_gateway
         ports:
         - containerPort: 8081
         env:
         - name: LOG_CACHE_ADDR
-          value: localhost:8080
+          value: log-cache:8080
         resources:
           limits:
             cpu: 200m

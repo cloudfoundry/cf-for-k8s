@@ -1,0 +1,57 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-cache-backend
+  namespace: #@ data.values.system_namespace
+  labels:
+    app: log-cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-cache
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "6060"
+        prometheus.io/path: "/metrics"
+      labels:
+        app: log-cache
+    spec:
+      containers:
+      - name: syslog-server
+        image: #@ data.values.images.syslog_server
+        ports:
+        - containerPort: 8082
+        env:
+        - name: LOG_CACHE_ADDR
+          value: localhost:8080
+        resources:
+          limits:
+            cpu: 500m
+            memory: 200Mi
+          requests:
+            cpu: 200m
+            memory: 100Mi
+      - name: log-cache
+        image: #@ data.values.images.log_cache
+        resources:
+          limits:
+            cpu: 2
+            memory: 3500Mi
+          requests:
+            cpu: 500m
+            memory: 1500Mi
+        env:
+        - name: MEMORY_LIMIT_BYTES
+          valueFrom:
+            resourceFieldRef:
+              containerName: log-cache
+              resource: limits.memory
+        - name: MEMORY_LIMIT_PERCENT
+          value: "85"
+        - name: MAX_PER_SOURCE
+          value: "1000"

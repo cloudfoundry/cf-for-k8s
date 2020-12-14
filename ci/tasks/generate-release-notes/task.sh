@@ -104,10 +104,8 @@ function main() {
   release_candidate_version="v$(cat cf-for-k8s-rc-version/version)"
 
   local last_release_version
-  pushd cf-for-k8s-last-published-release
 #    last_release_version=$(git describe --exact-match --tags $(git log -n1 --pretty='%h'))
     last_release_version=$(cat cf-for-k8s-last-published-release/version)
-  popd
 
   build_component_bump_table_content
 

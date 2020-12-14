@@ -100,7 +100,7 @@ function main() {
   local cwd="$1"
 
   local release_candidate_version
-  release_candidate_version="v$(cat cf-for-k8s-rc-version/version)"
+  release_candidate_version="$(cat cf-for-k8s-rc-version/version)"
 
   local last_release_version
   last_release_version=$(cat cf-for-k8s-last-published-release/tag)

@@ -107,10 +107,13 @@ function main() {
     last_release_version=$(git describe --exact-match --tags $(git log -n1 --pretty='%h'))
   popd
 
+  local release_version
+  release_version=$(echo "$release_candidate_version" | sed -r 's/^(v[0-9].[0-9].[0-9]).*/\1/g')
+
   build_component_bump_table_content
 
   pushd cf-for-k8s-rc > /dev/null
-    echo "v${release_candidate_version}" > "${cwd}/release-notes/name.txt"
+    echo "${release_version}" > "${cwd}/release-notes/name.txt"
     cat <<EOT > "${cwd}/release-notes/body.txt"
 ## Notices
 

@@ -110,7 +110,7 @@ For an example ytt overlay that provides a simple values file interface for scal
 
 ## Example resource scaling for a massive cf-for-k8s
 
-For a massive scale test, we recommend the values used by the SAP team in their write-up here: https://github.com/perf-cfk8s/docs/wiki/cf-for-k8s-1.0.0
+For a massive scale test, we recommend the values used by the SAP team in their latest cf-for-k8s scaling write-up, which can always be found in our latest release notes: https://github.com/cloudfoundry/cf-for-k8s/releases
 
 ## Component-specific Scaling
 

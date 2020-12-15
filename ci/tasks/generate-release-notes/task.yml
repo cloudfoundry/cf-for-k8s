@@ -8,7 +8,7 @@ image_resource:
 
 inputs:
 - name: cf-for-k8s-ci
-- name: cf-for-k8s-last-published-release
+- name: cf-for-k8s-last-release
 - name: cf-for-k8s-rc
 - name: cf-for-k8s-rc-version
 

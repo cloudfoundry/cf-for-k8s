@@ -3,7 +3,7 @@ FROM google/cloud-sdk:alpine
 USER root
 
 RUN apk update
-RUN apk add jq=1.6-r0 postgresql-client
+RUN apk add jq postgresql-client py3-pip
 RUN pip3 install --upgrade pip && pip3 install yq
 
 RUN apk add openssl && \

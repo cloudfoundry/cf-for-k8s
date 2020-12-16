@@ -4,9 +4,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: metric-proxy
-  namespace: #@ data.values.system_namespace
-  labels:
-    app: metric-proxy
 spec:
   replicas: 1
   selector:
@@ -18,8 +15,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9090"
         prometheus.io/path: "/metrics"
-      labels:
-        app: metric-proxy
     spec:
       serviceAccountName: metric-proxy
       containers:
@@ -40,8 +35,8 @@ spec:
           value: "5"
         resources:
           limits:
-            cpu: 100m
-            memory: 200Mi
+            cpu: 30m
+            memory: 25Mi
           requests:
             cpu: 15m
-            memory: 100Mi
+            memory: 10Mi

@@ -4,4 +4,10 @@ system_domain: ""
 system_namespace: ""
 
 images:
-  metric_proxy: "oratos/metric-proxy@sha256:aa06c55a4d4af904e6faa44cf776000534d9dc738554a1eff4a85279a504100e"
+  metric_proxy: "cloudfoundry/metric-proxy@sha256:144cebf8097f128a72bbf4201d661f19dc0c9b92bc96ebfc66d8c8d4d33d382d"
+
+name: metric-proxy
+component: container-metrics
+part_of: cloudfoundry
+managed_by: metric-egress
+version: 1.1.0

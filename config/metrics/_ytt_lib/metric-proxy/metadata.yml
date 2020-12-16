@@ -1,0 +1,28 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+
+#@ def metadata_labels():
+app: #@ data.values.name
+app.kubernetes.io/name: #@ data.values.name
+app.kubernetes.io/version: #@ data.values.version
+app.kubernetes.io/component: #@ data.values.component
+app.kubernetes.io/part-of: #@ data.values.part_of
+app.kubernetes.io/managed-by: #@ data.values.managed_by
+#@ end
+
+
+#@overlay/match by=overlay.all,expects="1+"
+---
+#@overlay/match-child-defaults missing_ok=True
+metadata:
+  namespace: #@ data.values.system_namespace
+  labels: #@ metadata_labels()
+
+#@overlay/match by=overlay.subset({"kind":"Deployment"}),missing_ok=True
+---
+spec:
+  #@overlay/match-child-defaults missing_ok=True
+  template:
+    metadata:
+      namespace: #@ data.values.system_namespace
+      labels: #@ metadata_labels()

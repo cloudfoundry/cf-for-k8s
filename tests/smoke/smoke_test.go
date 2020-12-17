@@ -118,9 +118,9 @@ var _ = Describe("Smoke Tests", func() {
 			var cfPush *Session
 			dockerUsername, userExists := os.LookupEnv("CF_DOCKER_USERNAME")
 			if userExists {
-				cfPush = cf.Cf("push", appName, "-o", "cfrouting/httpbin", "--docker-username", dockerUsername)
+				cfPush = cf.Cf("push", appName, "-o", "cloudfoundry/httpbin", "--docker-username", dockerUsername)
 			} else {
-				cfPush = cf.Cf("push", appName, "-o", "cfrouting/httpbin")
+				cfPush = cf.Cf("push", appName, "-o", "cloudfoundry/httpbin")
 			}
 			Eventually(cfPush).Should(Exit(0))
 

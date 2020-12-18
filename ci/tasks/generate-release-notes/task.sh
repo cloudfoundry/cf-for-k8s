@@ -116,6 +116,7 @@ function main() {
     echo "${release_version}" > "${cwd}/release-notes/name.txt"
     cat <<EOT > "${cwd}/release-notes/body.txt"
 ## Notices
+<include changes to values file>
 
 ## Highlights
 

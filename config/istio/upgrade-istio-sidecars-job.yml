@@ -80,7 +80,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: roll
-          image: gcr.io/cf-networking-images/cf-k8s-networking/upgrade-sidecars@sha256:8cef1082ec0eb1d2e2f78c9b668065ce106de775cec929c745ca0e7f20a4c8fd
+          image: gcr.io/cf-networking-images/cf-k8s-networking/upgrade-sidecars@sha256:c1eee8fac218ba007fb1a8666848d918298385524d51842dfa37a6ec825f7990
           env:
           - name: ISTIO_VERSION
             value: #@ build_version()

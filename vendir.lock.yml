@@ -10,10 +10,10 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: bring clusters down at night to save money...
-      sha: 99de0eaab6f1bd368140329b94204472d15134eb
+      commitTitle: 'MAINT: switch to using cloudfoundry dockerhub...'
+      sha: b74903eed30b4d27a82c519a287b12347643cfb6
       tags:
-      - v0.0.6-307-g99de0ea
+      - v0.0.6-309-gb74903e
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

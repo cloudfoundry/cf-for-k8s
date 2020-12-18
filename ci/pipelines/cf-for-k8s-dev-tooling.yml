@@ -84,7 +84,7 @@ resources:
   type: docker-image
   icon: docker
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-dind
+    repository: cloudfoundry/cf-for-k8s-dind
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
@@ -108,7 +108,7 @@ resources:
   type: docker-image
   icon: docker
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-ci
+    repository: cloudfoundry/cf-for-k8s-ci
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
@@ -117,7 +117,7 @@ resources:
   type: docker-image
   icon: docker
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-deplab
+    repository: cloudfoundry/cf-for-k8s-deplab
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
@@ -126,7 +126,7 @@ resources:
   type: docker-image
   icon: docker
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-gh-pages
+    repository: cloudfoundry/cf-for-k8s-gh-pages
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
@@ -170,7 +170,7 @@ resources:
   type: docker-image
   icon: docker
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-azure
+    repository: cloudfoundry/cf-for-k8s-azure
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
@@ -189,7 +189,7 @@ resources:
   type: docker-image
   icon: docker
   source:
-    repository: relintdockerhubpushbot/cf-for-k8s-aws
+    repository: cloudfoundry/cf-for-k8s-aws
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
@@ -227,7 +227,7 @@ x-config: &common-task-config
   image_resource:
     type: docker-image
     source:
-      repository: relintdockerhubpushbot/cf-for-k8s-ci
+      repository: cloudfoundry/cf-for-k8s-ci
 
 jobs:
 - name: build-cf-for-k8s-ci-image
@@ -348,7 +348,7 @@ jobs:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source: {repository: cloudfoundry/cf-deployment-concourse-tasks}
       inputs:
       - name: stability-pool
       outputs:
@@ -427,7 +427,7 @@ jobs:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source: {repository: cloudfoundry/cf-deployment-concourse-tasks}
       inputs:
       - name: stability-pool
       outputs:

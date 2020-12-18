@@ -17,7 +17,6 @@ EOF
     ytt template \
       -f "${PROJECT_DIR}/ci/templates/${PIPELINE}.yml" \
       -f "${PROJECT_DIR}/ci/inputs/${PIPELINE}.yml" \
-      -f "${PROJECT_DIR}/ci/overlays/" \
       >> "${PROJECT_DIR}/ci/pipelines/${PIPELINE}.yml"
   fi
 

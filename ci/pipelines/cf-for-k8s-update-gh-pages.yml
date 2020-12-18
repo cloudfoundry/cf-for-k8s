@@ -31,7 +31,7 @@ jobs:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-for-k8s-gh-pages}
+        source: {repository: cloudfoundry/cf-for-k8s-gh-pages}
       run:
         path: /bin/bash
         args:

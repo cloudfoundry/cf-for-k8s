@@ -39,9 +39,12 @@ There are a few Docker images maintained by us that can be used for a CI pipelin
 
 | Image Tag | Description |
 |---|----|
-| `relintdockerhubpushbot/cf-for-k8s-ci` | This image contains everything required to generate your installation values and install CF for K8s to a K8s cluster. |
-| `relintdockerhubpushbot/cf-test-runner` | This image contains everything required to run the smoke tests. |
-| `relintdockerhubpushbot/cf-for-k8s-azure` | Used for deploying cf-for-k8s onto an Azure (AKS) cluster. |
+| `cloudfoundry/cf-for-k8s-ci` | Our catch-all image. It contains everything required to generate your installation values and install CF for K8s to a K8s cluster. |
+| `cloudfoundry/cf-for-k8s-aws` | Used for deploying cf-for-k8s onto an Amazon (EKS) cluster. |
+| `cloudfoundry/cf-for-k8s-azure` | Used for deploying cf-for-k8s onto an Azure (AKS) cluster. |
+| `cloudfoundry/cf-for-k8s-dind` | Used for running a docker daemon inside of a concourse task. |
+| `cloudfoundry/cf-for-k8s-deplab` | Used for running deplab, which we use to annotate cf-for-k8s component images with metadata. |
+| `cloudfoundry/cf-for-k8s-gh-pages` | Used for updating our docs on cf-for-k8s.io via our github-pages branch. |
 
 ## Concourse Example
 

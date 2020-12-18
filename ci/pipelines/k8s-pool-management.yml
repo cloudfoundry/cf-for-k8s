@@ -203,7 +203,7 @@ jobs:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source: {repository: cloudfoundry/cf-deployment-concourse-tasks}
       inputs:
       - name: pool-repo
       outputs:
@@ -245,7 +245,7 @@ jobs:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source: {repository: cloudfoundry/cf-deployment-concourse-tasks}
       inputs:
       - name: building-pool
       outputs:
@@ -280,7 +280,7 @@ jobs:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source: {repository: cloudfoundry/cf-deployment-concourse-tasks}
       inputs:
       - name: building-pool
       - name: terraform
@@ -319,7 +319,7 @@ jobs:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source: {repository: cloudfoundry/cf-deployment-concourse-tasks}
       inputs:
       - name: destroy-pool
       outputs:
@@ -367,7 +367,7 @@ jobs:
       platform: linux
       image_resource:
         type: docker-image
-        source: {repository: relintdockerhubpushbot/cf-deployment-concourse-tasks}
+        source: {repository: cloudfoundry/cf-deployment-concourse-tasks}
       inputs:
       - name: pool-repo
       outputs:

@@ -92,7 +92,7 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          repository: relintdockerhubpushbot/cf-for-k8s-deplab
+          repository: cloudfoundry/cf-for-k8s-deplab
       inputs:
       - name: eirini
       - name: image

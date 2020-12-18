@@ -214,10 +214,9 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: RELEASE.2020-06-14T18-32-17Z
-          Type: resolved
-          URL: minio/minio:RELEASE.2020-06-14T18-32-17Z
-        URL: index.docker.io/minio/minio@sha256:35d654988af3b5761162d5ce06243c1517ec34beeae271c8b5983b5082968858
+        - Type: preresolved
+          URL: cloudfoundry/minio-cf-for-k8s@sha256:5cb64001e21d6e3adb05717ca49aca34d52f576cf8365af28860d4afad383ea4
+        URL: cloudfoundry/minio-cf-for-k8s@sha256:5cb64001e21d6e3adb05717ca49aca34d52f576cf8365af28860d4afad383ea4
   labels:
     app: minio
     chart: minio-5.0.30
@@ -262,7 +261,7 @@ spec:
               name: cf-blobstore-minio
         - name: MINIO_API_READY_DEADLINE
           value: 5s
-        image: index.docker.io/minio/minio@sha256:35d654988af3b5761162d5ce06243c1517ec34beeae271c8b5983b5082968858
+        image: cloudfoundry/minio-cf-for-k8s@sha256:5cb64001e21d6e3adb05717ca49aca34d52f576cf8365af28860d4afad383ea4
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 1

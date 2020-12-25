@@ -91,6 +91,13 @@ $ cf api api.vcap.me --skip-ssl-validation
 $ cf auth admin $(yq read ${TMP_DIR}/cf-values.yml 'cf_admin_password')
 ```
 
+If **`yq` v4** is used, you can use the following format instead:
+
+```
+$ cf api api.vcap.me --skip-ssl-validation
+$ cf auth admin $(yq e '.cf_admin_password' ${TMP_DIR}/cf-values.yml)
+```
+
 ## Experiencing your first `cf push`
 
 Before we can push an application we need to create an organization and space for your application to exist in.

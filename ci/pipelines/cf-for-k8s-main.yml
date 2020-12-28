@@ -233,6 +233,8 @@ jobs:
     file: runtime-ci/tasks/validate-branch-freshness/task.yml
     input_mapping:
       repo: cf-for-k8s-all-branches
+    params:
+      MONTHS: 4
 
 - name: test-vendir-sync
   public: true

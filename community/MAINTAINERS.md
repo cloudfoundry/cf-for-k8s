@@ -11,7 +11,6 @@
 | Dave Walter | [davewalter](https://github.com/davewalter) | [VMware](https://www.github.com/vmware/) |
 | Jwal Pawar | [jspawar](https://github.com/jspawar/) | [VMware](https://www.github.com/vmware/) |
 | James Pollard | [jamespollard8](https://github.com/jamespollard8) | [VMware](https://www.github.com/vmware/) |
-| Paul Warren | [paulcwarren](https://github.com/paulcwarren) | [VMware](https://www.github.com/vmware/) |
 | Raina Masand | [rainmaker](https://github.com/rainmaker) | [VMware](https://www.github.com/vmware/) |
 | Renee Chu | [reneighbor](https://github.com/reneighbor) | [VMware](https://www.github.com/vmware/) |
 

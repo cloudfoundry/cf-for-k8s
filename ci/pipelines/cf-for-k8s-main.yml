@@ -70,7 +70,7 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     branch: main
     private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
-    tag_filter: "v[0-9].[0-9].[0-9]"
+    tag_filter: "v[0-9]+.[0-9]+.[0-9]+"
 
 - name: cf-for-k8s-last-rc
   type: git

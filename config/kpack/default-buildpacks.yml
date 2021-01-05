@@ -8,7 +8,7 @@ metadata:
   name: cf-buildpack-store
 spec:
   sources:
-  - image: gcr.io/paketo-buildpacks/ruby@sha256:aa5e88c30bfedf9e28145d1c32ae2397bf9aad8c204b4c2a98e6811a59003c7d
+  - image: gcr.io/paketo-buildpacks/ruby@sha256:747789de3c5c6ece90e175d3759fb11c6477588864fe553f5ccd17ce396abab8
   - image: gcr.io/paketo-community/python@sha256:e6546f3072c49336ce99a2d8297716b748a69da9128c5afb1606c2b73a18a317
   - image: gcr.io/paketo-buildpacks/java@sha256:dee1582f6ef4e3579810df0360a02d25f3d5cac168519c49ec9a725d238e7700
   - image: gcr.io/paketo-buildpacks/nodejs@sha256:5b1ce5f3093eaf9a1a210c9080f7a7539d3bdd5c98e80dba3fd77a52faf5f1e6
@@ -25,9 +25,9 @@ metadata:
 spec:
   id: "io.buildpacks.stacks.bionic"
   buildImage:
-    image: "index.docker.io/paketobuildpacks/build@sha256:20c46d84f1b369f09b33f5708edefc93d5b22e760c9ea6ad6cffac315f845d8d"
+    image: "index.docker.io/paketobuildpacks/build@sha256:7e7407f80150e943b7470edb7697b1bc977a66009a3294bd3c9e0e716a08d05d"
   runImage:
-    image: "index.docker.io/paketobuildpacks/run@sha256:43a1edd715354152de0d4dc11c2367341cd1c280c5a65d743fa524c977d19a4a"
+    image: "index.docker.io/paketobuildpacks/run@sha256:6afa4cec531b02a5d6dcd2c4c418956e372636b65c1b9a053466f1989c4c087a"
 
 ---
 apiVersion: kpack.io/v1alpha1

@@ -253,15 +253,6 @@ spec:
           number: 8080
 
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: uaa-certs
-  namespace: #@ system_namespace()
-type: Opaque
-stringData:
-  uaa.key: #@ data.values.internal_certificate.key
-  uaa.crt: #@ data.values.internal_certificate.crt
 
 #@ def secret_uaa_client_credential_data(client_name, credentials):
 oauth:

@@ -1175,31 +1175,31 @@ spec:
           sources:
           - secret:
               items:
-              - key: tls.crt
+              - key: cc-server-crt
                 path: tls.crt
-              - key: tls.key
+              - key: cc-server-crt-key
                 path: tls.key
-              name: eirini-internal-tls-certs
+              name: secrets-2.16.4-2
           - secret:
               items:
-              - key: tls.ca
+              - key: internal-ca-cert
                 path: ca.crt
-              name: eirini-internal-tls-certs
+              name: secrets-2.16.4-2
       - name: eirini-certs
         projected:
           sources:
           - secret:
               items:
-              - key: tls.crt
+              - key: eirini-client-crt
                 path: tls.crt
-              - key: tls.key
+              - key: eirini-client-crt-key
                 path: tls.key
-              name: eirini-internal-tls-certs
+              name: secrets-2.16.4-2
           - secret:
               items:
-              - key: tls.ca
+              - key: internal-ca-cert
                 path: ca.crt
-              name: eirini-internal-tls-certs
+              name: secrets-2.16.4-2
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -1299,16 +1299,16 @@ spec:
           sources:
           - secret:
               items:
-              - key: tls.crt
+              - key: cc-server-crt
                 path: tls.crt
-              - key: tls.key
+              - key: cc-server-crt-key
                 path: tls.key
-              name: eirini-internal-tls-certs
+              name: secrets-2.16.4-2
           - secret:
               items:
-              - key: tls.ca
+              - key: internal-ca-cert
                 path: ca.crt
-              name: eirini-internal-tls-certs
+              name: secrets-2.16.4-2
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -1410,13 +1410,13 @@ spec:
       - name: cf-secrets
         secret:
           items:
-          - key: tls.crt
+          - key: cc-server-crt
             path: tls.crt
-          - key: tls.key
+          - key: cc-server-crt-key
             path: tls.key
-          - key: tls.ca
+          - key: internal-ca-cert
             path: ca.crt
-          secretName: eirini-internal-tls-certs
+          secretName: secrets-2.16.4-2
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration

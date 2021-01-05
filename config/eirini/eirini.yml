@@ -10,17 +10,6 @@
 #@ eirini = library.get("eirini")
 --- #@ template.replace(eirini.eval())
 
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: eirini-internal-tls-certs
-  namespace: #@ system_namespace()
-stringData:
-  tls.crt: #@ data.values.internal_certificate.crt
-  tls.key: #@ data.values.internal_certificate.key
-  tls.ca: #@ data.values.internal_certificate.ca
-
 #! Allow app traffic from the istio-ingressgateway
 ---
 apiVersion: networking.k8s.io/v1
@@ -62,6 +51,7 @@ cc_internal_api: #@ "http://capi.{}.svc.cluster.local:9023".format(system_namesp
 
 #@ def opi():
 opi:
+  cc_tls_disabled: true
   serve_plaintext: true
   #@overlay/match missing_ok=True
   plaintext_port: 8080

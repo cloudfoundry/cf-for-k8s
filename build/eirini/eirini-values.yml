@@ -9,7 +9,7 @@ opi:
 
   cc_api:
     serviceName: capi
-
+    tls_disabled: true
 
   events:
     enable: true

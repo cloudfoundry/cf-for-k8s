@@ -15,20 +15,60 @@ opi:
 
   cc_api:
     serviceName: "api"
-    tls_disabled: true
+    tls_disabled: false
     protocol: https
     port: 9023
+
+  tls:
+    opiCapiClient:
+      secretName: "secrets-2.16.4-2"
+      keyPath: "cc-server-crt-key"
+      certPath: "cc-server-crt"
+    opiServer:
+      secretName: "secrets-2.16.4-2"
+      certPath: "eirini-client-crt"
+      keyPath: "eirini-client-crt-key"
+    capi:
+      secretName: "secrets-2.16.4-2"
+      caPath: "internal-ca-cert"
+    eirini:
+      secretName: "secrets-2.16.4-2"
+      caPath: "internal-ca-cert"
 
   # components
   events:
     enable: true
+    tls:
+      capiClient:
+        secretName: "secrets-2.16.4-2"
+        keyPath: "cc-server-crt-key"
+        certPath: "cc-server-crt"
+      capi:
+        secretName: "secrets-2.16.4-2"
+        caPath: "internal-ca-cert"
 
   logs:
     enable: true
     serviceName: "doppler-doppler"
+    tls:
+      client:
+        secretName: "secrets-2.16.4-2"
+        keyPath: "loggregator-agent-cert-key"
+        certPath: "loggregator-agent-cert"
+      server:
+        secretName: "secrets-2.16.4-2"
+        caPath: "internal-ca-cert"
 
   metrics:
     enable: true
+    tls:
+      client:
+        secretName: "secrets-2.16.4-2"
+        keyPath: "doppler-cert-key"
+        certPath: "doppler-cert"
+      server:
+        secretName: "secrets-2.16.4-2"
+        caPath: "internal-ca-cert"
 
   routing:
     enable: true
@@ -39,11 +79,22 @@ opi:
 
   tasks:
     enable: true
+    tls:
+      taskReporter:
+        secretName: "secrets-2.16.4-2"
+        keyPath: "cc-server-crt-key"
+        certPath: "cc-server-crt"
+        caPath: "internal-ca-cert"
     completionCallbackRetryLimit: 10
     ttlSeconds: 5
 
   lrpController:
     enable: true
+    tls:
+      secretName: "secrets-2.16.4-2"
+      certPath: "eirini-client-crt"
+      keyPath: "eirini-client-crt-key"
+      caPath: "internal-ca-cert"
 
 kube:
   resources:

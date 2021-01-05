@@ -22,6 +22,38 @@ spec:
             items:
             - key: opi.yml
               path: opi.yml
+        - name: cc-certs
+          projected:
+              sources:
+              {{- if not .Values.opi.cc_api.tls_disabled }}
+              - secret:
+                  name: "{{ .Values.opi.tls.opiCapiClient.secretName }}"
+                  items:
+                  - key: "{{ .Values.opi.tls.opiCapiClient.certPath }}"
+                    path: tls.crt
+                  - key: "{{ .Values.opi.tls.opiCapiClient.keyPath }}"
+                    path: tls.key
+              - secret:
+                  name: "{{ .Values.opi.tls.capi.secretName }}"
+                  items:
+                  - key: "{{ .Values.opi.tls.capi.caPath }}"
+                    path: ca.crt
+              {{- end }}
+        - name: eirini-certs
+          projected:
+              sources:
+              - secret:
+                  name: "{{ .Values.opi.tls.opiServer.secretName }}"
+                  items:
+                  - key: "{{ .Values.opi.tls.opiServer.certPath }}"
+                    path: tls.crt
+                  - key: "{{ .Values.opi.tls.opiServer.keyPath }}"
+                    path: tls.key
+              - secret:
+                  name: "{{ .Values.opi.tls.eirini.secretName }}"
+                  items:
+                  - key: "{{ .Values.opi.tls.eirini.caPath }}"
+                    path: ca.crt
       securityContext:
         runAsNonRoot: true
       containers:
@@ -35,6 +67,10 @@ spec:
         volumeMounts:
         - name: config-map-volume
           mountPath: /etc/eirini/config
+        - name: cc-certs
+          mountPath: /etc/cf-api/certs
+        - name: eirini-certs
+          mountPath: /etc/eirini/certs
         ports:
         - containerPort: 8085
           name: https

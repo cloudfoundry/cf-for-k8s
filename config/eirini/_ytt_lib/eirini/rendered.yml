@@ -1155,6 +1155,10 @@ spec:
         volumeMounts:
         - mountPath: /etc/eirini/config
           name: config-map-volume
+        - mountPath: /etc/cf-api/certs
+          name: cc-certs
+        - mountPath: /etc/eirini/certs
+          name: eirini-certs
       dnsPolicy: ClusterFirst
       securityContext:
         runAsNonRoot: true
@@ -1166,6 +1170,24 @@ spec:
             path: opi.yml
           name: eirini
         name: config-map-volume
+      - name: cc-certs
+        projected:
+          sources: null
+      - name: eirini-certs
+        projected:
+          sources:
+          - secret:
+              items:
+              - key: eirini-client-crt
+                path: tls.crt
+              - key: eirini-client-crt-key
+                path: tls.key
+              name: secrets-2.16.4-2
+          - secret:
+              items:
+              - key: internal-ca-cert
+                path: ca.crt
+              name: secrets-2.16.4-2
 ---
 apiVersion: apps/v1
 kind: Deployment

@@ -51,8 +51,6 @@ cc_internal_api: #@ "http://capi.{}.svc.cluster.local:9023".format(system_namesp
 
 #@ def opi():
 opi:
-  cc_tls_disabled: true
-  serve_plaintext: true
   #@overlay/match missing_ok=True
   plaintext_port: 8080
   #@overlay/remove
@@ -91,3 +89,17 @@ spec:
         ports:
           - name: http
             containerPort: 8080
+        volumeMounts:
+        #@overlay/match by="name"
+        #@overlay/remove
+        - name: cc-certs
+        #@overlay/match by="name"
+        #@overlay/remove
+        - name: eirini-certs
+      volumes:
+      #@overlay/match by="name"
+      #@overlay/remove
+      - name: cc-certs
+      #@overlay/match by="name"
+      #@overlay/remove
+      - name: eirini-certs

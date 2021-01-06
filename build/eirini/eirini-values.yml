@@ -5,7 +5,6 @@ opi:
   registry_secret_name: app-registry-credentials
   cc_tls_disabled: true
   serve_plaintext: true
-  plaintext_port: 8080
 
   cc_api:
     serviceName: capi

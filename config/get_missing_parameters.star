@@ -59,9 +59,6 @@ cf_admin_password'''.split("\n")
     end
 
     required_parameters += '''\
-internal_certificate.ca
-internal_certificate.crt
-internal_certificate.key
 system_certificate.crt
 system_certificate.key
 system_domain'''.split("\n")

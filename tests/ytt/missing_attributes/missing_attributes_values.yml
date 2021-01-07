@@ -22,8 +22,6 @@ workloads_certificate:
   #! crt: missing
   key: key
 
-#! internal_certificate: missing completely
-
 uaa:
   database:
     password: blip

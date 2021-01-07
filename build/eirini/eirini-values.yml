@@ -3,50 +3,15 @@ opi:
   use_registry_ingress: true
   ingress_endpoint: not-used
   registry_secret_name: app-registry-credentials
+  cc_tls_disabled: true
+  serve_plaintext: true
 
   cc_api:
     serviceName: capi
-
-  tls:
-    opiCapiClient:
-      secretName: "eirini-internal-tls-certs"
-      keyPath: "tls.key"
-      certPath: "tls.crt"
-    opiServer:
-      secretName: "eirini-internal-tls-certs"
-      keyPath: "tls.key"
-      certPath: "tls.crt"
-    capi:
-      secretName: "eirini-internal-tls-certs"
-      caPath: "tls.ca"
-    eirini:
-      secretName: "eirini-internal-tls-certs"
-      caPath: "tls.ca"
+    tls_disabled: true
 
   events:
     enable: true
-    tls:
-      capiClient:
-        secretName: "eirini-internal-tls-certs"
-        keyPath: "tls.key"
-        certPath: "tls.crt"
-      capi:
-        secretName: "eirini-internal-tls-certs"
-        caPath: "tls.ca"
-  tasks:
-    tls:
-      taskReporter:
-        secretName: "eirini-internal-tls-certs"
-        keyPath: "tls.key"
-        certPath: "tls.crt"
-        caPath: "tls.ca"
-
-  lrpController:
-    tls:
-      secretName: "eirini-internal-tls-certs"
-      keyPath: "tls.key"
-      certPath: "tls.crt"
-      caPath: "tls.ca"
 
   logs:
     enable: false

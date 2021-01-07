@@ -136,16 +136,6 @@ variables:
     - "*.apps.${DOMAIN}"
     extended_key_usage:
     - server_auth
-- name: internal_certificate
-  type: certificate
-  options:
-    ca: default_ca
-    common_name: "*.cf-system.svc.cluster.local"
-    alternative_names:
-    - "*.cf-system.svc.cluster.local"
-    extended_key_usage:
-    - client_auth
-    - server_auth
 - name: uaa_jwt_policy_signing_key
   type: certificate
   options:
@@ -200,15 +190,6 @@ $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/certificate | grep
 $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/private_key | grep -Ev '^$' | sed -e 's/^/    /')
   ca: |
 $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/ca | grep -Ev '^$' | sed -e 's/^/    /')
-
-internal_certificate:
-  #! This certificates and keys should be valid for *.cf-system.svc.cluster.local
-  crt: |
-$(bosh interpolate ${VARS_FILE} --path=/internal_certificate/certificate | grep -Ev '^$' | sed -e 's/^/    /')
-  key: |
-$(bosh interpolate ${VARS_FILE} --path=/internal_certificate/private_key | grep -Ev '^$' | sed -e 's/^/    /')
-  ca: |
-$(bosh interpolate ${VARS_FILE} --path=/internal_certificate/ca | grep -Ev '^$' | sed -e 's/^/    /')
 
 uaa:
   database:

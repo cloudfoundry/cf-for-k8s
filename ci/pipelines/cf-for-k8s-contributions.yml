@@ -146,16 +146,12 @@ resources:
     branch: develop
     uri: git@github.com:cloudfoundry/cf-acceptance-tests
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
-- name: weekday-pm
+- name: tuesday-pm
   type: time
   icon: clock-outline
   source:
     days:
-    - Monday
     - Tuesday
-    - Wednesday
-    - Thursday
-    - Friday
     start: 6:00 PM
     stop: 7:00 PM
     location: America/Los_Angeles
@@ -1199,7 +1195,7 @@ jobs:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
     - get: capi-k8s-release
-    - get: weekday-pm
+    - get: tuesday-pm
       trigger: true
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml
@@ -1772,7 +1768,7 @@ jobs:
     - get: cf-for-k8s-ci
     - get: cf-for-k8s-develop
     - get: cf-k8s-networking
-    - get: weekday-pm
+    - get: tuesday-pm
       trigger: true
   - task: bump-release-onto-develop
     file: cf-for-k8s-ci/ci/tasks/bump-core-component/task.yml

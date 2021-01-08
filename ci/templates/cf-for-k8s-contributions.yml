@@ -82,16 +82,12 @@ resources:
     uri: git@github.com:cloudfoundry/cf-acceptance-tests
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
 
-- name: weekday-pm
+- name: tuesday-pm
   type: time
   icon: clock-outline
   source:
     days:
-    - Monday
     - Tuesday
-    - Wednesday
-    - Thursday
-    - Friday
     start: 6:00 PM
     stop: 7:00 PM
     location: America/Los_Angeles
@@ -1211,7 +1207,7 @@ jobs:
     #@ if release.github_release:
       trigger: true
     #@ else:
-    - get: weekday-pm
+    - get: tuesday-pm
       trigger: true
     #@ end
 

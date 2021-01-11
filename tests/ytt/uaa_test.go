@@ -27,6 +27,7 @@ var _ = Describe("UAA", func() {
 
 		valueFiles = []string{
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),
+			pathToFile("config/values/10-images.yml"),
 		}
 	})
 

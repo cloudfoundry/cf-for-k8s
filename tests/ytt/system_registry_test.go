@@ -28,6 +28,7 @@ var _ = Describe("System registry", func() {
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),
 			pathToFile("tests/ytt/system-registry/system-registry-values.yml"),
 			pathToFile("tests/ytt/quarks_secret/quarks_secret_enabled.yml"),
+			pathToFile("config/values/10-images.yml"),
 		}
 	})
 

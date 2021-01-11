@@ -30,6 +30,7 @@ var _ = Describe("External Prometheus scraping access", func() {
 			pathToFile("tests/ytt/capi/capi-values.yml"),
 			pathToFile("tests/ytt/metrics/metrics-values.yml"),
 			pathToFile("tests/ytt/uaa/uaa-values.yml"),
+			pathToFile("config/values/10-images.yml"),
 		}
 	})
 

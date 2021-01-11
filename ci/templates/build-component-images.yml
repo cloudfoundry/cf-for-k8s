@@ -1,0 +1,118 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:template", "template")
+---
+groups:
+  - name: all
+    jobs:
+      #@ for component in data.values.components:
+        #@ for image in component.images:
+      - #@ "build-{}-image".format(image.name)
+        #@ end
+      #@ end
+#@ for component in data.values.components:
+  - name: #@ component.name
+    jobs:
+    #@ for image in component.images:
+    - #@ "build-{}-image".format(image.name)
+    #@ end
+#@ end
+
+resources:
+  - name: cf-for-k8s-ci
+    type: git
+    icon: github
+    source:
+      branch: develop
+      uri: git@github.com:cloudfoundry/cf-for-k8s
+      private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+      paths:
+        - ci/**
+
+#@ for component in data.values.components:
+  #@ for source in component.sources:
+  - name: #@ source.repository
+    type: git
+    source:
+      uri: #@ "git@github.com:{}/{}".format(source.owner, source.repository)
+      private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+  #@ end
+  - name: #@ "{}-release".format(component.name)
+    type: github-release
+    source:
+      owner: #@ component.release.owner
+      repository: #@ component.release.repository
+      access_token: ((cf_deployment_release_bot_access_token))
+  #@ for image in component.images:
+  - name: #@ "{}-registry-image".format(image.name)
+    type: registry-image
+    source:
+      repository: #@ "cloudfoundry/{}".format(image.name)
+      username: ((dockerhub.username))
+      password: ((dockerhub.password))
+  #@ end
+#@ end
+
+jobs:
+#@ for component in data.values.components:
+  #@ for image in component.images:
+  - name: #@ "build-{}-image".format(image.name)
+    plan:
+      - in_parallel:
+        - get: cf-for-k8s-ci
+        - get: #@ "{}-release".format(component.name)
+          trigger: true
+        #@ for source in component.sources:
+        - get: #@ source.repository
+      #@ end
+      - task: #@ "build-{}-image".format(image.name)
+        privileged: true
+        input_mapping:
+          dockerfile: #@ image.dockerfile.repository
+          context: #@ image.context.repository
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: vito/oci-build-task
+          inputs:
+            - name: dockerfile
+            - name: context
+          outputs:
+            - name: image
+          caches:
+            - path: cache
+          run:
+            path: build
+          params:
+            DOCKERFILE: #@ "dockerfile/{}".format(image.dockerfile.path)
+            CONTEXT: #@ "context/{}".format(image.context.path)
+            _: #@ template.replace(image.params)
+      - task: #@ "deplab-{}-image".format(image.name)
+        privileged: true
+        input_mapping:
+          source: #@ image.context.repository
+        config:
+          platform: linux
+          image_resource:
+            type: registry-image
+            source:
+              repository: cloudfoundry/cf-for-k8s-deplab
+          inputs:
+          - name: source
+          - name: image
+          outputs:
+          - name: deplab-image
+          run:
+            path: /bin/sh
+            args:
+            - -c
+            - |
+              deplab --image-tar image/image.tar \
+                --git source \
+                --output-tar deplab-image/image.tar
+      - put: #@ "{}-registry-image".format(image.name)
+        params:
+          image: deplab-image/image.tar
+  #@ end
+#@ end

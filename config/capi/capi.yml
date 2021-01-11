@@ -14,6 +14,9 @@
 #@ end
 
 #@ def capi_values():
+images:
+  statsd_exporter: #@ data.values.images.shared.statsd_exporter
+
 system_namespace: #@ system_namespace()
 workloads_namespace: #@ workloads_namespace()
 staging_namespace: #@ workloads_staging_namespace()

@@ -1,0 +1,7 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+images:
+  shared:
+    statsd_exporter: cloudfoundry/statsd_exporter-cf-for-k8s@sha256:6678b114a38c219d4349a928faa4d36f60b42e70846a86166540aa2e72fdc546
+

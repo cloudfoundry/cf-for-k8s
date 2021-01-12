@@ -28,6 +28,7 @@ var _ = Describe("CAPI", func() {
 		}
 		valueFiles = []string{
 			pathToFile("tests/ytt/capi/capi-values.yml"),
+			pathToFile("config/values/10-images.yml"),
 		}
 	})
 

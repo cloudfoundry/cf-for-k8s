@@ -1,0 +1,48 @@
+#@data/values
+---
+components:
+  #!- name: eirini
+  #!  release:
+  #!    owner: cloudfoundry-incubator
+  #!    repository: eirini-release
+  #!  sources:
+  #!    - owner: cloudfoundry-incubator
+  #!      repository: eirini
+  #!  images:
+  #!    - name: eirini-opi-cf-for-k8s
+  #!      #! TODO: add support to build with buildpacks as well
+  #!      dockerfile:
+  #!        repository: eirini
+  #!        path: docker/opi/Dockerfile
+  #!      context:
+  #!        repository: eirini
+  #!        path: .
+  #!      params:
+  #!        BUILD_ARG_GIT_SHA: "provided-by: io.deplab.metadata"
+  #!    - name: eirini-event-reporter-cf-for-k8s
+  #!      dockerfile:
+  #!        repository: eirini
+  #!        path: docker/event-reporter/Dockerfile
+  #!      context:
+  #!        repository: eirini
+  #!        path: .
+  #!      params:
+  #!        BUILD_ARG_GIT_SHA: "provided-by: io.deplab.metadata"
+  - name: statsd-exporter
+    release:
+      owner: prometheus
+      repository: statsd_exporter
+    sources:
+      - owner: prometheus
+        repository: statsd_exporter
+      - owner: cloudfoundry
+        repository: cf-k8s-prometheus
+    images:
+      - name: statsd_exporter-cf-for-k8s
+        dockerfile:
+          repository: cf-k8s-prometheus
+          path: exporters/statsd_exporter/Dockerfile
+        context:
+          repository: statsd_exporter
+          path: .
+        params: {}

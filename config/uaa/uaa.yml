@@ -44,6 +44,9 @@
 #@ end
 
 #@ def uaa_values():
+images:
+  statsd_exporter: #@ data.values.images.shared.statsd_exporter
+
 admin:
   client_secret: #@ uaa_admin_client_secret_value()
 

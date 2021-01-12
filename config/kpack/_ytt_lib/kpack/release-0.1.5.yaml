@@ -113,7 +113,7 @@ metadata:
   name: build-init-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/build-init@sha256:175c3a032bb2c50b135559e2d59e3ab7da99e36e935650e7f9a5094c1b1ba87d
+  image: gcr.io/cf-build-service-public/kpack/build-init@sha256:8fe7db1c42386f09e45c2f76724a8b2361eaafd2b1f24dbff50f3dc4ea749dd2
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -121,7 +121,7 @@ metadata:
   name: rebase-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/rebase@sha256:ae21beaf8bd66062422140102c02b48ed892174d41732761e8a5ae0e828ddd2f
+  image: gcr.io/cf-build-service-public/kpack/rebase@sha256:3885e28c08e290ba7cfe9b344baa72c5cd02e549fc9fe35d8e7bacc7ffd6e805
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -129,7 +129,7 @@ metadata:
   name: lifecycle-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/lifecycle@sha256:fee4a9b88aaec8b762ac1dceda8e745e86bce61445387538f0074017d9f1be4f
+  image: gcr.io/cf-build-service-public/kpack/lifecycle@sha256:6ea2b62ccf3c3643417c78c7c3c4953f8291f54c0d0e725e2ecfc9ba23124a29
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -137,7 +137,7 @@ metadata:
   name: completion-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/completion@sha256:bd3d01fe9bd0d466003602907a029ee6dd9a98bac85993af65f4d22368d99a0d
+  image: gcr.io/cf-build-service-public/kpack/completion@sha256:21c2c95433f8e52e454af311000e403d6694320a8c029c8053ab3c433e667df4
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -153,14 +153,14 @@ spec:
     metadata:
       labels:
         app: kpack-controller
-        version: 0.1.4-rc.7
+        version: 0.1.5-rc.8
     spec:
       serviceAccountName: controller
       nodeSelector:
         kubernetes.io/os: linux
       containers:
       - name: controller
-        image: gcr.io/cf-build-service-public/kpack/controller@sha256:5d09cf3894be54d00ebb7233811dffd3e02a720d9f4543b861576355742f14c0
+        image: gcr.io/cf-build-service-public/kpack/controller@sha256:960dc65a836b613cc9bf2bc9694f6485952aaef830e8a65f7a9eba16fc1a6616
         env:
         - name: CONFIG_LOGGING_NAME
           value: config-logging
@@ -440,14 +440,14 @@ spec:
       labels:
         app: kpack-webhook
         role: webhook
-        version: 0.1.4-rc.7
+        version: 0.1.5-rc.8
     spec:
       serviceAccountName: webhook
       nodeSelector:
         kubernetes.io/os: linux
       containers:
       - name: webhook
-        image: gcr.io/cf-build-service-public/kpack/webhook@sha256:045d8931f374c4b17b3260b82d83a35952f5dbb29c27ef5145abcbbf4a899704
+        image: gcr.io/cf-build-service-public/kpack/webhook@sha256:6e7ba63d4f6f5524978520b655b10304adda812c8e6f98519b7e32de892696dc
         ports:
         - name: https-webhook
           containerPort: 8443

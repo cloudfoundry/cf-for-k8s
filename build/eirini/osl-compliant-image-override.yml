@@ -1,6 +1,6 @@
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.22.0
+minimumRequiredVersion: 0.28.0
 overrides:
   - image: eirini/opi@sha256:1b2b281949197294954ab035749fcaa1b1e93591b2c028747e217e539a27a65b
     newImage: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:1ad949284c2c1f182bbd56bd1eae8202030fdef3afced39a4105a8403ebf0beb

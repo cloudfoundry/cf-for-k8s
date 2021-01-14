@@ -1,7 +1,7 @@
 
 apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
-minimumRequiredVersion: 0.22.0
+minimumRequiredVersion: 0.28.0
 overrides:
   - image: cloudfoundry/quarks-secret:v1.0.744
     newImage: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd

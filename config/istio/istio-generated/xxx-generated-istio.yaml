@@ -71,15 +71,13 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Describes the rules used to configure Mixer''s policy and
-              telemetry features. See more details at: https://istio.io/docs/reference/config/policy-and-telemetry/istio.policy.v1beta1.html'
+            description: 'Describes the rules used to configure Mixer''s policy and telemetry features. See more details at: https://istio.io/docs/reference/config/policy-and-telemetry/istio.policy.v1beta1.html'
             properties:
               attributes:
                 additionalProperties:
                   properties:
                     description:
-                      description: A human-readable description of the attribute's
-                        purpose.
+                      description: A human-readable description of the attribute's purpose.
                       format: string
                       type: string
                     valueType:
@@ -99,8 +97,7 @@ spec:
                       - STRING_MAP
                       type: string
                   type: object
-                description: The set of attributes this Istio component will be responsible
-                  for producing at runtime.
+                description: The set of attributes this Istio component will be responsible for producing at runtime.
                 type: object
               name:
                 description: Name of the component producing these attributes.
@@ -150,8 +147,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration for access control on workloads. See more
-              details at: https://istio.io/docs/reference/config/security/authorization-policy.html'
+            description: 'Configuration for access control on workloads. See more details at: https://istio.io/docs/reference/config/security/authorization-policy.html'
             properties:
               action:
                 description: Optional.
@@ -354,11 +350,7 @@ spec:
       jsonPath: .spec.host
       name: Host
       type: string
-    - description: 'CreationTimestamp is a timestamp representing the server time
-        when this object was created. It is not guaranteed to be set in happens-before
-        order across separate operations. Clients may not set this value. It is represented
-        in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for
-        lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
+    - description: 'CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
@@ -367,12 +359,10 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting load balancing, outlier detection,
-              etc. See more details at: https://istio.io/docs/reference/config/networking/destination-rule.html'
+            description: 'Configuration affecting load balancing, outlier detection, etc. See more details at: https://istio.io/docs/reference/config/networking/destination-rule.html'
             properties:
               exportTo:
-                description: A list of namespaces to which this destination rule is
-                  exported.
+                description: A list of namespaces to which this destination rule is exported.
                 items:
                   format: string
                   type: string
@@ -402,16 +392,14 @@ spec:
                               description: HTTP connection pool settings.
                               properties:
                                 h2UpgradePolicy:
-                                  description: Specify if http1.1 connection should
-                                    be upgraded to http2 for the associated destination.
+                                  description: Specify if http1.1 connection should be upgraded to http2 for the associated destination.
                                   enum:
                                   - DEFAULT
                                   - DO_NOT_UPGRADE
                                   - UPGRADE
                                   type: string
                                 http1MaxPendingRequests:
-                                  description: Maximum number of pending HTTP requests
-                                    to a destination.
+                                  description: Maximum number of pending HTTP requests to a destination.
                                   format: int32
                                   type: integer
                                 http2MaxRequests:
@@ -419,12 +407,10 @@ spec:
                                   format: int32
                                   type: integer
                                 idleTimeout:
-                                  description: The idle timeout for upstream connection
-                                    pool connections.
+                                  description: The idle timeout for upstream connection pool connections.
                                   type: string
                                 maxRequestsPerConnection:
-                                  description: Maximum number of requests per connection
-                                    to a backend.
+                                  description: Maximum number of requests per connection to a backend.
                                   format: int32
                                   type: integer
                                 maxRetries:
@@ -432,24 +418,20 @@ spec:
                                   type: integer
                               type: object
                             tcp:
-                              description: Settings common to both HTTP and TCP upstream
-                                connections.
+                              description: Settings common to both HTTP and TCP upstream connections.
                               properties:
                                 connectTimeout:
                                   description: TCP connection timeout.
                                   type: string
                                 maxConnections:
-                                  description: Maximum number of HTTP1 /TCP connections
-                                    to a destination host.
+                                  description: Maximum number of HTTP1 /TCP connections to a destination host.
                                   format: int32
                                   type: integer
                                 tcpKeepalive:
-                                  description: If set then set SO_KEEPALIVE on the
-                                    socket to enable TCP Keepalives.
+                                  description: If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
                                   properties:
                                     interval:
-                                      description: The time duration between keep-alive
-                                        probes.
+                                      description: The time duration between keep-alive probes.
                                       type: string
                                     probes:
                                       type: integer
@@ -536,8 +518,7 @@ spec:
                                   format: string
                                   type: string
                                 httpQueryParameterName:
-                                  description: Hash based on a specific HTTP query
-                                    parameter.
+                                  description: Hash based on a specific HTTP query parameter.
                                   format: string
                                   type: string
                                 minimumRingSize:
@@ -549,32 +530,26 @@ spec:
                             localityLbSetting:
                               properties:
                                 distribute:
-                                  description: 'Optional: only one of distribute or
-                                    failover can be set.'
+                                  description: 'Optional: only one of distribute or failover can be set.'
                                   items:
                                     properties:
                                       from:
-                                        description: Originating locality, '/' separated,
-                                          e.g.
+                                        description: Originating locality, '/' separated, e.g.
                                         format: string
                                         type: string
                                       to:
                                         additionalProperties:
                                           type: integer
-                                        description: Map of upstream localities to
-                                          traffic distribution weights.
+                                        description: Map of upstream localities to traffic distribution weights.
                                         type: object
                                     type: object
                                   type: array
                                 enabled:
-                                  description: enable locality load balancing, this
-                                    is DestinationRule-level and will override mesh
-                                    wide settings in entirety.
+                                  description: enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
                                   nullable: true
                                   type: boolean
                                 failover:
-                                  description: 'Optional: only failover or distribute
-                                    can be set.'
+                                  description: 'Optional: only failover or distribute can be set.'
                                   items:
                                     properties:
                                       from:
@@ -601,16 +576,14 @@ spec:
                               description: Minimum ejection duration.
                               type: string
                             consecutive5xxErrors:
-                              description: Number of 5xx errors before a host is ejected
-                                from the connection pool.
+                              description: Number of 5xx errors before a host is ejected from the connection pool.
                               nullable: true
                               type: integer
                             consecutiveErrors:
                               format: int32
                               type: integer
                             consecutiveGatewayErrors:
-                              description: Number of gateway errors before a host
-                                is ejected from the connection pool.
+                              description: Number of gateway errors before a host is ejected from the connection pool.
                               nullable: true
                               type: integer
                             interval:
@@ -633,31 +606,25 @@ spec:
                                     description: HTTP connection pool settings.
                                     properties:
                                       h2UpgradePolicy:
-                                        description: Specify if http1.1 connection
-                                          should be upgraded to http2 for the associated
-                                          destination.
+                                        description: Specify if http1.1 connection should be upgraded to http2 for the associated destination.
                                         enum:
                                         - DEFAULT
                                         - DO_NOT_UPGRADE
                                         - UPGRADE
                                         type: string
                                       http1MaxPendingRequests:
-                                        description: Maximum number of pending HTTP
-                                          requests to a destination.
+                                        description: Maximum number of pending HTTP requests to a destination.
                                         format: int32
                                         type: integer
                                       http2MaxRequests:
-                                        description: Maximum number of requests to
-                                          a backend.
+                                        description: Maximum number of requests to a backend.
                                         format: int32
                                         type: integer
                                       idleTimeout:
-                                        description: The idle timeout for upstream
-                                          connection pool connections.
+                                        description: The idle timeout for upstream connection pool connections.
                                         type: string
                                       maxRequestsPerConnection:
-                                        description: Maximum number of requests per
-                                          connection to a backend.
+                                        description: Maximum number of requests per connection to a backend.
                                         format: int32
                                         type: integer
                                       maxRetries:
@@ -665,24 +632,20 @@ spec:
                                         type: integer
                                     type: object
                                   tcp:
-                                    description: Settings common to both HTTP and
-                                      TCP upstream connections.
+                                    description: Settings common to both HTTP and TCP upstream connections.
                                     properties:
                                       connectTimeout:
                                         description: TCP connection timeout.
                                         type: string
                                       maxConnections:
-                                        description: Maximum number of HTTP1 /TCP
-                                          connections to a destination host.
+                                        description: Maximum number of HTTP1 /TCP connections to a destination host.
                                         format: int32
                                         type: integer
                                       tcpKeepalive:
-                                        description: If set then set SO_KEEPALIVE
-                                          on the socket to enable TCP Keepalives.
+                                        description: If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
                                         properties:
                                           interval:
-                                            description: The time duration between
-                                              keep-alive probes.
+                                            description: The time duration between keep-alive probes.
                                             type: string
                                           probes:
                                             type: integer
@@ -692,8 +655,7 @@ spec:
                                     type: object
                                 type: object
                               loadBalancer:
-                                description: Settings controlling the load balancer
-                                  algorithms.
+                                description: Settings controlling the load balancer algorithms.
                                 oneOf:
                                 - not:
                                     anyOf:
@@ -766,13 +728,11 @@ spec:
                                             type: string
                                         type: object
                                       httpHeaderName:
-                                        description: Hash based on a specific HTTP
-                                          header.
+                                        description: Hash based on a specific HTTP header.
                                         format: string
                                         type: string
                                       httpQueryParameterName:
-                                        description: Hash based on a specific HTTP
-                                          query parameter.
+                                        description: Hash based on a specific HTTP query parameter.
                                         format: string
                                         type: string
                                       minimumRingSize:
@@ -784,32 +744,26 @@ spec:
                                   localityLbSetting:
                                     properties:
                                       distribute:
-                                        description: 'Optional: only one of distribute
-                                          or failover can be set.'
+                                        description: 'Optional: only one of distribute or failover can be set.'
                                         items:
                                           properties:
                                             from:
-                                              description: Originating locality, '/'
-                                                separated, e.g.
+                                              description: Originating locality, '/' separated, e.g.
                                               format: string
                                               type: string
                                             to:
                                               additionalProperties:
                                                 type: integer
-                                              description: Map of upstream localities
-                                                to traffic distribution weights.
+                                              description: Map of upstream localities to traffic distribution weights.
                                               type: object
                                           type: object
                                         type: array
                                       enabled:
-                                        description: enable locality load balancing,
-                                          this is DestinationRule-level and will override
-                                          mesh wide settings in entirety.
+                                        description: enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
                                         nullable: true
                                         type: boolean
                                       failover:
-                                        description: 'Optional: only failover or distribute
-                                          can be set.'
+                                        description: 'Optional: only failover or distribute can be set.'
                                         items:
                                           properties:
                                             from:
@@ -836,21 +790,18 @@ spec:
                                     description: Minimum ejection duration.
                                     type: string
                                   consecutive5xxErrors:
-                                    description: Number of 5xx errors before a host
-                                      is ejected from the connection pool.
+                                    description: Number of 5xx errors before a host is ejected from the connection pool.
                                     nullable: true
                                     type: integer
                                   consecutiveErrors:
                                     format: int32
                                     type: integer
                                   consecutiveGatewayErrors:
-                                    description: Number of gateway errors before a
-                                      host is ejected from the connection pool.
+                                    description: Number of gateway errors before a host is ejected from the connection pool.
                                     nullable: true
                                     type: integer
                                   interval:
-                                    description: Time interval between ejection sweep
-                                      analysis.
+                                    description: Time interval between ejection sweep analysis.
                                     type: string
                                   maxEjectionPercent:
                                     format: int32
@@ -865,8 +816,7 @@ spec:
                                     type: integer
                                 type: object
                               tls:
-                                description: TLS related settings for connections
-                                  to the upstream service.
+                                description: TLS related settings for connections to the upstream service.
                                 properties:
                                   caCertificates:
                                     format: string
@@ -890,8 +840,7 @@ spec:
                                     format: string
                                     type: string
                                   sni:
-                                    description: SNI string to present to the server
-                                      during TLS handshake.
+                                    description: SNI string to present to the server during TLS handshake.
                                     format: string
                                     type: string
                                   subjectAltNames:
@@ -903,8 +852,7 @@ spec:
                             type: object
                           type: array
                         tls:
-                          description: TLS related settings for connections to the
-                            upstream service.
+                          description: TLS related settings for connections to the upstream service.
                           properties:
                             caCertificates:
                               format: string
@@ -928,8 +876,7 @@ spec:
                               format: string
                               type: string
                             sni:
-                              description: SNI string to present to the server during
-                                TLS handshake.
+                              description: SNI string to present to the server during TLS handshake.
                               format: string
                               type: string
                             subjectAltNames:
@@ -949,16 +896,14 @@ spec:
                         description: HTTP connection pool settings.
                         properties:
                           h2UpgradePolicy:
-                            description: Specify if http1.1 connection should be upgraded
-                              to http2 for the associated destination.
+                            description: Specify if http1.1 connection should be upgraded to http2 for the associated destination.
                             enum:
                             - DEFAULT
                             - DO_NOT_UPGRADE
                             - UPGRADE
                             type: string
                           http1MaxPendingRequests:
-                            description: Maximum number of pending HTTP requests to
-                              a destination.
+                            description: Maximum number of pending HTTP requests to a destination.
                             format: int32
                             type: integer
                           http2MaxRequests:
@@ -966,12 +911,10 @@ spec:
                             format: int32
                             type: integer
                           idleTimeout:
-                            description: The idle timeout for upstream connection
-                              pool connections.
+                            description: The idle timeout for upstream connection pool connections.
                             type: string
                           maxRequestsPerConnection:
-                            description: Maximum number of requests per connection
-                              to a backend.
+                            description: Maximum number of requests per connection to a backend.
                             format: int32
                             type: integer
                           maxRetries:
@@ -979,24 +922,20 @@ spec:
                             type: integer
                         type: object
                       tcp:
-                        description: Settings common to both HTTP and TCP upstream
-                          connections.
+                        description: Settings common to both HTTP and TCP upstream connections.
                         properties:
                           connectTimeout:
                             description: TCP connection timeout.
                             type: string
                           maxConnections:
-                            description: Maximum number of HTTP1 /TCP connections
-                              to a destination host.
+                            description: Maximum number of HTTP1 /TCP connections to a destination host.
                             format: int32
                             type: integer
                           tcpKeepalive:
-                            description: If set then set SO_KEEPALIVE on the socket
-                              to enable TCP Keepalives.
+                            description: If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
                             properties:
                               interval:
-                                description: The time duration between keep-alive
-                                  probes.
+                                description: The time duration between keep-alive probes.
                                 type: string
                               probes:
                                 type: integer
@@ -1095,31 +1034,26 @@ spec:
                       localityLbSetting:
                         properties:
                           distribute:
-                            description: 'Optional: only one of distribute or failover
-                              can be set.'
+                            description: 'Optional: only one of distribute or failover can be set.'
                             items:
                               properties:
                                 from:
-                                  description: Originating locality, '/' separated,
-                                    e.g.
+                                  description: Originating locality, '/' separated, e.g.
                                   format: string
                                   type: string
                                 to:
                                   additionalProperties:
                                     type: integer
-                                  description: Map of upstream localities to traffic
-                                    distribution weights.
+                                  description: Map of upstream localities to traffic distribution weights.
                                   type: object
                               type: object
                             type: array
                           enabled:
-                            description: enable locality load balancing, this is DestinationRule-level
-                              and will override mesh wide settings in entirety.
+                            description: enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
                             nullable: true
                             type: boolean
                           failover:
-                            description: 'Optional: only failover or distribute can
-                              be set.'
+                            description: 'Optional: only failover or distribute can be set.'
                             items:
                               properties:
                                 from:
@@ -1146,16 +1080,14 @@ spec:
                         description: Minimum ejection duration.
                         type: string
                       consecutive5xxErrors:
-                        description: Number of 5xx errors before a host is ejected
-                          from the connection pool.
+                        description: Number of 5xx errors before a host is ejected from the connection pool.
                         nullable: true
                         type: integer
                       consecutiveErrors:
                         format: int32
                         type: integer
                       consecutiveGatewayErrors:
-                        description: Number of gateway errors before a host is ejected
-                          from the connection pool.
+                        description: Number of gateway errors before a host is ejected from the connection pool.
                         nullable: true
                         type: integer
                       interval:
@@ -1178,16 +1110,14 @@ spec:
                               description: HTTP connection pool settings.
                               properties:
                                 h2UpgradePolicy:
-                                  description: Specify if http1.1 connection should
-                                    be upgraded to http2 for the associated destination.
+                                  description: Specify if http1.1 connection should be upgraded to http2 for the associated destination.
                                   enum:
                                   - DEFAULT
                                   - DO_NOT_UPGRADE
                                   - UPGRADE
                                   type: string
                                 http1MaxPendingRequests:
-                                  description: Maximum number of pending HTTP requests
-                                    to a destination.
+                                  description: Maximum number of pending HTTP requests to a destination.
                                   format: int32
                                   type: integer
                                 http2MaxRequests:
@@ -1195,12 +1125,10 @@ spec:
                                   format: int32
                                   type: integer
                                 idleTimeout:
-                                  description: The idle timeout for upstream connection
-                                    pool connections.
+                                  description: The idle timeout for upstream connection pool connections.
                                   type: string
                                 maxRequestsPerConnection:
-                                  description: Maximum number of requests per connection
-                                    to a backend.
+                                  description: Maximum number of requests per connection to a backend.
                                   format: int32
                                   type: integer
                                 maxRetries:
@@ -1208,24 +1136,20 @@ spec:
                                   type: integer
                               type: object
                             tcp:
-                              description: Settings common to both HTTP and TCP upstream
-                                connections.
+                              description: Settings common to both HTTP and TCP upstream connections.
                               properties:
                                 connectTimeout:
                                   description: TCP connection timeout.
                                   type: string
                                 maxConnections:
-                                  description: Maximum number of HTTP1 /TCP connections
-                                    to a destination host.
+                                  description: Maximum number of HTTP1 /TCP connections to a destination host.
                                   format: int32
                                   type: integer
                                 tcpKeepalive:
-                                  description: If set then set SO_KEEPALIVE on the
-                                    socket to enable TCP Keepalives.
+                                  description: If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
                                   properties:
                                     interval:
-                                      description: The time duration between keep-alive
-                                        probes.
+                                      description: The time duration between keep-alive probes.
                                       type: string
                                     probes:
                                       type: integer
@@ -1312,8 +1236,7 @@ spec:
                                   format: string
                                   type: string
                                 httpQueryParameterName:
-                                  description: Hash based on a specific HTTP query
-                                    parameter.
+                                  description: Hash based on a specific HTTP query parameter.
                                   format: string
                                   type: string
                                 minimumRingSize:
@@ -1325,32 +1248,26 @@ spec:
                             localityLbSetting:
                               properties:
                                 distribute:
-                                  description: 'Optional: only one of distribute or
-                                    failover can be set.'
+                                  description: 'Optional: only one of distribute or failover can be set.'
                                   items:
                                     properties:
                                       from:
-                                        description: Originating locality, '/' separated,
-                                          e.g.
+                                        description: Originating locality, '/' separated, e.g.
                                         format: string
                                         type: string
                                       to:
                                         additionalProperties:
                                           type: integer
-                                        description: Map of upstream localities to
-                                          traffic distribution weights.
+                                        description: Map of upstream localities to traffic distribution weights.
                                         type: object
                                     type: object
                                   type: array
                                 enabled:
-                                  description: enable locality load balancing, this
-                                    is DestinationRule-level and will override mesh
-                                    wide settings in entirety.
+                                  description: enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
                                   nullable: true
                                   type: boolean
                                 failover:
-                                  description: 'Optional: only failover or distribute
-                                    can be set.'
+                                  description: 'Optional: only failover or distribute can be set.'
                                   items:
                                     properties:
                                       from:
@@ -1377,16 +1294,14 @@ spec:
                               description: Minimum ejection duration.
                               type: string
                             consecutive5xxErrors:
-                              description: Number of 5xx errors before a host is ejected
-                                from the connection pool.
+                              description: Number of 5xx errors before a host is ejected from the connection pool.
                               nullable: true
                               type: integer
                             consecutiveErrors:
                               format: int32
                               type: integer
                             consecutiveGatewayErrors:
-                              description: Number of gateway errors before a host
-                                is ejected from the connection pool.
+                              description: Number of gateway errors before a host is ejected from the connection pool.
                               nullable: true
                               type: integer
                             interval:
@@ -1405,8 +1320,7 @@ spec:
                               type: integer
                           type: object
                         tls:
-                          description: TLS related settings for connections to the
-                            upstream service.
+                          description: TLS related settings for connections to the upstream service.
                           properties:
                             caCertificates:
                               format: string
@@ -1430,8 +1344,7 @@ spec:
                               format: string
                               type: string
                             sni:
-                              description: SNI string to present to the server during
-                                TLS handshake.
+                              description: SNI string to present to the server during TLS handshake.
                               format: string
                               type: string
                             subjectAltNames:
@@ -1443,8 +1356,7 @@ spec:
                       type: object
                     type: array
                   tls:
-                    description: TLS related settings for connections to the upstream
-                      service.
+                    description: TLS related settings for connections to the upstream service.
                     properties:
                       caCertificates:
                         format: string
@@ -1468,8 +1380,7 @@ spec:
                         format: string
                         type: string
                       sni:
-                        description: SNI string to present to the server during TLS
-                          handshake.
+                        description: SNI string to present to the server during TLS handshake.
                         format: string
                         type: string
                       subjectAltNames:
@@ -1493,11 +1404,7 @@ spec:
       jsonPath: .spec.host
       name: Host
       type: string
-    - description: 'CreationTimestamp is a timestamp representing the server time
-        when this object was created. It is not guaranteed to be set in happens-before
-        order across separate operations. Clients may not set this value. It is represented
-        in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for
-        lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
+    - description: 'CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
@@ -1506,12 +1413,10 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting load balancing, outlier detection,
-              etc. See more details at: https://istio.io/docs/reference/config/networking/destination-rule.html'
+            description: 'Configuration affecting load balancing, outlier detection, etc. See more details at: https://istio.io/docs/reference/config/networking/destination-rule.html'
             properties:
               exportTo:
-                description: A list of namespaces to which this destination rule is
-                  exported.
+                description: A list of namespaces to which this destination rule is exported.
                 items:
                   format: string
                   type: string
@@ -1541,16 +1446,14 @@ spec:
                               description: HTTP connection pool settings.
                               properties:
                                 h2UpgradePolicy:
-                                  description: Specify if http1.1 connection should
-                                    be upgraded to http2 for the associated destination.
+                                  description: Specify if http1.1 connection should be upgraded to http2 for the associated destination.
                                   enum:
                                   - DEFAULT
                                   - DO_NOT_UPGRADE
                                   - UPGRADE
                                   type: string
                                 http1MaxPendingRequests:
-                                  description: Maximum number of pending HTTP requests
-                                    to a destination.
+                                  description: Maximum number of pending HTTP requests to a destination.
                                   format: int32
                                   type: integer
                                 http2MaxRequests:
@@ -1558,12 +1461,10 @@ spec:
                                   format: int32
                                   type: integer
                                 idleTimeout:
-                                  description: The idle timeout for upstream connection
-                                    pool connections.
+                                  description: The idle timeout for upstream connection pool connections.
                                   type: string
                                 maxRequestsPerConnection:
-                                  description: Maximum number of requests per connection
-                                    to a backend.
+                                  description: Maximum number of requests per connection to a backend.
                                   format: int32
                                   type: integer
                                 maxRetries:
@@ -1571,24 +1472,20 @@ spec:
                                   type: integer
                               type: object
                             tcp:
-                              description: Settings common to both HTTP and TCP upstream
-                                connections.
+                              description: Settings common to both HTTP and TCP upstream connections.
                               properties:
                                 connectTimeout:
                                   description: TCP connection timeout.
                                   type: string
                                 maxConnections:
-                                  description: Maximum number of HTTP1 /TCP connections
-                                    to a destination host.
+                                  description: Maximum number of HTTP1 /TCP connections to a destination host.
                                   format: int32
                                   type: integer
                                 tcpKeepalive:
-                                  description: If set then set SO_KEEPALIVE on the
-                                    socket to enable TCP Keepalives.
+                                  description: If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
                                   properties:
                                     interval:
-                                      description: The time duration between keep-alive
-                                        probes.
+                                      description: The time duration between keep-alive probes.
                                       type: string
                                     probes:
                                       type: integer
@@ -1675,8 +1572,7 @@ spec:
                                   format: string
                                   type: string
                                 httpQueryParameterName:
-                                  description: Hash based on a specific HTTP query
-                                    parameter.
+                                  description: Hash based on a specific HTTP query parameter.
                                   format: string
                                   type: string
                                 minimumRingSize:
@@ -1688,32 +1584,26 @@ spec:
                             localityLbSetting:
                               properties:
                                 distribute:
-                                  description: 'Optional: only one of distribute or
-                                    failover can be set.'
+                                  description: 'Optional: only one of distribute or failover can be set.'
                                   items:
                                     properties:
                                       from:
-                                        description: Originating locality, '/' separated,
-                                          e.g.
+                                        description: Originating locality, '/' separated, e.g.
                                         format: string
                                         type: string
                                       to:
                                         additionalProperties:
                                           type: integer
-                                        description: Map of upstream localities to
-                                          traffic distribution weights.
+                                        description: Map of upstream localities to traffic distribution weights.
                                         type: object
                                     type: object
                                   type: array
                                 enabled:
-                                  description: enable locality load balancing, this
-                                    is DestinationRule-level and will override mesh
-                                    wide settings in entirety.
+                                  description: enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
                                   nullable: true
                                   type: boolean
                                 failover:
-                                  description: 'Optional: only failover or distribute
-                                    can be set.'
+                                  description: 'Optional: only failover or distribute can be set.'
                                   items:
                                     properties:
                                       from:
@@ -1740,16 +1630,14 @@ spec:
                               description: Minimum ejection duration.
                               type: string
                             consecutive5xxErrors:
-                              description: Number of 5xx errors before a host is ejected
-                                from the connection pool.
+                              description: Number of 5xx errors before a host is ejected from the connection pool.
                               nullable: true
                               type: integer
                             consecutiveErrors:
                               format: int32
                               type: integer
                             consecutiveGatewayErrors:
-                              description: Number of gateway errors before a host
-                                is ejected from the connection pool.
+                              description: Number of gateway errors before a host is ejected from the connection pool.
                               nullable: true
                               type: integer
                             interval:
@@ -1772,31 +1660,25 @@ spec:
                                     description: HTTP connection pool settings.
                                     properties:
                                       h2UpgradePolicy:
-                                        description: Specify if http1.1 connection
-                                          should be upgraded to http2 for the associated
-                                          destination.
+                                        description: Specify if http1.1 connection should be upgraded to http2 for the associated destination.
                                         enum:
                                         - DEFAULT
                                         - DO_NOT_UPGRADE
                                         - UPGRADE
                                         type: string
                                       http1MaxPendingRequests:
-                                        description: Maximum number of pending HTTP
-                                          requests to a destination.
+                                        description: Maximum number of pending HTTP requests to a destination.
                                         format: int32
                                         type: integer
                                       http2MaxRequests:
-                                        description: Maximum number of requests to
-                                          a backend.
+                                        description: Maximum number of requests to a backend.
                                         format: int32
                                         type: integer
                                       idleTimeout:
-                                        description: The idle timeout for upstream
-                                          connection pool connections.
+                                        description: The idle timeout for upstream connection pool connections.
                                         type: string
                                       maxRequestsPerConnection:
-                                        description: Maximum number of requests per
-                                          connection to a backend.
+                                        description: Maximum number of requests per connection to a backend.
                                         format: int32
                                         type: integer
                                       maxRetries:
@@ -1804,24 +1686,20 @@ spec:
                                         type: integer
                                     type: object
                                   tcp:
-                                    description: Settings common to both HTTP and
-                                      TCP upstream connections.
+                                    description: Settings common to both HTTP and TCP upstream connections.
                                     properties:
                                       connectTimeout:
                                         description: TCP connection timeout.
                                         type: string
                                       maxConnections:
-                                        description: Maximum number of HTTP1 /TCP
-                                          connections to a destination host.
+                                        description: Maximum number of HTTP1 /TCP connections to a destination host.
                                         format: int32
                                         type: integer
                                       tcpKeepalive:
-                                        description: If set then set SO_KEEPALIVE
-                                          on the socket to enable TCP Keepalives.
+                                        description: If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
                                         properties:
                                           interval:
-                                            description: The time duration between
-                                              keep-alive probes.
+                                            description: The time duration between keep-alive probes.
                                             type: string
                                           probes:
                                             type: integer
@@ -1831,8 +1709,7 @@ spec:
                                     type: object
                                 type: object
                               loadBalancer:
-                                description: Settings controlling the load balancer
-                                  algorithms.
+                                description: Settings controlling the load balancer algorithms.
                                 oneOf:
                                 - not:
                                     anyOf:
@@ -1905,13 +1782,11 @@ spec:
                                             type: string
                                         type: object
                                       httpHeaderName:
-                                        description: Hash based on a specific HTTP
-                                          header.
+                                        description: Hash based on a specific HTTP header.
                                         format: string
                                         type: string
                                       httpQueryParameterName:
-                                        description: Hash based on a specific HTTP
-                                          query parameter.
+                                        description: Hash based on a specific HTTP query parameter.
                                         format: string
                                         type: string
                                       minimumRingSize:
@@ -1923,32 +1798,26 @@ spec:
                                   localityLbSetting:
                                     properties:
                                       distribute:
-                                        description: 'Optional: only one of distribute
-                                          or failover can be set.'
+                                        description: 'Optional: only one of distribute or failover can be set.'
                                         items:
                                           properties:
                                             from:
-                                              description: Originating locality, '/'
-                                                separated, e.g.
+                                              description: Originating locality, '/' separated, e.g.
                                               format: string
                                               type: string
                                             to:
                                               additionalProperties:
                                                 type: integer
-                                              description: Map of upstream localities
-                                                to traffic distribution weights.
+                                              description: Map of upstream localities to traffic distribution weights.
                                               type: object
                                           type: object
                                         type: array
                                       enabled:
-                                        description: enable locality load balancing,
-                                          this is DestinationRule-level and will override
-                                          mesh wide settings in entirety.
+                                        description: enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
                                         nullable: true
                                         type: boolean
                                       failover:
-                                        description: 'Optional: only failover or distribute
-                                          can be set.'
+                                        description: 'Optional: only failover or distribute can be set.'
                                         items:
                                           properties:
                                             from:
@@ -1975,21 +1844,18 @@ spec:
                                     description: Minimum ejection duration.
                                     type: string
                                   consecutive5xxErrors:
-                                    description: Number of 5xx errors before a host
-                                      is ejected from the connection pool.
+                                    description: Number of 5xx errors before a host is ejected from the connection pool.
                                     nullable: true
                                     type: integer
                                   consecutiveErrors:
                                     format: int32
                                     type: integer
                                   consecutiveGatewayErrors:
-                                    description: Number of gateway errors before a
-                                      host is ejected from the connection pool.
+                                    description: Number of gateway errors before a host is ejected from the connection pool.
                                     nullable: true
                                     type: integer
                                   interval:
-                                    description: Time interval between ejection sweep
-                                      analysis.
+                                    description: Time interval between ejection sweep analysis.
                                     type: string
                                   maxEjectionPercent:
                                     format: int32
@@ -2004,8 +1870,7 @@ spec:
                                     type: integer
                                 type: object
                               tls:
-                                description: TLS related settings for connections
-                                  to the upstream service.
+                                description: TLS related settings for connections to the upstream service.
                                 properties:
                                   caCertificates:
                                     format: string
@@ -2029,8 +1894,7 @@ spec:
                                     format: string
                                     type: string
                                   sni:
-                                    description: SNI string to present to the server
-                                      during TLS handshake.
+                                    description: SNI string to present to the server during TLS handshake.
                                     format: string
                                     type: string
                                   subjectAltNames:
@@ -2042,8 +1906,7 @@ spec:
                             type: object
                           type: array
                         tls:
-                          description: TLS related settings for connections to the
-                            upstream service.
+                          description: TLS related settings for connections to the upstream service.
                           properties:
                             caCertificates:
                               format: string
@@ -2067,8 +1930,7 @@ spec:
                               format: string
                               type: string
                             sni:
-                              description: SNI string to present to the server during
-                                TLS handshake.
+                              description: SNI string to present to the server during TLS handshake.
                               format: string
                               type: string
                             subjectAltNames:
@@ -2088,16 +1950,14 @@ spec:
                         description: HTTP connection pool settings.
                         properties:
                           h2UpgradePolicy:
-                            description: Specify if http1.1 connection should be upgraded
-                              to http2 for the associated destination.
+                            description: Specify if http1.1 connection should be upgraded to http2 for the associated destination.
                             enum:
                             - DEFAULT
                             - DO_NOT_UPGRADE
                             - UPGRADE
                             type: string
                           http1MaxPendingRequests:
-                            description: Maximum number of pending HTTP requests to
-                              a destination.
+                            description: Maximum number of pending HTTP requests to a destination.
                             format: int32
                             type: integer
                           http2MaxRequests:
@@ -2105,12 +1965,10 @@ spec:
                             format: int32
                             type: integer
                           idleTimeout:
-                            description: The idle timeout for upstream connection
-                              pool connections.
+                            description: The idle timeout for upstream connection pool connections.
                             type: string
                           maxRequestsPerConnection:
-                            description: Maximum number of requests per connection
-                              to a backend.
+                            description: Maximum number of requests per connection to a backend.
                             format: int32
                             type: integer
                           maxRetries:
@@ -2118,24 +1976,20 @@ spec:
                             type: integer
                         type: object
                       tcp:
-                        description: Settings common to both HTTP and TCP upstream
-                          connections.
+                        description: Settings common to both HTTP and TCP upstream connections.
                         properties:
                           connectTimeout:
                             description: TCP connection timeout.
                             type: string
                           maxConnections:
-                            description: Maximum number of HTTP1 /TCP connections
-                              to a destination host.
+                            description: Maximum number of HTTP1 /TCP connections to a destination host.
                             format: int32
                             type: integer
                           tcpKeepalive:
-                            description: If set then set SO_KEEPALIVE on the socket
-                              to enable TCP Keepalives.
+                            description: If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
                             properties:
                               interval:
-                                description: The time duration between keep-alive
-                                  probes.
+                                description: The time duration between keep-alive probes.
                                 type: string
                               probes:
                                 type: integer
@@ -2234,31 +2088,26 @@ spec:
                       localityLbSetting:
                         properties:
                           distribute:
-                            description: 'Optional: only one of distribute or failover
-                              can be set.'
+                            description: 'Optional: only one of distribute or failover can be set.'
                             items:
                               properties:
                                 from:
-                                  description: Originating locality, '/' separated,
-                                    e.g.
+                                  description: Originating locality, '/' separated, e.g.
                                   format: string
                                   type: string
                                 to:
                                   additionalProperties:
                                     type: integer
-                                  description: Map of upstream localities to traffic
-                                    distribution weights.
+                                  description: Map of upstream localities to traffic distribution weights.
                                   type: object
                               type: object
                             type: array
                           enabled:
-                            description: enable locality load balancing, this is DestinationRule-level
-                              and will override mesh wide settings in entirety.
+                            description: enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
                             nullable: true
                             type: boolean
                           failover:
-                            description: 'Optional: only failover or distribute can
-                              be set.'
+                            description: 'Optional: only failover or distribute can be set.'
                             items:
                               properties:
                                 from:
@@ -2285,16 +2134,14 @@ spec:
                         description: Minimum ejection duration.
                         type: string
                       consecutive5xxErrors:
-                        description: Number of 5xx errors before a host is ejected
-                          from the connection pool.
+                        description: Number of 5xx errors before a host is ejected from the connection pool.
                         nullable: true
                         type: integer
                       consecutiveErrors:
                         format: int32
                         type: integer
                       consecutiveGatewayErrors:
-                        description: Number of gateway errors before a host is ejected
-                          from the connection pool.
+                        description: Number of gateway errors before a host is ejected from the connection pool.
                         nullable: true
                         type: integer
                       interval:
@@ -2317,16 +2164,14 @@ spec:
                               description: HTTP connection pool settings.
                               properties:
                                 h2UpgradePolicy:
-                                  description: Specify if http1.1 connection should
-                                    be upgraded to http2 for the associated destination.
+                                  description: Specify if http1.1 connection should be upgraded to http2 for the associated destination.
                                   enum:
                                   - DEFAULT
                                   - DO_NOT_UPGRADE
                                   - UPGRADE
                                   type: string
                                 http1MaxPendingRequests:
-                                  description: Maximum number of pending HTTP requests
-                                    to a destination.
+                                  description: Maximum number of pending HTTP requests to a destination.
                                   format: int32
                                   type: integer
                                 http2MaxRequests:
@@ -2334,12 +2179,10 @@ spec:
                                   format: int32
                                   type: integer
                                 idleTimeout:
-                                  description: The idle timeout for upstream connection
-                                    pool connections.
+                                  description: The idle timeout for upstream connection pool connections.
                                   type: string
                                 maxRequestsPerConnection:
-                                  description: Maximum number of requests per connection
-                                    to a backend.
+                                  description: Maximum number of requests per connection to a backend.
                                   format: int32
                                   type: integer
                                 maxRetries:
@@ -2347,24 +2190,20 @@ spec:
                                   type: integer
                               type: object
                             tcp:
-                              description: Settings common to both HTTP and TCP upstream
-                                connections.
+                              description: Settings common to both HTTP and TCP upstream connections.
                               properties:
                                 connectTimeout:
                                   description: TCP connection timeout.
                                   type: string
                                 maxConnections:
-                                  description: Maximum number of HTTP1 /TCP connections
-                                    to a destination host.
+                                  description: Maximum number of HTTP1 /TCP connections to a destination host.
                                   format: int32
                                   type: integer
                                 tcpKeepalive:
-                                  description: If set then set SO_KEEPALIVE on the
-                                    socket to enable TCP Keepalives.
+                                  description: If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
                                   properties:
                                     interval:
-                                      description: The time duration between keep-alive
-                                        probes.
+                                      description: The time duration between keep-alive probes.
                                       type: string
                                     probes:
                                       type: integer
@@ -2451,8 +2290,7 @@ spec:
                                   format: string
                                   type: string
                                 httpQueryParameterName:
-                                  description: Hash based on a specific HTTP query
-                                    parameter.
+                                  description: Hash based on a specific HTTP query parameter.
                                   format: string
                                   type: string
                                 minimumRingSize:
@@ -2464,32 +2302,26 @@ spec:
                             localityLbSetting:
                               properties:
                                 distribute:
-                                  description: 'Optional: only one of distribute or
-                                    failover can be set.'
+                                  description: 'Optional: only one of distribute or failover can be set.'
                                   items:
                                     properties:
                                       from:
-                                        description: Originating locality, '/' separated,
-                                          e.g.
+                                        description: Originating locality, '/' separated, e.g.
                                         format: string
                                         type: string
                                       to:
                                         additionalProperties:
                                           type: integer
-                                        description: Map of upstream localities to
-                                          traffic distribution weights.
+                                        description: Map of upstream localities to traffic distribution weights.
                                         type: object
                                     type: object
                                   type: array
                                 enabled:
-                                  description: enable locality load balancing, this
-                                    is DestinationRule-level and will override mesh
-                                    wide settings in entirety.
+                                  description: enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
                                   nullable: true
                                   type: boolean
                                 failover:
-                                  description: 'Optional: only failover or distribute
-                                    can be set.'
+                                  description: 'Optional: only failover or distribute can be set.'
                                   items:
                                     properties:
                                       from:
@@ -2516,16 +2348,14 @@ spec:
                               description: Minimum ejection duration.
                               type: string
                             consecutive5xxErrors:
-                              description: Number of 5xx errors before a host is ejected
-                                from the connection pool.
+                              description: Number of 5xx errors before a host is ejected from the connection pool.
                               nullable: true
                               type: integer
                             consecutiveErrors:
                               format: int32
                               type: integer
                             consecutiveGatewayErrors:
-                              description: Number of gateway errors before a host
-                                is ejected from the connection pool.
+                              description: Number of gateway errors before a host is ejected from the connection pool.
                               nullable: true
                               type: integer
                             interval:
@@ -2544,8 +2374,7 @@ spec:
                               type: integer
                           type: object
                         tls:
-                          description: TLS related settings for connections to the
-                            upstream service.
+                          description: TLS related settings for connections to the upstream service.
                           properties:
                             caCertificates:
                               format: string
@@ -2569,8 +2398,7 @@ spec:
                               format: string
                               type: string
                             sni:
-                              description: SNI string to present to the server during
-                                TLS handshake.
+                              description: SNI string to present to the server during TLS handshake.
                               format: string
                               type: string
                             subjectAltNames:
@@ -2582,8 +2410,7 @@ spec:
                       type: object
                     type: array
                   tls:
-                    description: TLS related settings for connections to the upstream
-                      service.
+                    description: TLS related settings for connections to the upstream service.
                     properties:
                       caCertificates:
                         format: string
@@ -2607,8 +2434,7 @@ spec:
                         format: string
                         type: string
                       sni:
-                        description: SNI string to present to the server during TLS
-                          handshake.
+                        description: SNI string to present to the server during TLS handshake.
                         format: string
                         type: string
                       subjectAltNames:
@@ -2657,8 +2483,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Customizing Envoy configuration generated by Istio. See
-              more details at: https://istio.io/docs/reference/config/networking/envoy-filter.html'
+            description: 'Customizing Envoy configuration generated by Istio. See more details at: https://istio.io/docs/reference/config/networking/envoy-filter.html'
             properties:
               configPatches:
                 description: One or more patches with match conditions.
@@ -2702,12 +2527,10 @@ spec:
                               format: string
                               type: string
                             portNumber:
-                              description: The service port for which this cluster
-                                was generated.
+                              description: The service port for which this cluster was generated.
                               type: integer
                             service:
-                              description: The fully qualified service name for this
-                                cluster.
+                              description: The fully qualified service name for this cluster.
                               format: string
                               type: string
                             subset:
@@ -2716,8 +2539,7 @@ spec:
                               type: string
                           type: object
                         context:
-                          description: The specific config generation context to match
-                            on.
+                          description: The specific config generation context to match on.
                           enum:
                           - ANY
                           - SIDECAR_INBOUND
@@ -2735,8 +2557,7 @@ spec:
                                   format: string
                                   type: string
                                 filter:
-                                  description: The name of a specific filter to apply
-                                    the patch to.
+                                  description: The name of a specific filter to apply the patch to.
                                   properties:
                                     name:
                                       description: The filter name to match on.
@@ -2755,8 +2576,7 @@ spec:
                                   format: string
                                   type: string
                                 sni:
-                                  description: The SNI value used by a filter chain's
-                                    match condition.
+                                  description: The SNI value used by a filter chain's match condition.
                                   format: string
                                   type: string
                                 transportProtocol:
@@ -2808,12 +2628,10 @@ spec:
                                   format: string
                                   type: string
                                 route:
-                                  description: Match a specific route within the virtual
-                                    host.
+                                  description: Match a specific route within the virtual host.
                                   properties:
                                     action:
-                                      description: Match a route with specific action
-                                        type.
+                                      description: Match a route with specific action type.
                                       enum:
                                       - ANY
                                       - ROUTE
@@ -2897,8 +2715,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting edge load balancer. See more details
-              at: https://istio.io/docs/reference/config/networking/gateway.html'
+            description: 'Configuration affecting edge load balancer. See more details at: https://istio.io/docs/reference/config/networking/gateway.html'
             properties:
               selector:
                 additionalProperties:
@@ -2922,8 +2739,7 @@ spec:
                         type: string
                       type: array
                     name:
-                      description: An optional name of the server, when set must be
-                        unique across all servers.
+                      description: An optional name of the server, when set must be unique across all servers.
                       format: string
                       type: string
                     port:
@@ -2943,16 +2759,14 @@ spec:
                           type: integer
                       type: object
                     tls:
-                      description: Set of TLS related options that govern the server's
-                        behavior.
+                      description: Set of TLS related options that govern the server's behavior.
                       properties:
                         caCertificates:
                           description: REQUIRED if mode is `MUTUAL`.
                           format: string
                           type: string
                         cipherSuites:
-                          description: 'Optional: If specified, only support the specified
-                            cipher list.'
+                          description: 'Optional: If specified, only support the specified cipher list.'
                           items:
                             format: string
                             type: string
@@ -3028,8 +2842,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting edge load balancer. See more details
-              at: https://istio.io/docs/reference/config/networking/gateway.html'
+            description: 'Configuration affecting edge load balancer. See more details at: https://istio.io/docs/reference/config/networking/gateway.html'
             properties:
               selector:
                 additionalProperties:
@@ -3053,8 +2866,7 @@ spec:
                         type: string
                       type: array
                     name:
-                      description: An optional name of the server, when set must be
-                        unique across all servers.
+                      description: An optional name of the server, when set must be unique across all servers.
                       format: string
                       type: string
                     port:
@@ -3074,16 +2886,14 @@ spec:
                           type: integer
                       type: object
                     tls:
-                      description: Set of TLS related options that govern the server's
-                        behavior.
+                      description: Set of TLS related options that govern the server's behavior.
                       properties:
                         caCertificates:
                           description: REQUIRED if mode is `MUTUAL`.
                           format: string
                           type: string
                         cipherSuites:
-                          description: 'Optional: If specified, only support the specified
-                            cipher list.'
+                          description: 'Optional: If specified, only support the specified cipher list.'
                           items:
                             format: string
                             type: string
@@ -3186,8 +2996,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: Handler allows the operator to configure a specific adapter
-              implementation.
+            description: Handler allows the operator to configure a specific adapter implementation.
             properties:
               adapter:
                 description: The name of a specific adapter implementation.
@@ -3274,18 +3083,15 @@ spec:
                             format: string
                             type: string
                           clientCertificate:
-                            description: The path to the file holding client certificate
-                              for mutual TLS.
+                            description: The path to the file holding client certificate for mutual TLS.
                             format: string
                             type: string
                           privateKey:
-                            description: The path to the file holding the private
-                              key for mutual TLS.
+                            description: The path to the file holding the private key for mutual TLS.
                             format: string
                             type: string
                           serverName:
-                            description: Used to configure mixer mutual TLS client
-                              to supply server name for SNI.
+                            description: Used to configure mixer mutual TLS client to supply server name for SNI.
                             format: string
                             type: string
                         type: object
@@ -3301,29 +3107,25 @@ spec:
                             format: string
                             type: string
                           customHeader:
-                            description: Customized header key to hold access token,
-                              e.g.
+                            description: Customized header key to hold access token, e.g.
                             format: string
                             type: string
                           oauth:
-                            description: Oauth config to fetch access token from auth
-                              provider.
+                            description: Oauth config to fetch access token from auth provider.
                             properties:
                               clientId:
                                 description: OAuth client id for mixer.
                                 format: string
                                 type: string
                               clientSecret:
-                                description: The path to the file holding the client
-                                  secret for oauth.
+                                description: The path to the file holding the client secret for oauth.
                                 format: string
                                 type: string
                               endpointParams:
                                 additionalProperties:
                                   format: string
                                   type: string
-                                description: Additional parameters for requests to
-                                  the token endpoint.
+                                description: Additional parameters for requests to the token endpoint.
                                 type: object
                               scopes:
                                 description: List of requested permissions.
@@ -3332,8 +3134,7 @@ spec:
                                   type: string
                                 type: array
                               tokenUrl:
-                                description: The Resource server's token endpoint
-                                  URL.
+                                description: The Resource server's token endpoint URL.
                                 format: string
                                 type: string
                             type: object
@@ -3428,16 +3229,14 @@ spec:
                 items:
                   properties:
                     domain:
-                      description: Domain suffix used to construct the service FQDN
-                        in implementations that support such specification.
+                      description: Domain suffix used to construct the service FQDN in implementations that support such specification.
                       format: string
                       type: string
                     labels:
                       additionalProperties:
                         format: string
                         type: string
-                      description: Optional one or more labels that uniquely identify
-                        the service version.
+                      description: Optional one or more labels that uniquely identify the service version.
                       type: object
                     name:
                       description: The short name of the service such as "foo".
@@ -3766,8 +3565,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: An Instance tells Mixer how to create instances for particular
-              template.
+            description: An Instance tells Mixer how to create instances for particular template.
             properties:
               attributeBindings:
                 additionalProperties:
@@ -3775,8 +3573,7 @@ spec:
                   type: string
                 type: object
               compiledTemplate:
-                description: The name of the compiled in template this instance creates
-                  instances for.
+                description: The name of the compiled in template this instance creates instances for.
                 format: string
                 type: string
               name:
@@ -3787,8 +3584,7 @@ spec:
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
               template:
-                description: The name of the template this instance creates instances
-                  for.
+                description: The name of the template this instance creates instances for.
                 format: string
                 type: string
             type: object
@@ -3827,11 +3623,7 @@ spec:
       jsonPath: .status.status
       name: Status
       type: string
-    - description: 'CreationTimestamp is a timestamp representing the server time
-        when this object was created. It is not guaranteed to be set in happens-before
-        order across separate operations. Clients may not set this value. It is represented
-        in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for
-        lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
+    - description: 'CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
@@ -3840,25 +3632,17 @@ spec:
       openAPIV3Schema:
         properties:
           apiVersion:
-            description: 'APIVersion defines the versioned schema of this representation
-              of an object. Servers should convert recognized schemas to the latest
-              internal value, and may reject unrecognized values. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#resources'
+            description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#resources'
             type: string
           kind:
-            description: 'Kind is a string value representing the REST resource this
-              object represents. Servers may infer this from the endpoint the client
-              submits requests to. Cannot be updated. In CamelCase. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
             type: string
           spec:
-            description: 'Specification of the desired state of the istio control
-              plane resource. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
+            description: 'Specification of the desired state of the istio control plane resource. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
             type: object
             x-kubernetes-preserve-unknown-fields: true
           status:
-            description: 'Status describes each of istio control plane component status
-              at the current time. 0 means NONE, 1 means UPDATING, 2 means HEALTHY,
-              3 means ERROR, 4 means RECONCILING. More info: https://github.com/istio/api/blob/master/operator/v1alpha1/istio.operator.v1alpha1.pb.html
-              & https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
+            description: 'Status describes each of istio control plane component status at the current time. 0 means NONE, 1 means UPDATING, 2 means HEALTHY, 3 means ERROR, 4 means RECONCILING. More info: https://github.com/istio/api/blob/master/operator/v1alpha1/istio.operator.v1alpha1.pb.html & https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
             type: object
             x-kubernetes-preserve-unknown-fields: true
         type: object
@@ -3899,8 +3683,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: PeerAuthentication defines how traffic will be tunneled (or
-              not) to the sidecar.
+            description: PeerAuthentication defines how traffic will be tunneled (or not) to the sidecar.
             properties:
               mtls:
                 description: Mutual TLS settings for workload.
@@ -3929,8 +3712,7 @@ spec:
                 description: Port specific mutual TLS settings.
                 type: object
               selector:
-                description: The selector determines the workloads to apply the ChannelAuthentication
-                  on.
+                description: The selector determines the workloads to apply the ChannelAuthentication on.
                 properties:
                   matchLabels:
                     additionalProperties:
@@ -3996,16 +3778,14 @@ spec:
                 items:
                   properties:
                     domain:
-                      description: Domain suffix used to construct the service FQDN
-                        in implementations that support such specification.
+                      description: Domain suffix used to construct the service FQDN in implementations that support such specification.
                       format: string
                       type: string
                     labels:
                       additionalProperties:
                         format: string
                         type: string
-                      description: Optional one or more labels that uniquely identify
-                        the service version.
+                      description: Optional one or more labels that uniquely identify the service version.
                       type: object
                     name:
                       description: The short name of the service such as "foo".
@@ -4159,12 +3939,10 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: RequestAuthentication defines what request authentication
-              methods are supported by a workload.
+            description: RequestAuthentication defines what request authentication methods are supported by a workload.
             properties:
               jwtRules:
-                description: Define the list of JWTs that can be validated at the
-                  selected workloads' proxy.
+                description: Define the list of JWTs that can be validated at the selected workloads' proxy.
                 items:
                   properties:
                     audiences:
@@ -4173,8 +3951,7 @@ spec:
                         type: string
                       type: array
                     forwardOriginalToken:
-                      description: If set to true, the orginal token will be kept
-                        for the ustream request.
+                      description: If set to true, the orginal token will be kept for the ustream request.
                       type: boolean
                     fromHeaders:
                       description: List of header locations from which JWT is expected.
@@ -4185,8 +3962,7 @@ spec:
                             format: string
                             type: string
                           prefix:
-                            description: The prefix that should be stripped before
-                              decoding the token.
+                            description: The prefix that should be stripped before decoding the token.
                             format: string
                             type: string
                         type: object
@@ -4202,8 +3978,7 @@ spec:
                       format: string
                       type: string
                     jwks:
-                      description: JSON Web Key Set of public keys to validate signature
-                        of the JWT.
+                      description: JSON Web Key Set of public keys to validate signature of the JWT.
                       format: string
                       type: string
                     jwks_uri:
@@ -4218,8 +3993,7 @@ spec:
                   type: object
                 type: array
               selector:
-                description: The selector determines the workloads to apply the RequestAuthentication
-                  on.
+                description: The selector determines the workloads to apply the RequestAuthentication on.
                 properties:
                   matchLabels:
                     additionalProperties:
@@ -4268,12 +4042,10 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Describes the rules used to configure Mixer''s policy and
-              telemetry features. See more details at: https://istio.io/docs/reference/config/policy-and-telemetry/istio.policy.v1beta1.html'
+            description: 'Describes the rules used to configure Mixer''s policy and telemetry features. See more details at: https://istio.io/docs/reference/config/policy-and-telemetry/istio.policy.v1beta1.html'
             properties:
               actions:
-                description: The actions that will be executed when match evaluates
-                  to `true`.
+                description: The actions that will be executed when match evaluates to `true`.
                 items:
                   properties:
                     handler:
@@ -4342,12 +4114,10 @@ spec:
               sampling:
                 properties:
                   random:
-                    description: Provides filtering of actions based on random selection
-                      per request.
+                    description: Provides filtering of actions based on random selection per request.
                     properties:
                       attributeExpression:
-                        description: Specifies an attribute expression to use to override
-                          the numerator in the `percent_sampled` field.
+                        description: Specifies an attribute expression to use to override the numerator in the `percent_sampled` field.
                         format: string
                         type: string
                       percentSampled:
@@ -4364,23 +4134,20 @@ spec:
                             type: integer
                         type: object
                       useIndependentRandomness:
-                        description: By default sampling will be based on the value
-                          of the request header `x-request-id`.
+                        description: By default sampling will be based on the value of the request header `x-request-id`.
                         type: boolean
                     type: object
                   rateLimit:
                     properties:
                       maxUnsampledEntries:
-                        description: Number of entries to allow during the `sampling_duration`
-                          before sampling is enforced.
+                        description: Number of entries to allow during the `sampling_duration` before sampling is enforced.
                         format: int64
                         type: integer
                       samplingDuration:
                         description: Window in which to enforce the sampling rate.
                         type: string
                       samplingRate:
-                        description: The rate at which to sample entries once the
-                          unsampled limit has been reached.
+                        description: The rate at which to sample entries once the unsampled limit has been reached.
                         format: int64
                         type: integer
                     type: object
@@ -4426,8 +4193,7 @@ spec:
       jsonPath: .spec.hosts
       name: Hosts
       type: string
-    - description: Whether the service is external to the mesh or part of the mesh
-        (MESH_EXTERNAL or MESH_INTERNAL)
+    - description: Whether the service is external to the mesh or part of the mesh (MESH_EXTERNAL or MESH_INTERNAL)
       jsonPath: .spec.location
       name: Location
       type: string
@@ -4435,11 +4201,7 @@ spec:
       jsonPath: .spec.resolution
       name: Resolution
       type: string
-    - description: 'CreationTimestamp is a timestamp representing the server time
-        when this object was created. It is not guaranteed to be set in happens-before
-        order across separate operations. Clients may not set this value. It is represented
-        in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for
-        lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
+    - description: 'CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
@@ -4448,8 +4210,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting service registry. See more details
-              at: https://istio.io/docs/reference/config/networking/service-entry.html'
+            description: 'Configuration affecting service registry. See more details at: https://istio.io/docs/reference/config/networking/service-entry.html'
             properties:
               addresses:
                 description: The virtual IP addresses associated with the service.
@@ -4561,8 +4322,7 @@ spec:
       jsonPath: .spec.hosts
       name: Hosts
       type: string
-    - description: Whether the service is external to the mesh or part of the mesh
-        (MESH_EXTERNAL or MESH_INTERNAL)
+    - description: Whether the service is external to the mesh or part of the mesh (MESH_EXTERNAL or MESH_INTERNAL)
       jsonPath: .spec.location
       name: Location
       type: string
@@ -4570,11 +4330,7 @@ spec:
       jsonPath: .spec.resolution
       name: Resolution
       type: string
-    - description: 'CreationTimestamp is a timestamp representing the server time
-        when this object was created. It is not guaranteed to be set in happens-before
-        order across separate operations. Clients may not set this value. It is represented
-        in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for
-        lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
+    - description: 'CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
@@ -4583,8 +4339,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting service registry. See more details
-              at: https://istio.io/docs/reference/config/networking/service-entry.html'
+            description: 'Configuration affecting service registry. See more details at: https://istio.io/docs/reference/config/networking/service-entry.html'
             properties:
               addresses:
                 description: The virtual IP addresses associated with the service.
@@ -4721,8 +4476,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting network reachability of a sidecar.
-              See more details at: https://istio.io/docs/reference/config/networking/sidecar.html'
+            description: 'Configuration affecting network reachability of a sidecar. See more details at: https://istio.io/docs/reference/config/networking/sidecar.html'
             properties:
               egress:
                 items:
@@ -4805,8 +4559,7 @@ spec:
                         format: string
                         type: string
                       port:
-                        description: Specifies the port on the host that is being
-                          addressed.
+                        description: Specifies the port on the host that is being addressed.
                         properties:
                           number:
                             type: integer
@@ -4844,8 +4597,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting network reachability of a sidecar.
-              See more details at: https://istio.io/docs/reference/config/networking/sidecar.html'
+            description: 'Configuration affecting network reachability of a sidecar. See more details at: https://istio.io/docs/reference/config/networking/sidecar.html'
             properties:
               egress:
                 items:
@@ -4928,8 +4680,7 @@ spec:
                         format: string
                         type: string
                       port:
-                        description: Specifies the port on the host that is being
-                          addressed.
+                        description: Specifies the port on the host that is being addressed.
                         properties:
                           number:
                             type: integer
@@ -5039,11 +4790,7 @@ spec:
       jsonPath: .spec.hosts
       name: Hosts
       type: string
-    - description: 'CreationTimestamp is a timestamp representing the server time
-        when this object was created. It is not guaranteed to be set in happens-before
-        order across separate operations. Clients may not set this value. It is represented
-        in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for
-        lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
+    - description: 'CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
@@ -5052,19 +4799,16 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting label/content routing, sni routing,
-              etc. See more details at: https://istio.io/docs/reference/config/networking/virtual-service.html'
+            description: 'Configuration affecting label/content routing, sni routing, etc. See more details at: https://istio.io/docs/reference/config/networking/virtual-service.html'
             properties:
               exportTo:
-                description: A list of namespaces to which this virtual service is
-                  exported.
+                description: A list of namespaces to which this virtual service is exported.
                 items:
                   format: string
                   type: string
                 type: array
               gateways:
-                description: The names of gateways and sidecars that should apply
-                  these routes.
+                description: The names of gateways and sidecars that should apply these routes.
                 items:
                   format: string
                   type: string
@@ -5091,15 +4835,13 @@ spec:
                             type: string
                           type: array
                         allowMethods:
-                          description: List of HTTP methods allowed to access the
-                            resource.
+                          description: List of HTTP methods allowed to access the resource.
                           items:
                             format: string
                             type: string
                           type: array
                         allowOrigin:
-                          description: The list of origins that are allowed to perform
-                            CORS requests.
+                          description: The list of origins that are allowed to perform CORS requests.
                           items:
                             format: string
                             type: string
@@ -5150,14 +4892,12 @@ spec:
                           format: string
                           type: string
                         namespace:
-                          description: Namespace specifies the namespace where the
-                            delegate VirtualService resides.
+                          description: Namespace specifies the namespace where the delegate VirtualService resides.
                           format: string
                           type: string
                       type: object
                     fault:
-                      description: Fault injection policy to apply on HTTP traffic
-                        at the client side.
+                      description: Fault injection policy to apply on HTTP traffic at the client side.
                       properties:
                         abort:
                           oneOf:
@@ -5183,13 +4923,11 @@ spec:
                               format: string
                               type: string
                             httpStatus:
-                              description: HTTP status code to use to abort the Http
-                                request.
+                              description: HTTP status code to use to abort the Http request.
                               format: int32
                               type: integer
                             percentage:
-                              description: Percentage of requests to be aborted with
-                                the error code provided.
+                              description: Percentage of requests to be aborted with the error code provided.
                               properties:
                                 value:
                                   format: double
@@ -5212,17 +4950,14 @@ spec:
                             exponentialDelay:
                               type: string
                             fixedDelay:
-                              description: Add a fixed delay before forwarding the
-                                request.
+                              description: Add a fixed delay before forwarding the request.
                               type: string
                             percent:
-                              description: Percentage of requests on which the delay
-                                will be injected (0-100).
+                              description: Percentage of requests on which the delay will be injected (0-100).
                               format: int32
                               type: integer
                             percentage:
-                              description: Percentage of requests on which the delay
-                                will be injected.
+                              description: Percentage of requests on which the delay will be injected.
                               properties:
                                 value:
                                   format: double
@@ -5301,8 +5036,7 @@ spec:
                                 type: string
                             type: object
                           gateways:
-                            description: Names of gateways where the rule should be
-                              applied.
+                            description: Names of gateways where the rule should be applied.
                             items:
                               format: string
                               type: string
@@ -5338,8 +5072,7 @@ spec:
                               type: object
                             type: object
                           ignoreUriCase:
-                            description: Flag to specify whether the URI matching
-                              should be case-insensitive.
+                            description: Flag to specify whether the URI matching should be case-insensitive.
                             type: boolean
                           method:
                             oneOf:
@@ -5374,8 +5107,7 @@ spec:
                             format: string
                             type: string
                           port:
-                            description: Specifies the ports on the host that is being
-                              addressed.
+                            description: Specifies the ports on the host that is being addressed.
                             type: integer
                           queryParams:
                             additionalProperties:
@@ -5442,8 +5174,7 @@ spec:
                               type: string
                             type: object
                           sourceNamespace:
-                            description: Source namespace constraining the applicability
-                              of a rule to workloads in that namespace.
+                            description: Source namespace constraining the applicability of a rule to workloads in that namespace.
                             format: string
                             type: string
                           uri:
@@ -5503,8 +5234,7 @@ spec:
                                   format: string
                                   type: string
                               type: object
-                            description: withoutHeader has the same syntax with the
-                              header, but has opposite meaning.
+                            description: withoutHeader has the same syntax with the header, but has opposite meaning.
                             type: object
                         type: object
                       type: array
@@ -5515,8 +5245,7 @@ spec:
                           format: string
                           type: string
                         port:
-                          description: Specifies the port on the host that is being
-                            addressed.
+                          description: Specifies the port on the host that is being addressed.
                           properties:
                             number:
                               type: integer
@@ -5527,18 +5256,15 @@ spec:
                           type: string
                       type: object
                     mirror_percent:
-                      description: Percentage of the traffic to be mirrored by the
-                        `mirror` field.
+                      description: Percentage of the traffic to be mirrored by the `mirror` field.
                       nullable: true
                       type: integer
                     mirrorPercent:
-                      description: Percentage of the traffic to be mirrored by the
-                        `mirror` field.
+                      description: Percentage of the traffic to be mirrored by the `mirror` field.
                       nullable: true
                       type: integer
                     mirrorPercentage:
-                      description: Percentage of the traffic to be mirrored by the
-                        `mirror` field.
+                      description: Percentage of the traffic to be mirrored by the `mirror` field.
                       properties:
                         value:
                           format: double
@@ -5549,8 +5275,7 @@ spec:
                       format: string
                       type: string
                     redirect:
-                      description: A HTTP rule can either redirect or forward (default)
-                        traffic.
+                      description: A HTTP rule can either redirect or forward (default) traffic.
                       properties:
                         authority:
                           format: string
@@ -5572,13 +5297,11 @@ spec:
                           description: Timeout per retry attempt for a given request.
                           type: string
                         retryOn:
-                          description: Specifies the conditions under which retry
-                            takes place.
+                          description: Specifies the conditions under which retry takes place.
                           format: string
                           type: string
                         retryRemoteLocalities:
-                          description: Flag to specify whether the retries should
-                            retry to other localities.
+                          description: Flag to specify whether the retries should retry to other localities.
                           nullable: true
                           type: boolean
                       type: object
@@ -5586,8 +5309,7 @@ spec:
                       description: Rewrite HTTP URIs and Authority headers.
                       properties:
                         authority:
-                          description: rewrite the Authority/Host header with this
-                            value.
+                          description: rewrite the Authority/Host header with this value.
                           format: string
                           type: string
                         uri:
@@ -5595,20 +5317,17 @@ spec:
                           type: string
                       type: object
                     route:
-                      description: A HTTP rule can either redirect or forward (default)
-                        traffic.
+                      description: A HTTP rule can either redirect or forward (default) traffic.
                       items:
                         properties:
                           destination:
                             properties:
                               host:
-                                description: The name of a service from the service
-                                  registry.
+                                description: The name of a service from the service registry.
                                 format: string
                                 type: string
                               port:
-                                description: Specifies the port on the host that is
-                                  being addressed.
+                                description: Specifies the port on the host that is being addressed.
                                 properties:
                                   number:
                                     type: integer
@@ -5675,22 +5394,19 @@ spec:
                       items:
                         properties:
                           destinationSubnets:
-                            description: IPv4 or IPv6 ip addresses of destination
-                              with optional subnet.
+                            description: IPv4 or IPv6 ip addresses of destination with optional subnet.
                             items:
                               format: string
                               type: string
                             type: array
                           gateways:
-                            description: Names of gateways where the rule should be
-                              applied.
+                            description: Names of gateways where the rule should be applied.
                             items:
                               format: string
                               type: string
                             type: array
                           port:
-                            description: Specifies the port on the host that is being
-                              addressed.
+                            description: Specifies the port on the host that is being addressed.
                             type: integer
                           sourceLabels:
                             additionalProperties:
@@ -5698,32 +5414,27 @@ spec:
                               type: string
                             type: object
                           sourceNamespace:
-                            description: Source namespace constraining the applicability
-                              of a rule to workloads in that namespace.
+                            description: Source namespace constraining the applicability of a rule to workloads in that namespace.
                             format: string
                             type: string
                           sourceSubnet:
-                            description: IPv4 or IPv6 ip address of source with optional
-                              subnet.
+                            description: IPv4 or IPv6 ip address of source with optional subnet.
                             format: string
                             type: string
                         type: object
                       type: array
                     route:
-                      description: The destination to which the connection should
-                        be forwarded to.
+                      description: The destination to which the connection should be forwarded to.
                       items:
                         properties:
                           destination:
                             properties:
                               host:
-                                description: The name of a service from the service
-                                  registry.
+                                description: The name of a service from the service registry.
                                 format: string
                                 type: string
                               port:
-                                description: Specifies the port on the host that is
-                                  being addressed.
+                                description: Specifies the port on the host that is being addressed.
                                 properties:
                                   number:
                                     type: integer
@@ -5747,22 +5458,19 @@ spec:
                       items:
                         properties:
                           destinationSubnets:
-                            description: IPv4 or IPv6 ip addresses of destination
-                              with optional subnet.
+                            description: IPv4 or IPv6 ip addresses of destination with optional subnet.
                             items:
                               format: string
                               type: string
                             type: array
                           gateways:
-                            description: Names of gateways where the rule should be
-                              applied.
+                            description: Names of gateways where the rule should be applied.
                             items:
                               format: string
                               type: string
                             type: array
                           port:
-                            description: Specifies the port on the host that is being
-                              addressed.
+                            description: Specifies the port on the host that is being addressed.
                             type: integer
                           sniHosts:
                             description: SNI (server name indicator) to match on.
@@ -5776,27 +5484,23 @@ spec:
                               type: string
                             type: object
                           sourceNamespace:
-                            description: Source namespace constraining the applicability
-                              of a rule to workloads in that namespace.
+                            description: Source namespace constraining the applicability of a rule to workloads in that namespace.
                             format: string
                             type: string
                         type: object
                       type: array
                     route:
-                      description: The destination to which the connection should
-                        be forwarded to.
+                      description: The destination to which the connection should be forwarded to.
                       items:
                         properties:
                           destination:
                             properties:
                               host:
-                                description: The name of a service from the service
-                                  registry.
+                                description: The name of a service from the service registry.
                                 format: string
                                 type: string
                               port:
-                                description: Specifies the port on the host that is
-                                  being addressed.
+                                description: Specifies the port on the host that is being addressed.
                                 properties:
                                   number:
                                     type: integer
@@ -5831,11 +5535,7 @@ spec:
       jsonPath: .spec.hosts
       name: Hosts
       type: string
-    - description: 'CreationTimestamp is a timestamp representing the server time
-        when this object was created. It is not guaranteed to be set in happens-before
-        order across separate operations. Clients may not set this value. It is represented
-        in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for
-        lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
+    - description: 'CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
@@ -5844,19 +5544,16 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting label/content routing, sni routing,
-              etc. See more details at: https://istio.io/docs/reference/config/networking/virtual-service.html'
+            description: 'Configuration affecting label/content routing, sni routing, etc. See more details at: https://istio.io/docs/reference/config/networking/virtual-service.html'
             properties:
               exportTo:
-                description: A list of namespaces to which this virtual service is
-                  exported.
+                description: A list of namespaces to which this virtual service is exported.
                 items:
                   format: string
                   type: string
                 type: array
               gateways:
-                description: The names of gateways and sidecars that should apply
-                  these routes.
+                description: The names of gateways and sidecars that should apply these routes.
                 items:
                   format: string
                   type: string
@@ -5883,15 +5580,13 @@ spec:
                             type: string
                           type: array
                         allowMethods:
-                          description: List of HTTP methods allowed to access the
-                            resource.
+                          description: List of HTTP methods allowed to access the resource.
                           items:
                             format: string
                             type: string
                           type: array
                         allowOrigin:
-                          description: The list of origins that are allowed to perform
-                            CORS requests.
+                          description: The list of origins that are allowed to perform CORS requests.
                           items:
                             format: string
                             type: string
@@ -5942,14 +5637,12 @@ spec:
                           format: string
                           type: string
                         namespace:
-                          description: Namespace specifies the namespace where the
-                            delegate VirtualService resides.
+                          description: Namespace specifies the namespace where the delegate VirtualService resides.
                           format: string
                           type: string
                       type: object
                     fault:
-                      description: Fault injection policy to apply on HTTP traffic
-                        at the client side.
+                      description: Fault injection policy to apply on HTTP traffic at the client side.
                       properties:
                         abort:
                           oneOf:
@@ -5975,13 +5668,11 @@ spec:
                               format: string
                               type: string
                             httpStatus:
-                              description: HTTP status code to use to abort the Http
-                                request.
+                              description: HTTP status code to use to abort the Http request.
                               format: int32
                               type: integer
                             percentage:
-                              description: Percentage of requests to be aborted with
-                                the error code provided.
+                              description: Percentage of requests to be aborted with the error code provided.
                               properties:
                                 value:
                                   format: double
@@ -6004,17 +5695,14 @@ spec:
                             exponentialDelay:
                               type: string
                             fixedDelay:
-                              description: Add a fixed delay before forwarding the
-                                request.
+                              description: Add a fixed delay before forwarding the request.
                               type: string
                             percent:
-                              description: Percentage of requests on which the delay
-                                will be injected (0-100).
+                              description: Percentage of requests on which the delay will be injected (0-100).
                               format: int32
                               type: integer
                             percentage:
-                              description: Percentage of requests on which the delay
-                                will be injected.
+                              description: Percentage of requests on which the delay will be injected.
                               properties:
                                 value:
                                   format: double
@@ -6093,8 +5781,7 @@ spec:
                                 type: string
                             type: object
                           gateways:
-                            description: Names of gateways where the rule should be
-                              applied.
+                            description: Names of gateways where the rule should be applied.
                             items:
                               format: string
                               type: string
@@ -6130,8 +5817,7 @@ spec:
                               type: object
                             type: object
                           ignoreUriCase:
-                            description: Flag to specify whether the URI matching
-                              should be case-insensitive.
+                            description: Flag to specify whether the URI matching should be case-insensitive.
                             type: boolean
                           method:
                             oneOf:
@@ -6166,8 +5852,7 @@ spec:
                             format: string
                             type: string
                           port:
-                            description: Specifies the ports on the host that is being
-                              addressed.
+                            description: Specifies the ports on the host that is being addressed.
                             type: integer
                           queryParams:
                             additionalProperties:
@@ -6234,8 +5919,7 @@ spec:
                               type: string
                             type: object
                           sourceNamespace:
-                            description: Source namespace constraining the applicability
-                              of a rule to workloads in that namespace.
+                            description: Source namespace constraining the applicability of a rule to workloads in that namespace.
                             format: string
                             type: string
                           uri:
@@ -6295,8 +5979,7 @@ spec:
                                   format: string
                                   type: string
                               type: object
-                            description: withoutHeader has the same syntax with the
-                              header, but has opposite meaning.
+                            description: withoutHeader has the same syntax with the header, but has opposite meaning.
                             type: object
                         type: object
                       type: array
@@ -6307,8 +5990,7 @@ spec:
                           format: string
                           type: string
                         port:
-                          description: Specifies the port on the host that is being
-                            addressed.
+                          description: Specifies the port on the host that is being addressed.
                           properties:
                             number:
                               type: integer
@@ -6319,18 +6001,15 @@ spec:
                           type: string
                       type: object
                     mirror_percent:
-                      description: Percentage of the traffic to be mirrored by the
-                        `mirror` field.
+                      description: Percentage of the traffic to be mirrored by the `mirror` field.
                       nullable: true
                       type: integer
                     mirrorPercent:
-                      description: Percentage of the traffic to be mirrored by the
-                        `mirror` field.
+                      description: Percentage of the traffic to be mirrored by the `mirror` field.
                       nullable: true
                       type: integer
                     mirrorPercentage:
-                      description: Percentage of the traffic to be mirrored by the
-                        `mirror` field.
+                      description: Percentage of the traffic to be mirrored by the `mirror` field.
                       properties:
                         value:
                           format: double
@@ -6341,8 +6020,7 @@ spec:
                       format: string
                       type: string
                     redirect:
-                      description: A HTTP rule can either redirect or forward (default)
-                        traffic.
+                      description: A HTTP rule can either redirect or forward (default) traffic.
                       properties:
                         authority:
                           format: string
@@ -6364,13 +6042,11 @@ spec:
                           description: Timeout per retry attempt for a given request.
                           type: string
                         retryOn:
-                          description: Specifies the conditions under which retry
-                            takes place.
+                          description: Specifies the conditions under which retry takes place.
                           format: string
                           type: string
                         retryRemoteLocalities:
-                          description: Flag to specify whether the retries should
-                            retry to other localities.
+                          description: Flag to specify whether the retries should retry to other localities.
                           nullable: true
                           type: boolean
                       type: object
@@ -6378,8 +6054,7 @@ spec:
                       description: Rewrite HTTP URIs and Authority headers.
                       properties:
                         authority:
-                          description: rewrite the Authority/Host header with this
-                            value.
+                          description: rewrite the Authority/Host header with this value.
                           format: string
                           type: string
                         uri:
@@ -6387,20 +6062,17 @@ spec:
                           type: string
                       type: object
                     route:
-                      description: A HTTP rule can either redirect or forward (default)
-                        traffic.
+                      description: A HTTP rule can either redirect or forward (default) traffic.
                       items:
                         properties:
                           destination:
                             properties:
                               host:
-                                description: The name of a service from the service
-                                  registry.
+                                description: The name of a service from the service registry.
                                 format: string
                                 type: string
                               port:
-                                description: Specifies the port on the host that is
-                                  being addressed.
+                                description: Specifies the port on the host that is being addressed.
                                 properties:
                                   number:
                                     type: integer
@@ -6467,22 +6139,19 @@ spec:
                       items:
                         properties:
                           destinationSubnets:
-                            description: IPv4 or IPv6 ip addresses of destination
-                              with optional subnet.
+                            description: IPv4 or IPv6 ip addresses of destination with optional subnet.
                             items:
                               format: string
                               type: string
                             type: array
                           gateways:
-                            description: Names of gateways where the rule should be
-                              applied.
+                            description: Names of gateways where the rule should be applied.
                             items:
                               format: string
                               type: string
                             type: array
                           port:
-                            description: Specifies the port on the host that is being
-                              addressed.
+                            description: Specifies the port on the host that is being addressed.
                             type: integer
                           sourceLabels:
                             additionalProperties:
@@ -6490,32 +6159,27 @@ spec:
                               type: string
                             type: object
                           sourceNamespace:
-                            description: Source namespace constraining the applicability
-                              of a rule to workloads in that namespace.
+                            description: Source namespace constraining the applicability of a rule to workloads in that namespace.
                             format: string
                             type: string
                           sourceSubnet:
-                            description: IPv4 or IPv6 ip address of source with optional
-                              subnet.
+                            description: IPv4 or IPv6 ip address of source with optional subnet.
                             format: string
                             type: string
                         type: object
                       type: array
                     route:
-                      description: The destination to which the connection should
-                        be forwarded to.
+                      description: The destination to which the connection should be forwarded to.
                       items:
                         properties:
                           destination:
                             properties:
                               host:
-                                description: The name of a service from the service
-                                  registry.
+                                description: The name of a service from the service registry.
                                 format: string
                                 type: string
                               port:
-                                description: Specifies the port on the host that is
-                                  being addressed.
+                                description: Specifies the port on the host that is being addressed.
                                 properties:
                                   number:
                                     type: integer
@@ -6539,22 +6203,19 @@ spec:
                       items:
                         properties:
                           destinationSubnets:
-                            description: IPv4 or IPv6 ip addresses of destination
-                              with optional subnet.
+                            description: IPv4 or IPv6 ip addresses of destination with optional subnet.
                             items:
                               format: string
                               type: string
                             type: array
                           gateways:
-                            description: Names of gateways where the rule should be
-                              applied.
+                            description: Names of gateways where the rule should be applied.
                             items:
                               format: string
                               type: string
                             type: array
                           port:
-                            description: Specifies the port on the host that is being
-                              addressed.
+                            description: Specifies the port on the host that is being addressed.
                             type: integer
                           sniHosts:
                             description: SNI (server name indicator) to match on.
@@ -6568,27 +6229,23 @@ spec:
                               type: string
                             type: object
                           sourceNamespace:
-                            description: Source namespace constraining the applicability
-                              of a rule to workloads in that namespace.
+                            description: Source namespace constraining the applicability of a rule to workloads in that namespace.
                             format: string
                             type: string
                         type: object
                       type: array
                     route:
-                      description: The destination to which the connection should
-                        be forwarded to.
+                      description: The destination to which the connection should be forwarded to.
                       items:
                         properties:
                           destination:
                             properties:
                               host:
-                                description: The name of a service from the service
-                                  registry.
+                                description: The name of a service from the service registry.
                                 format: string
                                 type: string
                               port:
-                                description: Specifies the port on the host that is
-                                  being addressed.
+                                description: Specifies the port on the host that is being addressed.
                                 properties:
                                   number:
                                     type: integer
@@ -6642,11 +6299,7 @@ spec:
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
-    - description: 'CreationTimestamp is a timestamp representing the server time
-        when this object was created. It is not guaranteed to be set in happens-before
-        order across separate operations. Clients may not set this value. It is represented
-        in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for
-        lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
+    - description: 'CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
@@ -6659,8 +6312,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting VMs onboarded into the mesh. See
-              more details at: https://istio.io/docs/reference/config/networking/workload-entry.html'
+            description: 'Configuration affecting VMs onboarded into the mesh. See more details at: https://istio.io/docs/reference/config/networking/workload-entry.html'
             properties:
               address:
                 format: string
@@ -6699,11 +6351,7 @@ spec:
     subresources:
       status: {}
   - additionalPrinterColumns:
-    - description: 'CreationTimestamp is a timestamp representing the server time
-        when this object was created. It is not guaranteed to be set in happens-before
-        order across separate operations. Clients may not set this value. It is represented
-        in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for
-        lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
+    - description: 'CreationTimestamp is a timestamp representing the server time when this object was created. It is not guaranteed to be set in happens-before order across separate operations. Clients may not set this value. It is represented in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
       jsonPath: .metadata.creationTimestamp
       name: Age
       type: date
@@ -6716,8 +6364,7 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: 'Configuration affecting VMs onboarded into the mesh. See
-              more details at: https://istio.io/docs/reference/config/networking/workload-entry.html'
+            description: 'Configuration affecting VMs onboarded into the mesh. See more details at: https://istio.io/docs/reference/config/networking/workload-entry.html'
             properties:
               address:
                 format: string

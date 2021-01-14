@@ -1,0 +1,17 @@
+
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/cf-for-k8s-ci
+
+inputs:
+  - name: cf-api-controllers
+  - name: cf-for-k8s-ci
+
+params: {}
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/cake/run-cf-api-controllers-unit-tests.sh

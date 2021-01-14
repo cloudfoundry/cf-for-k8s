@@ -1,0 +1,30 @@
+---
+platform: linux
+
+image_resource:
+  type: registry-image
+  source:
+    repository: cloudfoundry/cf-for-k8s-ci
+
+inputs:
+- name: cf-for-k8s-ci
+- name: capi-k8s-release
+- name: capi-docker-image
+- name: cf-api-controllers-docker-image
+- name: registry-buddy-docker-image
+- name: nginx-docker-image
+- name: backup-metadata-generator-docker-image
+- name: cloud-controller-ng
+- name: capi-nginx
+- name: cf-api-controllers
+- name: registry-buddy
+
+outputs:
+- name: updated-capi-k8s-release
+
+params:
+  GIT_COMMIT_EMAIL: capi-bot@pivotal.io
+  GIT_COMMIT_USERNAME: "CAPI CI Bot"
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/cake/bump-capi-k8s-release-image-refs.sh

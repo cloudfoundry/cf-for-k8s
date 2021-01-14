@@ -1,0 +1,21 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/capi
+    tag: capi-pack-builder
+
+inputs:
+  - name: cf-for-k8s-ci
+  - name: source-repository
+
+outputs:
+  - name: image
+
+params:
+  CONTEXT_PATH: null
+  ADDITIONAL_ARGS: null
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/cake/build-with-pack.sh

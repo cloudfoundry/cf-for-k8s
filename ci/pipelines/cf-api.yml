@@ -1,0 +1,704 @@
+# PINNED VERSIONS
+# To pin a version of a git resource, include the commit hash in the list here:
+#
+# version_pins:
+# - &BOSH_DEPLOYMENT_VERSION 3f4466a51a74dadbff6612e7d2b79d2802668469
+#
+# And then reference it whenever you `get` that resource:
+#
+#      - get: bosh-deployment
+#        version: { ref: *BOSH_DEPLOYMENT_VERSION }
+##
+
+groups:
+- name: capi-k8s-release
+  jobs:
+  - cc-unit-tests
+  - cf-api-controllers-unit-tests
+  - registry-buddy-unit-tests
+  - registry-buddy-integration-tests
+  - build-capi-docker-image
+  - build-cf-api-controllers-image
+  - registry-buddy-docker-image
+  - build-nginx-docker-image
+  - cf-api-tests
+  - k8s-ci-passed
+- name: ship-it
+  jobs:
+  - ship-it-k8s
+
+resource_types:
+- name: slack-notification
+  type: docker-image
+  source:
+    repository: cfcommunity/slack-notification-resource
+- name: terraform
+  type: docker-image
+  source:
+    repository: ljfranklin/terraform-resource
+- name: bosh2-deployment
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-deployment-resource
+- name: gcs
+  type: docker-image
+  source:
+    repository: frodenas/gcs-resource
+- name: file-url
+  type: docker-image
+  source:
+    repository: pivotalservices/concourse-curl-resource
+    tag: latest
+- name: cron-resource
+  type: docker-image
+  source:
+    repository: cftoolsmiths/cron-resource
+
+resources:
+- name: backup-metadata-generator-docker-image
+  type: registry-image
+  source:
+    repository: cloudfoundry/cf-api-backup-metadata-generator
+    username: ((dockerhub_user.username))
+    password: ((dockerhub_user.password))
+
+- name: capi-bara-tests
+  type: git
+  source:
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/capi-bara-tests.git
+    branch: main
+
+- name: capi-docker-image
+  type: registry-image
+  source:
+    repository: cloudfoundry/cloud-controller-ng
+    username: ((dockerhub_user.username))
+    password: ((dockerhub_user.password))
+
+- name: capi-k8s-release
+  type: git
+  source:
+    branch: master
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/capi-k8s-release.git
+
+- name: capi-k8s-release-except-images
+  type: git
+  check_every: 2m
+  source:
+    branch: master
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/capi-k8s-release.git
+    ignore_paths: [values/images.yml]
+
+- name: capi-k8s-release-ci-passed
+  type: git
+  source:
+    branch: ci-passed
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/capi-k8s-release.git
+
+# currently nginx Dockerfile and source are in the
+# capi-k8s-release repo
+- name: capi-nginx
+  type: git
+  source:
+    branch: master
+    paths: [dockerfiles/nginx]
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/capi-k8s-release.git
+
+- name: cf-acceptance-tests
+  type: git
+  source:
+    branch: release-candidate
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/cf-acceptance-tests.git
+
+- name: cf-api-controllers
+  type: git
+  source:
+    branch: master
+    paths: [src/cf-api-controllers]
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/capi-k8s-release.git
+
+- name: cf-api-controllers-docker-image
+  type: registry-image
+  source:
+    repository: cloudfoundry/cf-api-controllers
+    username: ((dockerhub_user.username))
+    password: ((dockerhub_user.password))
+
+- name: cf-for-k8s
+  type: git
+  source:
+    branch: main
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/cf-for-k8s.git
+
+- name: cf-for-k8s-ci
+  type: git
+  source:
+    # TODO: revert this to develop after it looks good
+    branch: migrate-cake-pipeline
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/cf-for-k8s.git
+
+- name: cloud-controller-ng
+  type: git
+  source:
+    branch: main
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/cloud_controller_ng.git
+
+- name: nginx-docker-image
+  type: registry-image
+  source:
+    repository: cloudfoundry/capi-nginx
+    username: ((dockerhub_user.username))
+    password: ((dockerhub_user.password))
+
+- name: registry-buddy
+  type: git
+  source:
+    branch: master
+    paths: [src/registry-buddy]
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/capi-k8s-release.git
+
+- name: registry-buddy-docker-image
+  type: registry-image
+  source:
+    repository: cloudfoundry/cf-api-package-registry-buddy
+    username: ((dockerhub_user.username))
+    password: ((dockerhub_user.password))
+
+- name: slack-alert
+  type: slack-notification
+  source:
+    url: ((slack_failure_hook_url))
+
+- name: capi-k8s-github-release
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: capi-k8s-release
+    drafts: true
+    access_token: ((github_access_token))
+
+- name: capi-k8s-github-published-release
+  type: github-release
+  source:
+    user: cloudfoundry
+    repository: capi-k8s-release
+    drafts: false
+    access_token: ((github_access_token))
+
+- name: ready-pool
+  type: pool
+  icon: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: main
+    pool: k8s-dev/ready
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
+- name: destroy-pool
+  type: pool
+  icon: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: main
+    pool: k8s-dev/destroy
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
+jobs:
+- name: cc-unit-tests
+  plan:
+  - in_parallel:
+    - get: cloud-controller-ng
+      trigger: true
+    - get: cf-for-k8s-ci
+  - in_parallel:
+    - task: run-cc-unit-tests-mysql
+      file: cf-for-k8s-ci/ci/tasks/cake/run_cc_unit_tests.yml
+      privileged: true
+      input_mapping:
+        cloud_controller_ng: cloud-controller-ng
+      params:
+        DB: mysql
+        RUN_IN_PARALLEL: true
+    - task: run-cc-unit-tests-postgres
+      file: cf-for-k8s-ci/ci/tasks/cake/run_cc_unit_tests.yml
+      privileged: true
+      input_mapping:
+        cloud_controller_ng: cloud-controller-ng
+      params:
+        DB: postgres
+        RUN_IN_PARALLEL: true
+
+- name: cf-api-controllers-unit-tests
+  plan:
+  - in_parallel:
+    - get: cf-api-controllers
+      trigger: true
+    - get: cf-for-k8s-ci
+  - task: run-cf-api-controllers-unit-tests
+    file: cf-for-k8s-ci/ci/tasks/cake/run-cf-api-controllers-unit-tests.yml
+    on_failure:
+      put: slack-alert
+      params:
+        text: '[cf-api-controllers-unit-tests] OH NO! Failed when running with kubebuilder'
+        icon_emoji: ":pickle:"
+
+- name: registry-buddy-unit-tests
+  plan:
+  - in_parallel:
+    - get: registry-buddy
+      trigger: true
+    - get: cf-for-k8s-ci
+  - task: run-registry-buddy-unit-tests
+    file: cf-for-k8s-ci/ci/tasks/cake/run-registry-buddy-unit-tests.yml
+    on_failure:
+      put: slack-alert
+      params:
+        text: '[registry-buddy-unit-tests] OH NO! Failed package registry-ing'
+        icon_emoji: ":pickle:"
+
+- name: registry-buddy-integration-tests
+  plan:
+    - in_parallel:
+        - get: registry-buddy
+          trigger: true
+        - get: cf-for-k8s-ci
+    - in_parallel:
+      - task: run-registry-buddy-integration-tests-on-gcr
+        file: cf-for-k8s-ci/ci/tasks/cake/run-registry-buddy-integration-tests.yml
+        params:
+          REGISTRY_BASE_PATH: gcr.io/cf-capi-ci/registry-buddy-integration
+          REGISTRY_PASSWORD: ((ci_gcp_json_key))
+          REGISTRY_USERNAME: _json_key
+        on_failure:
+          put: slack-alert
+          params:
+            text: '[registry-buddy-integration-tests] OH NO! Failed package registry-ing with GCR'
+            icon_emoji: ":pickle:"
+      - task: run-registry-buddy-integration-tests-on-dockerhub
+        file: cf-for-k8s-ci/ci/tasks/cake/run-registry-buddy-integration-tests.yml
+        params:
+          REGISTRY_BASE_PATH: index.docker.io/c4ketest
+          REGISTRY_PASSWORD: ((dockerhub_test.password))
+          REGISTRY_USERNAME: ((dockerhub_test.username))
+        on_failure:
+          put: slack-alert
+          params:
+            text: '[registry-buddy-integration-tests] OH NO! Failed package registry-ing with Dockerhub'
+            icon_emoji: ":pickle:"
+      # TODO: we will run tests against Harbor again as part of this: https://www.pivotaltracker.com/story/show/175365622
+      # - task: run-registry-buddy-integration-tests-on-harbor
+      #   file: cf-for-k8s-ci/ci/tasks/cake/run-registry-buddy-integration-tests.yml
+      #   params:
+      #     REGISTRY_BASE_PATH: dev.registry.pivotal.io/cf-cake
+      #     REGISTRY_PASSWORD: ((dev_pivnet_registry_password))
+      #     REGISTRY_USERNAME: ((dev_pivnet_registry_username))
+      #   on_failure:
+      #     put: slack-alert
+      #     params:
+      #       text: '[registry-buddy-integratoin-tests] OH NO! Failed package registry-ing with Harbor'
+      #       icon_emoji: ((slack_failure_emoji))
+
+- name: build-capi-docker-image
+  plan:
+    - in_parallel:
+      - get: cloud-controller-ng
+        passed: [cc-unit-tests]
+        trigger: true
+      - get: cf-for-k8s-ci
+    - task: build-with-pack
+      privileged: true
+      file: cf-for-k8s-ci/ci/tasks/cake/build-with-pack.yml
+      params:
+        ADDITIONAL_ARGS: "-b gcr.io/paketo-buildpacks/ruby"
+      input_mapping:
+        source-repository: cloud-controller-ng
+    - task: run-deplab
+      privileged: true
+      file: cf-for-k8s-ci/ci/tasks/cake/run-deplab.yml
+      input_mapping:
+        source-repository: cloud-controller-ng
+    - put: capi-docker-image
+      params:
+        image: labeled-image/image.tar
+
+- name: build-cf-api-controllers-image
+  plan:
+    - in_parallel:
+      - get: cf-api-controllers
+        trigger: true
+        passed: [cf-api-controllers-unit-tests]
+      - get: cf-for-k8s-ci
+    - task: build-with-pack
+      privileged: true
+      file: cf-for-k8s-ci/ci/tasks/cake/build-with-pack.yml
+      params:
+        CONTEXT_PATH: src/cf-api-controllers
+      input_mapping:
+        source-repository: cf-api-controllers
+    - task: run-deplab
+      privileged: true
+      file: cf-for-k8s-ci/ci/tasks/cake/run-deplab.yml
+      input_mapping:
+        source-repository: cf-api-controllers
+    - put: cf-api-controllers-docker-image
+      params:
+        image: labeled-image/image.tar
+
+- name: registry-buddy-docker-image
+  plan:
+    - in_parallel:
+      - get: registry-buddy
+        trigger: true
+        passed: [registry-buddy-unit-tests, registry-buddy-integration-tests]
+      - get: cf-for-k8s-ci
+    - task: build-with-pack
+      privileged: true
+      file: cf-for-k8s-ci/ci/tasks/cake/build-with-pack.yml
+      params:
+        CONTEXT_PATH: src/registry-buddy
+      input_mapping:
+        source-repository: registry-buddy
+    - task: run-deplab
+      privileged: true
+      file: cf-for-k8s-ci/ci/tasks/cake/run-deplab.yml
+      input_mapping:
+        source-repository: registry-buddy
+    - put: registry-buddy-docker-image
+      params:
+        image: labeled-image/image.tar
+
+- name: build-nginx-docker-image
+  plan:
+    - in_parallel:
+      - get: capi-nginx
+        trigger: true
+      - get: cf-for-k8s-ci
+    - task: build
+      privileged: true
+      file: cf-for-k8s-ci/ci/tasks/cake/oci-build-task.yml
+      input_mapping:
+        context-repository: capi-nginx
+      params:
+        CONTEXT: context-repository/dockerfiles/nginx
+    - task: run-deplab
+      privileged: true
+      file: cf-for-k8s-ci/ci/tasks/cake/run-deplab.yml
+      input_mapping:
+        source-repository: capi-nginx
+    - put: nginx-docker-image
+      params:
+        image: labeled-image/image.tar
+
+# TODO: rename this later
+- name: cf-api-tests
+  public: true
+  plan:
+  - in_parallel:
+    - get: cloud-controller-ng
+      passed: [build-capi-docker-image]
+    - get: capi-k8s-release-except-images
+      trigger: true
+    - get: capi-k8s-release
+    - get: cf-for-k8s-ci
+    - get: capi-bara-tests
+    - get: cf-for-k8s
+      trigger: true
+    - get: capi-docker-image
+      trigger: true
+      passed: [build-capi-docker-image]
+    - get: cf-api-controllers-docker-image
+      trigger: true
+      passed: [build-cf-api-controllers-image]
+    - get: registry-buddy-docker-image
+      trigger: true
+      passed: [registry-buddy-docker-image]
+    - get: backup-metadata-generator-docker-image
+    - get: nginx-docker-image
+      trigger: true
+      passed: [build-nginx-docker-image]
+    - get: cf-api-controllers
+      passed: [build-cf-api-controllers-image]
+    - get: registry-buddy
+      passed: [registry-buddy-docker-image]
+    - get: capi-nginx
+      passed: [build-nginx-docker-image]
+    - get: cf-acceptance-tests
+  - put: ready-pool
+    params:
+      acquire: true
+  - task: display-cluster-info
+    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+  # TODO: make a file for this task?
+  - task: bump-capi-k8s-release-in-cf-for-k8s
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: cloudfoundry/capi
+          tag: cf-for-k8s
+      inputs:
+      - name: cf-for-k8s
+      - name: capi-k8s-release
+      - name: capi-docker-image
+      - name: cf-api-controllers-docker-image
+      - name: registry-buddy-docker-image
+      - name: backup-metadata-generator-docker-image
+      - name: nginx-docker-image
+      outputs:
+      - name: cf-for-k8s-dirty
+      run:
+        path: /bin/bash
+        args:
+          - -c
+          - |
+            set -euo pipefail
+
+            function get_image_digest_for_resource () {
+              pushd "$1" >/dev/null
+                cat digest
+              popd >/dev/null
+            }
+
+            CAPI_IMAGE="cloudfoundry/cloud-controller-ng@$(get_image_digest_for_resource capi-docker-image)"
+            NGINX_IMAGE="cloudfoundry/capi-nginx@$(get_image_digest_for_resource nginx-docker-image)"
+            CONTROLLERS_IMAGE="cloudfoundry/cf-api-controllers@$(get_image_digest_for_resource cf-api-controllers-docker-image)"
+            REGISTRY_BUDDY_IMAGE="cloudfoundry/cf-api-package-registry-buddy@$(get_image_digest_for_resource registry-buddy-docker-image)"
+            BACKUP_METADATA_GENERATOR_IMAGE="cloudfoundry/cf-api-backup-metadata-generator@$(get_image_digest_for_resource backup-metadata-generator-docker-image)"
+
+            echo "Updating images..."
+            echo "Updating ccng image to cloud_controller_ng digest: ${CAPI_IMAGE}"
+            echo "Updating nginx image to capi-k8s-release digest: ${NGINX_IMAGE}"
+            echo "Updating cf-api-controllers image to capi-k8s-release digest: ${CONTROLLERS_IMAGE}"
+            echo "Updating registry buddy image to capi-k8s-release digest: ${REGISTRY_BUDDY_IMAGE}"
+            echo "Updating backup metadata generator image to capi-k8s-release digest: ${BACKUP_METADATA_GENERATOR_IMAGE}"
+
+            cat <<- EOF > "${PWD}/update-images.yml"
+            ---
+            - type: replace
+              path: /images/ccng
+              value: ${CAPI_IMAGE}
+            - type: replace
+              path: /images/nginx
+              value: ${NGINX_IMAGE}
+            - type: replace
+              path: /images/cf_api_controllers
+              value: ${CONTROLLERS_IMAGE}
+            - type: replace
+              path: /images/registry_buddy
+              value: ${REGISTRY_BUDDY_IMAGE}
+            - type: replace
+              path: /images/backup_metadata_generator
+              value: ${BACKUP_METADATA_GENERATOR_IMAGE}
+            EOF
+
+            export CF_FOR_K8s_DIR="$PWD/cf-for-k8s"
+            pushd "capi-k8s-release"
+              bosh interpolate values/images.yml -o "../update-images.yml" > values-int.yml
+
+              echo "#@data/values" > values/images.yml
+              echo "---" >> values/images.yml
+              cat values-int.yml >> values/images.yml
+
+              scripts/bump-cf-for-k8s.sh
+            popd
+
+            cp -r "${CF_FOR_K8s_DIR}"/* cf-for-k8s-dirty/
+  - task: install-cf
+    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+      cf-for-k8s: cf-for-k8s-dirty
+    params:
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+      DOMAIN: k8s-dev.relint.rocks
+  # TODO: make a file for this task?
+  - task: generate-integration-config
+    input_mapping:
+      pool-lock: ready-pool
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: cloudfoundry/cf-for-k8s-ci
+      inputs:
+      - name: cf-for-k8s-ci
+      - name: env-metadata
+      - name: pool-lock
+      outputs:
+      - name: integration-config
+      params:
+        CF_APPS_DOMAIN: ""
+        CF_API_DOMAIN: ""
+        CF_ADMIN_PASSWORD: ""
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      run:
+        path: /bin/bash
+        args:
+          - -c
+          - |
+            if [[ -e env-metadata ]]; then
+              DNS_DOMAIN=$(cat env-metadata/dns-domain.txt)
+              CF_ADMIN_PASSWORD="$(cat env-metadata/cf-admin-password.txt)"
+
+              CF_APPS_DOMAIN="apps.${DNS_DOMAIN}"
+              CF_API_DOMAIN="api.${DNS_DOMAIN}"
+            fi
+
+            CLUSTER_NAME="$(cat pool-lock/name)"
+
+            cat <<EOF > integration-config/integration_config.json
+            {
+              "api": "${CF_API_DOMAIN}",
+              "apps_domain": "${CF_APPS_DOMAIN}",
+              "admin_user": "admin",
+              "admin_password": "${CF_ADMIN_PASSWORD}",
+              "skip_ssl_validation": true,
+              "infrastructure": "kubernetes",
+              "gcloud_project_name": "${GCP_PROJECT_NAME}",
+              "cluster_zone": "${GCP_PROJECT_ZONE}",
+              "cluster_name": "${CLUSTER_NAME}",
+              "cf_push_timeout": 480,
+              "python_buildpack_name": "paketo-community/python",
+              "ruby_buildpack_name": "paketo-buildpacks/ruby",
+              "java_buildpack_name": "paketo-buildpacks/java",
+              "go_buildpack_name": "paketo-buildpacks/go",
+              "nodejs_buildpack_name": "paketo-buildpacks/nodejs",
+              "staticfile_buildpack_name": "paketo-community/staticfile",
+              "binary_buildpack_name": "paketo-buildpacks/procfile"
+            }
+            EOF
+  - in_parallel:
+    - task: run-cats
+      file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
+      params:
+        INCLUDE_APPS: true
+        INCLUDE_ROUTING: true
+        INCLUDE_DETECT: true
+        INCLUDE_INTERNET_DEPENDENT: true
+    - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      params:
+        SMOKE_TEST_SKIP_SSL: false
+    - task: capi-bara-tests
+      file: cf-for-k8s-ci/ci/tasks/cake/run-baras.yml
+      input_mapping:
+        pool-lock: ready-pool
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        NODES: 3
+        FLAKE_ATTEMPTS: 2 # TODO: Set this back to 1 once Samus stabilizes
+  - task: delete-cf
+    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+    input_mapping:
+      pool-lock: ready-pool
+    params:
+      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+  ensure:
+    do:
+    - put: destroy-pool
+      params:
+        add: ready-pool
+    - put: ready-pool
+      params:
+        remove: ready-pool
+
+- name: k8s-ci-passed
+  serial: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: cloud-controller-ng
+      passed: [cf-api-tests]
+    - get: capi-docker-image
+      trigger: true
+      passed: [cf-api-tests]
+    - get: registry-buddy-docker-image
+      passed: [cf-api-tests]
+      trigger: true
+    - get: cf-api-controllers-docker-image
+      trigger: true
+      passed: [cf-api-tests]
+    - get: nginx-docker-image
+      trigger: true
+      passed: [cf-api-tests]
+    - get: backup-metadata-generator-docker-image
+      passed: [cf-api-tests]
+      trigger: true
+    - get: capi-k8s-release
+      trigger: true
+      passed: [cf-api-tests]
+    - get: cf-api-controllers
+      passed: [cf-api-tests]
+    - get: registry-buddy
+      passed: [cf-api-tests]
+    - get: capi-nginx
+      passed: [cf-api-tests]
+  - task: bump-capi-k8s-release-image-refs
+    file: cf-for-k8s-ci/ci/tasks/cake/bump-capi-k8s-release-image-refs.yml
+  - put: capi-k8s-release
+    params:
+      repository: updated-capi-k8s-release
+  - put: capi-k8s-release-ci-passed
+    params:
+      repository: updated-capi-k8s-release
+
+- name: ship-it-k8s
+  serial_groups: [k8s-version]
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: capi-k8s-release-ci-passed
+      passed: [k8s-ci-passed]
+    - get: cloud-controller-ng
+      passed: [k8s-ci-passed]
+    - get: capi-k8s-github-published-release
+  - task: bump-version-from-github-release
+    file: cf-for-k8s-ci/ci/tasks/cake/bump_minor_version_from_github_release.yml
+    input_mapping:
+      github-release: capi-k8s-github-published-release
+  - task: generate-github-release
+    input_mapping:
+      capi-k8s-release-version: bumped-minor-version
+      capi-k8s-release: capi-k8s-release-ci-passed
+    file: cf-for-k8s-ci/ci/tasks/cake/generate_k8s_github_release.yml
+  - put: capi-k8s-release-ci-passed
+    params:
+      repository: capi-k8s-release-ci-passed
+      tag: generated-release/version
+      only_tag: true
+  - put: capi-k8s-github-release
+    params:
+      body: generated-release/body
+      commitish: generated-release/commitish
+      name: generated-release/name
+      tag: generated-release/version

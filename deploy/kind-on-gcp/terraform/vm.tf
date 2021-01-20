@@ -94,7 +94,7 @@ EOF
   jq --version
 
   echo "Installing kind..."
-  retry 5 curl -Lo ./kind "https://kind.sigs.k8s.io/dl/v0.8.0/kind-linux-amd64"
+  retry 5 curl -Lo ./kind "https://kind.sigs.k8s.io/dl/v0.9.0/kind-linux-amd64"
   chmod +x kind
   kind --version
 
@@ -105,7 +105,10 @@ EOF
   cf --version
 
   echo "Installing Carvel tools..."
-  curl -L "https://carvel.dev/install.sh" | K14SIO_INSTALL_BIN_DIR=/tmp/kind/bin PATH=/tmp/kind/bin:$PATH bash
+  function install_carvel_tools {
+      curl -L "https://carvel.dev/install.sh" | K14SIO_INSTALL_BIN_DIR=/tmp/kind/bin PATH=/tmp/kind/bin:$PATH bash
+  }
+  retry 5 install_carvel_tools
   ytt version
   kapp version
 cd -
@@ -120,7 +123,7 @@ cd $HOME
   go version
 
   echo "Installing Ginkgo..."
-  retry 5 go get -u "github.com/onsi/ginkgo/ginkgo@v1.11.0"
+  retry 5 go get -u "github.com/onsi/ginkgo/ginkgo@v1.14.2"
   ginkgo version
 
   echo "Change ownership of $HOME to tester..."

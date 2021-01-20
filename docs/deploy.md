@@ -187,7 +187,7 @@ Currently, we test the following two container registries:
 
    ```console
    cf auth admin <cf-values.yml.cf-admin_password>
-   # or using yq: cf auth admin "$(yq -r '.cf_admin_password' ${TMP_DIR}/cf-values.yml)"
+   # or using python yq: cf auth admin "$(yq -r '.cf_admin_password' ${TMP_DIR}/cf-values.yml)"
    ```
 
 1. Create an org/space for your app:

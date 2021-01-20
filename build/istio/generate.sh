@@ -2,6 +2,7 @@
 set -eu
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+# NOTE: this project uses python yq module (https://kislyuk.github.io/yq/)
 DESIRED_ISTIO_VERSION=$(< "${SCRIPT_DIR}/values.yaml" yq -r .istio_version)
 
 set +eu

@@ -55,6 +55,7 @@ Configuration Notes:
 
    ```console
    # from the cf-for-k8s repo/directory
+   # NOTE: this project uses python yq module (https://kislyuk.github.io/yq/)
    k8s_minor_version="$(yq -r .newest_version supported_k8s_versions.yml)"  # or k8s_minor_version="1.17"
    patch_version=$(wget -q https://registry.hub.docker.com/v1/repositories/kindest/node/tags -O - | \
      jq -r '.[].name' | grep -E "^v${k8s_minor_version}.[0-9]+$" | \

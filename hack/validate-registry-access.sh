@@ -7,7 +7,7 @@ They are not officially supported product bits. Their interface and behavior" \
 set -eo pipefail
 
 # requirements
-# General: docker cli, yq
+# General: docker cli, python yq
 # GCR: run `gcloud auth configure-docker`
 #      gcloud must be in the path
 

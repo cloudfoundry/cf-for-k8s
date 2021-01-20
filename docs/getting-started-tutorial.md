@@ -19,7 +19,6 @@ You’ll also need a few CLIs before you start:
 - [kind](https://kind.sigs.k8s.io/docs/user/quick-start/), the CNCF project for creating kubernetes clusters locally
 - [ytt](https://carvel.dev/#install), the cli used to render kubernetes templates
 - [kapp](https://carvel.dev/#install), the cli used to deploy cf-for-k8s
-- [yq](https://github.com/mikefarah/yq); a cli tool for extracting information from yaml documents
 - [BOSH CLI](https://bosh.io/docs/cli-v2-install/#install); a handy tool to generate self signed certs and passwords, used by generate-values
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git); the tool we use to interact with the cf-for-k8s repository
 - a [Dockerhub](https://hub.docker.com) account; cf-for-k8s will use this account to store your application images
@@ -88,7 +87,7 @@ When deployment has finished you can log into Cloud Foundry:
 
 ```
 $ cf api api.vcap.me --skip-ssl-validation
-$ cf auth admin $(yq read ${TMP_DIR}/cf-values.yml 'cf_admin_password')
+$ cf auth admin "$(grep cf_admin_password ${TMP_DIR}/cf-values.yml | cut -d" " -f2)"
 ```
 
 ## Experiencing your first `cf push`

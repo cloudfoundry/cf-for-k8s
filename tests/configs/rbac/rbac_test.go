@@ -66,12 +66,12 @@ var _ = Describe("RBac", func() {
 			Expect(containsClusterAdmin).To(BeFalse())
 		})
 
-		It("cluster roles should not contain wildcard for the core api group", func(){
+		It("cluster roles should not contain wildcard for the core api group", func() {
 			command := exec.Command("yq", `select(.kind == "ClusterRole") | .rules[] | select(.apiGroups[] == "")`, outfile.Name())
 			session, err := Start(command, nil, GinkgoWriter)
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(session, 40*time.Second).Should(Exit(0),
-				"yq failed to parse rendered manifest")
+				"yq failed to parse rendered manifest. Note that this project uses python yq")
 			dec := json.NewDecoder(strings.NewReader(string(session.Out.Contents())))
 			for {
 				var rule Rule
@@ -88,12 +88,12 @@ var _ = Describe("RBac", func() {
 			}
 		})
 
-		It("disallows escalating permissions via rbac.authorization.k8s.io clusterroles", func(){
+		It("disallows escalating permissions via rbac.authorization.k8s.io clusterroles", func() {
 			command := exec.Command("yq", `select(.kind == "ClusterRole") | .rules[] | select(.apiGroups[] == "rbac.authorization.k8s.io")`, outfile.Name())
 			session, err := Start(command, nil, GinkgoWriter)
 			Expect(err).NotTo(HaveOccurred())
 			Eventually(session, 40*time.Second).Should(Exit(0),
-				"yq failed to parse rendered manifest")
+				"yq failed to parse rendered manifest. Note that this project uses python yq")
 			dec := json.NewDecoder(strings.NewReader(string(session.Out.Contents())))
 			for {
 				var rule Rule
@@ -106,7 +106,7 @@ var _ = Describe("RBac", func() {
 				if err != nil {
 					log.Fatal(err)
 				}
-				denyList := []string {"*", "create", "update", "patch"}
+				denyList := []string{"*", "create", "update", "patch"}
 				for _, deniedVerb := range denyList {
 					Expect(rule.Verbs).NotTo(ContainElement(deniedVerb))
 				}

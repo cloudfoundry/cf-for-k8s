@@ -309,7 +309,7 @@ spec:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
     - podSelector:
         matchLabels:
-          name: eirini
+          name: eirini-api
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
@@ -319,7 +319,7 @@ spec:
   - from:
     - podSelector:
         matchLabels:
-          name: eirini
+          name: eirini-api
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
@@ -331,7 +331,7 @@ spec:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
     - podSelector:
         matchLabels:
-          name: eirini-events
+          name: eirini-event-reporter
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
@@ -359,7 +359,7 @@ spec:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
       podSelector:
         matchLabels:
-          name: eirini
+          name: eirini-api
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -394,7 +394,7 @@ spec:
           cf-for-k8s.cloudfoundry.org/cf-system-ns: ""
       podSelector:
         matchLabels:
-          name: eirini
+          name: eirini-api
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -512,7 +512,7 @@ spec:
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: eirini
+  name: eirini-api
   namespace: #@ system_namespace()
 spec:
   policyTypes:
@@ -520,7 +520,7 @@ spec:
   - Egress
   podSelector:
     matchLabels:
-      name: eirini
+      name: eirini-api
   ingress:
   - from:
     - podSelector:
@@ -558,7 +558,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      name: eirini-events
+      name: eirini-event-reporter
   egress:
   - {}
   policyTypes:

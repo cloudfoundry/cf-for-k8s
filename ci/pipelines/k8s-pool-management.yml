@@ -407,6 +407,15 @@ jobs:
               for file in ${claimed_files}; do
                 echo "Processing ${file}..." >&2
                 file="$(basename "${file}")"
+
+                if [[ "${file}" == ".gitkeep" ]]; then
+                  # If the first file in the list is .gitkeep, then there aren't any claimed environments.
+                  output=""
+                  echo -e "\nLooks like everything is good here."
+                  echo "No claimed environments." >&2
+                  break
+                fi
+
                 author="$(git log --max-count=1 --pretty='format:%an' "${file}")"
                 committer="$(git log --max-count=1 --pretty='format:%cn' "${file}")"
                 claimed_since="$(git log --max-count=1 --pretty='format:%ar' "${file}")"

@@ -388,21 +388,12 @@ jobs:
           output_file="message/message.txt"
 
           function print_env_info {
-            # Colors
-            local red blue
-            # red='\033[0;31m'
-            # blue='\033[0;34m'
-            # nc='\033[0m'
-            red=''
-            blue=''
-            nc=''
-
-            echo -e "${blue}Rounding up claimed environments...${nc}"
+            echo -e "Rounding up claimed environments..."
 
             pushd "${pool_dir}/claimed" > /dev/null
               claimed_files="$(git log --reverse --name-only --pretty=format: -- * | sort -u | xargs)"
 
-              output="${blue}\n* ENV *\t* CLAIMED BY *\t* CLAIMED ON *\t* CLAIMED SINCE *\t* STORY *\n"
+              output="\n* ENV *\t* CLAIMED BY *\t* CLAIMED ON *\t* CLAIMED SINCE *\t* STORY *\n"
 
               for file in ${claimed_files}; do
                 echo "Processing ${file}..." >&2

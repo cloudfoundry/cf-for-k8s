@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/capi
+    tag: ruby-units
+
+inputs:
+  - name: cloud_controller_ng
+  - name: cf-for-k8s-ci
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/cake/run_cc_unit_tests.sh
+
+params:
+  DB: ~
+  RUN_IN_PARALLEL: ~

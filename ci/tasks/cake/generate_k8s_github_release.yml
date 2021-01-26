@@ -1,0 +1,15 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/cf-for-k8s-ci
+inputs:
+  - name: cf-for-k8s-ci
+  - name: cloud-controller-ng
+  - name: capi-k8s-release
+  - name: capi-k8s-release-version
+outputs:
+  - name: generated-release
+run:
+  path: cf-for-k8s-ci/ci/tasks/cake/generate_k8s_github_release.sh

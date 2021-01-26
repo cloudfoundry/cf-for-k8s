@@ -1,0 +1,39 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/cf-for-k8s-ci
+
+inputs:
+  - name: cf-for-k8s-ci
+  - name: capi-bara-tests
+  - name: integration-config
+  - name: pool-lock
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/cake/run-baras.sh
+
+params:
+  # - Required
+  GCP_SERVICE_ACCOUNT_JSON: ""
+
+  # - Required
+  GCP_PROJECT_NAME: ""
+
+  # - Required
+  GCP_PROJECT_ZONE: ""
+
+  # - Optional
+  # - Number of parallel ginkgo nodes.
+  NODES: 12
+
+  # - Optional
+  # - Number of times ginkgo will re-run a flaky test
+  FLAKE_ATTEMPTS: 1
+
+  # - Optional
+  # - Path to the BARAs integration configuration file.
+  # - The path is relative to the `integration-config` input.
+  CONFIG_FILE_PATH: integration_config.json

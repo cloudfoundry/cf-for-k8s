@@ -12,4 +12,4 @@ inputs:
 outputs:
   - name: generated-release
 run:
-  path: cf-for-k8s-ci/ci/tasks/cake/generate_k8s_github_release
+  path: cf-for-k8s-ci/ci/tasks/cake/generate_k8s_github_release.sh

@@ -10,4 +10,4 @@ inputs:
 outputs:
   - name: bumped-minor-version
 run:
-  path: cf-for-k8s-ci/ci/tasks/cake/bump_minor_version_from_github_release
+  path: cf-for-k8s-ci/ci/tasks/cake/bump_minor_version_from_github_release.sh

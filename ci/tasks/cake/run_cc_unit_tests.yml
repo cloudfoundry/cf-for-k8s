@@ -12,7 +12,7 @@ inputs:
   - name: cf-for-k8s-ci
 
 run:
-  path: cf-for-k8s-ci/ci/tasks/cake/run_cc_unit_tests
+  path: cf-for-k8s-ci/ci/tasks/cake/run_cc_unit_tests.sh
 
 params:
   DB: ~

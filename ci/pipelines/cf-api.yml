@@ -141,8 +141,7 @@ resources:
 - name: cf-for-k8s-ci
   type: git
   source:
-    # TODO: revert this to develop after it looks good
-    branch: migrate-cake-pipeline
+    branch: develop
     private_key: ((private_key.private_key))
     uri: git@github.com:cloudfoundry/cf-for-k8s.git
 

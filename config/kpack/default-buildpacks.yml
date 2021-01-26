@@ -27,7 +27,7 @@ spec:
   buildImage:
     image: "index.docker.io/paketobuildpacks/build@sha256:11f1963498c223e3ecff0721c6a3fdbf19b412fd920bf9fb67bb08ec7a94af04"
   runImage:
-    image: "index.docker.io/paketobuildpacks/run@sha256:6e567aa3f21e77b9e3ef094953596b9d08abe31fb8badaa36f13909f0bd6bd25"
+    image: "index.docker.io/paketobuildpacks/run@sha256:341f2f77add7c099df0d5365d8fc4880934e197377c8e30b99df542ada8e4117"
 
 ---
 apiVersion: kpack.io/v1alpha1

@@ -10,6 +10,10 @@ module "eks" {
     Environment = var.env_name
   }
 
+  workers_group_defaults = {
+  	root_volume_type = "gp2"
+  }
+
   worker_groups = [
     {
       name                          = "worker-group"

@@ -252,6 +252,7 @@ jobs:
 
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      attempts: 2
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
       params:
@@ -259,6 +260,7 @@ jobs:
 
     - task: run-cats
       file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
+      attempts: 2
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
       params:
@@ -441,6 +443,7 @@ jobs:
 
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      attempts: 2
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
       params:
@@ -448,6 +451,7 @@ jobs:
 
     - task: run-cats
       file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
+      attempts: 2
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
       params:

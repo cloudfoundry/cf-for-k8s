@@ -32,10 +32,11 @@ directories:
 - path: config/metrics/_ytt_lib/metric-proxy
   contents:
   - path: .
-    githubRelease:
-      slug: cloudfoundry/metric-proxy
-      tag: 1.1.0
-      disableAutoChecksumValidation: true
+    git:
+      url: https://github.com/eirini-forks/metric-proxy
+      ref: draft-include-disk-metrics
+    includePaths:
+    - config/**
 - path: config/uaa/_ytt_lib/uaa
   contents:
   - path: .

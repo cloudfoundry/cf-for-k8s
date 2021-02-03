@@ -22,8 +22,11 @@ directories:
     path: .
   path: config/logging/_ytt_lib/cf-k8s-logging
 - contents:
-  - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry/metric-proxy/releases/35326401
+  - git:
+      commitTitle: If pod not in cached node summary, refetch...
+      sha: 90c89a8cdbd59bb312cd5be0eef1e968aaefb986
+      tags:
+      - 1.0.1-36-g90c89a8
     path: .
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:

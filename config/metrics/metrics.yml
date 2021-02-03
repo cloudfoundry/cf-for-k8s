@@ -6,6 +6,11 @@
 #@ def metrics_values():
 system_domain: #@ data.values.system_domain
 system_namespace: #@ system_namespace()
+
+images:
+  metric_proxy: "gcr.io/cf-capi-arya/eirini-metric-proxy@sha256:f45482af7cb26578df0aefba13ff3bd77e2fbb69052833d51afa7c8a9390f4c9"
+
+version: "100"
 #@ end
 
 #@ metrics = library.get("metric-proxy")

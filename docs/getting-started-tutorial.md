@@ -22,7 +22,7 @@ You’ll also need a few CLIs before you start:
 - [BOSH CLI](https://bosh.io/docs/cli-v2-install/#install); a handy tool to generate self signed certs and passwords, used by generate-values
 - [git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git); the tool we use to interact with the cf-for-k8s repository
 - a [Dockerhub](https://hub.docker.com) account; cf-for-k8s will use this account to store your application images
-- [cf](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html), the cli used to interact with Cloud Foundry 
+- [cf](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html), the cli used to interact with Cloud Foundry (install v7)
 
 ## Installing Cf-for-K8s
 

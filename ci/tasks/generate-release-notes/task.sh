@@ -140,6 +140,8 @@ $(printf "${release_table_text}")
 $(git log --format='%aN' "${last_release_version}...HEAD" | sort -u)
 EOT
   popd > /dev/null
+
+  cat "${cwd}/release-notes/body.txt"
 }
 
 main "${PWD}"

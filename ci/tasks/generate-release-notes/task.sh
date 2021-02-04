@@ -8,10 +8,12 @@ function get_merged_prs() {
   local last_release_version="$3"
   local release_candidate_version="$4"
 
-  for number in $(git log --pretty=oneline "${last_release_version}...${release_candidate_version}" | grep -o "#[[:digit:]]\+" | sed 's/#//' | sort -n); do
-    title=$(curl -s -u "${github_api_user}:${github_api_token}" "https://api.github.com/repos/cloudfoundry/cf-for-k8s/pulls/${number}" | jq -r '.title')
-    url=$(curl -s -u "${github_api_user}:${github_api_token}" "https://api.github.com/repos/cloudfoundry/cf-for-k8s/pulls/${number}" | jq -r '.html_url')
-    echo "- ${title} [#${number}](${url})"
+  dt=$(git show "${last_release_version}" --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}')
+  pulls=$(curl -s -u "${github_api_user}:${github_api_token}" https://api.github.com/repos/cloudfoundry/cf-for-k8s/pulls?since=$dt\&state=closed | jq '[.[] | select(.merged_at != null)]')
+
+  IFS=$'\n'
+  for pull in $(echo "${pulls}" | jq -rc '.[] | {number, title, html_url}'); do
+    echo "${pull}" | jq -r '"- " + .title + " [" + (.number|tostring) + "](" + .html_url + ")"'
   done
 }
 

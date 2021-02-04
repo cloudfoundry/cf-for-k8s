@@ -21,6 +21,7 @@ groups:
   - create-rc-tag-for-minor-release
   - create-rc-tag-for-patch-release
   - bump-rc-tag-for-release
+  - preview-release-notes
   - finalize-release
   - announce-new-release
 
@@ -1173,6 +1174,25 @@ jobs:
     params:
       pre: rc
 
+- name: preview-release-notes
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-version
+      params:
+        bump: final
+    - get: cf-for-k8s-rc-version
+      resource: cf-for-k8s-version
+    - get: cf-for-k8s-last-rc
+    - get: cf-for-k8s-last-release
+    - get: cf-for-k8s-ci
+  - task: generate-release-notes-template
+    file: cf-for-k8s-ci/ci/tasks/generate-release-notes/task.yml
+    input_mapping:
+      cf-for-k8s-rc: cf-for-k8s-last-rc
+    params:
+      GITHUB_API_USER: cf-for-k8s-release-bot
+      GITHUB_API_TOKEN: ((cf_for_k8s_release_bot_access_token))
+
 - name: finalize-release
   plan:
   - in_parallel:
@@ -1207,15 +1227,14 @@ jobs:
       tag_prefix: v
       body: release-notes/body.txt
 
-  - put: cf-for-k8s-version
-    params:
-      bump: final
-
 - name: announce-new-release
   plan:
   - get: cf-for-k8s-version
     passed:
     - finalize-release
+  - put: cf-for-k8s-version
+    params:
+      bump: final
 
   - put: cf-for-k8s-slack-alert
     params:

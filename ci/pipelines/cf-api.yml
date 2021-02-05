@@ -13,7 +13,7 @@
 groups:
 - name: capi-k8s-release
   jobs:
-  - cc-unit-tests
+  - cc-tests
   - cf-api-controllers-unit-tests
   - registry-buddy-unit-tests
   - registry-buddy-integration-tests
@@ -214,24 +214,26 @@ resources:
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
 
 jobs:
-- name: cc-unit-tests
+- name: cc-tests
   plan:
   - in_parallel:
     - get: cloud-controller-ng
       trigger: true
     - get: cf-for-k8s-ci
   - in_parallel:
-    - task: run-cc-unit-tests-mysql
+    - task: run-cc-tests-mysql
       file: cf-for-k8s-ci/ci/tasks/cake/run_cc_unit_tests.yml
       privileged: true
+      attempts: 2
       input_mapping:
         cloud_controller_ng: cloud-controller-ng
       params:
         DB: mysql
         RUN_IN_PARALLEL: true
-    - task: run-cc-unit-tests-postgres
+    - task: run-cc-tests-postgres
       file: cf-for-k8s-ci/ci/tasks/cake/run_cc_unit_tests.yml
       privileged: true
+      attempts: 2
       input_mapping:
         cloud_controller_ng: cloud-controller-ng
       params:
@@ -312,7 +314,7 @@ jobs:
   plan:
     - in_parallel:
       - get: cloud-controller-ng
-        passed: [cc-unit-tests]
+        passed: [cc-tests]
         trigger: true
       - get: cf-for-k8s-ci
     - task: build-with-pack

@@ -613,7 +613,12 @@ jobs:
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
         NODES: 3
-        FLAKE_ATTEMPTS: 2 # TODO: Set this back to 1 once Samus stabilizes
+        FLAKE_ATTEMPTS: 2
+      on_failure:
+        put: slack-alert
+        params:
+          text: '[capi-bara-tests] #capi @interrupt OH NO! Failed when running on cf-for-k8s, pls send help'
+          icon_emoji: ":sick-kubo:"
   - task: delete-cf
     file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
     input_mapping:

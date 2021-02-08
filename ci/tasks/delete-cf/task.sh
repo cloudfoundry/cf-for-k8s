@@ -26,10 +26,10 @@ gcloud_auth "${cluster_name}"
 
 if kubectl get namespace cf-db &>/dev/null ; then
   echo "Doing some special deletion of postgres resources..."
-  set +x
+  set +xe
   kubectl delete statefulset cf-db-postgresql -n cf-db
   kubectl delete pod cf-db-postgresql-0 -n cf-db --force --grace-period 0
-  set -x
+  set -xe
 fi
 
 kapp delete -a cf --yes

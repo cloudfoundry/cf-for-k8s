@@ -113,15 +113,7 @@ metadata:
   name: build-init-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/build-init@sha256:ee73f0c697c2c0f71c263cd5254fd02309fe7a07a8141290c63e37c9b401f817
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: build-init-windows-image
-  namespace: kpack
-data:
-  image: gcr.io/cf-build-service-public/kpack/build-init-windows@sha256:8a6d67db07938d1f7ee6ac711a3a8b1fefe7997e96d4b1db53570441485bc9b2
+  image: gcr.io/cf-build-service-public/kpack/build-init@sha256:8fe7db1c42386f09e45c2f76724a8b2361eaafd2b1f24dbff50f3dc4ea749dd2
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -129,7 +121,7 @@ metadata:
   name: rebase-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/rebase@sha256:a8c378ca28941ba8274185556aa901f9c723cbdca2b169a45ab37a17525820f5
+  image: gcr.io/cf-build-service-public/kpack/rebase@sha256:3885e28c08e290ba7cfe9b344baa72c5cd02e549fc9fe35d8e7bacc7ffd6e805
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -137,7 +129,7 @@ metadata:
   name: lifecycle-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/lifecycle@sha256:fb7e0916ea429697630743b34e858c3555ddfbb5940683754dfccd3bfa446e0a
+  image: gcr.io/cf-build-service-public/kpack/lifecycle@sha256:6ea2b62ccf3c3643417c78c7c3c4953f8291f54c0d0e725e2ecfc9ba23124a29
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -145,15 +137,7 @@ metadata:
   name: completion-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/completion@sha256:798623b1715f35be5c2bf7951735c871b0ac58aaa7dc1bdd63084df7f2856a2b
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: completion-windows-image
-  namespace: kpack
-data:
-  image: gcr.io/cf-build-service-public/kpack/completion-windows@sha256:4faaa2a46eeff8f225382e21703b0afcc3910b8453e7aa30830f3b615a0f3929
+  image: gcr.io/cf-build-service-public/kpack/completion@sha256:21c2c95433f8e52e454af311000e403d6694320a8c029c8053ab3c433e667df4
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -169,14 +153,14 @@ spec:
     metadata:
       labels:
         app: kpack-controller
-        version: 0.2.0-rc.1
+        version: 0.1.5-rc.8
     spec:
       serviceAccountName: controller
       nodeSelector:
         kubernetes.io/os: linux
       containers:
       - name: controller
-        image: gcr.io/cf-build-service-public/kpack/controller@sha256:101143de3d1abe2d2f738ce96b5991cd085ecc6f0e8dc761b940dd1cd346b864
+        image: gcr.io/cf-build-service-public/kpack/controller@sha256:960dc65a836b613cc9bf2bc9694f6485952aaef830e8a65f7a9eba16fc1a6616
         env:
         - name: CONFIG_LOGGING_NAME
           value: config-logging
@@ -193,11 +177,6 @@ spec:
             configMapKeyRef:
               name: build-init-image
               key: image
-        - name: BUILD_INIT_WINDOWS_IMAGE
-          valueFrom:
-            configMapKeyRef:
-              name: build-init-windows-image
-              key: image
         - name: REBASE_IMAGE
           valueFrom:
             configMapKeyRef:
@@ -207,11 +186,6 @@ spec:
           valueFrom:
             configMapKeyRef:
               name: completion-image
-              key: image
-        - name: COMPLETION_WINDOWS_IMAGE
-          valueFrom:
-            configMapKeyRef:
-              name: completion-windows-image
               key: image
         - name: LIFECYCLE_IMAGE
           valueFrom:
@@ -289,12 +263,6 @@ rules:
   - update
   - delete
   - watch
-- apiGroups:
-  - ""
-  resources:
-  - nodes
-  verbs:
-  - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -472,14 +440,14 @@ spec:
       labels:
         app: kpack-webhook
         role: webhook
-        version: 0.2.0-rc.1
+        version: 0.1.5-rc.8
     spec:
       serviceAccountName: webhook
       nodeSelector:
         kubernetes.io/os: linux
       containers:
       - name: webhook
-        image: gcr.io/cf-build-service-public/kpack/webhook@sha256:5d053b1e85a910312cba59d6fd2019921fcd29e2854262c21e9ed1c6a0f575ff
+        image: gcr.io/cf-build-service-public/kpack/webhook@sha256:6e7ba63d4f6f5524978520b655b10304adda812c8e6f98519b7e32de892696dc
         ports:
         - name: https-webhook
           containerPort: 8443

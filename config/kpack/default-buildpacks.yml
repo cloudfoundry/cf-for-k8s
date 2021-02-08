@@ -9,7 +9,7 @@ metadata:
 spec:
   sources:
   - image: gcr.io/paketo-buildpacks/ruby@sha256:39533c2ff87bee82a5b0f4a5d4f5c211792983c015d99d1068b78f2c2b95cd58
-  - image: gcr.io/paketo-community/python@sha256:e6546f3072c49336ce99a2d8297716b748a69da9128c5afb1606c2b73a18a317
+  - image: gcr.io/paketo-community/python@sha256:5fc81b8f38f326f0247468c14b4eb66b36e5f925db12f9ea8df1ec57f9e61d94
   - image: gcr.io/paketo-buildpacks/java@sha256:b38e47dbc823a9f40ed3b29ff2c51de33082e4ddf302fe4adfec632cefe3aca4
   - image: gcr.io/paketo-buildpacks/nodejs@sha256:6479547febc69c551f2f29a5e24dc12fccb915260ff86674241a802243893c95
   - image: gcr.io/paketo-buildpacks/go@sha256:deca2d2e28274e0f6c849f58d425e5c7c75f3a68320a83be4879512a25d574fa

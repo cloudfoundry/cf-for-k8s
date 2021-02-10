@@ -4,10 +4,10 @@ system_domain: ""
 system_namespace: ""
 
 images:
-  metric_proxy: "cloudfoundry/metric-proxy@sha256:144cebf8097f128a72bbf4201d661f19dc0c9b92bc96ebfc66d8c8d4d33d382d"
+  metric_proxy: "cloudfoundry/metric-proxy@sha256:9747c46e7adf7e6ee393c52111187112e4b7d7927fa68e231cf4dd6aa9fc8f34"
 
 name: metric-proxy
 component: container-metrics
 part_of: cloudfoundry
 managed_by: metric-egress
-version: 1.1.0
+version: 1.2.0

@@ -23,7 +23,7 @@ directories:
   path: config/logging/_ytt_lib/cf-k8s-logging
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry/metric-proxy/releases/35326401
+      url: https://api.github.com/repos/cloudfoundry/metric-proxy/releases/37821927
     path: .
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:

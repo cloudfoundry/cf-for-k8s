@@ -34,7 +34,7 @@ directories:
   - path: .
     githubRelease:
       slug: cloudfoundry/metric-proxy
-      tag: 1.1.0
+      tag: 1.2.0
       disableAutoChecksumValidation: true
 - path: config/uaa/_ytt_lib/uaa
   contents:

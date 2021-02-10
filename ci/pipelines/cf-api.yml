@@ -604,6 +604,7 @@ jobs:
         INCLUDE_INTERNET_DEPENDENT: true
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+      attempts: 2
       params:
         SMOKE_TEST_SKIP_SSL: false
     - task: capi-bara-tests

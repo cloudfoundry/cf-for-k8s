@@ -1,0 +1,12 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:base64", "base64")
+
+#@overlay/match by=overlay.subset({"kind": "MutatingWebhookConfiguration", "metadata":{"name": "eirini-x-mutating-hook"}})
+---
+webhooks:
+#@overlay/match by="name"
+- name: instance-index-env-injector.eirini.cloudfoundry.org
+  clientConfig:
+    #@overlay/replace
+    caBundle: #@ base64.encode("{}".format(data.values.instance_index_env_injector_certificate.ca))

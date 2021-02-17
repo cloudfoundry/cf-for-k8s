@@ -45,7 +45,7 @@ var _ = Describe("Missing Attributes", func() {
 					pathToFile("tests/ytt/quarks_secret/quarks_secret_disabled.yml"))
 			})
 			It("should list all the required attributes", func() {
-				Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_domains", "app_registry.hostname", "app_registry.password", "app_registry.repository_prefix", "app_registry.username", "blobstore.secret_access_key", "capi.cc_username_lookup_client_secret", "capi.cf_api_controllers_client_secret", "capi.cf_api_backup_metadata_generator_client_secret", "capi.database.encryption_key", "capi.database.password", "cf_admin_password", "system_certificate.crt", "system_certificate.key", "system_domain", "uaa.admin_client_secret", "uaa.database.password", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "uaa.login_secret", "workloads_certificate.crt", "workloads_certificate.key"\]`))
+				Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_domains", "app_registry.hostname", "app_registry.password", "app_registry.repository_prefix", "app_registry.username", "blobstore.secret_access_key", "capi.cc_username_lookup_client_secret", "capi.cf_api_controllers_client_secret", "capi.cf_api_backup_metadata_generator_client_secret", "capi.database.encryption_key", "capi.database.password", "cf_admin_password", "instance_index_env_injector_certificate.ca", "instance_index_env_injector_certificate.crt", "instance_index_env_injector_certificate.key", "system_certificate.crt", "system_certificate.key", "system_domain", "uaa.admin_client_secret", "uaa.database.password", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "uaa.login_secret", "workloads_certificate.crt", "workloads_certificate.key"\]`))
 			})
 		})
 
@@ -56,7 +56,7 @@ var _ = Describe("Missing Attributes", func() {
 			})
 
 			It("should list all the required attributes", func() {
-				Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_domains", "app_registry.hostname", "app_registry.password", "app_registry.repository_prefix", "app_registry.username", "blobstore.secret_access_key", "capi.database.password", "system_certificate.crt", "system_certificate.key", "system_domain", "uaa.database.password", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "uaa.login_secret", "workloads_certificate.crt", "workloads_certificate.key"\]`))
+				Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_domains", "app_registry.hostname", "app_registry.password", "app_registry.repository_prefix", "app_registry.username", "blobstore.secret_access_key", "capi.database.password", "instance_index_env_injector_certificate.ca", "instance_index_env_injector_certificate.crt", "instance_index_env_injector_certificate.key", "system_certificate.crt", "system_certificate.key", "system_domain", "uaa.database.password", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "uaa.login_secret", "workloads_certificate.crt", "workloads_certificate.key"\]`))
 			})
 		})
 	})
@@ -75,7 +75,7 @@ var _ = Describe("Missing Attributes", func() {
 		})
 
 		It("should complain about missing attributes", func() {
-			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_registry.username", "capi.cc_username_lookup_client_secret", "capi.cf_api_controllers_client_secret", "capi.cf_api_backup_metadata_generator_client_secret", "cf_admin_password", "system_certificate.key", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "uaa.login_secret", "workloads_certificate.crt"\]`))
+			Expect(ctx).To(ThrowError(`The following required data.values parameters are missing: \["app_registry.username", "capi.cc_username_lookup_client_secret", "capi.cf_api_controllers_client_secret", "capi.cf_api_backup_metadata_generator_client_secret", "cf_admin_password", "instance_index_env_injector_certificate.ca", "instance_index_env_injector_certificate.crt", "instance_index_env_injector_certificate.key", "system_certificate.key", "uaa.encryption_key.passphrase", "uaa.jwt_policy.signing_key", "uaa.login.service_provider.certificate", "uaa.login.service_provider.key", "uaa.login_secret", "workloads_certificate.crt"\]`))
 		})
 	})
 

@@ -6,7 +6,7 @@ groups:
   - long-lived-env-sli
   - upgrade-long-lived-env-to-latest-main
   - manual-redeploy-long-lived-env-with-latest-main
-  - deploy-long-lived-node-app
+  - deploy-long-lived-apps
 - name: values-rotation
   jobs:
   - validate-values-rotation-redeploy
@@ -17,7 +17,7 @@ groups:
   jobs:
   - upgrade-long-lived-env-to-latest-main
   - manual-redeploy-long-lived-env-with-latest-main
-  - deploy-long-lived-node-app
+  - deploy-long-lived-apps
 
 # Extract common platform and image_resource details so task configs can be more concise
 x-config: &common-task-config
@@ -107,6 +107,24 @@ resources:
     branch: main
     pool: k8s-dev/destroy
     private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
+- name: chore-bot-source
+  type: git
+  icon: github
+  source:
+    branch: main
+    uri: git@github.com:pivotal-cf-experimental/relint-trackerbot.git
+    private_key: ((relint_trackerbot_read_deploy_key.private_key))
+
+- name: chore-bot-config-and-manifest
+  type: git
+  icon: github
+  source:
+    branch: main
+    uri: git@github.com:cloudfoundry/relint-team.git
+    private_key: ((runtime_ci_private_read_deploy_key.private_key))
+    paths:
+    - apps/chore_bot
 
 jobs:
 - name: validate-values-rotation-redeploy
@@ -430,7 +448,7 @@ jobs:
       repository: relint-envs-updated
       rebase: true
 
-- name: deploy-long-lived-node-app
+- name: deploy-long-lived-apps
   serial: true
   serial_groups: [long-lived-env]
   public: true
@@ -440,7 +458,10 @@ jobs:
       passed:
       - manual-redeploy-long-lived-env-with-latest-main
       trigger: true
+    - get: chore-bot-source
+    - get: chore-bot-config-and-manifest
     - get: cf-for-k8s-ci
+    - get: runtime-ci
 
   - task: get-env-metadata
     config:
@@ -458,11 +479,63 @@ jobs:
           echo "((ll_dep_cf_admin_pass))" > env-metadata/cf-admin-password.txt
           echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
-  - task: push-test-app
-    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-main
-    params:
-      APP_NAME: long-lived-node-app
-      APP_INSTANCES: 2
-      VERIFY_EXISTING_APP: false
+  - task: create-org-and-spaces
+    config:
+      <<: *common-task-config
+      inputs:
+        - name: env-metadata
+      run:
+        path: /bin/bash
+        args:
+          - -euc
+          - |
+            cf_domain="$(cat env-metadata/dns-domain.txt)"
+
+            cf api "api.${cf_domain}" --skip-ssl-validation
+            cf auth admin ((ll_dep_cf_admin_pass))
+
+            # create orgs and spaces
+            cf create-org team-apps
+            cf create-space -o team-apps chore-bot
+
+  - in_parallel:
+    - task: push-test-app
+      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-main
+      params:
+        APP_NAME: long-lived-node-app
+        APP_INSTANCES: 2
+        VERIFY_EXISTING_APP: false
+    - do:
+      - task: copy-config-to-app-path
+        file: runtime-ci/tasks/copy-chore-bot-config/task.yml
+        input_mapping:
+          chore-bot-config: chore-bot-config-and-manifest
+      - task: push-chore-bot
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: cloudfoundry/cf-for-k8s-ci
+          inputs:
+          - name: chore-bot-source-with-config
+          - name: chore-bot-config-and-manifest
+          params:
+            CF_DOMAIN: long-lived-sli.cf-for-k8s.relint.rocks
+            CF_ORG: team-apps
+            APP_NAME: chore-bot
+          run:
+            path: /bin/bash
+            args:
+            - -euc
+            - |
+              cf api "api.${CF_DOMAIN}" --skip-ssl-validation
+              cf auth ((ll_dep_cf_user)) ((ll_dep_cf_admin_pass))
+
+              # assuming org and space is created when the foundation is
+              cf target -o "${CF_ORG}" -s "${APP_NAME}"
+
+              echo "Pushing ${APP_NAME}"
+              cf push ${APP_NAME} -p chore-bot-source-with-config -f chore-bot-config-and-manifest/apps/chore_bot/manifest.yml | grep -v "value:"

@@ -1,0 +1,39 @@
+---
+# Source: eirini/templates/core/instance-index-env-injector-job.yml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: instance-index-env-injector
+  namespace: cf-system
+  annotations:
+    kapp.k14s.io/update-strategy: fallback-on-replace
+spec:
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: eirini-instance-index-env-injector-registrar
+      volumes:
+      - name: config-map-volume
+        configMap:
+          name: instance-index-env-injector
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: instance-index-env-injector-registration
+        image: eirini/instance-index-env-injector@sha256:284dc121ef4ebfccc99b379d0e1a5a5ee04f4882cb1389bdbd96c2ab1127e22d
+        imagePullPolicy: IfNotPresent
+        args: ["--register-only"]
+        volumeMounts:
+        - name: config-map-volume
+          mountPath: /etc/eirini/config
+        resources:
+          requests:
+            cpu: 20m
+            memory: 20Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+      restartPolicy: Never
+  backoffLimit: 4

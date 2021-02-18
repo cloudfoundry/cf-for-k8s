@@ -1,0 +1,22 @@
+---
+# Source: eirini/templates/events/event-reporter-configmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eirini-event-reporter
+  namespace: cf-system
+data:
+  events.yml: |
+    # cc_internal_api is the URL used by Eirini to call the Cloud Controller.
+    cc_internal_api: "http://capi.cf-system.svc.cluster.local:9023"
+
+    # cc_tls_disabled specifies wether Eirini should communicate to the Cloud
+    # Controller via HTTPS or not. This should be set to false if TLS is
+    # handled transparently, e.g. by a service mesh.
+    #
+    # When cc_tls_disabled is false, which is the default, a secret must be
+    # provided for the cc-certs volume in core/api-deployment.yml. This must
+    # have entries tls.ca, tls.crt and tls.key, for the TLS certificate
+    # authority, client certificate and key respectively, used for mTLS with
+    # the Cloud Controller.
+    cc_tls_disabled: false

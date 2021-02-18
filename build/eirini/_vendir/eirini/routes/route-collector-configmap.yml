@@ -1,0 +1,17 @@
+---
+# Source: eirini/templates/routes/route-collector-configmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eirini-routes
+  namespace: cf-system
+data:
+  routing.yml: |
+    # nats_ip is the IP used by Eirini to publish route updates via NATS.
+    nats_ip: nats-client.cf-system.svc.cluster.local
+
+    # nats_ip is the port used by Eirini to publish route updates via NATS.
+    nats_port: 4222
+
+    # Alway ensure that an appropriate secret exists for the env var
+    # NATS_PASSWORD declared in routes/route-collector-deployment.yml

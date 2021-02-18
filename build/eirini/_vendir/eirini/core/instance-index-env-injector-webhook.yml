@@ -1,0 +1,6 @@
+---
+# Source: eirini/templates/core/instance-index-env-injector-webhook.yml
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: eirini-x-mutating-hook

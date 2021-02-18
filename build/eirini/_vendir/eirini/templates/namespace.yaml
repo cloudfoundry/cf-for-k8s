@@ -1,7 +1,0 @@
-{{- range prepend (.Values.opi.namespaces | default list) .Values.opi.namespace }}
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: {{ . }}
-{{- end }}

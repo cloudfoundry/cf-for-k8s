@@ -95,7 +95,7 @@ directories:
   - path: .
     githubRelease:
       slug: cloudfoundry-incubator/eirini-release
-      tag: v2.0.0
+      tag: v3.0.0
       disableAutoChecksumValidation: true
       unpackArchive:
         path: eirini.tgz

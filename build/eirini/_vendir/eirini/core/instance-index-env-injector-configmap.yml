@@ -1,0 +1,17 @@
+---
+# Source: eirini/templates/core/instance-index-env-injector-configmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: instance-index-env-injector
+  namespace: cf-system
+data:
+  instance-index-env-injector.yml: |
+    # service_name is the name of the service used for serving the instance env injector webhook
+    service_name: instance-index-env-injector
+
+    # service_namespace is the namespace in which to run the instance env injector webhook service
+    service_namespace: cf-system
+
+    # service_port is the port used to service the instance env injector webhook service
+    service_port: 8443

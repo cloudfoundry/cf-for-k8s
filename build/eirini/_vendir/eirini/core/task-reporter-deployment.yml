@@ -1,0 +1,48 @@
+---
+# Source: eirini/templates/core/task-reporter-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eirini-task-reporter
+  namespace: cf-system
+spec:
+  selector:
+    matchLabels:
+      name: eirini-task-reporter
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        name: eirini-task-reporter
+    spec:
+      dnsPolicy: ClusterFirst
+      serviceAccountName: eirini-task-reporter
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: task-reporter
+        image: eirini/task-reporter@sha256:62ccb4e8f58a3b689ebf344f4e7ac1d985c3a361f11ffc41e79618f0332a1a22
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 15m
+            memory: 15Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - name: config-map-volume
+          mountPath: /etc/eirini/config
+        - name: cc-certs
+          mountPath: /etc/cf-api/certs
+      volumes:
+        - name: config-map-volume
+          configMap:
+            name: task-reporter
+            items:
+            - key: task-reporter.yml
+              path: task-reporter.yml
+        - name: cc-certs
+          secret:
+            secretName: eirini-internal-tls-certs
+            optional: true

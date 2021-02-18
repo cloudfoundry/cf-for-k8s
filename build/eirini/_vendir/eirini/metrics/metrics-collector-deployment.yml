@@ -1,0 +1,44 @@
+---
+# Source: eirini/templates/metrics/metrics-collector-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eirini-metrics
+  namespace: cf-system
+spec:
+  selector:
+    matchLabels:
+      name: eirini-metrics
+  template:
+    metadata:
+      labels:
+        name: eirini-metrics
+    spec:
+      dnsPolicy: ClusterFirst
+      serviceAccountName: eirini-metrics
+      volumes:
+        - name: config-map-volume
+          configMap:
+            name: eirini-metrics
+        - name: loggregator-certs
+          secret:
+            secretName: loggregator-certs
+            optional: true
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: metrics-collector
+        image: eirini/metrics-collector@sha256:75784eb230d4b95788b0d0410fa8cd6067328ff05351b8aa9506acaf59d94263
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: config-map-volume
+          mountPath: /etc/eirini-metrics/config
+        - name: loggregator-certs
+          mountPath: /etc/loggregator/certs
+        resources:
+          requests:
+            cpu: 15m
+            memory: 15Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi

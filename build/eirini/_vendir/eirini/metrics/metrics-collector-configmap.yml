@@ -1,0 +1,11 @@
+---
+# Source: eirini/templates/metrics/metrics-collector-configmap.yml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eirini-metrics
+  namespace: cf-system
+data:
+  metrics.yml: |
+      # loggregator_address is the address used to send metrics to loggregator
+      loggregator_address: "doppler.cf-system.svc.cluster.local:8082"

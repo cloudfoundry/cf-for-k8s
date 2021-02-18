@@ -1,0 +1,61 @@
+---
+# Source: eirini/templates/core/api-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eirini-api
+  namespace: cf-system
+spec:
+  selector:
+    matchLabels:
+      name: eirini-api
+  template:
+    metadata:
+      labels:
+        name: eirini-api
+    spec:
+      dnsPolicy: ClusterFirst
+      serviceAccountName: opi
+      volumes:
+        - name: config-map
+          configMap:
+            name: eirini
+        - name: cc-certs
+          # The secret below is required when opi.cc_tls_disabled is false in
+          # the core/api-configmap.yml. It must have keys tls.ca, tls.crt and
+          # tls.key for the certificate authority, client certificate and
+          # private key respectively, used for mTLS with the Cloud Controller.
+          secret:
+            secretName: eirini-internal-tls-certs
+            optional: true
+        - name: eirini-certs
+          # The secret below is required when opi.serve_plaintext is false in
+          # the core/api-configmap.yml. It must have keys tls.ca, tls.crt and
+          # tls.key for the certificate authority, client certificate and
+          # private key respectively, used to serve the REST API on TLS.
+          secret:
+            secretName: eirini-internal-tls-certs
+            optional: true
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: opi
+        image: eirini/opi@sha256:3f19737f46292f3dd5f3ad91c5130afae3520568307786ed35fee70a23dc47c1
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: config-map
+          mountPath: /etc/eirini/config
+        - name: eirini-certs
+          mountPath: /etc/eirini/certs
+        - name: cc-certs
+          mountPath: /etc/cf-api/certs
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            cpu: 20m
+            memory: 20Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi

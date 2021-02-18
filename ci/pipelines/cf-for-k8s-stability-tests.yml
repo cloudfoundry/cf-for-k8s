@@ -508,34 +508,11 @@ jobs:
         APP_INSTANCES: 2
         VERIFY_EXISTING_APP: false
     - do:
-      - task: copy-config-to-app-path
-        file: runtime-ci/tasks/copy-chore-bot-config/task.yml
-        input_mapping:
-          chore-bot-config: chore-bot-config-and-manifest
       - task: push-chore-bot
-        config:
-          platform: linux
-          image_resource:
-            type: docker-image
-            source:
-              repository: cloudfoundry/cf-for-k8s-ci
-          inputs:
-          - name: chore-bot-source-with-config
-          - name: chore-bot-config-and-manifest
-          params:
-            CF_DOMAIN: long-lived-sli.cf-for-k8s.relint.rocks
-            CF_ORG: team-apps
-            APP_NAME: chore-bot
-          run:
-            path: /bin/bash
-            args:
-            - -euc
-            - |
-              cf api "api.${CF_DOMAIN}" --skip-ssl-validation
-              cf auth ((ll_dep_cf_user)) ((ll_dep_cf_admin_pass))
-
-              # assuming org and space is created when the foundation is
-              cf target -o "${CF_ORG}" -s "${APP_NAME}"
-
-              echo "Pushing ${APP_NAME}"
-              cf push ${APP_NAME} -p chore-bot-source-with-config -f chore-bot-config-and-manifest/apps/chore_bot/manifest.yml | grep -v "value:"
+        file: runtime-ci/tasks/push-chore-bot/task.yml
+        params:
+          CF_DOMAIN: long-lived-sli.cf-for-k8s.relint.rocks
+          CF_ORG: team-apps
+          CF_USERNAME: ((ll_dep_cf_user))
+          CF_PASSWORD: ((ll_dep_cf_admin_pass))
+          APP_NAME: chore-bot

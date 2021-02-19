@@ -8,6 +8,7 @@ image_resource:
 
 inputs:
 - name: cf-for-k8s-develop
+- name: cf-for-k8s-ci
 
 run:
-  path: cf-for-k8s-develop/ci/tasks/verify-every-task-is-used-in-a-pipeline/task
+  path: cf-for-k8s-ci/ci/tasks/verify-every-task-is-used-in-a-pipeline/task

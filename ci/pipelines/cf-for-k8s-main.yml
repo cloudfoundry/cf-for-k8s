@@ -229,8 +229,9 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-develop
       trigger: true
+    - get: cf-for-k8s-ci
   - task: verify-every-task-is-used-in-a-pipeline
-    file: cf-for-k8s-develop/ci/tasks/verify-every-task-is-used-in-a-pipeline/task.yml
+    file: cf-for-k8s-ci/ci/tasks/verify-every-task-is-used-in-a-pipeline/task.yml
 
 - name: branch-freshness
   public: true

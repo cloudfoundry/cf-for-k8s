@@ -1,0 +1,37 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("@ytt:yaml", "yaml")
+
+#@ def disable_opi_tls():
+opi:
+  #@overlay/match missing_ok=True
+  cc_tls_disabled: true
+#@ end
+
+#! Use http/port 8080 for eirini-capi communications and let istio do the encryption
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"eirini"}})
+#@yaml/text-templated-strings
+---
+data:
+  #@overlay/replace via=lambda eirini_config_map_content,_: yaml.encode(overlay.apply(yaml.decode(eirini_config_map_content), disable_opi_tls()))
+  opi.yml:
+
+#@ def disable_tls():
+#@overlay/match missing_ok=True
+cc_tls_disabled: true
+#@ end
+
+#! Use http/port 8080 for eirini-capi communications and let istio do the encryption
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"eirini-event-reporter"}})
+#@yaml/text-templated-strings
+---
+data:
+  #@overlay/replace via=lambda eirini_config_map_content,_: yaml.encode(overlay.apply(yaml.decode(eirini_config_map_content), disable_tls()))
+  events.yml:
+
+#! Use http/port 8080 for eirini-capi communications and let istio do the encryption
+#@overlay/match by=overlay.subset({"kind": "ConfigMap", "metadata":{"name":"task-reporter"}})
+#@yaml/text-templated-strings
+---
+data:
+  #@overlay/replace via=lambda eirini_config_map_content,_: yaml.encode(overlay.apply(yaml.decode(eirini_config_map_content), disable_tls()))
+  task-reporter.yml:

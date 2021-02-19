@@ -7,7 +7,6 @@ image_resource:
     repository: cloudfoundry/relint-base
 
 inputs:
-- name: cf-for-k8s-develop
 - name: cf-for-k8s-ci
 
 run:

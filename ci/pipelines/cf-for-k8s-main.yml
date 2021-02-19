@@ -15,6 +15,7 @@ groups:
   - validate-oldest-k8s
   - validate-newest-k8s
   - promote-main-deliver-stories
+  - verify-every-task-is-used-in-a-pipeline
 - name: ship-it
   jobs:
   - create-rc-tag-for-major-release
@@ -221,6 +222,15 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/run-unit-tests/task.yml
     input_mapping:
       cf-for-k8s: cf-for-k8s-develop
+
+- name: verify-every-task-is-used-in-a-pipeline
+  public: true
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s-develop
+      trigger: true
+  - task: verify-every-task-is-used-in-a-pipeline
+    file: cf-for-k8s-develop/ci/tasks/verify-every-task-is-used-in-a-pipeline/task.yml
 
 - name: branch-freshness
   public: true

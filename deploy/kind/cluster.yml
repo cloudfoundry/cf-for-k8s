@@ -15,7 +15,3 @@ nodes:
   - protocol: TCP
     containerPort: 443
     hostPort: 443
-containerdConfigPatches:
-  - |-
-    [plugins."io.containerd.grpc.v1.cri".containerd]
-    disable_snapshot_annotations = true

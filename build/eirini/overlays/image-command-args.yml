@@ -9,7 +9,7 @@ spec:
       #@overlay/match by=overlay.subset({"name":"opi"}),expects="1+"
       -
         #@overlay/match missing_ok=True
-        args: ["connect", "--config", "/etc/eirini/config/opi.yml"]
+        args: ["connect", "--config", "/etc/eirini/config/api.yml"]
 
 #@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini-task-reporter"}})
 ---
@@ -44,15 +44,3 @@ spec:
       -
         #@overlay/match missing_ok=True
         args: ["connect", "--config", "/etc/eirini-event-reporter/config/events.yml"]
-
-#@overlay/match by=overlay.subset({"kind":"Job", "metadata":{"name":"instance-index-env-injector"}})
----
-spec:
-  template:
-    spec:
-      containers:
-      #@overlay/match by=overlay.subset({"name":"instance-index-env-injector-registration"}),expects="1+"
-      -
-        #@overlay/match missing_ok=True
-        #@overlay/replace
-        args: ["connect", "--config", "/etc/eirini/config/instance-index-env-injector.yml", "--register-only"]

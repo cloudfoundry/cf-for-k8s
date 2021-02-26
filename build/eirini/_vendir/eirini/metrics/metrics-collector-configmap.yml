@@ -9,3 +9,10 @@ data:
   metrics.yml: |
       # loggregator_address is the address used to send metrics to loggregator
       loggregator_address: "doppler.cf-system.svc.cluster.local:8082"
+
+      # The deployment requires a secret containing a set of certificates to
+      # use with loggregator. The secret is referenced in
+      # `metrics/metrics-collector-deployment.yml` in the loggregator-certs
+      # volume entry (with secret name `loggregator-certs` by default).
+      # It should contain entries tls.crt, tls.key and tls.ca for the client
+      # certificate, client key and certificate authority respectively.

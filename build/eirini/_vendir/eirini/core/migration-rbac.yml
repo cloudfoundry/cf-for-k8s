@@ -1,9 +1,9 @@
 ---
-# Source: eirini/templates/core/instance-index-env-injector-rbac.yml
+# Source: eirini/templates/core/migration-rbac.yml
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: eirini-instance-index-env-injector
+  name: migration
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'runtime/default'
     seccomp.security.alpha.kubernetes.io/defaultProfileName:  'runtime/default'
@@ -14,6 +14,10 @@ spec:
     - ALL
   volumes:
     - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
   hostNetwork: false
   hostIPC: false
   hostPID: false
@@ -36,18 +40,47 @@ spec:
         max: 65535
   readOnlyRootFilesystem: false
 ---
-# Source: eirini/templates/core/instance-index-env-injector-rbac.yml
+# Source: eirini/templates/core/migration-rbac.yml
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: eirini-instance-index-env-injector
+  name: migration
   namespace: cf-system
 ---
-# Source: eirini/templates/core/instance-index-env-injector-rbac.yml
+# Source: eirini/templates/core/migration-rbac.yml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: migration-cluster-role
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - list
+  - patch
+---
+# Source: eirini/templates/core/migration-rbac.yml
+# Bind to the default service account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: migration-cluster-rolebinding
+roleRef:
+  kind: ClusterRole
+  name: migration-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: migration
+  namespace: cf-system
+---
+# Source: eirini/templates/core/migration-rbac.yml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: eirini-instance-index-env-injector-psp
+  name: migration-role
   namespace: cf-system
 rules:
 - apiGroups:
@@ -57,27 +90,19 @@ rules:
   verbs:
   - use
   resourceNames:
-  - eirini-instance-index-env-injector
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - create
-  - delete
-  - get
+  - migration
 ---
-# Source: eirini/templates/core/instance-index-env-injector-rbac.yml
+# Source: eirini/templates/core/migration-rbac.yml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: eirini-instance-index-env-injector-psp
+  name: migration-rolebinding
   namespace: cf-system
 roleRef:
   kind: Role
-  name: eirini-instance-index-env-injector-psp
+  name: migration-role
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: eirini-instance-index-env-injector
+  name: migration
   namespace: cf-system

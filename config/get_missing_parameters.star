@@ -59,6 +59,9 @@ cf_admin_password'''.split("\n")
     end
 
     required_parameters += '''\
+instance_index_env_injector_certificate.ca
+instance_index_env_injector_certificate.crt
+instance_index_env_injector_certificate.key
 system_certificate.crt
 system_certificate.key
 system_domain'''.split("\n")

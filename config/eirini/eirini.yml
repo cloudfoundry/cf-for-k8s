@@ -10,6 +10,17 @@
 #@ eirini = library.get("eirini")
 --- #@ template.replace(eirini.eval())
 
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: instance-index-env-injector-certs
+  namespace: #@ system_namespace()
+stringData:
+  tls.crt: #@ data.values.instance_index_env_injector_certificate.crt
+  tls.key: #@ data.values.instance_index_env_injector_certificate.key
+  tls.ca: #@ data.values.instance_index_env_injector_certificate.ca
+
 #! Allow app traffic from the istio-ingressgateway
 ---
 apiVersion: networking.k8s.io/v1

@@ -136,6 +136,15 @@ variables:
     - "*.apps.${DOMAIN}"
     extended_key_usage:
     - server_auth
+- name: instance_index_env_injector_certificate
+  type: certificate
+  options:
+    ca: default_ca
+    common_name: "*.cf-system.svc"
+    alternative_names:
+    - "*.cf-system.svc"
+    extended_key_usage:
+    - server_auth
 - name: uaa_jwt_policy_signing_key
   type: certificate
   options:
@@ -190,6 +199,15 @@ $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/certificate | grep
 $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/private_key | grep -Ev '^$' | sed -e 's/^/    /')
   ca: |
 $(bosh interpolate ${VARS_FILE} --path=/workloads_certificate/ca | grep -Ev '^$' | sed -e 's/^/    /')
+
+instance_index_env_injector_certificate:
+  #! This certificates and keys should be valid for *.cf-system.svc
+  crt: |
+$(bosh interpolate ${VARS_FILE} --path=/instance_index_env_injector_certificate/certificate | grep -Ev '^$' | sed -e 's/^/    /')
+  key: |
+$(bosh interpolate ${VARS_FILE} --path=/instance_index_env_injector_certificate/private_key | grep -Ev '^$' | sed -e 's/^/    /')
+  ca: |
+$(bosh interpolate ${VARS_FILE} --path=/instance_index_env_injector_certificate/ca | grep -Ev '^$' | sed -e 's/^/    /')
 
 uaa:
   database:

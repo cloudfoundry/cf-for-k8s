@@ -328,7 +328,8 @@ jobs:
       privileged: true
       file: cf-for-k8s-ci/ci/tasks/cake/build-with-pack.yml
       params:
-        ADDITIONAL_ARGS: "-b gcr.io/paketo-buildpacks/ruby"
+        # TODO: remove this once CCNG updates its Gemfile to mandate Ruby version
+        ADDITIONAL_ARGS: "-b gcr.io/paketo-buildpacks/ruby --env BP_MRI_VERSION=2.7.*"
       input_mapping:
         source-repository: cloud-controller-ng
     - task: run-deplab

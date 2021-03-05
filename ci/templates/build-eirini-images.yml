@@ -114,4 +114,6 @@ jobs:
   - task: #@ "publish-{}".format(img)
     privileged: true
     file: cf-for-k8s-ci/ci/tasks/publish-eirini-image/task.yml
+    params:
+      REPOSITORY: #@ "cloudfoundry/eirini-{}-cf-for-k8s".format(img)
 #@ end

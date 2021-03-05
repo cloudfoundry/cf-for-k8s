@@ -14,7 +14,7 @@ inputs:
 params:
   DOCKER_USERNAME: ((dockerhub.username))
   DOCKER_PASSWORD: ((dockerhub.password))
-  REPOSITORY: cloudfoundry/eirini-opi-cf-for-k8s
+  REPOSITORY:
 
 run:
   path: cf-for-k8s-ci/ci/tasks/publish-eirini-image/task.sh

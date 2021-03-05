@@ -105,6 +105,8 @@ jobs:
   - task: publish-opi
     privileged: true
     file: cf-for-k8s-ci/ci/tasks/publish-eirini-image/task.yml
+    params:
+      REPOSITORY: cloudfoundry/eirini-opi-cf-for-k8s
 - name: build-event-reporter
   plan:
   - get: cf-for-k8s-ci
@@ -183,6 +185,8 @@ jobs:
   - task: publish-event-reporter
     privileged: true
     file: cf-for-k8s-ci/ci/tasks/publish-eirini-image/task.yml
+    params:
+      REPOSITORY: cloudfoundry/eirini-event-reporter-cf-for-k8s
 - name: build-eirini-controller
   plan:
   - get: cf-for-k8s-ci
@@ -261,6 +265,8 @@ jobs:
   - task: publish-eirini-controller
     privileged: true
     file: cf-for-k8s-ci/ci/tasks/publish-eirini-image/task.yml
+    params:
+      REPOSITORY: cloudfoundry/eirini-eirini-controller-cf-for-k8s
 - name: build-task-reporter
   plan:
   - get: cf-for-k8s-ci
@@ -339,6 +345,8 @@ jobs:
   - task: publish-task-reporter
     privileged: true
     file: cf-for-k8s-ci/ci/tasks/publish-eirini-image/task.yml
+    params:
+      REPOSITORY: cloudfoundry/eirini-task-reporter-cf-for-k8s
 - name: build-instance-index-env-injector
   plan:
   - get: cf-for-k8s-ci
@@ -417,3 +425,5 @@ jobs:
   - task: publish-instance-index-env-injector
     privileged: true
     file: cf-for-k8s-ci/ci/tasks/publish-eirini-image/task.yml
+    params:
+      REPOSITORY: cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s

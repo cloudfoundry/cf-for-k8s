@@ -1,6 +1,8 @@
 #@ load("@ytt:data", "data")
 
 #@ image_list = [ "opi", "event-reporter", "eirini-controller", "task-reporter", "instance-index-env-injector" ]
+
+#@ tag_version = "2.0.0"
 ---
 resources:
 - name: cf-for-k8s-ci
@@ -18,6 +20,7 @@ resources:
   source:
     uri: git@github.com:cloudfoundry-incubator/eirini.git
     private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
+    branch: #@ tag_version
 
 - name: eirini-release
   type: github-release
@@ -26,7 +29,7 @@ resources:
     owner: cloudfoundry-incubator
     repository: eirini-release
     access_token: ((cf_deployment_release_bot_access_token))
-
+    
 jobs:
 #@ for img in image_list:
 - name: #@ "build-{}".format(img)
@@ -34,7 +37,8 @@ jobs:
   - get: cf-for-k8s-ci
   - get: eirini
   - get: eirini-release
-    trigger: true
+    version:
+      tag: #@ "v{}".format(tag_version)
   - task: rev-parse
     config:
       platform: linux

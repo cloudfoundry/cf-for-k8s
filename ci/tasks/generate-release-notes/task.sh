@@ -8,8 +8,9 @@ function get_merged_prs() {
   local last_release_version="$3"
   local release_candidate_version="$4"
 
-  dt=$(git show "${last_release_version}" --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}')
-  pulls=$(curl -s -u "${github_api_user}:${github_api_token}" https://api.github.com/repos/cloudfoundry/cf-for-k8s/pulls?since=$dt\&state=closed | jq '[.[] | select(.merged_at != null)]')
+  prev_release_iso_date=$(git show "${last_release_version}" --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}')
+  rc_release_iso_date=$(git show "${release_candidate_version}" --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}')
+  pulls=$(curl -s -u "${github_api_user}:${github_api_token}" https://api.github.com/repos/cloudfoundry/cf-for-k8s/pulls?since=$prev_release_iso_date\&state=closed | jq --arg START "${prev_release_iso_date}"  --arg END "${rc_release_iso_date}" '[.[] | select((.merged_at >= $START) and (.merged_at < $END))]')
 
   IFS=$'\n'
   for pull in $(echo "${pulls}" | jq -rc '.[] | {number, title, html_url}'); do
@@ -23,8 +24,9 @@ function get_closed_issues() {
   local last_release_version="$3"
   local release_candidate_version="$4"
 
-  dt=$(git show "${last_release_version}" --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}')
-  issues=$(curl -s -u "${github_api_user}:${github_api_token}" https://api.github.com/repos/cloudfoundry/cf-for-k8s/issues?since=$dt\&state=closed | jq '[.[] | select(.pull_request == null)]')
+  prev_release_iso_date=$(git show "${last_release_version}" --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}')
+  rc_release_iso_date=$(git show "${release_candidate_version}" --date=format:'%Y-%m-%dT%H:%M:%SZ' | grep Date: | awk '{print $2}')
+  issues=$(curl -s -u "${github_api_user}:${github_api_token}" https://api.github.com/repos/cloudfoundry/cf-for-k8s/issues?since=$prev_release_iso_date\&state=closed | jq --arg START "${prev_release_iso_date}"  --arg END "${rc_release_iso_date}" '[.[] | select((.closed_at >= $START) and (.closed_at < $END)) | select(.pull_request == null)]')
 
   IFS=$'\n'
   for issue in $(echo "${issues}" | jq -rc '.[] | {number, title, html_url}'); do

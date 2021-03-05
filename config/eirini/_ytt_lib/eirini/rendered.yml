@@ -1125,8 +1125,8 @@ metadata:
     kbld.k14s.io/images: |
       - Metas:
         - Type: preresolved
-          URL: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:1ad949284c2c1f182bbd56bd1eae8202030fdef3afced39a4105a8403ebf0beb
-        URL: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:1ad949284c2c1f182bbd56bd1eae8202030fdef3afced39a4105a8403ebf0beb
+          URL: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:afa138bd58622e7a0e79a1a1e4a3456633db31de5d74170c73d9fc6e69ea486e
+        URL: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:afa138bd58622e7a0e79a1a1e4a3456633db31de5d74170c73d9fc6e69ea486e
   name: eirini
   namespace: cf-system
 spec:
@@ -1139,7 +1139,7 @@ spec:
         name: eirini
     spec:
       containers:
-      - image: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:1ad949284c2c1f182bbd56bd1eae8202030fdef3afced39a4105a8403ebf0beb
+      - image: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:afa138bd58622e7a0e79a1a1e4a3456633db31de5d74170c73d9fc6e69ea486e
         imagePullPolicy: IfNotPresent
         name: opi
         ports:
@@ -1196,8 +1196,8 @@ metadata:
     kbld.k14s.io/images: |
       - Metas:
         - Type: preresolved
-          URL: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s@sha256:8651c21931d6a13a0ec2f74c11402086b1cd30cb2e8c2c6fba400abe493c33a8
-        URL: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s@sha256:8651c21931d6a13a0ec2f74c11402086b1cd30cb2e8c2c6fba400abe493c33a8
+          URL: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s@sha256:eac0dde7db219dc44f9965c563ef847942e07b193fa28d8d77d235354e76ffc3
+        URL: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s@sha256:eac0dde7db219dc44f9965c563ef847942e07b193fa28d8d77d235354e76ffc3
   name: eirini-controller
   namespace: cf-system
 spec:
@@ -1210,7 +1210,7 @@ spec:
         name: eirini-controller
     spec:
       containers:
-      - image: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s@sha256:8651c21931d6a13a0ec2f74c11402086b1cd30cb2e8c2c6fba400abe493c33a8
+      - image: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s@sha256:eac0dde7db219dc44f9965c563ef847942e07b193fa28d8d77d235354e76ffc3
         imagePullPolicy: IfNotPresent
         name: eirini-controller
         resources:
@@ -1242,8 +1242,8 @@ metadata:
     kbld.k14s.io/images: |
       - Metas:
         - Type: preresolved
-          URL: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s@sha256:1798ea550cfb7b1457698dc9a9766ad5333da05c1e0cd29e748b7db34e648e1b
-        URL: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s@sha256:1798ea550cfb7b1457698dc9a9766ad5333da05c1e0cd29e748b7db34e648e1b
+          URL: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s@sha256:be4bb47a769f52f7a4f43099aa97731f314cd922b72f866a005896b5ff2b7d7f
+        URL: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s@sha256:be4bb47a769f52f7a4f43099aa97731f314cd922b72f866a005896b5ff2b7d7f
   name: eirini-events
   namespace: cf-system
 spec:
@@ -1256,7 +1256,7 @@ spec:
         name: eirini-events
     spec:
       containers:
-      - image: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s@sha256:1798ea550cfb7b1457698dc9a9766ad5333da05c1e0cd29e748b7db34e648e1b
+      - image: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s@sha256:be4bb47a769f52f7a4f43099aa97731f314cd922b72f866a005896b5ff2b7d7f
         imagePullPolicy: IfNotPresent
         name: event-reporter
         resources:
@@ -1288,8 +1288,8 @@ metadata:
     kbld.k14s.io/images: |
       - Metas:
         - Type: preresolved
-          URL: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s@sha256:42ab156d08756e46e7ebfa280e55c51305648aa133587d262e19fcd30ea0ae64
-        URL: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s@sha256:42ab156d08756e46e7ebfa280e55c51305648aa133587d262e19fcd30ea0ae64
+          URL: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s@sha256:1ede2796fc027ef33298fb929002af5838df3325d0876880548ff963487d5d57
+        URL: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s@sha256:1ede2796fc027ef33298fb929002af5838df3325d0876880548ff963487d5d57
   name: instance-index-env-injector
   namespace: cf-system
 spec:
@@ -1304,7 +1304,7 @@ spec:
         name: instance-index-env-injector
     spec:
       containers:
-      - image: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s@sha256:42ab156d08756e46e7ebfa280e55c51305648aa133587d262e19fcd30ea0ae64
+      - image: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s@sha256:1ede2796fc027ef33298fb929002af5838df3325d0876880548ff963487d5d57
         imagePullPolicy: IfNotPresent
         name: instance-index-env-injector
         ports:
@@ -1338,8 +1338,8 @@ metadata:
     kbld.k14s.io/images: |
       - Metas:
         - Type: preresolved
-          URL: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s@sha256:2715ac192d671788f2512cf116ac9b483402e477af3d9481724cc40134363d61
-        URL: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s@sha256:2715ac192d671788f2512cf116ac9b483402e477af3d9481724cc40134363d61
+          URL: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s@sha256:c5b3378c336f9918b12d8a49e5fcb57e641ab79ffb2201d5aecf89cc30dcc42d
+        URL: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s@sha256:c5b3378c336f9918b12d8a49e5fcb57e641ab79ffb2201d5aecf89cc30dcc42d
   name: eirini-task-reporter
   namespace: cf-system
 spec:
@@ -1352,7 +1352,7 @@ spec:
         name: eirini-task-reporter
     spec:
       containers:
-      - image: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s@sha256:2715ac192d671788f2512cf116ac9b483402e477af3d9481724cc40134363d61
+      - image: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s@sha256:c5b3378c336f9918b12d8a49e5fcb57e641ab79ffb2201d5aecf89cc30dcc42d
         imagePullPolicy: IfNotPresent
         name: task-reporter
         resources:

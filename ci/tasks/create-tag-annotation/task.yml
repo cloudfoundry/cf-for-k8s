@@ -1,0 +1,17 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/cf-deployment-concourse-tasks
+
+inputs:
+- name: cf-for-k8s-ci
+- name: cf-for-k8s-version
+
+outputs:
+- name: tag-annotation
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/create-tag-annotation/task.sh

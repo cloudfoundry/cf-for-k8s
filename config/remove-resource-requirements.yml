@@ -5,7 +5,7 @@
 #@ if data.values.remove_resource_requirements:
 #! remove resource requirements to allow installation on smaller environments
 #@ for/end kind in ["Deployment", "DaemonSet", "StatefulSet", "Job"]:
-#@overlay/match by=overlay.subset({"kind": kind}),expects="1+"
+#@overlay/match by=overlay.subset({"kind": kind}),expects="0+"
 ---
 spec:
   template:

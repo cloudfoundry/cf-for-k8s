@@ -22,7 +22,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      null
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:afa138bd58622e7a0e79a1a1e4a3456633db31de5d74170c73d9fc6e69ea486e
+        URL: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:afa138bd58622e7a0e79a1a1e4a3456633db31de5d74170c73d9fc6e69ea486e
   name: eirini-api
   namespace: cf-system
 spec:
@@ -35,7 +38,7 @@ spec:
         name: eirini-api
     spec:
       containers:
-      - image: index.docker.io/eirini/opi@sha256:3f19737f46292f3dd5f3ad91c5130afae3520568307786ed35fee70a23dc47c1
+      - image: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s@sha256:afa138bd58622e7a0e79a1a1e4a3456633db31de5d74170c73d9fc6e69ea486e
         imagePullPolicy: IfNotPresent
         name: opi
         ports:

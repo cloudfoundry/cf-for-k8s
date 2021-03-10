@@ -66,8 +66,8 @@ resources:
   icon: clock-outline
   source:
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
-    start: 9:00 AM
-    stop: 10:00 AM
+    start: 8:00 AM
+    stop: 9:00 AM
     location: America/Los_Angeles
 
 - name: cf-for-k8s-aks-terraform-templates

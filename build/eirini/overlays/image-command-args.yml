@@ -1,0 +1,56 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini-controller"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"eirini-controller"}),expects="1+"
+      -
+        #@overlay/match missing_ok=True
+        args: ["connect", "--config", "/etc/eirini/config/eirini-controller.yml"]
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"opi"}),expects="1+"
+      -
+        #@overlay/match missing_ok=True
+        args: ["connect", "--config", "/etc/eirini/config/opi.yml"]
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini-task-reporter"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"task-reporter"}),expects="1+"
+      -
+        #@overlay/match missing_ok=True
+        args: ["connect", "--config", "/etc/eirini/config/task-reporter.yml"]
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"instance-index-env-injector"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"instance-index-env-injector"}),expects="1+"
+      -
+        #@overlay/match missing_ok=True
+        args: ["connect", "--config", "/etc/eirini/config/instance-index-env-injector.yml"]
+
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini-events"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"event-reporter"}),expects="1+"
+      -
+        #@overlay/match missing_ok=True
+        args: ["connect", "--config", "/etc/eirini-event-reporter/config/events.yml"]

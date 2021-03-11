@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Bump go packages
+      sha: 3dcf72f6ed2f3223c948f1093390c7488c2a6335
+      tags:
+      - 2.0.0
+    path: .
+  path: sources/eirini
+kind: LockConfig

@@ -8,4 +8,12 @@ directories:
       - 3.0.0
     path: .
   path: sources/eirini
+- contents:
+  - git:
+      commitTitle: Update UAA image reference in k8s deployment template to 75.0.0
+      sha: 1cc0557f10be15940d6fb9c10e7469b2412a8bca
+      tags:
+      - v75.0.0
+    path: .
+  path: sources/uaa
 kind: LockConfig

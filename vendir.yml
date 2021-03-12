@@ -99,6 +99,9 @@ directories:
       disableAutoChecksumValidation: true
       unpackArchive:
         path: eirini.tgz
+    excludePaths:
+    - eirini/**/controller-*.yml
+    - eirini/**/*-crd.yml
 - path: build/postgres/_vendir
   contents:
   - path: .

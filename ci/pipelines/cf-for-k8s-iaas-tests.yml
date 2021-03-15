@@ -53,6 +53,13 @@ resources:
     paths:
     - ci/**
 
+- name: runtime-ci
+  type: git
+  icon: github
+  source:
+    uri: https://github.com/cloudfoundry/runtime-ci.git
+    branch: main
+
 - name: cf-acceptance-tests
   type: git
   icon: github
@@ -113,6 +120,7 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-main
     - get: cf-for-k8s-ci
+    - get: runtime-ci
     - get: cf-acceptance-tests
     - get: weekday-am
       trigger: true
@@ -249,6 +257,9 @@ jobs:
 
             sleep 90
             gcloud dns record-sets list --zone=((ci_k8s_dns_zone_name)) --filter "${LB_DNS_NAME}"
+
+    - task: ensure-api-healthy
+      file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
@@ -440,6 +451,9 @@ jobs:
             bosh interpolate --path /cf_admin_password cf-install-values.yml > env-metadata/cf-admin-password.txt
             echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
             bosh interpolate --path /default_ca/ca /tmp/${DNS_DOMAIN}/cf-vars.yaml > env-metadata/default_ca.ca
+
+    - task: ensure-api-healthy
+      file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml

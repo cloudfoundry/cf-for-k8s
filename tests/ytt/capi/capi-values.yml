@@ -7,6 +7,8 @@ app_domains: [""]
 cf_admin_password: ""
 
 capi:
+  cf_api_server:
+    replicas: 1
   cc_username_lookup_client_secret:
   cf_api_controllers_client_secret:
   cf_api_backup_metadata_generator_client_secret:

@@ -273,6 +273,7 @@ jobs:
       - run-unit-tests
       trigger: true
     - get: cf-for-k8s-ci
+    - get: runtime-ci
 
   - put: ready-pool
     params:
@@ -301,6 +302,9 @@ jobs:
       APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
       DOMAIN: k8s-dev.relint.rocks
+
+  - task: ensure-api-healthy
+    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
   - in_parallel:
     - task: run-smoke-tests
@@ -399,6 +403,9 @@ jobs:
       WAVEFRONT_API_ENDPOINT: "https://vmwareprod.wavefront.com/report"
       SOURCE_PIPELINE: upgrade-from-last-release
 
+  - task: ensure-api-healthy
+    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
+
   - in_parallel:
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
@@ -442,6 +449,7 @@ jobs:
       - run-unit-tests
       trigger: true
     - get: cf-for-k8s-ci
+    - get: runtime-ci
     - get: cf-acceptance-tests
 
   - put: ready-pool
@@ -471,6 +479,9 @@ jobs:
       APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
       DOMAIN: k8s-dev.relint.rocks
+
+  - task: ensure-api-healthy
+    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
   - task: run-cats
     file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
@@ -511,6 +522,7 @@ jobs:
       - run-unit-tests
       trigger: true
     - get: cf-for-k8s-ci
+    - get: runtime-ci
 
   - put: ready-pool
     params:
@@ -549,6 +561,9 @@ jobs:
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
       USE_EXTERNAL_DB: true
       DOMAIN: k8s-dev.relint.rocks
+
+  - task: ensure-api-healthy
+    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
   - in_parallel:
     - task: run-external-db-validation-test
@@ -621,6 +636,7 @@ jobs:
       - run-unit-tests
       trigger: true
     - get: cf-for-k8s-ci
+    - get: runtime-ci
 
   - put: ready-pool
     params:
@@ -659,6 +675,9 @@ jobs:
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
       USE_EXTERNAL_BLOBSTORE: true
       DOMAIN: k8s-dev.relint.rocks
+
+  - task: ensure-api-healthy
+    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
   - in_parallel:
     - task: run-external-blobstore-validation-test
@@ -732,6 +751,7 @@ jobs:
       - run-unit-tests
       trigger: true
     - get: cf-for-k8s-ci
+    - get: runtime-ci
     - get: terraform-rds
 
   - put: ready-pool
@@ -767,6 +787,9 @@ jobs:
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
       USE_EXTERNAL_DB: true
       DOMAIN: k8s-dev.relint.rocks
+
+  - task: ensure-api-healthy
+    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
   - in_parallel:
     - task: run-rds-validation-test
@@ -818,6 +841,7 @@ jobs:
       - run-unit-tests
       trigger: true
     - get: cf-for-k8s-ci
+    - get: runtime-ci
     - get: cf-for-k8s-s3-terraform-templates
 
   - put: ready-pool
@@ -859,6 +883,9 @@ jobs:
       APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
       USE_EXTERNAL_BLOBSTORE: true
       DOMAIN: k8s-dev.relint.rocks
+
+  - task: ensure-api-healthy
+    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
   - in_parallel:
     - task: run-external-blobstore-validation-test

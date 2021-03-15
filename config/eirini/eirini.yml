@@ -32,12 +32,12 @@ spec:
 
 #! Add Secret to allow K8s to download app images from the provided registry
 #! https://github.com/cloudfoundry/cf-for-k8s/issues/74
-#! may want to keep this in sync with https://github.com/cloudfoundry-incubator/eirini-release/blob/master/helm/cf/templates/registry-secret.yaml
+#! may want to keep the name in sync with https://github.com/cloudfoundry-incubator/eirini-release/blob/9b0db46c8bdc3393c9e79b694081d46c3c4b5a15/helm/values.yaml#L4
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: app-registry-credentials
+  name: registry-credentials
   namespace: #@ workloads_namespace()
 type: kubernetes.io/dockerconfigjson
 data:

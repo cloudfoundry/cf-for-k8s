@@ -49,8 +49,6 @@ Suppose we want to update `eirini` from version `A` to `B`.
 
 1. Review local changes by running `git diff _vendir/eirini/`
 
-1. Make any required changes in `eirini-values.yml` due to the newer version.
-
 1. Run `./build.sh`
 
 1. Change back to the main directory (`cd ../../`), `kapp deploy` the new version of eirini, and if everything's good you can commit the local changes.

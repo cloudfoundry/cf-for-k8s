@@ -30,7 +30,7 @@ spec:
         - source:
             notPrincipals:
             - #@ principal(system_namespace(), "opi")
-            - #@ principal(system_namespace(), "eirini-events")
+            - #@ principal(system_namespace(), "eirini-event-reporter")
             - #@ principal(system_namespace(), "eirini-task-reporter")
       to:
         - operation:

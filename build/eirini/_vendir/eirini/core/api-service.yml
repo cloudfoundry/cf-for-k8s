@@ -1,0 +1,14 @@
+---
+# Source: eirini/templates/core/api-service.yml
+apiVersion: v1
+kind: Service
+metadata:
+  name: eirini-api
+  namespace: cf-system
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      name: http
+  selector:
+    name: eirini-api

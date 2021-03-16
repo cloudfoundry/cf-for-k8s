@@ -28,18 +28,6 @@ sources:
       - #@ "BP_OCI_REVISION=" + data.values.eirini.git_sha
       - --env
       - "BP_OCI_SOURCE=https://github.com/cloudfoundry-incubator/eirini"
-- imageRepo: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s
-  path: #@ data.values.eirini.source.path
-  pack:
-    build:
-      builder: paketobuildpacks/builder:tiny
-      rawOptions:
-      - --env
-      - "BP_GO_TARGETS=./cmd/eirini-controller"
-      - --env
-      - #@ "BP_OCI_REVISION=" + data.values.eirini.git_sha
-      - --env
-      - "BP_OCI_SOURCE=https://github.com/cloudfoundry-incubator/eirini"
 - imageRepo: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s
   path: #@ data.values.eirini.source.path
   pack:
@@ -69,8 +57,6 @@ destinations:
     newImage: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s
   - imageRepo: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s
     newImage: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s
-  - imageRepo: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s
-    newImage: index.docker.io/cloudfoundry/eirini-eirini-controller-cf-for-k8s
   - imageRepo: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s
     newImage: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s
   - imageRepo: index.docker.io/cloudfoundry/eirini-instance-index-env-injector-cf-for-k8s

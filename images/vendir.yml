@@ -8,4 +8,4 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry-incubator/eirini
-      ref: 2.0.0
+      ref: 3.0.0

@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: Bump go packages
-      sha: 3dcf72f6ed2f3223c948f1093390c7488c2a6335
+      commitTitle: Make patch-cc script usable in both kind and remote clusters...
+      sha: 62d27b014ba1597273694593b46c5053e91d9701
       tags:
-      - 2.0.0
+      - 3.0.0
     path: .
   path: sources/eirini
 kind: LockConfig

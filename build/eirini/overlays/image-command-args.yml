@@ -1,17 +1,6 @@
 #@ load("@ytt:overlay", "overlay")
 
-#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini-controller"}})
----
-spec:
-  template:
-    spec:
-      containers:
-      #@overlay/match by=overlay.subset({"name":"eirini-controller"}),expects="1+"
-      -
-        #@overlay/match missing_ok=True
-        args: ["connect", "--config", "/etc/eirini/config/eirini-controller.yml"]
-
-#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini"}})
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini-api"}})
 ---
 spec:
   template:
@@ -42,9 +31,10 @@ spec:
       #@overlay/match by=overlay.subset({"name":"instance-index-env-injector"}),expects="1+"
       -
         #@overlay/match missing_ok=True
-        args: ["connect", "--config", "/etc/eirini/config/instance-index-env-injector.yml"]
+        #@overlay/replace
+        args: ["connect", "--config", "/etc/eirini/config/instance-index-env-injector.yml", "--execute-only"]
 
-#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini-events"}})
+#@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini-event-reporter"}})
 ---
 spec:
   template:
@@ -54,3 +44,15 @@ spec:
       -
         #@overlay/match missing_ok=True
         args: ["connect", "--config", "/etc/eirini-event-reporter/config/events.yml"]
+
+#@overlay/match by=overlay.subset({"kind":"Job", "metadata":{"name":"instance-index-env-injector"}})
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"instance-index-env-injector-registration"}),expects="1+"
+      -
+        #@overlay/match missing_ok=True
+        #@overlay/replace
+        args: ["connect", "--config", "/etc/eirini/config/instance-index-env-injector.yml", "--register-only"]

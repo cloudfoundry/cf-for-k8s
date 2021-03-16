@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: Make patch-cc script usable in both kind and remote clusters...
+      sha: 62d27b014ba1597273694593b46c5053e91d9701
+      tags:
+      - 3.0.0
+    path: .
+  path: sources/eirini
+kind: LockConfig

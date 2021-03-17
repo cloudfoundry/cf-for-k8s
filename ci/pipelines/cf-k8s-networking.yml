@@ -109,9 +109,10 @@ resources:
   type: registry-image
   icon: docker
   source:
-    repository: gcr.io/cf-networking-images/cf-k8s-networking/routecontroller
-    username: _json_key
-    password: ((cf_k8s_networking_gcp_service_account_json))
+    repository: cloudfoundry/routecontroller
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 
 - name: concourse-dcind
   type: git
@@ -174,6 +175,7 @@ jobs:
           passed: [run-routecontroller-integration-tests]
           trigger: true
         - get: cf-k8s-networking-ci
+        - get: cf-for-k8s-ci
     - in_parallel:
       - task: build-tag-file
         file: cf-k8s-networking-ci/ci/tasks/docker/build-tag-file-for-image.yml
@@ -189,19 +191,12 @@ jobs:
         params:
           CONTEXT: routecontroller
           DOCKERFILE: routecontroller/Dockerfile
-    - task: annotate
-      file: cf-k8s-networking-ci/ci/tasks/docker/annotate.yml
-      input_mapping:
-        input-image-tar: routecontroller-image
-        repository: routecontroller
-      output_mapping:
-        output-image: routecontroller-annotated-image
     - put: routecontroller-image
       params:
-        image: routecontroller-annotated-image/image.tar
+        image: routecontroller-image
         additional_tags: docker-info/tags
     - task: add-updated-digest
-      file: cf-k8s-networking-ci/ci/tasks/docker/add-updated-digest.yml
+      file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/add-updated-digest.yml
       input_mapping:
         image-resource: routecontroller-image
       params:
@@ -230,6 +225,7 @@ jobs:
         CLUSTER_NAME: &ci-test-for-k8s-cluster-name cf-k8s-networking-ci-test
         GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
         GCP_PROJECT: ((ci_k8s_gcp_project_name))
+        NUM_NODES: 5
     - task: install-cf
       file: cf-k8s-networking-ci/ci/tasks/cf4k8s/install-cf-for-k8s.yml
       params:
@@ -237,7 +233,7 @@ jobs:
         CF_DOMAIN: &ci-test-for-k8s-domain "cf-k8s-networking.k8s-dev.relint.rocks"
         SHARED_DNS_ZONE_NAME: k8s-dev-relint-rocks
         CLUSTER_NAME: *ci-test-for-k8s-cluster-name
-        GCP_PROJECT: ((i_k8s_gcp_project_name))
+        GCP_PROJECT: ((ci_k8s_gcp_project_name))
         GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
         KPACK_GCR_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
     - task: run-smoke-test
@@ -250,7 +246,7 @@ jobs:
       file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/run-networking-acceptance-gke.yml
       params:
         CLUSTER_NAME: *ci-test-for-k8s-cluster-name
-        GCP_PROJECT: ((i_k8s_gcp_project_name))
+        GCP_PROJECT: ((ci_k8s_gcp_project_name))
         GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
         INTEGRATION_CONFIG_FILE: "config.json"
     - task: run-cats
@@ -320,5 +316,5 @@ jobs:
     params:
       CF_DOMAIN: *ci-test-for-k8s-domain
       CLUSTER_NAME: *ci-test-for-k8s-cluster-name
-      GCP_PROJECT: ((i_k8s_gcp_project_name))
+      GCP_PROJECT: ((ci_k8s_gcp_project_name))
       GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))

@@ -54,7 +54,7 @@ resources:
   source:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
-    branch: main
+    branch: develop
     paths:
       - ci/**
 
@@ -147,7 +147,7 @@ jobs:
         - get: cf-k8s-networking
         - get: routecontroller
           trigger: true
-        - get: cf-k8s-networking-ci
+        - get: cf-for-k8s-ci
     - task: unit-tests
       file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/run-routecontroller-units.yml
 
@@ -158,7 +158,7 @@ jobs:
         - get: routecontroller
           passed: [run-routecontroller-units]
           trigger: true
-        - get: cf-k8s-networking-ci
+        - get: cf-for-k8s-ci
         - get: concourse-dcind
     - task: integration-tests
       privileged: true

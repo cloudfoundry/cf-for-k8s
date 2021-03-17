@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-: "${STALE_AFTER:?}"
+: "${STALE_AFTER_DAYS:?}"
 
 pushd pool-repo > /dev/null
 
-stale_starting_in_epoch="$(date -d "now - $STALE_AFTER" "+%s")"
+stale_starting_in_epoch="$(( $(date "+%s") - STALE_AFTER_DAYS * 60 * 60 * 24 ))"
 
 mapfile -t claimed_ready_locks < <(ls k8s-dev/ready/claimed/*)
 

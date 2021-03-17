@@ -14,7 +14,7 @@ outputs:
   - name: pool-repo
 
 params:
-  STALE_AFTER: "5 days"
+  STALE_AFTER_DAYS: "5"
 
 run:
   path: cf-for-k8s-develop-ci/ci/tasks/schedule-stale-envs-for-deletion/task

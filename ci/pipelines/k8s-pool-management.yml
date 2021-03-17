@@ -223,6 +223,13 @@ jobs:
             git commit -m'Destroying unclaimed K8s dev pool environments'
           fi
 
+  - task: schedule-stale-envs-for-deletion
+    file: cf-for-k8s-develop-ci/ci/tasks/schedule-stale-envs-for-deletion/task.yml
+    input_mapping:
+      pool-repo: updated-pool-repo
+    output_mapping:
+      pool-repo: updated-pool-repo
+
   - put: pool-repo
     params:
       repository: updated-pool-repo

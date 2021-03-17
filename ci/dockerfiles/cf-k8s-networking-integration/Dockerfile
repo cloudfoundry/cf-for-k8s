@@ -1,4 +1,4 @@
-FROM cloudfoundry/cf-for-k8s-dind
+FROM cloudfoundry/cflinuxfs3
 
 ENV GO_VERSION 1.15.10
 
@@ -6,6 +6,9 @@ RUN \
       apt update && \
       apt -y install --fix-missing \
             build-essential \
+            curl \
+            docker \
+            git \
             netcat-openbsd \
             htop \
             libpython-dev \
@@ -57,6 +60,9 @@ RUN	mkdir -p /tmp/controller-gen && \
     go mod init tmp && \
     go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.4 && \
     rm -rf /tmp/controller-gen
+
+# Install docker
+RUN sudo curl -sSL https://get.docker.com/ | sh
 
 # Install k14s
 RUN curl -L https://k14s.io/install.sh | bash

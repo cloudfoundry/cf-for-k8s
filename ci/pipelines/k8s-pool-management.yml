@@ -196,6 +196,7 @@ jobs:
     - get: after-7pm
       trigger: true
     - get: pool-repo
+    - get: cf-for-k8s-develop-ci
 
   - task: delete-unclaimed
     # this moves everything from ready/unclaimed to destroy/unclaimed

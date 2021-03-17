@@ -104,7 +104,8 @@ resources:
   type: docker-image
   icon: docker
   source:
-    repository: cloudfoundry/cf-for-k8s-dind:cf-k8s-networking-integration
+    repository: cloudfoundry/cf-for-k8s-dind
+    tag: cf-k8s-networking-integration
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io

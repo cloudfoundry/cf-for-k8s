@@ -18,6 +18,7 @@ groups:
   - build-cf-for-k8s-azure-image
   - build-cf-for-k8s-aws-image
   - build-cf-for-k8s-dind-image
+  - build-cf-k8s-networking-integration-image
 - name: rds-databases
   jobs:
   - create-rds-database
@@ -80,11 +81,30 @@ resources:
     paths:
     - ci/dockerfiles/cf-for-k8s-dind/**
 
+- name: cf-k8s-networking-integration-dockerfile
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - ci/dockerfiles/cf-k8s-networking-integration/**
+
 - name: cf-for-k8s-dind-image
   type: docker-image
   icon: docker
   source:
     repository: cloudfoundry/cf-for-k8s-dind
+    username: ((dockerhub.username))
+    password: ((dockerhub.password))
+    email: cf-release-integration+dockerhub-push-bot@pivotal.io
+
+- name: cf-k8s-networking-integration-image
+  type: docker-image
+  icon: docker
+  source:
+    repository: cloudfoundry/cf-for-k8s-dind:cf-k8s-networking-integration
     username: ((dockerhub.username))
     password: ((dockerhub.password))
     email: cf-release-integration+dockerhub-push-bot@pivotal.io
@@ -330,6 +350,22 @@ jobs:
         - put: cf-for-k8s-dind-image
           params:
             build: cf-for-k8s-dind-dockerfile/ci/dockerfiles/cf-for-k8s-dind/
+            push: true
+
+- name: build-cf-k8s-networking-integration-image
+  public: true
+  plan:
+    - timeout: 4h
+      do:
+        - in_parallel:
+            - get: weekly
+              trigger: true
+            - get: cf-k8s-networking-integration-dockerfile
+              trigger: true
+
+        - put: cf-k8s-networking-integration-image
+          params:
+            build: cf-k8s-networking-integration-dockerfile/ci/dockerfiles/cf-k8s-networking-integration/
             push: true
 
 - name: create-stability-cluster

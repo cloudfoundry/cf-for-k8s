@@ -1,0 +1,19 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.28.0
+sources:
+- imageRepo: cloudfoundry/cf-api-controllers
+  path: sources/capi-k8s-release/src/cf-api-controllers
+  pack:
+    build:
+      builder: paketobuildpacks/builder:full
+      rawOptions:
+      - --env
+      - #@ "BP_OCI_REVISION=" + data.values.git_sha
+      - --env
+      - "BP_OCI_SOURCE=https://github.com/cloudfoundry/capi-k8s-release"
+destinations:
+  - imageRepo: cloudfoundry/cf-api-controllers
+    newImage: index.docker.io/cloudfoundry/capi-cf-api-controllers-cf-for-k8s

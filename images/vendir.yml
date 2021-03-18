@@ -15,3 +15,15 @@ directories:
     git:
       url: https://github.com/cloudfoundry/uaa.git
       ref: v75.0.0
+- path: sources/cloud_controller_ng
+  contents:
+  - path: .
+    git:
+      url: https://github.com/cloudfoundry/cloud_controller_ng
+      ref: db2e388c3f208edbab8416e44fc994c4a7b90487
+- path: sources/capi-k8s-release
+  contents:
+  - path: .
+    git:
+      url: https://github.com/cloudfoundry/capi-k8s-release
+      ref: 3834bf97569d3cb946b82b67f3249ff0d82006b3

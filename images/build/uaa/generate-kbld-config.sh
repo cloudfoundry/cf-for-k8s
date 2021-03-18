@@ -8,14 +8,14 @@ function generate_kbld_config() {
   local kbld_config_path="${1}"
 
   local source_path
-  source_path="${SCRIPT_DIR}/../../sources/eirini"
+  source_path="${SCRIPT_DIR}/../../sources/uaa"
 
   pushd "${source_path}" > /dev/null
     local git_sha
     git_sha=$(git rev-parse HEAD)
   popd > /dev/null
 
-  echo "Creating Eirini kbld config with ytt"
+  echo "Creating UAA kbld config with ytt"
   local kbld_config_values
   kbld_config_values=$(cat <<EOF
 #@data/values

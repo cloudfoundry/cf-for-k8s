@@ -112,7 +112,6 @@ resources:
     repository: cloudfoundry/routecontroller
     username: ((dockerhub.username))
     password: ((dockerhub.password))
-    email: cf-release-integration+dockerhub-push-bot@pivotal.io
 
 - name: concourse-dcind
   type: git
@@ -193,7 +192,7 @@ jobs:
           DOCKERFILE: routecontroller/Dockerfile
     - put: routecontroller-image
       params:
-        image: routecontroller-image
+        image: routecontroller-image/image.tar
         additional_tags: docker-info/tags
     - task: add-updated-digest
       file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/add-updated-digest.yml
@@ -318,3 +317,4 @@ jobs:
       CLUSTER_NAME: *ci-test-for-k8s-cluster-name
       GCP_PROJECT: ((ci_k8s_gcp_project_name))
       GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
+      SHARED_DNS_ZONE_NAME: k8s-dev-relint-rocks

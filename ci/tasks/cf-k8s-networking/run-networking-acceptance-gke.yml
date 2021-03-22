@@ -7,13 +7,13 @@ image_resource:
 
 inputs:
   - name: cf-k8s-networking
-  - name: cf-k8s-networking-ci
+  - name: cf-for-k8s-ci
   - name: integration-config
   - name: gke-env-metadata
     optional: true
 
 run:
-  path: cf-k8s-networking-ci/ci/tasks/tests/run-networking-acceptance-gke.sh
+  path: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/run-networking-acceptance-gke.sh
 
 params:
   INTEGRATION_CONFIG_FILE:

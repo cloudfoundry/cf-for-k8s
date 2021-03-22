@@ -84,17 +84,6 @@ resources:
     ignore_paths:
       - routecontroller
 
-- name: cf-k8s-networking-ci
-  type: git
-  icon: github
-  source:
-    branch: develop
-    private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
-    uri: git@github.com:cloudfoundry/cf-k8s-networking.git
-    paths:
-      - ci
-      - config
-
 - name: routecontroller
   type: git
   icon: github
@@ -173,16 +162,15 @@ jobs:
         - get: routecontroller
           passed: [run-routecontroller-integration-tests]
           trigger: true
-        - get: cf-k8s-networking-ci
         - get: cf-for-k8s-ci
     - in_parallel:
       - task: build-tag-file
-        file: cf-k8s-networking-ci/ci/tasks/docker/build-tag-file-for-image.yml
+        file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-tag-file-for-image.yml
         input_mapping:
           cf-k8s-networking: routecontroller
       - task: build-routecontroller
         privileged: true
-        file: cf-k8s-networking-ci/ci/tasks/docker/build-oci-image.yml
+        file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-oci-image.yml
         input_mapping:
           repository: routecontroller
         output_mapping:
@@ -212,21 +200,19 @@ jobs:
     - in_parallel:
         - get: cf-for-k8s
         - get: cf-for-k8s-ci
-        - get: cf-k8s-networking-ci
-          resource: cf-k8s-networking
         - get: cf-k8s-networking
           resource: cf-k8s-networking-config
           trigger: true
         - get: cf-acceptance-tests
     - task: create-gke-cluster
-      file: cf-k8s-networking-ci/ci/tasks/cf4k8s/create-gke-cluster.yml
+      file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/gke-cluster.yml
       params:
         CLUSTER_NAME: &ci-test-for-k8s-cluster-name cf-k8s-networking-ci-test
         GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
         GCP_PROJECT: ((ci_k8s_gcp_project_name))
         NUM_NODES: 5
     - task: install-cf
-      file: cf-k8s-networking-ci/ci/tasks/cf4k8s/install-cf-for-k8s.yml
+      file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/install-cf-for-k8s.yml
       params:
         # TODO: change over to using pooled envs
         CF_DOMAIN: &ci-test-for-k8s-domain "cf-k8s-networking.k8s-dev.relint.rocks"
@@ -240,7 +226,7 @@ jobs:
       params:
         SMOKE_TEST_SKIP_SSL: true
     - task: generate-integration-configs
-      file: cf-k8s-networking-ci/ci/tasks/cf4k8s/generate-integration-config.yml
+      file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/generate-integration-config.yml
     - task: networking-acceptance-gke-tests
       file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/run-networking-acceptance-gke.yml
       params:
@@ -271,10 +257,10 @@ jobs:
         - get: cf-k8s-networking-rc
           passed: [bump-rc]
           trigger: true
-        - get: cf-k8s-networking-ci
+        - get: cf-for-k8s-ci
         - get: version
     - task: print-release-notes
-      file: cf-k8s-networking-ci/ci/tasks/cf4k8s/generate-github-release.yml
+      file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/generate-github-release.yml
       input_mapping:
         cf-k8s-networking: cf-k8s-networking-rc
 
@@ -283,7 +269,7 @@ jobs:
     - in_parallel:
         - get: cf-k8s-networking-rc
           passed: [ship-what]
-        - get: cf-k8s-networking-ci
+        - get: cf-for-k8s-ci
         - get: version
     - put: cf-k8s-networking-rc
       params:
@@ -292,7 +278,7 @@ jobs:
         only_tag: true
         tag_prefix: v
     - task: create-release
-      file: cf-k8s-networking-ci/ci/tasks/cf4k8s/generate-github-release.yml
+      file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/generate-github-release.yml
       input_mapping:
         cf-k8s-networking: cf-k8s-networking-rc
     - put: cf-k8s-networking-release
@@ -307,11 +293,11 @@ jobs:
 - name: nightly-delete-ci-test
   plan:
   - in_parallel:
-    - get: cf-k8s-networking-ci
+    - get: cf-for-k8s-ci
     - get: quitting-time
       trigger: true
   - task: destroy-cluster
-    file: cf-k8s-networking-ci/ci/tasks/cf4k8s/destroy-cluster.yml
+    file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/destroy-cluster.yml
     params:
       CF_DOMAIN: *ci-test-for-k8s-domain
       CLUSTER_NAME: *ci-test-for-k8s-cluster-name

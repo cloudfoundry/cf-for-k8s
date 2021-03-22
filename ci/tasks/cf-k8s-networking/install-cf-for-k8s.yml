@@ -1,0 +1,36 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/cf-for-k8s-ci
+
+inputs:
+  - name: cf-for-k8s-ci
+  - name: cf-k8s-networking
+    optional: true
+  - name: cf-for-k8s
+  - name: cf-install-values
+    optional: true
+  - name: gke-env-metadata
+    optional: true
+
+outputs:
+  - name: env-metadata
+  - name: cf-install-values-out
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/install-cf-for-k8s.sh
+
+params:
+  CF_DOMAIN:
+  CLUSTER_NAME:
+  GCP_SERVICE_ACCOUNT_KEY:
+  KPACK_GCR_ACCOUNT_KEY:
+  CLOUDSDK_COMPUTE_REGION: "us-west1"
+  CLOUDSDK_COMPUTE_ZONE: "us-west1-a"
+  GCP_PROJECT:
+  SHARED_DNS_ZONE_NAME:
+  KAPP_TIMEOUT: "10m"
+  USE_NODEPORT_SERVICE: false # we usually use GKE environments, so it is safe to use loadBalancer services
+  USE_LATEST_NETWORKING: true
+  REGIONAL_CLUSTER: false

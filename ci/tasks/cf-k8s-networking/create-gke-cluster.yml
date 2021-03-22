@@ -1,0 +1,26 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/cf-for-k8s-ci
+
+inputs:
+  - name: cf-for-k8s-ci
+  - name: gke-env-metadata
+    optional: true
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/create-gke-cluster.sh
+
+params:
+  CLUSTER_NAME:
+  GCP_SERVICE_ACCOUNT_KEY:
+  CLOUDSDK_COMPUTE_REGION: "us-west1"
+  CLOUDSDK_COMPUTE_ZONE: "us-west1-a"
+  ENABLE_IP_ALIAS: false
+  NUM_NODES: 3 # This is the k8s default
+  GCP_PROJECT:
+  MACHINE_TYPE: "n1-standard-4"
+  EPHEMERAL_CLUSTER: true
+  REGIONAL_CLUSTER: false
+  REUSE_CLUSTER: true

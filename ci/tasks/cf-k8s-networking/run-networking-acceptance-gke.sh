@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-source cf-k8s-networking-ci/ci/tasks/helpers.sh
+source cf-for-k8s-ci/ci/tasks/cf-k8s-networking/helpers.sh
 
 # ENV
 : "${INTEGRATION_CONFIG_FILE:?}"

@@ -205,7 +205,7 @@ jobs:
           trigger: true
         - get: cf-acceptance-tests
     - task: create-gke-cluster
-      file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/gke-cluster.yml
+      file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/create-gke-cluster.yml
       params:
         CLUSTER_NAME: &ci-test-for-k8s-cluster-name cf-k8s-networking-ci-test
         GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))

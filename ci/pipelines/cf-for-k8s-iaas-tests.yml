@@ -368,6 +368,7 @@ jobs:
   - in_parallel:
     - get: cf-for-k8s-main
     - get: cf-for-k8s-ci
+    - get: runtime-ci
     - get: cf-acceptance-tests
     - get: weekday-am
       trigger: true

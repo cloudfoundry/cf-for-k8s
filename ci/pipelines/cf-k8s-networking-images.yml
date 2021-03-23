@@ -1,0 +1,315 @@
+resources:
+  - name: cf-k8s-networking
+    type: git
+    icon: github
+    source:
+      uri: git@github.com:cloudfoundry/cf-k8s-networking.git
+      branch: develop
+      private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
+
+  - name: cf-for-k8s-ci
+    type: git
+    icon: github
+    source:
+      uri: git@github.com:cloudfoundry/cf-for-k8s
+      private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+      branch: develop
+      paths:
+        - ci/**
+
+  - name: cf-k8s-logging-fluent
+    type: git
+    icon: github
+    source:
+      branch: main
+      private_key: ((cf_k8s_logging_readonly_deploy_key.private_key))
+      uri: git@github.com:cloudfoundry/cf-k8s-logging-fluent.git
+      paths:
+        - fluent-bit
+
+  - name: cf-k8s-networking-docker-images
+    type: git
+    icon: github
+    source:
+      branch: develop
+      private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
+      uri: git@github.com:cloudfoundry/cf-k8s-networking.git
+      paths:
+        - ci/dockerfiles
+
+  - name: fluent-bit-image
+    type: registry-image
+    icon: docker
+    source:
+      repository: gcr.io/cf-relint-greengrass/cf-k8s-networking/fluentbit
+      username: _json_key
+      password: ((cf_k8s_networking_gcp_service_account_json))
+
+  - name: upgrade-sidecars-image
+    type: registry-image
+    icon: docker
+    source:
+      repository: gcr.io/cf-relint-greengrass/cf-k8s-networking/upgrade-sidecars
+      username: _json_key
+      password: ((cf_k8s_networking_gcp_service_account_json))
+
+  - name: httpbin-repo
+    type: git
+    icon: github
+    source:
+      uri: git@github.com:cf-routing/httpbin.git
+      branch: develop
+      private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
+
+  - name: httpbin-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: cfrouting/httpbin
+      username: ((cf_k8s_networking_dockerhub.username))
+      password: ((cf_k8s_networking_dockerhub.password))
+
+  - name: proxy-repo
+    type: git
+    icon: github
+    source:
+      uri: git@github.com:cf-routing/proxy.git
+      branch: develop
+      private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
+
+  - name: proxy-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: cfrouting/proxy
+      username: ((cf_k8s_networking_dockerhub.username))
+      password: ((cf_k8s_networking_dockerhub.password))
+
+  - name: whoami-repo
+    type: git
+    icon: github
+    source:
+      uri: git@github.com:cf-container-networking/whoami.git
+      branch: master
+      private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
+
+  - name: whoami-image
+    type: docker-image
+    icon: docker
+    source:
+      repository: cfrouting/whoami
+      username: ((cf_k8s_networking_dockerhub.username))
+      password: ((cf_k8s_networking_dockerhub.password))
+
+  - name: cf-for-k8s-develop
+    type: git
+    icon: github
+    source:
+      uri: git@github.com:cloudfoundry/cf-for-k8s
+      private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+      branch: develop
+      ignore_paths:
+        - ci/**
+
+  - name: cf-for-k8s-fluentbit-branch
+    type: git
+    icon: github
+    source:
+      uri: git@github.com:cloudfoundry/cf-for-k8s
+      private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
+      branch: &update-fluentbit-branch update-istio-fluentbit
+
+  - name: cf-for-k8s-update-istio-sidecar-upgrade-job-branch
+    type: git
+    icon: github
+    source:
+      uri: git@github.com:cloudfoundry/cf-for-k8s
+      private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
+      branch: &update-istio-sidecar-upgrade-job-branch update-istio-upgrade-sidecars-job
+
+  - name: dockerhub-retain-timer
+    type: time
+    source:
+      interval: 3600h
+
+jobs:
+  - name: build-and-annotate-fluent-bit-image
+    plan:
+      - in_parallel:
+          - get: cf-for-k8s-develop
+          - get: cf-k8s-networking
+          - get: cf-for-k8s-ci
+          - get: cf-k8s-logging-fluent
+            trigger: true
+      - task: build-fluent-bit-image
+        file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-oci-image.yml
+        privileged: true
+        input_mapping:
+          repository: cf-k8s-logging-fluent
+        params:
+          DOCKERFILE: fluent-bit/Dockerfile
+        output_mapping:
+          image: fluent-bit-image
+      - task: prepare-fluent-bit-source-code
+        # NOTE(ck,kds): In order to annotate images, we need the source code.
+        # Unfortunately, concourse git resources only allow you to pull a
+        # specific branch/version of code. Since the version of fluent-bit will
+        # change over time, and concourse doesn't allow to dynamically change
+        # resources, we must manually clone the source code, and check it out
+        # to the version we find in the fluent-bit dockerfile.
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: cloudfoundry/cf-for-k8s-ci
+          inputs:
+          - name: cf-k8s-logging-fluent
+          outputs:
+          - name: fluent-bit-at-specified-version
+          - name: fluent-bit-version
+          run:
+            path: /bin/bash
+            args:
+            - -cex
+            - |
+              export VERSION="$(\
+                cat cf-k8s-logging-fluent/fluent-bit/Dockerfile | \
+                grep FLB_VERSION | \
+                cut -d ' ' -f 3 | \
+                head -n1 \
+                )"
+
+              git clone https://github.com/fluent/fluent-bit.git ./fluent-bit-at-specified-version
+
+              pushd fluent-bit-at-specified-version > /dev/null
+                git checkout "v$VERSION"
+              popd
+              echo "v$VERSION" > fluent-bit-version/version
+      - put: fluent-bit-image
+        params:
+          image: fluent-bit-image/image.tar
+          additional_tags: fluent-bit-version/version
+      - task: update-digest
+        file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/update-image-digest-in-cf-for-k8s.yml
+        params:
+          COMPONENT_NAME: fluentbit
+          TARGET_FILE: build/istio/values.yaml
+          BRANCH: *update-fluentbit-branch
+        input_mapping:
+          image-resource: fluent-bit-image
+      - put: cf-for-k8s-fluentbit-branch
+        params:
+          repository: cf-for-k8s-modified
+          force: true
+      - task: create-pr
+        file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/create-pr.yml
+        params:
+          BRANCH: *update-fluentbit-branch
+          GITHUB_KEY: ((cf_for_k8s_release_bot_access_token))
+          GITHUB_TITLE: "Update Istio gateway fluent-bit sidecar image"
+          GITHUB_BODY: |
+              ## WHAT is this change about?
+              Update the Istio gateway's fluent-bit sidecar image digest
+
+              ## Does this PR introduce a change to config/values.yml?
+              No
+
+              ## Acceptance Steps
+              Deploy succeeds and you can view access logs for the apps
+
+              ## Tag your pair, your PM, and/or team
+              @cloudfoundry/cf-for-k8s-networking
+
+  - name: build-httpbin-image
+    plan:
+      - in_parallel:
+        - get: httpbin-repo
+          trigger: true
+        - get: dockerhub-retain-timer
+          trigger: true
+      - put: httpbin-image
+        params:
+          build: httpbin-repo
+          tag_as_latest: true
+
+  - name: build-whoami-image
+    plan:
+      - in_parallel:
+        - get: whoami-repo
+          trigger: true
+        - get: dockerhub-retain-timer
+          trigger: true
+      - put: whoami-image
+        params:
+          build: whoami-repo
+          tag_as_latest: true
+
+  - name: build-proxy-image
+    plan:
+      - in_parallel:
+        - get: proxy-repo
+          trigger: true
+        - get: dockerhub-retain-timer
+          trigger: true
+      - put: proxy-image
+        params:
+          build: proxy-repo
+          tag_as_latest: true
+
+  - name: build-upgrade-sidecars-job-image
+    plan:
+      - in_parallel:
+          - get: cf-for-k8s-develop
+          - get: cf-k8s-networking
+          - get: cf-for-k8s-ci
+          - get: cf-k8s-networking-docker-images
+            trigger: true
+      - in_parallel:
+          - task: build-upgrade-sidecars-job-image
+            privileged: true
+            file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-oci-image.yml
+            input_mapping:
+              repository: cf-k8s-networking-docker-images
+            output_mapping:
+              image: upgrade-sidecars-image
+            params:
+              CONTEXT: ci/dockerfiles/upgrade
+              DOCKERFILE: ci/dockerfiles/upgrade/Dockerfile
+          - task: build-tag-file
+            file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-tag-file-for-image.yml
+      - put: upgrade-sidecars-image
+        params:
+          image: upgrade-sidecars-image/image.tar
+          additional_tags: docker-info/tags
+      - task: updated-digest
+        file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/update-image-digest-in-cf-for-k8s.yml
+        params:
+          COMPONENT_NAME: upgrade-sidecars
+          TARGET_FILE: config/istio/upgrade-istio-sidecars-job.yml
+          BRANCH: *update-istio-sidecar-upgrade-job-branch
+        input_mapping:
+          image-resource: upgrade-sidecars-image
+      - put: cf-for-k8s-update-istio-sidecar-upgrade-job-branch
+        params:
+          repository: cf-for-k8s-modified
+          force: true
+      - task: create-pr
+        file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/create-pr.yml
+        params:
+          BRANCH: *update-istio-sidecar-upgrade-job-branch
+          GITHUB_KEY: ((cf_for_k8s_release_bot_access_token))
+          GITHUB_TITLE: "Update Istio sidecars upgrade job image"
+          GITHUB_BODY: |
+              ## WHAT is this change about?
+              Update the image digest of Istio sidecars upgrade job
+
+              ## Does this PR introduce a change to config/values.yml?
+              No
+
+              ## Acceptance Steps
+              Deploy succeeds and you can verify that the Istio injected
+              sidecar has the latest version
+
+              ## Tag your pair, your PM, and/or team
+              @cloudfoundry/cf-for-k8s-networking

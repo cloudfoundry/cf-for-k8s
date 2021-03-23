@@ -1,0 +1,24 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: gcr.io/cf-routing/cf-k8s-networking/k8s-deploy
+
+inputs:
+- name: cf-for-k8s-ci
+- name: cf-for-k8s-develop
+- name: image-resource
+
+outputs:
+- name: cf-for-k8s-modified
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/update-image-digest-in-cf-for-k8s.sh
+
+params:
+  TARGET_FILE: # e.g. config/values.yml
+  COMPONENT_NAME: # e.g. routecontroller
+  BRANCH: # e.g. update-routecontroller
+  GIT_COMMIT_USERNAME: "CF Networking Team CI Bot"
+  GIT_COMMIT_EMAIL: "CF-Networking@pivotal.io"

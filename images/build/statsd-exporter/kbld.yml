@@ -1,0 +1,19 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.28.0
+sources:
+- imageRepo: cloudfoundry/statsd_exporter-cf-for-k8s
+  path: sources/statsd_exporter
+  pack:
+    build:
+      builder: paketobuildpacks/builder:tiny
+      rawOptions:
+      - --env
+      - #@ "BP_OCI_REVISION=" + data.values.git_sha
+      - --env
+      - "BP_OCI_SOURCE=https://github.com/prometheus/statsd_exporter"
+destinations:
+  - imageRepo: cloudfoundry/statsd_exporter-cf-for-k8s
+    newImage: index.docker.io/cloudfoundry/capi-statsd-exporter-cf-for-k8s

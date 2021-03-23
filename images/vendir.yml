@@ -27,3 +27,9 @@ directories:
     git:
       url: https://github.com/cloudfoundry/capi-k8s-release
       ref: 3834bf97569d3cb946b82b67f3249ff0d82006b3
+- path: sources/statsd_exporter
+  contents:
+  - path: .
+    git:
+      url: https://github.com/prometheus/statsd_exporter
+      ref: v0.20.0

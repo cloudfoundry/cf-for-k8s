@@ -30,4 +30,12 @@ directories:
       - v0.4.0-211-g3834bf9
     path: .
   path: sources/capi-k8s-release
+- contents:
+  - git:
+      commitTitle: 'Changelog for #361 & release 0.20.0...'
+      sha: fbcadbf71b2bd3732596d7018f3692c030f1af6f
+      tags:
+      - v0.20.0
+    path: .
+  path: sources/statsd_exporter
 kind: LockConfig

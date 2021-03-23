@@ -1,0 +1,22 @@
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"uaa"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      containers:
+      #@overlay/match by=overlay.subset({"name":"statsd-exporter"}),expects="1+"
+      -
+        #@overlay/match missing_ok=True
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics-uaa
+          failureThreshold: 2
+          periodSeconds: 5
+        #@overlay/match missing_ok=True
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics-uaa

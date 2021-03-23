@@ -16,4 +16,26 @@ directories:
       - v75.0.0
     path: .
   path: sources/uaa
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #2135 from cloudfoundry/dependabot/bundler/rubocop-1.11.0...'
+      sha: db2e388c3f208edbab8416e44fc994c4a7b90487
+    path: .
+  path: sources/cloud_controller_ng
+- contents:
+  - git:
+      commitTitle: images.yml updated by CI...
+      sha: 3834bf97569d3cb946b82b67f3249ff0d82006b3
+      tags:
+      - v0.4.0-211-g3834bf9
+    path: .
+  path: sources/capi-k8s-release
+- contents:
+  - git:
+      commitTitle: 'Changelog for #361 & release 0.20.0...'
+      sha: fbcadbf71b2bd3732596d7018f3692c030f1af6f
+      tags:
+      - v0.20.0
+    path: .
+  path: sources/statsd_exporter
 kind: LockConfig

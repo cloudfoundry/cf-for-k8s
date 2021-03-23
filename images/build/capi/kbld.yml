@@ -41,8 +41,8 @@ sources:
       - "BP_OCI_SOURCE=https://github.com/cloudfoundry/capi-k8s-release"
 destinations:
   - imageRepo: cloudfoundry/cf-api-controllers
-    newImage: index.docker.io/cloudfoundry/capi-cf-api-controllers-cf-for-k8s
+    newImage: index.docker.io/cloudfoundry/cf-api-controllers
   - imageRepo: cloudfoundry/cf-api-backup-metadata-generator
-    newImage: index.docker.io/cloudfoundry/capi-cf-api-backup-metadata-generator-cf-for-k8s
+    newImage: index.docker.io/cloudfoundry/cf-api-backup-metadata-generator
   - imageRepo: cloudfoundry/cf-api-package-registry-buddy
-    newImage: index.docker.io/cloudfoundry/capi-cf-api-package-registry-buddy-cf-for-k8s
+    newImage: index.docker.io/cloudfoundry/cf-api-package-registry-buddy

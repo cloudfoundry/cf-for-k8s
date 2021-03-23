@@ -20,4 +20,4 @@ sources:
       - "BP_OCI_SOURCE=https://github.com/cloudfoundry/cloud_controller_ng"
 destinations:
   - imageRepo: cloudfoundry/cloud-controller-ng
-    newImage: index.docker.io/cloudfoundry/capi-cloud-controller-ng-cf-for-k8s
+    newImage: index.docker.io/cloudfoundry/cloud-controller-ng

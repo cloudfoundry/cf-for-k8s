@@ -16,4 +16,4 @@ sources:
       - "BP_OCI_SOURCE=https://github.com/prometheus/statsd_exporter"
 destinations:
   - imageRepo: cloudfoundry/statsd_exporter-cf-for-k8s
-    newImage: index.docker.io/cloudfoundry/capi-statsd-exporter-cf-for-k8s
+    newImage: index.docker.io/cloudfoundry/statsd_exporter-cf-for-k8s

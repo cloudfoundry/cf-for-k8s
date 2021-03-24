@@ -1,0 +1,171 @@
+---
+resources:
+- name: istio-release
+  type: github-release
+  icon: github
+  source:
+    owner: istio
+    repository: istio
+    tag_filter: '1\.7\..*'
+    access_token: ((cf_for_k8s_release_bot_access_token))
+
+- name: cf-for-k8s-istio-bump-branch
+  type: git
+  icon: github
+  source:
+    branch: istio-version-bump
+    private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
+    uri: git@github.com:cloudfoundry/cf-for-k8s.git
+
+- name: cf-for-k8s-ci
+  type: git
+  icon: github
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    branch: main
+    paths:
+    - ci/**
+
+- name: cf-for-k8s
+  type: git
+  icon: github
+  source:
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    branch: main
+
+- name: cf-k8s-networking
+  type: git
+  icon: github
+  source:
+    uri: git@github.com:cloudfoundry/cf-k8s-networking.git
+    branch: develop
+    private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
+
+jobs:
+- name: generate-new-istio-config
+  serial_groups: ['bump-istio']
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s
+    - get: istio-release
+      trigger: true
+
+  - task: generate-and-commit-config
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: gcr.io/cf-routing/cf-k8s-networking/k8s-deploy
+      inputs:
+      - name: istio-release
+      - name: cf-for-k8s
+      outputs:
+      - name: cf-for-k8s
+      run:
+        path: /bin/bash
+        args:
+        - -cex
+        - |
+          set -euo pipefail
+
+          pushd istio-release > /dev/null
+            tar -xzvf istioctl-*-linux-amd64.tar.gz
+            mv istioctl /usr/local/bin
+          popd
+
+          ISTIO_VERSION="$(cat istio-release/tag)"
+
+          sed -i \
+            "s/istio_version.*\$/istio_version: $ISTIO_VERSION/" \
+            cf-for-k8s/build/istio/values.yaml
+
+          cf-for-k8s/build/istio/build.sh 2>&1 | tee output.txt
+
+          # TODO: this is hacky
+          #       we should figure out why the build script doesn't exit nonzero on errors
+          if [[ $( cat output.txt | grep Error | wc -l) -gt 0 ]]; then
+            exit 1
+          fi
+
+          pushd cf-for-k8s > /dev/null
+            git config --global user.name "cf-for-k8s-release bot"
+            git config --global user.email "cf-release-integration+cf-for-k8s-release-bot@pivotal.io"
+            git commit -a -m "Bump Istio to ${ISTIO_VERSION}"
+          popd
+
+  - put: cf-for-k8s-istio-bump-branch
+    params:
+      repository: cf-for-k8s
+      tag_prefix: istio-bump-to-
+      tag: istio-release/tag
+      force: true
+
+- name: validate-upgrade-on-gke
+  serial_groups: ['bump-istio']
+  plan:
+  - in_parallel:
+    - get: cf-for-k8s
+    - get: cf-for-k8s-istio-bump-branch
+      trigger: true
+      passed:
+      - generate-new-istio-config
+    - get: cf-for-k8s-ci
+    - get: cf-k8s-networking
+
+  - task: create-gke-cluster
+    file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/create-gke-cluster.yml
+    params:
+      CLUSTER_NAME: &ci-test-for-k8s-cluster-name bump-istio-test
+      GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
+      GCP_PROJECT: ((ci_k8s_gcp_project_name))
+      NUM_NODES: 5
+      REUSE_CLUSTER: false
+
+  - task: install-cf
+    file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/install-cf-for-k8s.yml
+    params:
+      CF_DOMAIN: &ci-test-for-k8s-domain "cf-k8s-networking.k8s-dev.relint.rocks"
+      CLUSTER_NAME: *ci-test-for-k8s-cluster-name
+      GCP_PROJECT: ((ci_k8s_gcp_project_name))
+      GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
+      KPACK_GCR_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
+      SHARED_DNS_ZONE_NAME: k8s-dev-relint-rocks
+      USE_LATEST_NETWORKING: false
+
+  - task: upgrade-to-test-new-istio-version
+    file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/install-cf-for-k8s.yml
+    input_mapping:
+      cf-install-values: cf-install-values-out
+    params:
+      CF_DOMAIN: *ci-test-for-k8s-domain
+      CLUSTER_NAME: *ci-test-for-k8s-cluster-name
+      GCP_PROJECT: ((ci_k8s_gcp_project_name))
+      GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
+      KPACK_GCR_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
+      SHARED_DNS_ZONE_NAME: k8s-dev-relint-rocks
+      USE_LATEST_NETWORKING: false
+
+  - task: run-smoke-test
+    file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+    params:
+      SMOKE_TEST_SKIP_SSL: true
+
+  - task: generate-integration-configs
+    file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/generate-integration-config.yml
+
+  - task: networking-acceptance-gke-tests
+    file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/run-networking-acceptance-gke.yml
+    params:
+      CLUSTER_NAME: *ci-test-for-k8s-cluster-name
+      GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
+      INTEGRATION_CONFIG_FILE: "config.json"
+
+  - task: destroy-cluster
+    file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/destroy-cluster.yml
+    params:
+      CF_DOMAIN: *ci-test-for-k8s-domain
+      CLUSTER_NAME: *ci-test-for-k8s-cluster-name
+      GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))

@@ -1,0 +1,19 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.28.0
+sources:
+  #! TODO: update this image reference once we've completed migrating the pipeline to build this image
+- imageRepo: gcr.io/cf-networking-images/cf-k8s-networking/fluentbit
+  path: sources/cf-k8s-logging-fluent/fluent-bit
+  docker:
+    build:
+      rawOptions:
+        - --label
+        - #@ "org.opencontainers.image.source={}".format(data.values.git_url)
+        - --label
+        - #@ "org.opencontainers.image.revision={}".format(data.values.git_ref)
+destinations:
+- imageRepo: gcr.io/cf-networking-images/cf-k8s-networking/fluentbit
+  newImage: index.docker.io/cloudfoundry/cf-k8s-networking-fluentbit

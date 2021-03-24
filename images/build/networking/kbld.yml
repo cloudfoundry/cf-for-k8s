@@ -1,0 +1,33 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.28.0
+sources:
+- imageRepo: cloudfoundry/routecontroller
+  path: sources/cf-k8s-networking/routecontroller
+  pack:
+    build:
+      builder: paketobuildpacks/builder:tiny
+      buildpacks:
+        - gcr.io/paketo-buildpacks/go
+      rawOptions:
+        - --env
+        - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
+        - --env
+        - #@ "BP_OCI_REVISION={}".format(data.values.git_sha)
+  #! TODO: update this image reference once we've completed migrating the pipeline to build this image
+- imageRepo: gcr.io/cf-networking-images/cf-k8s-networking/upgrade-sidecars
+  path: sources/cf-k8s-networking/ci/dockerfiles/upgrade
+  docker:
+    build:
+      rawOptions:
+        - --label
+        - #@ "org.opencontainers.image.source={}".format(data.values.git_url)
+        - --label
+        - #@ "org.opencontainers.image.revision={}".format(data.values.git_sha)
+destinations:
+  - imageRepo: cloudfoundry/routecontroller
+    newImage: index.docker.io/cloudfoundry/routecontroller
+  - imageRepo: gcr.io/cf-networking-images/cf-k8s-networking/upgrade-sidecars
+    newImage: index.docker.io/cloudfoundry/cf-k8s-networking-upgrade-sidecars

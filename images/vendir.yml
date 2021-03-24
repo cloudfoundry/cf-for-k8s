@@ -33,3 +33,15 @@ directories:
     git:
       url: https://github.com/prometheus/statsd_exporter
       ref: v0.20.0
+- path: sources/cf-k8s-networking
+  contents:
+  - path: .
+    git:
+      url: https://github.com/cloudfoundry/cf-k8s-networking
+      ref: b76db5fa45bbaa5733d4fc930b4d0c8fe861b218
+- path: sources/cf-k8s-logging-fluent
+  contents:
+  - path: .
+    git:
+      url: https://github.com/cloudfoundry/cf-k8s-logging-fluent.git
+      ref: 35b578f86027750372852635a3a291f4caf04e09

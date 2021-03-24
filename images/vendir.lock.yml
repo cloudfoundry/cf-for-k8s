@@ -38,4 +38,18 @@ directories:
       - v0.20.0
     path: .
   path: sources/statsd_exporter
+- contents:
+  - git:
+      commitTitle: Migrate the networking image pipeline and associated tasks...
+      sha: b76db5fa45bbaa5733d4fc930b4d0c8fe861b218
+      tags:
+      - v0.0.6-319-gb76db5f
+    path: .
+  path: sources/cf-k8s-networking
+- contents:
+  - git:
+      commitTitle: 'Merge pull request #5 from cloudfoundry/prometheus...'
+      sha: 35b578f86027750372852635a3a291f4caf04e09
+    path: .
+  path: sources/cf-k8s-logging-fluent
 kind: LockConfig

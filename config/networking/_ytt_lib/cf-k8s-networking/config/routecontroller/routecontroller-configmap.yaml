@@ -13,5 +13,6 @@ metadata:
     app.kubernetes.io/component: cf-networking
     app.kubernetes.io/part-of: cloudfoundry
 data:
+  LEADER_ELECTION_NAMESPACE: #@ data.values.systemNamespace
   ISTIO_GATEWAY_NAME: #@ data.values.systemNamespace + "/istio-ingressgateway"
   RESYNC_INTERVAL: "900"

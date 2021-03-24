@@ -2,7 +2,7 @@
 apiVersion: install.istio.io/v1alpha2
 kind: IstioOperator
 spec:
-  hub: gcr.io/cf-relint-greengrass
+  hub: index.docker.io/istio
   profile: default
   namespace: istio-system
   components:

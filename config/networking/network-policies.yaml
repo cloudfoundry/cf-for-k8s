@@ -733,8 +733,5 @@ spec:
       name: eirini-app-migration
   egress:
   - {}
-  ingress:
-  - {}
   policyTypes:
-  - Ingress
   - Egress

@@ -21,6 +21,9 @@ spec:
           configMap:
             name: eirini-metrics
         - name: loggregator-certs
+          # The secret below must have keys tls.ca, tls.crt and tls.key for,
+          # respectively, the certificate authority, client certificate and
+          # private key to use with loggregator.
           secret:
             secretName: loggregator-certs
             optional: true
@@ -28,7 +31,7 @@ spec:
         runAsNonRoot: true
       containers:
       - name: metrics-collector
-        image: eirini/metrics-collector@sha256:75784eb230d4b95788b0d0410fa8cd6067328ff05351b8aa9506acaf59d94263
+        image: eirini/metrics-collector@sha256:34f107151d5d459ded0f7ac8f8a5106241b71c62ff1ae277e892587854b34e53
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: config-map-volume

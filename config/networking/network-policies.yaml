@@ -721,3 +721,17 @@ spec:
       namespaceSelector:
         matchLabels:
           cf-for-k8s.cloudfoundry.org/istio-system-ns: ""
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: eirini-app-migration
+  namespace: cf-system
+spec:
+  podSelector:
+    matchLabels:
+      name: eirini-app-migration
+  egress:
+  - {}
+  policyTypes:
+  - Egress

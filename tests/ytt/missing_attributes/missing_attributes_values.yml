@@ -22,6 +22,9 @@ workloads_certificate:
   #! crt: missing
   key: key
 
+
+#! instance_index_env_injector_certificate: missing completely
+
 uaa:
   database:
     password: blip

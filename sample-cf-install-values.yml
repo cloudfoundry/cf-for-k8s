@@ -54,6 +54,13 @@ workloads_certificate:
   key: workload_private_key
   ca: workload_certificate_ca
 
+#! certificate, private key, and certificate authority used for the instance index env injector mutating webhook in eirini
+#! - should be valid for *.cf-system.svc
+instance_index_env_injector_certificate:
+  crt: &crt instance_index_env_injector_certificate
+  key: &key instance_index_env_injector_private_key
+  ca: instance_index_env_injector_ca
+
 uaa:
   database:
     #! The db password shared between UAA and the database.

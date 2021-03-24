@@ -19,7 +19,7 @@ spec:
       volumes:
         - name: config-map
           configMap:
-            name: eirini
+            name: api
         - name: cc-certs
           # The secret below is required when opi.cc_tls_disabled is false in
           # the core/api-configmap.yml. It must have keys tls.ca, tls.crt and
@@ -40,7 +40,7 @@ spec:
         runAsNonRoot: true
       containers:
       - name: opi
-        image: eirini/opi@sha256:3f19737f46292f3dd5f3ad91c5130afae3520568307786ed35fee70a23dc47c1
+        image: eirini/opi@sha256:43a8f908b7bd13ad9c9e02391616c18d0e724b09bb9b88e2401a36b949dcdd20
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: config-map

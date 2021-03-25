@@ -4,10 +4,6 @@ set -euo pipefail
 
 source cf-for-k8s-ci/ci/helpers/gke.sh
 
-# ENV
-: "${GCP_SERVICE_ACCOUNT_KEY:?}"
-: "${INTEGRATION_CONFIG_FILE:?}"
-
 function main() {
   local cluster_name
   cluster_name="$(cat pool-lock/name)"

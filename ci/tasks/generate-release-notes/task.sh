@@ -109,9 +109,7 @@ function main() {
   release_candidate_version="v$(cat cf-for-k8s-rc-version/version)"
 
   local last_release_version
-  pushd cf-for-k8s-last-release
-    last_release_version=$(git describe --exact-match --tags $(git log -n1 --pretty='%h'))
-  popd
+  last_release_version=$(curl --silent "https://api.github.com/repos/cloudfoundry/cf-for-k8s/releases/latest" | jq -r .tag_name)
 
   local release_version
   release_version=$(echo "$release_candidate_version" | sed -r 's/^(v[0-9].[0-9].[0-9]).*/\1/g')

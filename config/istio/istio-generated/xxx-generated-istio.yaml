@@ -7908,7 +7908,7 @@ data:
         },
         "enableHelmTest": false,
         "enabled": true,
-        "hub": "gcr.io/cf-routing",
+        "hub": "index.docker.io/istio",
         "imagePullPolicy": "",
         "imagePullSecrets": [],
         "istioNamespace": "istio-system",
@@ -8083,8 +8083,8 @@ metadata:
       - Metas:
         - Tag: 1.7.3
           Type: resolved
-          URL: gcr.io/cf-routing/proxyv2:1.7.3
-        URL: gcr.io/cf-routing/proxyv2@sha256:1cb3ad5eb354c0a3f0547cc8f5bbc18329ffcbc055a620244214244a55690f6e
+          URL: index.docker.io/istio/proxyv2:1.7.3
+        URL: index.docker.io/istio/proxyv2@sha256:6169d096fe60f128f1311f76c97ee1c3e5d760a45042d5c9182492745d34c658
   labels:
     app: istio-ingressgateway
     cloudfoundry.org/istio_version: 1.7.3
@@ -8215,7 +8215,7 @@ spec:
           value: Kubernetes
         - name: TERMINATION_DRAIN_DURATION_SECONDS
           value: "60"
-        image: gcr.io/cf-routing/proxyv2@sha256:1cb3ad5eb354c0a3f0547cc8f5bbc18329ffcbc055a620244214244a55690f6e
+        image: index.docker.io/istio/proxyv2@sha256:6169d096fe60f128f1311f76c97ee1c3e5d760a45042d5c9182492745d34c658
         lifecycle:
           preStop:
             exec:
@@ -8356,8 +8356,8 @@ metadata:
       - Metas:
         - Tag: 1.7.3
           Type: resolved
-          URL: gcr.io/cf-routing/pilot:1.7.3
-        URL: gcr.io/cf-routing/pilot@sha256:dc3ae4f4a5b30828d4d92e879c698fd56d898e5755fad07fcbc1e25227062eba
+          URL: index.docker.io/istio/pilot:1.7.3
+        URL: index.docker.io/istio/pilot@sha256:ba83d2a63ef324eb14128d0804aea5d1170b43ca532823dd186a516d354be610
   labels:
     app: istiod
     cloudfoundry.org/istio_version: 1.7.3
@@ -8436,7 +8436,7 @@ spec:
           value: Kubernetes
         - name: CENTRAL_ISTIOD
           value: "false"
-        image: gcr.io/cf-routing/pilot@sha256:dc3ae4f4a5b30828d4d92e879c698fd56d898e5755fad07fcbc1e25227062eba
+        image: index.docker.io/istio/pilot@sha256:ba83d2a63ef324eb14128d0804aea5d1170b43ca532823dd186a516d354be610
         name: discovery
         ports:
         - containerPort: 8080

@@ -41,17 +41,17 @@ resources:
     type: registry-image
     icon: docker
     source:
-      repository: gcr.io/cf-relint-greengrass/cf-k8s-networking/fluentbit
-      username: _json_key
-      password: ((cf_k8s_networking_gcp_service_account_json))
+      repository: cloudfoundry/cf-k8s-networking-fluentbit
+      username: ((dockerhub.username))
+      password: ((dockerhub.password))
 
   - name: upgrade-sidecars-image
     type: registry-image
     icon: docker
     source:
-      repository: gcr.io/cf-relint-greengrass/cf-k8s-networking/upgrade-sidecars
-      username: _json_key
-      password: ((cf_k8s_networking_gcp_service_account_json))
+      repository: cloudfoundry/cf-k8s-networking-upgrade-sidecars
+      username: ((dockerhub.username))
+      password: ((dockerhub.password))
 
   - name: httpbin-repo
     type: git

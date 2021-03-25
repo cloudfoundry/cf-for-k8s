@@ -17,20 +17,8 @@ groups:
   - run-routecontroller-units
   - run-routecontroller-integration-tests
   - publish-routecontroller-image
-- name: cleanup
-  jobs:
-  - nightly-delete-ci-test
 
 resources:
-- name: quitting-time
-  type: time
-  icon: clock
-  source:
-    location: America/Los_Angeles
-    start: 6:00 PM
-    stop: 6:10 PM
-    days: [Monday, Tuesday, Wednesday, Thursday, Friday]
-
 - name: cf-acceptance-tests
   type: git
   source:
@@ -128,6 +116,24 @@ resources:
     drafts: true
     access_token: ((cf_for_k8s_release_bot_access_token))
 
+- name: ready-pool
+  type: pool
+  icon: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: main
+    pool: k8s-dev/ready
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
+- name: destroy-pool
+  type: pool
+  icon: pool
+  source:
+    uri: git@github.com:cloudfoundry/relint-ci-pools
+    branch: main
+    pool: k8s-dev/destroy
+    private_key: ((relint_ci_pools_readwrite_deploy_key.private_key))
+
 jobs:
 # Build
 - name: run-routecontroller-units
@@ -204,23 +210,45 @@ jobs:
           resource: cf-k8s-networking-config
           trigger: true
         - get: cf-acceptance-tests
-    - task: create-gke-cluster
-      file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/create-gke-cluster.yml
+    - put: ready-pool
       params:
-        CLUSTER_NAME: &ci-test-for-k8s-cluster-name cf-k8s-networking-ci-test
-        GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
-        GCP_PROJECT: ((ci_k8s_gcp_project_name))
-        NUM_NODES: 5
+        acquire: true
+    - task: bump-cf-k8s-networking
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: cloudfoundry/cf-for-k8s-ci
+        inputs:
+        - name: cf-for-k8s
+        - name: cf-k8s-networking
+        outputs:
+        - name: cf-for-k8s-latest-networking
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            pushd cf-for-k8s
+              vendir sync --directory config/networking/_ytt_lib/cf-k8s-networking=../cf-k8s-networking
+            popd
+            cp -r cf-for-k8s/* cf-for-k8s-latest-networking
     - task: install-cf
-      file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/install-cf-for-k8s.yml
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-latest-networking
+        pool-lock: ready-pool
       params:
-        # TODO: change over to using pooled envs
-        CF_DOMAIN: &ci-test-for-k8s-domain "cf-k8s-networking.k8s-dev.relint.rocks"
-        SHARED_DNS_ZONE_NAME: k8s-dev-relint-rocks
-        CLUSTER_NAME: *ci-test-for-k8s-cluster-name
-        GCP_PROJECT: ((ci_k8s_gcp_project_name))
-        GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
-        KPACK_GCR_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        DOMAIN: k8s-dev.relint.rocks
+        USE_EXTERNAL_APP_REGISTRY: true
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
       params:
@@ -229,17 +257,27 @@ jobs:
       file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/generate-integration-config.yml
     - task: networking-acceptance-gke-tests
       file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/run-networking-acceptance-gke.yml
+      input_mapping:
+        pool-lock: ready-pool
       params:
-        CLUSTER_NAME: *ci-test-for-k8s-cluster-name
-        GCP_PROJECT: ((ci_k8s_gcp_project_name))
-        GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
-        INTEGRATION_CONFIG_FILE: "config.json"
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((cf_k8s_networking_gcp_service_account_json))
     - task: run-cats
       file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
       params:
         INCLUDE_APPS: true
         INCLUDE_ROUTING: true
         SKIP_REGEXP:
+    
+  ensure:
+    do:
+    - put: destroy-pool
+      params:
+        add: ready-pool
+    - put: ready-pool
+      params:
+        remove: ready-pool
 
 - name: bump-rc
   plan:
@@ -288,19 +326,3 @@ jobs:
         body: release-text/body.md
     - put: version
       params: {bump: minor}
-
-# Cleanup
-- name: nightly-delete-ci-test
-  plan:
-  - in_parallel:
-    - get: cf-for-k8s-ci
-    - get: quitting-time
-      trigger: true
-  - task: destroy-cluster
-    file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/destroy-cluster.yml
-    params:
-      CF_DOMAIN: *ci-test-for-k8s-domain
-      CLUSTER_NAME: *ci-test-for-k8s-cluster-name
-      GCP_PROJECT: ((ci_k8s_gcp_project_name))
-      GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
-      SHARED_DNS_ZONE_NAME: k8s-dev-relint-rocks

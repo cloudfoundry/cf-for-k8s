@@ -10,9 +10,10 @@ function main() {
   gcloud_auth "${cluster_name}"
 
   local config="${PWD}/integration-config/${INTEGRATION_CONFIG_FILE}"
+  local kube_config="${PWD}/kube-config.yml"
 
   pushd cf-k8s-networking/test/acceptance > /dev/null
-    ./bin/test_local "${config}" "${KUBECONFIG}"
+    ./bin/test_local "${config}" "${kube_config}"
   popd
 }
 

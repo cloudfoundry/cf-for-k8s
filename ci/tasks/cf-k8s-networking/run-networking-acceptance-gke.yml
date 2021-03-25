@@ -9,24 +9,21 @@ inputs:
   - name: cf-k8s-networking
   - name: cf-for-k8s-ci
   - name: integration-config
-  - name: gke-env-metadata
-    optional: true
-
-run:
-  path: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/run-networking-acceptance-gke.sh
+  - name: pool-lock
 
 params:
-  INTEGRATION_CONFIG_FILE:
-  # - JSON file with configurations
   CONFIG_KEEP_CLUSTER:
   # - Optional
   # - Set to non empty value to keep changes done on Kubernetes cluster after the test run
   CONFIG_KEEP_CF:
   # - Optional
   # - Set to non empty value to keep changes done on CF after the test run
-  GCP_SERVICE_ACCOUNT_KEY:
-  CLUSTER_NAME:
-  CLOUDSDK_COMPUTE_REGION: "us-west1"
-  CLOUDSDK_COMPUTE_ZONE: "us-west1-a"
-  GCP_PROJECT:
   FLAKE_ATTEMPTS:
+  GCP_PROJECT_NAME:
+  GCP_PROJECT_ZONE:
+  GCP_SERVICE_ACCOUNT_KEY:
+  INTEGRATION_CONFIG_FILE:
+  # - JSON file with configurations
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/run-networking-acceptance-gke.sh

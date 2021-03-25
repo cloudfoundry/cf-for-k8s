@@ -160,6 +160,7 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/run-networking-acceptance-gke.yml
     params:
       CLUSTER_NAME: *ci-test-for-k8s-cluster-name
+      GCP_PROJECT: ((ci_k8s_gcp_project_name))
       GCP_SERVICE_ACCOUNT_KEY: ((cf_k8s_networking_gcp_service_account_json))
       INTEGRATION_CONFIG_FILE: "config.json"
 

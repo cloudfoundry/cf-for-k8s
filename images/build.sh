@@ -13,10 +13,11 @@ function cleanup() {
 
 trap cleanup EXIT
 
-pushd ${SCRIPT_DIR} > /dev/null
+pushd "${SCRIPT_DIR}" > /dev/null
   vendir sync
 
-  for component in $(ls build); do
+  for dir in "${SCRIPT_DIR}"/build/*; do
+    component="$(basename "${dir}")"
     mkdir "${KBLD_CONFIG_DIR}/${component}"
     "${SCRIPT_DIR}/build/${component}/generate-kbld-config.sh" "${KBLD_CONFIG_DIR}/${component}/kbld.yml"
   done

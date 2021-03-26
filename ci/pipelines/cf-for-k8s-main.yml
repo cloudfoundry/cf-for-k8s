@@ -1249,6 +1249,13 @@ jobs:
     params:
       GITHUB_API_USER: cf-for-k8s-release-bot
       GITHUB_API_TOKEN: ((cf_for_k8s_release_bot_access_token))
+  - task: check-values-interface
+    file: cf-for-k8s-ci/ci/tasks/check-values-interface/task.yml
+    input_mapping:
+      cf-for-k8s-rc: cf-for-k8s-last-rc
+    params:
+      GITHUB_API_USER: cf-for-k8s-release-bot
+      GITHUB_API_TOKEN: ((cf_for_k8s_release_bot_access_token))
 
 - name: finalize-release
   plan:

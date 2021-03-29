@@ -3,7 +3,12 @@ FROM google/cloud-sdk:alpine
 USER root
 
 RUN apk update
-RUN apk add jq postgresql-client py3-pip
+RUN apk add \
+    build-base \
+    jq \
+    postgresql-client \
+    py3-pip
+
 RUN pip3 install --upgrade pip && pip3 install yq
 
 RUN apk add openssl && \
@@ -39,7 +44,7 @@ RUN hub_version=$(curl --silent "https://api.github.com/repos/github/hub/release
     mv ./hub-linux-amd64-${hub_version}/bin/hub /usr/local/bin/hub
 
 # ginkgo
-RUN export GO_TAR=go1.13.8.linux-amd64.tar.gz && \
+RUN export GO_TAR=go1.15.10.linux-amd64.tar.gz && \
     wget --tries=3 https://dl.google.com/go/${GO_TAR} && \
     tar -C /usr/local -xzf ${GO_TAR}
 

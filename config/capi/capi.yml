@@ -72,6 +72,26 @@ kpack:
 ---
 spec:
   replicas: 1
+  #@overlay/remove
+  strategy:
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"cf-api-clock"}})
+---
+spec:
+  #@overlay/remove
+  strategy:
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"cf-api-controllers"}})
+---
+spec:
+  #@overlay/remove
+  strategy:
+
+#@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"cf-api-deployment-updater"}})
+---
+spec:
+  #@overlay/remove
+  strategy:
 
 #@ capi = library.get("capi-k8s-release")
 --- #@ template.replace(capi.with_data_values(capi_values()).eval())

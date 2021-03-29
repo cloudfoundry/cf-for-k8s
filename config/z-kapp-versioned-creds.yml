@@ -1,6 +1,8 @@
 #@ load("@ytt:overlay", "overlay")
 
-#@ not_eirini_app_registry_secret = overlay.not_op(overlay.subset({"kind":"Secret", "metadata":{"name": "registry-credentials"}}))
+#! TODO: Resolve migration path: https://cloudfoundry.slack.com/archives/C8RU3BZ26/p1617043838026700
+#@ not_eirini_app_registry_secret = overlay.not_op(overlay.subset({"kind":"Secret", "metadata":{"name": "app-registry-credentials"}}))
+
 #@ not_postgres_creds = overlay.not_op(overlay.subset({"kind":"Secret", "metadata":{"name": "cf-db-admin-secret"}}))
 #@ not_minio_secret = overlay.not_op(overlay.subset({"kind":"Secret", "metadata":{"name": "cf-blobstore-minio"}}))
 #@ not_kpack_webhook_certs = overlay.not_op(overlay.subset({"kind":"Secret", "metadata":{"name": "webhook-certs"}}))

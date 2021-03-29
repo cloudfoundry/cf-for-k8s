@@ -47,17 +47,6 @@ var _ = Describe("CAPI", func() {
 		Expect(err).NotTo(HaveOccurred())
 	})
 
-	Context("Scaling cf-api-server", func() {
-			BeforeEach(func() {
-				data = map[string]interface{}{}
-				data["capi.cf_api_server.replicas"] = 2
-			})
-
-			It("updates the deployment spec", func(){
-				Expect(ctx).To(ProduceYAML(WithDeployment("cf-api-server", "cf-system").WithSpecYaml(`replicas: 2`)))
-			})
-	})
-
 	Context("Secrets", func() {
 		Context("when using quarks secrets", func() {
 			BeforeEach(func() {

@@ -71,7 +71,7 @@ kpack:
 #@overlay/match by=overlay.subset({"kind":"Deployment","metadata":{"name":"cf-api-server"}})
 ---
 spec:
-  replicas: #@ data.values.capi.cf_api_server.replicas
+  replicas: 1
 
 #@ capi = library.get("capi-k8s-release")
 --- #@ template.replace(capi.with_data_values(capi_values()).eval())

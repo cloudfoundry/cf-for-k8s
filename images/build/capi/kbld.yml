@@ -11,7 +11,7 @@ sources:
       builder: paketobuildpacks/builder:full
       rawOptions:
       - --env
-      - #@ "BP_OCI_REVISION=" + data.values.git_sha
+      - #@ "BP_OCI_REVISION=" + data.values.git_ref
       - --env
       - "BP_OCI_SOURCE=https://github.com/cloudfoundry/capi-k8s-release"
 - imageRepo: cloudfoundry/cf-api-backup-metadata-generator
@@ -26,7 +26,7 @@ sources:
       - "--default-process"
       - "wait"
       - --env
-      - #@ "BP_OCI_REVISION=" + data.values.git_sha
+      - #@ "BP_OCI_REVISION=" + data.values.git_ref
       - --env
       - "BP_OCI_SOURCE=https://github.com/cloudfoundry/capi-k8s-release"
 - imageRepo: cloudfoundry/cf-api-package-registry-buddy
@@ -36,12 +36,18 @@ sources:
       builder: paketobuildpacks/builder:full
       rawOptions:
       - --env
-      - #@ "BP_OCI_REVISION=" + data.values.git_sha
+      - #@ "BP_OCI_REVISION=" + data.values.git_ref
       - --env
       - "BP_OCI_SOURCE=https://github.com/cloudfoundry/capi-k8s-release"
 - imageRepo: cloudfoundry/capi-nginx
   path: sources/capi-k8s-release/dockerfiles/nginx
-  docker: {}
+  docker:
+    build:
+      rawOptions:
+        - --label
+        - #@ "org.opencontainers.image.source={}".format(data.values.git_url)
+        - --label
+        - #@ "org.opencontainers.image.revision={}".format(data.values.git_ref)
 destinations:
   - imageRepo: cloudfoundry/cf-api-controllers
     newImage: index.docker.io/cloudfoundry/cf-api-controllers

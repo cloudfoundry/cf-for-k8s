@@ -80,7 +80,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: roll
-          image: cloudfoundry/cf-k8s-networking-upgrade-sidecars@sha256:91ea69c706da2e9c70d96dba358f549c239ecbb3b75c4094fcf1562adae3b2ff
+          image: cloudfoundry/cf-k8s-networking-upgrade-sidecars@sha256:b381197b0b0d67dff969e02c4dabda3a7304ca923c691d4da3c5509c880ed6b0
           env:
           - name: ISTIO_VERSION
             value: #@ build_version()

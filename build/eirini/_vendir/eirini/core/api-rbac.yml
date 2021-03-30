@@ -44,7 +44,7 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: opi
+  name: api
   namespace: cf-system
 ---
 # Source: eirini/templates/core/api-rbac.yml
@@ -90,7 +90,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: opi
+  name: api
   namespace: cf-system
 ---
 # Source: eirini/templates/core/api-rbac.yml
@@ -121,5 +121,5 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
-  name: opi
+  name: api
   namespace: cf-system

@@ -41,6 +41,7 @@ rules:
   verbs:
   - create
   - delete
+  - patch
 ---
 # Source: eirini/templates/workloads/core/api-rbac.yml
 # Bind to the default service account
@@ -55,5 +56,5 @@ roleRef:
   name: eirini-namespaced-role
 subjects:
 - kind: ServiceAccount
-  name: opi
+  name: api
   namespace: cf-system

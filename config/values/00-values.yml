@@ -37,8 +37,6 @@ gateway:
   https_only: true
 
 capi:
-  cf_api_server:
-    replicas: 1
   database:
     #! or mysql2, as needed
     adapter: postgres

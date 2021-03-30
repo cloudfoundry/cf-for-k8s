@@ -8,7 +8,9 @@ sources:
   path: sources/capi-k8s-release/src/cf-api-controllers
   pack:
     build:
-      builder: paketobuildpacks/builder:full
+      builder: paketobuildpacks/builder:tiny
+      buildpacks:
+        - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
       - #@ "BP_OCI_REVISION=" + data.values.git_sha
@@ -18,7 +20,7 @@ sources:
   path: sources/capi-k8s-release/src/backup-metadata-generator
   pack:
     build:
-      builder: paketobuildpacks/builder:full
+      builder: paketobuildpacks/builder:base
       buildpacks:
       - gcr.io/paketo-buildpacks/go
       - gcr.io/paketo-buildpacks/procfile
@@ -33,7 +35,9 @@ sources:
   path: sources/capi-k8s-release/src/registry-buddy
   pack:
     build:
-      builder: paketobuildpacks/builder:full
+      builder: paketobuildpacks/builder:tiny
+      buildpacks:
+        - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
       - #@ "BP_OCI_REVISION=" + data.values.git_sha

@@ -9,6 +9,8 @@ sources:
   pack:
     build:
       builder: paketobuildpacks/builder:tiny
+      buildpacks:
+        - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
       - "BP_GO_TARGETS=./cmd/opi"
@@ -21,6 +23,8 @@ sources:
   pack:
     build:
       builder: paketobuildpacks/builder:tiny
+      buildpacks:
+        - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
       - "BP_GO_TARGETS=./cmd/event-reporter"
@@ -33,6 +37,8 @@ sources:
   pack:
     build:
       builder: paketobuildpacks/builder:tiny
+      buildpacks:
+        - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
       - "BP_GO_TARGETS=./cmd/task-reporter"
@@ -45,6 +51,8 @@ sources:
   pack:
     build:
       builder: paketobuildpacks/builder:tiny
+      buildpacks:
+        - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
       - "BP_GO_TARGETS=./cmd/instance-index-env-injector"

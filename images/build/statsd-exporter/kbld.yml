@@ -9,6 +9,8 @@ sources:
   pack:
     build:
       builder: paketobuildpacks/builder:tiny
+      buildpacks:
+        - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
       - #@ "BP_OCI_REVISION=" + data.values.git_sha

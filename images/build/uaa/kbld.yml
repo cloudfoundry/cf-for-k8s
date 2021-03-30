@@ -9,6 +9,8 @@ sources:
   pack:
     build:
       builder: paketobuildpacks/builder:base
+      buildpacks:
+        - gcr.io/paketo-buildpacks/java
       rawOptions:
       - --env
       - "BP_GRADLE_BUILT_MODULE=uaa"

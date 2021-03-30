@@ -16,8 +16,7 @@ sources:
         - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
         - --env
         - #@ "BP_OCI_REVISION={}".format(data.values.git_sha)
-  #! TODO: update this image reference once we've completed migrating the pipeline to build this image
-- imageRepo: gcr.io/cf-networking-images/cf-k8s-networking/upgrade-sidecars
+- imageRepo: cloudfoundry/cf-k8s-networking-upgrade-sidecars
   path: sources/cf-k8s-networking/ci/dockerfiles/upgrade
   docker:
     build:
@@ -29,5 +28,5 @@ sources:
 destinations:
   - imageRepo: cloudfoundry/routecontroller
     newImage: index.docker.io/cloudfoundry/routecontroller
-  - imageRepo: gcr.io/cf-networking-images/cf-k8s-networking/upgrade-sidecars
+  - imageRepo: cloudfoundry/cf-k8s-networking-upgrade-sidecars
     newImage: index.docker.io/cloudfoundry/cf-k8s-networking-upgrade-sidecars

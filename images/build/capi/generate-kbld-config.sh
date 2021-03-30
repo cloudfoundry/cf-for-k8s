@@ -20,7 +20,8 @@ function generate_kbld_config() {
   kbld_config_values=$(cat <<EOF
 #@data/values
 ---
-git_sha: ${git_sha}
+git_ref: ${git_sha}
+git_url: https://github.com/cloudfoundry/capi-k8s-release.git
 EOF
 )
 

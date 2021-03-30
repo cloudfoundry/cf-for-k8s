@@ -166,6 +166,7 @@ jobs:
       - put: cf-for-k8s-develop
         params:
           repository: cf-for-k8s-modified
+          rebase: true
 
   - name: build-httpbin-image
     plan:
@@ -226,3 +227,4 @@ jobs:
       - put: cf-for-k8s-develop
         params:
           repository: cf-for-k8s-modified
+          rebase: true

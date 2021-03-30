@@ -19,6 +19,5 @@ run:
 params:
   TARGET_FILE: # e.g. config/values.yml
   COMPONENT_NAME: # e.g. routecontroller
-  BRANCH: # e.g. update-routecontroller
-  GIT_COMMIT_USERNAME: "CF Networking Team CI Bot"
-  GIT_COMMIT_EMAIL: "CF-Networking@pivotal.io"
+  GIT_COMMIT_USERNAME: "relint-ci"
+  GIT_COMMIT_EMAIL: "cf-release-integration@pivotal.io"

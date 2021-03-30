@@ -90,26 +90,8 @@ resources:
     icon: github
     source:
       uri: git@github.com:cloudfoundry/cf-for-k8s
-      private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+      private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
       branch: develop
-      ignore_paths:
-        - ci/**
-
-  - name: cf-for-k8s-fluentbit-branch
-    type: git
-    icon: github
-    source:
-      uri: git@github.com:cloudfoundry/cf-for-k8s
-      private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
-      branch: &update-fluentbit-branch update-istio-fluentbit
-
-  - name: cf-for-k8s-update-istio-sidecar-upgrade-job-branch
-    type: git
-    icon: github
-    source:
-      uri: git@github.com:cloudfoundry/cf-for-k8s
-      private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
-      branch: &update-istio-sidecar-upgrade-job-branch update-istio-upgrade-sidecars-job
 
   - name: dockerhub-retain-timer
     type: time
@@ -177,33 +159,13 @@ jobs:
       - task: update-digest
         file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/update-image-digest-in-cf-for-k8s.yml
         params:
-          COMPONENT_NAME: fluentbit
+          COMPONENT_NAME: cf-k8s-networking-fluentbit
           TARGET_FILE: build/istio/values.yaml
-          BRANCH: *update-fluentbit-branch
         input_mapping:
           image-resource: fluent-bit-image
-      - put: cf-for-k8s-fluentbit-branch
+      - put: cf-for-k8s-develop
         params:
           repository: cf-for-k8s-modified
-          force: true
-      - task: create-pr
-        file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/create-pr.yml
-        params:
-          BRANCH: *update-fluentbit-branch
-          GITHUB_KEY: ((cf_for_k8s_release_bot_access_token))
-          GITHUB_TITLE: "Update Istio gateway fluent-bit sidecar image"
-          GITHUB_BODY: |
-              ## WHAT is this change about?
-              Update the Istio gateway's fluent-bit sidecar image digest
-
-              ## Does this PR introduce a change to config/values.yml?
-              No
-
-              ## Acceptance Steps
-              Deploy succeeds and you can view access logs for the apps
-
-              ## Tag your pair, your PM, and/or team
-              @cloudfoundry/cf-for-k8s-networking
 
   - name: build-httpbin-image
     plan:
@@ -257,31 +219,10 @@ jobs:
       - task: updated-digest
         file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/update-image-digest-in-cf-for-k8s.yml
         params:
-          COMPONENT_NAME: upgrade-sidecars
+          COMPONENT_NAME: cf-k8s-networking-upgrade-sidecars
           TARGET_FILE: config/istio/upgrade-istio-sidecars-job.yml
-          BRANCH: *update-istio-sidecar-upgrade-job-branch
         input_mapping:
           image-resource: upgrade-sidecars-image
-      - put: cf-for-k8s-update-istio-sidecar-upgrade-job-branch
+      - put: cf-for-k8s-develop
         params:
           repository: cf-for-k8s-modified
-          force: true
-      - task: create-pr
-        file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/create-pr.yml
-        params:
-          BRANCH: *update-istio-sidecar-upgrade-job-branch
-          GITHUB_KEY: ((cf_for_k8s_release_bot_access_token))
-          GITHUB_TITLE: "Update Istio sidecars upgrade job image"
-          GITHUB_BODY: |
-              ## WHAT is this change about?
-              Update the image digest of Istio sidecars upgrade job
-
-              ## Does this PR introduce a change to config/values.yml?
-              No
-
-              ## Acceptance Steps
-              Deploy succeeds and you can verify that the Istio injected
-              sidecar has the latest version
-
-              ## Tag your pair, your PM, and/or team
-              @cloudfoundry/cf-for-k8s-networking

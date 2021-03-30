@@ -4,16 +4,13 @@ set -euo pipefail
 # ENV
 : "${COMPONENT_NAME:?}"
 : "${TARGET_FILE:?}"
-: "${BRANCH:?}"
 
 pushd image-resource > /dev/null
   digest="$(cat digest)"
 popd
 
 pushd cf-for-k8s-develop
-  git checkout -b "${BRANCH}" develop
-
-  sed -r -i "s|(cf-k8s-networking/${COMPONENT_NAME})@sha256:[a-f0-9]+|\1@${digest}|" "${TARGET_FILE}"
+  sed -r -i "s|(cloudfoundry/${COMPONENT_NAME})@sha256:[a-f0-9]+|\1@${digest}|" "${TARGET_FILE}"
   ./build/istio/build.sh
 
   git config user.name "${GIT_COMMIT_USERNAME}"

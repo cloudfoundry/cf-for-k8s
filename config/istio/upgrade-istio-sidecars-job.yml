@@ -67,6 +67,8 @@ kind: Job
 metadata:
   name: #@ "restart-workloads-for-istio" + build_version().replace(".", "-")
   namespace: #@ workloads_namespace()
+  annotations:
+    kapp.k14s.io/update-strategy: "skip"
   labels:
     cloudfoundry.org/istio_version: #@ build_version()
 spec:

@@ -15,7 +15,7 @@ spec:
   - image: gcr.io/paketo-buildpacks/go@sha256:1e819e3a9ac49fd7a30ddd66f7c434c1af2ba5342f3c46bc52d98cb3762abdfd
   - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:e41beee82e03b8b1d927f9e86428b1f42ecb45d10364eb14b0096c4876199a22
   - image: gcr.io/paketo-buildpacks/php@sha256:451643d4e0a720ac916920855d01f4eccf24b2861fccfd73329f82c94b287ece
-  - image: gcr.io/paketo-buildpacks/procfile@sha256:7b3acb96e7405a7be17fd433f9b64afe15867b5eed2447593e9c063f159155f5
+  - image: gcr.io/paketo-buildpacks/procfile@sha256:61b05ad4392efb66a61098e816099a76b95e037605ceb92bb509e137987fef1d
 
 ---
 apiVersion: kpack.io/v1alpha1

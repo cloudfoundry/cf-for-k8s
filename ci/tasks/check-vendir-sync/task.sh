@@ -38,6 +38,15 @@ for dir in * ; do
         git checkout "$minio_rendered_file"
       fi
     fi
+
+    if [[ $dir = "istio" ]] ; then
+      # Ignore the change to the generated istio yaml since the istioctl + kbld output do not appear to be deterministic
+      # Just ensure the file can be generated and isn't outright deleted
+      istio_generated_file="$DIR/config/istio/istio-generated/xxx-generated-istio.yaml"
+      if [[ -f "$istio_generated_file" ]] ; then
+        git checkout "$istio_generated_file"
+      fi
+    fi
     cd ..
   fi
 done

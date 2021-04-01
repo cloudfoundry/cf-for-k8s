@@ -9,17 +9,21 @@
 
 #@ namespaced = lambda idx,old,new: "namespace" in old["metadata"]
 #@ not_inside_istio_ns = overlay.not_op(overlay.subset({"metadata":{"namespace":"istio-system"}}))
+#@ not_upgrade_sidecar = overlay.not_op(overlay.subset({"metadata":{"namespace": "cf-workloads", "annotations": {"kapp.k14s.io/change-group": "cf-for-k8s.cloudfoundry.org/upgrade-istio-sidecars"}}}))
 
-#@overlay/match by=overlay.and_op(contains_pod, namespaced, not_inside_istio_ns), expects="1+"
+#@overlay/match by=overlay.and_op(contains_pod, namespaced, not_inside_istio_ns, not_upgrade_sidecar), expects="1+"
 ---
 metadata:
   #@overlay/match missing_ok=True
   annotations:
     #@overlay/match missing_ok=True
     kapp.k14s.io/change-rule.istio-sidecar-injector: "upsert after upserting cf-for-k8s.cloudfoundry.org/istio-sidecar-injector"
+    #@overlay/match missing_ok=True
+    kapp.k14s.io/change-rule.upgrade-istio-sidecars: "upsert before upserting cf-for-k8s.cloudfoundry.org/upgrade-istio-sidecars"
 
 #! Because the istio sidecar injector is a mutatingwebhook on pod create, we need to guarantee its creation before we start creating pods
-#! in cf namespaces.
+#! in cf namespaces. Similarly, because the istio sidecars may be incompatible across versions of istio, ensure that all pods are rerolled
+#! once the new sidecar injector is available.
 
 #@overlay/match by=overlay.subset({"kind": "MutatingWebhookConfiguration", "metadata":{"name": "istio-sidecar-injector"}})
 ---

@@ -1,4 +1,5 @@
 #@ load("/namespaces.star", "workloads_namespace")
+#@ load("/namespaces.star", "system_namespace")
 
 #@ def build_version():
 #@   return "1.8.4"
@@ -62,6 +63,31 @@ subjects:
     name: restart-workloads
     namespace: #@ workloads_namespace()
 ---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: restart-cf-system
+  namespace: #@ system_namespace()
+rules:
+  - apiGroups: ["apps", "extensions", ""]
+    resources: ["daemonsets"]
+    verbs: ["get", "patch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: restart-cf-system
+  namespace: #@ system_namespace()
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: restart-cf-system
+subjects:
+  - kind: ServiceAccount
+    name: restart-workloads
+    namespace: #@ workloads_namespace()
+
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -69,6 +95,7 @@ metadata:
   namespace: #@ workloads_namespace()
   annotations:
     kapp.k14s.io/update-strategy: "skip"
+    kapp.k14s.io/change-group: cf-for-k8s.cloudfoundry.org/upgrade-istio-sidecars
   labels:
     cloudfoundry.org/istio_version: #@ build_version()
 spec:

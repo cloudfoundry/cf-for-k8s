@@ -6,7 +6,7 @@ resources:
   source:
     owner: istio
     repository: istio
-    tag_filter: '1\.7\..*'
+    tag_filter: '1\.8\..*'
     access_token: ((cf_for_k8s_release_bot_access_token))
 
 - name: cf-for-k8s-istio-bump-branch

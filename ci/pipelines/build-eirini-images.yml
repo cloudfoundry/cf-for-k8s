@@ -18,7 +18,7 @@ resources:
   source:
     uri: git@github.com:cloudfoundry-incubator/eirini.git
     private_key: ((cf_for_k8s_readwrite_deploy_key.private_key))
-    branch: 2.0.0
+    branch: 3.1.0
 - name: eirini-release
   type: github-release
   icon: github
@@ -29,11 +29,12 @@ resources:
 jobs:
 - name: build-opi
   plan:
-  - get: cf-for-k8s-ci
-  - get: eirini
-  - get: eirini-release
-    version:
-      tag: v2.0.0
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: eirini
+    - get: eirini-release
+      version:
+        tag: v3.1.0
   - task: rev-parse
     config:
       platform: linux
@@ -109,11 +110,12 @@ jobs:
       REPOSITORY: cloudfoundry/eirini-opi-cf-for-k8s
 - name: build-event-reporter
   plan:
-  - get: cf-for-k8s-ci
-  - get: eirini
-  - get: eirini-release
-    version:
-      tag: v2.0.0
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: eirini
+    - get: eirini-release
+      version:
+        tag: v3.1.0
   - task: rev-parse
     config:
       platform: linux
@@ -187,93 +189,14 @@ jobs:
     file: cf-for-k8s-ci/ci/tasks/publish-eirini-image/task.yml
     params:
       REPOSITORY: cloudfoundry/eirini-event-reporter-cf-for-k8s
-- name: build-eirini-controller
-  plan:
-  - get: cf-for-k8s-ci
-  - get: eirini
-  - get: eirini-release
-    version:
-      tag: v2.0.0
-  - task: rev-parse
-    config:
-      platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          repository: bitnami/git
-      inputs:
-      - name: eirini
-      outputs:
-      - name: revision
-      run:
-        path: /bin/bash
-        args:
-        - -c
-        - |
-          set -e
-          pushd eirini
-            git rev-parse HEAD > ../revision/revision
-            git describe --tags > ../revision/tag
-          popd > /dev/null
-  - task: build-eirini-controller
-    privileged: true
-    config:
-      platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          repository: vito/oci-build-task
-      inputs:
-      - name: eirini
-      - name: revision
-      outputs:
-      - name: image
-      caches:
-      - path: cache
-      run:
-        path: /bin/sh
-        args:
-        - -c
-        - |
-          export BUILD_ARG_GIT_SHA="$(cat revision/revision)"
-          ls -R
-          build
-      params:
-        DOCKERFILE: ./eirini/docker/eirini-controller/Dockerfile
-        CONTEXT: ./eirini/
-  - task: deplab-eirini-controller
-    privileged: true
-    config:
-      platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          repository: cloudfoundry/cf-for-k8s-deplab
-      inputs:
-      - name: eirini
-      - name: image
-      outputs:
-      - name: deplab-image
-      run:
-        path: /bin/sh
-        args:
-        - -c
-        - |
-          deplab --image-tar image/image.tar \
-            --git eirini \
-            --output-tar deplab-image/image.tar
-  - task: publish-eirini-controller
-    privileged: true
-    file: cf-for-k8s-ci/ci/tasks/publish-eirini-image/task.yml
-    params:
-      REPOSITORY: cloudfoundry/eirini-eirini-controller-cf-for-k8s
 - name: build-task-reporter
   plan:
-  - get: cf-for-k8s-ci
-  - get: eirini
-  - get: eirini-release
-    version:
-      tag: v2.0.0
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: eirini
+    - get: eirini-release
+      version:
+        tag: v3.1.0
   - task: rev-parse
     config:
       platform: linux
@@ -349,11 +272,12 @@ jobs:
       REPOSITORY: cloudfoundry/eirini-task-reporter-cf-for-k8s
 - name: build-instance-index-env-injector
   plan:
-  - get: cf-for-k8s-ci
-  - get: eirini
-  - get: eirini-release
-    version:
-      tag: v2.0.0
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: eirini
+    - get: eirini-release
+      version:
+        tag: v3.1.0
   - task: rev-parse
     config:
       platform: linux

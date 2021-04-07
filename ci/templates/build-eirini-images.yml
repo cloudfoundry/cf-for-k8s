@@ -1,8 +1,8 @@
 #@ load("@ytt:data", "data")
 
-#@ image_list = [ "opi", "event-reporter", "eirini-controller", "task-reporter", "instance-index-env-injector" ]
+#@ image_list = [ "opi", "event-reporter", "task-reporter", "instance-index-env-injector" ]
 
-#@ tag_version = "2.0.0"
+#@ tag_version = "3.1.0"
 ---
 resources:
 - name: cf-for-k8s-ci
@@ -29,16 +29,18 @@ resources:
     owner: cloudfoundry-incubator
     repository: eirini-release
     access_token: ((cf_deployment_release_bot_access_token))
-    
+
 jobs:
 #@ for img in image_list:
 - name: #@ "build-{}".format(img)
   plan:
-  - get: cf-for-k8s-ci
-  - get: eirini
-  - get: eirini-release
-    version:
-      tag: #@ "v{}".format(tag_version)
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: eirini
+    - get: eirini-release
+      version:
+        tag: #@ "v{}".format(tag_version)
+
   - task: rev-parse
     config:
       platform: linux

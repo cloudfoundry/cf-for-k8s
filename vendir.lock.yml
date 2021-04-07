@@ -10,10 +10,10 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: Migrate the networking image pipeline and associated tasks...
-      sha: b76db5fa45bbaa5733d4fc930b4d0c8fe861b218
+      commitTitle: Update roll script to also restart fluentd...
+      sha: a94c19592af6af3d2c32ed0b60522a394e5c9279
       tags:
-      - v0.0.6-319-gb76db5f
+      - v0.0.6-320-ga94c195
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

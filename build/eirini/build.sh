@@ -9,5 +9,5 @@ ytt --ignore-unknown-comments \
   -f "${SCRIPT_DIR}/_vendir/eirini/events" \
   -f "${SCRIPT_DIR}/_vendir/eirini/workloads" \
   -f "${SCRIPT_DIR}/overlays" |
-  kbld -f "${SCRIPT_DIR}/image-override.yml" -f - \
+  kbld -f - \
     >"${SCRIPT_DIR}/../../config/eirini/_ytt_lib/eirini/rendered.yml"

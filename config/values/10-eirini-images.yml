@@ -1,0 +1,10 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+images:
+  eirini:
+    event_reporter: index.docker.io/eirini/event-reporter@sha256:b635bbd81940904ee432b478e6b24e5f0b1e00852b7282573dca127370bf54eb
+    instance_index_env_injector: index.docker.io/eirini/instance-index-env-injector@sha256:0786eddaf03f8b6964def76c495c2e1908e6142b5d52674c0704c6f677919b25
+    migration: index.docker.io/eirini/migration@sha256:551998e0a0051989e45d875641620a143e268c6c25f44ebfcfff9d76ddeb14e8
+    opi: index.docker.io/eirini/opi@sha256:43a8f908b7bd13ad9c9e02391616c18d0e724b09bb9b88e2401a36b949dcdd20
+    task_reporter: index.docker.io/eirini/task-reporter@sha256:4bdaaae070e98ee124727bc1cdec2d256a3a8720ca10ec9864f03429af4587b1

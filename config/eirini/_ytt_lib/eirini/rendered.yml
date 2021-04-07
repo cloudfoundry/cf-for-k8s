@@ -34,11 +34,7 @@ spec:
         name: eirini-api
     spec:
       containers:
-      - args:
-        - connect
-        - --config
-        - /etc/eirini/config/api.yml
-        image: index.docker.io/eirini/opi@sha256:43a8f908b7bd13ad9c9e02391616c18d0e724b09bb9b88e2401a36b949dcdd20
+      - image: index.docker.io/eirini/opi@sha256:43a8f908b7bd13ad9c9e02391616c18d0e724b09bb9b88e2401a36b949dcdd20
         imagePullPolicy: IfNotPresent
         name: opi
         ports:
@@ -544,11 +540,7 @@ spec:
         name: eirini-task-reporter
     spec:
       containers:
-      - args:
-        - connect
-        - --config
-        - /etc/eirini/config/task-reporter.yml
-        image: index.docker.io/eirini/task-reporter@sha256:4bdaaae070e98ee124727bc1cdec2d256a3a8720ca10ec9864f03429af4587b1
+      - image: index.docker.io/eirini/task-reporter@sha256:4bdaaae070e98ee124727bc1cdec2d256a3a8720ca10ec9864f03429af4587b1
         imagePullPolicy: IfNotPresent
         name: task-reporter
         resources:
@@ -733,11 +725,7 @@ spec:
         name: eirini-event-reporter
     spec:
       containers:
-      - args:
-        - connect
-        - --config
-        - /etc/eirini-event-reporter/config/events.yml
-        image: index.docker.io/eirini/event-reporter@sha256:b635bbd81940904ee432b478e6b24e5f0b1e00852b7282573dca127370bf54eb
+      - image: index.docker.io/eirini/event-reporter@sha256:b635bbd81940904ee432b478e6b24e5f0b1e00852b7282573dca127370bf54eb
         imagePullPolicy: IfNotPresent
         name: event-reporter
         resources:

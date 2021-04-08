@@ -23,8 +23,8 @@ outputs:
 - name: updated-capi-k8s-release
 
 params:
-  GIT_COMMIT_EMAIL: capi-bot@pivotal.io
-  GIT_COMMIT_USERNAME: "CAPI CI Bot"
+  GIT_COMMIT_EMAIL: cf-release-integration@pivotal.io
+  GIT_COMMIT_USERNAME: "relint-ci"
 
 run:
   path: cf-for-k8s-ci/ci/tasks/cake/bump-capi-k8s-release-image-refs.sh

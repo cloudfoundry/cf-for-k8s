@@ -105,7 +105,7 @@ resources:
     private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
     branch: version
     file: version
-    git_user: cf-networking@pivotal.io
+    git_user: "relint-ci <cf-release-integration@pivotal.io>"
 
 - name: cf-k8s-networking-release
   type: github-release

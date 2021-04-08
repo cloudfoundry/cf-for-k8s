@@ -90,7 +90,7 @@ resources:
     branch: master
     private_key: ((private_key.private_key))
     uri: git@github.com:cloudfoundry/capi-k8s-release.git
-    ignore_paths: [values/images.yml]
+    ignore_paths: [config/values/images.yml]
 
 - name: capi-k8s-release-ci-passed
   type: git
@@ -513,11 +513,11 @@ jobs:
 
             export CF_FOR_K8s_DIR="$PWD/cf-for-k8s"
             pushd "capi-k8s-release"
-              bosh interpolate values/images.yml -o "../update-images.yml" > values-int.yml
+              bosh interpolate config/values/images.yml -o "../update-images.yml" > values-int.yml
 
-              echo "#@data/values" > values/images.yml
-              echo "---" >> values/images.yml
-              cat values-int.yml >> values/images.yml
+              echo "#@data/values" > config/values/images.yml
+              echo "---" >> config/values/images.yml
+              cat values-int.yml >> config/values/images.yml
 
               scripts/bump-cf-for-k8s.sh
             popd

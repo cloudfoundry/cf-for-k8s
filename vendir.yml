@@ -10,6 +10,7 @@ directories:
       url: https://github.com/cloudfoundry/capi-k8s-release
       ref: b3b4849469223e02062cd09262a1099c2cfc89bf
     includePaths:
+    - config/**/*
     - templates/**/*
     - values/**/*
 - path: config/networking/_ytt_lib/cf-k8s-networking
@@ -19,9 +20,7 @@ directories:
       url: https://github.com/cloudfoundry/cf-k8s-networking
       ref: a94c19592af6af3d2c32ed0b60522a394e5c9279
     includePaths:
-    - config/*
-    - config/crd/**/*
-    - config/routecontroller/**/*
+    - config/**/*
 - path: config/logging/_ytt_lib/cf-k8s-logging
   contents:
   - path: .
@@ -102,6 +101,7 @@ directories:
     excludePaths:
     - eirini/**/controller-*.yml
     - eirini/**/*-crd.yml
+
 - path: build/postgres/_vendir
   contents:
   - path: .

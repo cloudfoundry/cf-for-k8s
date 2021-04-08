@@ -38,8 +38,7 @@ spec:
         #@overlay/replace
         image: #@ data.values.images.eirini.instance_index_env_injector
         #@overlay/match missing_ok=True
-        #@overlay/replace
-        args: ["connect", "--config", "/etc/eirini/config/instance-index-env-injector.yml", "--execute-only"]
+        args: ["connect", "--config", "/etc/eirini/config/instance-index-env-injector.yml"]
 
 #@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"eirini-event-reporter"}})
 ---

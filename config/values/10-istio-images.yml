@@ -1,0 +1,7 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+images:
+  istio:
+    proxy: index.docker.io/istio/proxyv2@sha256:6a4ac67c1a74f95d3b307a77ad87e3abb4fcd64ddffe707f99a4458f39d9ce85
+    pilot: index.docker.io/istio/pilot@sha256:32fe6db58bd5be49079614f0254d7ce5f98a2bee10c3c389f5237b6122ffd7cc

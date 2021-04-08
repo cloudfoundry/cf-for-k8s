@@ -134,7 +134,7 @@ resources:
 - name: cf-for-k8s
   type: git
   source:
-    branch: main
+    branch: develop
     private_key: ((private_key.private_key))
     uri: git@github.com:cloudfoundry/cf-for-k8s.git
 

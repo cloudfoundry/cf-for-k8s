@@ -10,14 +10,14 @@ pushd image-resource > /dev/null
 popd
 
 pushd cf-k8s-networking
-    sed -i "s/cloudfoundry\/$COMPONENT_NAME@.*/cloudfoundry\/$COMPONENT_NAME@$digest/" config/values.yaml
+    sed -i "s/cloudfoundry\/$COMPONENT_NAME@.*/cloudfoundry\/$COMPONENT_NAME@$digest/" config/values/images.yml
 
     git config user.name "${GIT_COMMIT_USERNAME}"
     git config user.email "${GIT_COMMIT_EMAIL}"
 
     if [[ -n $(git status --porcelain) ]]; then
         echo "changes detected, will commit..."
-        git add config/values.yaml
+        git add config/values/images.yml
         git commit -m "Update ${COMPONENT_NAME} image digest to ${digest}"
 
         git log -1 --color | cat

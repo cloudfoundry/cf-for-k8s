@@ -7,3 +7,4 @@ tmp
 .idea
 *~
 images/sources/
+tests/smoke/smoke.test

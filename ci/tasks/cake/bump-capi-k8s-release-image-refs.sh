@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu -o pipefail
+set -euo pipefail
 
 function get_image_digest_for_resource () {
   pushd "$1" >/dev/null
@@ -31,11 +31,15 @@ function bump_image_references() {
 EOF
 
     pushd "capi-k8s-release"
-      bosh interpolate values/images.yml -o "../update-images.yml" > values-int.yml
+      bosh interpolate config/values/images.yml -o "../update-images.yml" > values-int.yml
 
-      echo "#@data/values" > values/images.yml
-      echo "---" >> values/images.yml
-      cat values-int.yml >> values/images.yml
+      cat <<- EOF > config/values/images.yml
+#@ load("@ytt:overlay", "overlay")
+#@data/values
+---
+#@overlay/match missing_ok=True
+EOF
+      cat values-int.yml >> config/values/images.yml
     popd
 }
 
@@ -53,7 +57,7 @@ function make_git_commit() {
     pushd "capi-k8s-release"
       git config user.name "${GIT_COMMIT_USERNAME}"
       git config user.email "${GIT_COMMIT_EMAIL}"
-      git add values/images.yml
+      git add config/values/images.yml
 
       # dont make a commit if there aren't new images
       if ! git diff --cached --exit-code; then

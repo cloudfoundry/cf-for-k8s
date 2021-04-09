@@ -515,8 +515,12 @@ jobs:
             pushd "capi-k8s-release"
               bosh interpolate config/values/images.yml -o "../update-images.yml" > values-int.yml
 
-              echo "#@data/values" > config/values/images.yml
-              echo "---" >> config/values/images.yml
+              cat <<- EOF > config/values/images.yml
+            #@ load("@ytt:overlay", "overlay")
+            #@data/values
+            ---
+            #@overlay/match missing_ok=True
+            EOF
               cat values-int.yml >> config/values/images.yml
 
               scripts/bump-cf-for-k8s.sh

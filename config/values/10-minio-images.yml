@@ -1,0 +1,6 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+images:
+  minio:
+    minio: "cloudfoundry/minio-cf-for-k8s@sha256:5cb64001e21d6e3adb05717ca49aca34d52f576cf8365af28860d4afad383ea4"

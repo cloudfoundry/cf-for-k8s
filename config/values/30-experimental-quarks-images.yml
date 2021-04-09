@@ -1,0 +1,6 @@
+#@data/values
+#@overlay/match-child-defaults missing_ok=True
+---
+images:
+  quarks_secret:
+    quarks_secret: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd

@@ -47,7 +47,7 @@ function make_git_commit() {
     shopt -s dotglob
 
     # these need to be exported so generate-shortlog can find the appropriate source code
-    export CCNG_DIR="cloud_controller_ng"
+    export CCNG_DIR="cloud-controller-ng"
     export CF_API_CONTROLLERS_DIR="cf-api-controllers"
     export REGISTRY_BUDDY_DIR="registry-buddy"
     export NGINX_DIR="capi-nginx"

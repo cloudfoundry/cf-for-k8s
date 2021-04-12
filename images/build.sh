@@ -13,11 +13,26 @@ function cleanup() {
 
 trap cleanup EXIT
 
+if [ "$#" -lt 1 ]; then
+  echo "Error: You must provide at least one component directory to build"
+  exit 1
+fi
+
 pushd "${SCRIPT_DIR}" > /dev/null
+  components=( "$@" )
+  # ensure input components are actually valid
+  for component in "${components[@]}"; do
+    if [ ! -d "${SCRIPT_DIR}/build/${component}" ]; then
+      echo "Error: The following component directory does not exist: ${component}"
+      echo "Usage: build.sh [component ...]"
+      exit 1
+    fi
+  done
+
   vendir sync
 
-  for dir in "${SCRIPT_DIR}"/build/*; do
-    component="$(basename "${dir}")"
+  # build each input component
+  for component in "${components[@]}"; do
     mkdir "${KBLD_CONFIG_DIR}/${component}"
     "${SCRIPT_DIR}/build/${component}/generate-kbld-config.sh" "${KBLD_CONFIG_DIR}/${component}/kbld.yml"
   done

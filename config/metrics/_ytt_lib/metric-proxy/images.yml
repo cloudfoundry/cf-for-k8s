@@ -1,0 +1,6 @@
+#@ load("@ytt:overlay", "overlay")
+#@data/values
+---
+#@overlay/match missing_ok=True
+images:
+  metric_proxy: "cloudfoundry/metric-proxy@sha256:0f10d093fbb4437e071dcf31411ef344b4059bf26494e4b23e2625a7d9d4e77e"

@@ -18,14 +18,14 @@ For the 4 weeks leading up to the v1.0.0 release, the smoke test SLI has been ju
 
 ## Availability during platform upgrades
 
-Note: typical cf-for-k8s platform upgrades take only a couple of minutes (frequently taking only a matter of seconds).
+**Note**: Typical cf-for-k8s platform upgrades take at most only a couple of minutes (frequently taking only a matter of seconds).
 
-Up to this point in the project, most app availabilty downtime during upgrades has been associated with networking updates. Specifically, we've seen that app downtime correlates with istio ingress gateways restarting.
+As of writing this, we do not have any guarantees of uptime of apps during upgrades; however, we will include possible downtime warnings in our release notes.
 
-We have not yet investigated or aggregated common root causes of control plane downtime.
+Most app availabilty downtime during upgrades has been associated with Istio upgrades. While the Istio ingress gateways restart as a result of the upgrade, there may be degradation of app routability. 
+
+Additionally, after an Istio upgrade, apps will be rolled to get new versions of the sidecar proxy. Apps with a single instance may be particularly impacted and temporarily unavailable for HTTP traffic.
+
+We have not yet investigated or aggregated common root causes of the CF control plane downtime.
 
 For post v1.0.0 releases, we'll include downtime information in release notes. From pre-v1.0.0, this document captures downtime-causing changes and lives [here](https://docs.google.com/spreadsheets/d/1eJEOJg7WLqL8n_S-woKAMYGunh9jyhI0sFMScmxi9F4/edit#gid=0).
-
-## Maintaining the long-running environment
-
-please see [docs/maintaining/long-running-environment.md](../docs/maintaining/long-running-environment.md)

@@ -8,7 +8,7 @@ sources:
   path: sources/cloud_controller_ng
   pack:
     build:
-      builder: paketobuildpacks/builder:full
+      builder: paketobuildpacks/builder:0.1.123-full
       buildpacks:
       - gcr.io/paketo-buildpacks/ruby
       rawOptions:

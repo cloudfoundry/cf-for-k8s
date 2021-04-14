@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: routecontroller
-        image: #@ data.values.routecontroller.image
+        image: #@ data.values.images.routecontroller
         args: ["--enable-leader-election=true"]
         resources:
           limits:

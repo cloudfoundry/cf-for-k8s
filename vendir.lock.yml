@@ -10,10 +10,10 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: Update roll script to also restart fluentd...
-      sha: a94c19592af6af3d2c32ed0b60522a394e5c9279
+      commitTitle: Update routecontroller image digest to sha256:97927d9e999f393bbc11f28511acf458a92a81142fd103e618e488988a6761ec
+      sha: 35f3ed39e26293aef16a5afae36d7a5271c13c77
       tags:
-      - v0.0.6-320-ga94c195
+      - v0.0.6-324-g35f3ed3
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

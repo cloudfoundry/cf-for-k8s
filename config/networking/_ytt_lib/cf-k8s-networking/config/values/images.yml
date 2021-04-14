@@ -1,0 +1,6 @@
+#@ load("@ytt:overlay", "overlay")
+#@data/values
+---
+#@overlay/match missing_ok=True
+images:
+  routecontroller: cloudfoundry/routecontroller@sha256:97927d9e999f393bbc11f28511acf458a92a81142fd103e618e488988a6761ec

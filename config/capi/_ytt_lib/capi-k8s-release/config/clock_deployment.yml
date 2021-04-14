@@ -39,10 +39,10 @@ spec:
           resources:
             requests:
               cpu: 300m
-              memory: 300Mi
+              memory: 500Mi
             limits:
               cpu: 1000m
-              memory: 1Gi
+              memory: 4Gi
           readinessProbe:
             tcpSocket:
               port: 4446

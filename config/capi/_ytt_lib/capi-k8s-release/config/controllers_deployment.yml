@@ -43,11 +43,11 @@ spec:
           value: #@ data.values.workloads_namespace
         resources:
           limits:
-            cpu: 100m
-            memory: 200Mi
+            cpu: 1000m
+            memory: 1Gi
           requests:
             cpu: 100m
-            memory: 50Mi
+            memory: 100Mi
         volumeMounts:
           - name: uaa-client-secret
             mountPath: /config/uaa_client_secret
@@ -68,7 +68,7 @@ spec:
         resources:
           requests:
             cpu: 10m
-            memory: 50Mi
+            memory: 25Mi
           limits:
             cpu: 500m
             memory: 1Gi

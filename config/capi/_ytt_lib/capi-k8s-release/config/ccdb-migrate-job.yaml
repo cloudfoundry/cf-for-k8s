@@ -29,7 +29,7 @@ spec:
             memory: 300Mi
           limits:
             cpu: 1000m
-            memory: 1Gi
+            memory: 4Gi
         volumeMounts:
         - #@ template.replace(shared_config_volume_mounts())
         #@ if/end data.values.ccdb.ca_cert:

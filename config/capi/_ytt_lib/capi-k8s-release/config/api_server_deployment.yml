@@ -40,10 +40,10 @@ spec:
           resources:
             requests:
               cpu: 500m
-              memory: 300Mi
+              memory: 500Mi
             limits:
               cpu: 1000m
-              memory: 1.2Gi
+              memory: 4Gi
           volumeMounts:
           - #@ template.replace(shared_config_volume_mounts())
           - name: server-sock
@@ -68,10 +68,10 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 300Mi
+              memory: 250Mi
             limits:
               cpu: 500m
-              memory: 1.2Gi
+              memory: 1Gi
           volumeMounts:
           - #@ template.replace(shared_config_volume_mounts())
           - name: nginx-uploads
@@ -87,10 +87,10 @@ spec:
           resources:
             requests:
               cpu: 500m
-              memory: 15Mi
+              memory: 100Mi
             limits:
-              cpu: 15000m
-              memory: 150Mi
+              cpu: 1500m
+              memory: 1Gi
           volumeMounts:
           - name: tmp-packages
             mountPath: /tmp/packages
@@ -118,9 +118,9 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 300Mi
+              memory: 250Mi
             limits:
-              cpu: 500m
+              cpu: 1000m
               memory: 1Gi
           volumeMounts:
           - name: nginx
@@ -140,7 +140,7 @@ spec:
           resources:
             requests:
               cpu: 100m
-              memory: 300Mi
+              memory: 100Mi
             limits:
               cpu: 500m
               memory: 1Gi

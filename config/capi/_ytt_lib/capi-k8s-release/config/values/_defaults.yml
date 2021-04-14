@@ -54,14 +54,6 @@ uaa:
   serverCerts:
     secretName: null
 workloads_namespace: cf-workloads
-images:
-  cf_api_controllers:
-  ccng:
-  cf_autodetect_builder:
-  nginx:
-  statsd_exporter:
-  registry_buddy:
-  backup_metadata_generator:
 temporary_disable_v2_staging: true
 honeycomb:
   write_key: ""

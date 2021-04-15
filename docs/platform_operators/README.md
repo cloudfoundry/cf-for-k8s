@@ -11,6 +11,7 @@
 - Maintenance (Day 2 Concerns)
   - [Rotating Secrets and Certs](rotating-secrets-and-certs.md)
   - [Scaling the Platform](scaling.md)
+  - [Upgrading the Platform](upgrades.md)
 - [Networking Docs](networking)
   - [Networking Metrics and Monitoring](networking/networking-metrics-and-monitoring.md)
   - [Ingress Routing Topology](networking/ingress-routing-topology.md)

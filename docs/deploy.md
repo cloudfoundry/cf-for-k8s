@@ -13,8 +13,6 @@
 - [Additional resources](#additional-resources)
 - [Roadmap and milestones](#roadmap-and-milestones)
 
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
 ## Prerequisites
 
 ### Required Tools
@@ -136,12 +134,14 @@ Currently, we test the following two container registries:
          ```console
          ytt -f config -f ${TMP_DIR}/cf-values.yml > ${TMP_DIR}/cf-for-k8s-rendered.yml
          ```
-
+ 
       1. Install using `kapp` and pass the above K8s configuration file
 
          ```console
          kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
          ```
+      
+      1. Save the values file somewhere secure (remember, it contains secrets!) for future upgrades. You also may want to consider saving the final rendered K8s configuration file for future reference.
 
    Once you run the command, it should take about 10 minutes or less, depending on your cluster bandwidth and size. `kapp` will provide updates on pending resource creations in the cluster and will wait until all resources are created and running. Here is a sample snippet from `kapp` output:
 

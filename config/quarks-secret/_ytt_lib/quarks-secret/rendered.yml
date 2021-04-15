@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -37,10 +38,10 @@ spec:
               request:
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
-              secretLabels:
+              secretAnnotations:
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
-              secretAnnotations:
+              secretLabels:
                 type: object
                 x-kubernetes-preserve-unknown-fields: true
               secretName:
@@ -88,10 +89,10 @@ rules:
   - watch
 - apiGroups:
   - certificates.k8s.io
-  resources:
-  - signers
   resourceNames:
   - kubernetes.io/legacy-unknown
+  resources:
+  - signers
   verbs:
   - approve
 - apiGroups:
@@ -158,9 +159,9 @@ kind: ClusterRoleBinding
 metadata:
   name: cf-quarks-secret
 roleRef:
+  apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: cf-quarks-secret
-  apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: ServiceAccount
   name: cf-quarks-secret
@@ -169,6 +170,12 @@ subjects:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      - Metas:
+        - Type: preresolved
+          URL: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd
+        URL: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd
   name: cf-quarks-secret
   namespace: cf-system
 spec:
@@ -181,16 +188,9 @@ spec:
       labels:
         name: quarks-secret
     spec:
-      serviceAccountName: cf-quarks-secret
       containers:
-      - name: quarks-secret
-        image: cloudfoundry/quarks-secret:v1.0.744
-        ports:
-        - containerPort: 60000
-          name: metrics
-        command:
+      - command:
         - quarks-secret
-        imagePullPolicy: IfNotPresent
         env:
         - name: APPLY_CRD
           value: "false"
@@ -212,3 +212,10 @@ spec:
               fieldPath: metadata.name
         - name: OPERATOR_NAME
           value: quarks-secret
+        image: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd
+        imagePullPolicy: IfNotPresent
+        name: quarks-secret
+        ports:
+        - containerPort: 60000
+          name: metrics
+      serviceAccountName: cf-quarks-secret

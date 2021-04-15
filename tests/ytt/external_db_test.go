@@ -24,7 +24,6 @@ var _ = Describe("External DB", func() {
 
 		valueFiles = []string{
 			pathToFile("tests/ytt/postgres/postgres-values.yml"),
-			pathToFile("config/values/10-postgres-images.yml"),
 		}
 	})
 

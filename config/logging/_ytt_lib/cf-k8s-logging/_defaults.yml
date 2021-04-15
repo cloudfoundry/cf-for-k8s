@@ -1,0 +1,12 @@
+#@data/values
+---
+system_domain: ""
+system_namespace: ""
+app_log_destinations: []
+
+fluentd:
+  prometheus:
+    path: '/metrics'
+    port: '24231'
+
+debug: false

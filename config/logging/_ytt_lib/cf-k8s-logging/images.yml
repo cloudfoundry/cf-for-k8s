@@ -1,0 +1,11 @@
+
+#@ load("@ytt:overlay", "overlay")
+#@data/values
+---
+#@overlay/match missing_ok=True
+images:
+  log_cache: "cloudfoundry/log-cache@sha256:76c674790dec25b329e5e3e6887a04c65d24ff4c661c88f8f105e8bce845c629"
+  syslog_server: "cloudfoundry/syslog-server@sha256:ec4e5aad3b0e898153583826e487cc7e05e261ccaed33a45ff2dca41eb7e8f24"
+  log_cache_gateway: "cloudfoundry/log-cache-gateway@sha256:67ed09c7e1d5ba868df649b1fb9aa5b2740ec6bc40d83773128ccdcd5b82b845"
+  fluent: "cloudfoundry/cf-k8s-logging@sha256:f8f12de18cf9c4fc6b358ec072d66cd1220f3bd056bae04c5c3657f749a0ca1f"
+  cf_auth_proxy: "cloudfoundry/log-cache-cf-auth-proxy@sha256:6ca7bd08b5897c89404501efe4d4ad859813f65481ab0f96a6bdb63e86d8d0f4"

@@ -89,7 +89,7 @@ start_docker
 
 # parameterizing this is hard in place - ADDITIONAL_ARGS is a hack
 # TODO: revert to using latest `full` builder once pack v0.18.1 has been cut
-pack build built-image --builder paketobuildpacks/builder:0.1.123-full --path "source-repository/${CONTEXT_PATH}" ${ADDITIONAL_ARGS}
+pack build built-image --builder paketobuildpacks/builder:full --path "source-repository/${CONTEXT_PATH}" ${ADDITIONAL_ARGS}
 
 docker save built-image -o image/image.tar
 

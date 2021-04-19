@@ -13,7 +13,7 @@ directories:
       commitTitle: Update routecontroller image digest to sha256:97927d9e999f393bbc11f28511acf458a92a81142fd103e618e488988a6761ec
       sha: 35f3ed39e26293aef16a5afae36d7a5271c13c77
       tags:
-      - v0.0.6-324-g35f3ed3
+      - v0.5.0
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

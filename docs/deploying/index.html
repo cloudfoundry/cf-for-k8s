@@ -129,7 +129,7 @@
           </ul>
       </li>
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
-        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+        <a href="/docs/platform_operators/">Managing cf-for-k8s foundations</a>
           <ul class="ml-2">
       <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
         <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
@@ -163,6 +163,9 @@
       <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
         <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
+      <li data-nav-id="/docs/platform_operators/setup-external-syslog-destinations/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-external-syslog-destinations/">Setting Up External Syslog Destinations</a>
+      </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
       </li>
@@ -171,6 +174,9 @@
       </li>
       <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
         <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/upgrades/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/upgrades/">Upgrading CF</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -201,7 +207,7 @@
         <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
       </li>
       <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
-        <a href="/docs/maintaining/maintainers/"></a>
+        <a href="/docs/maintaining/maintainers/">Maintainers</a>
       </li>
           </ul>
       </li>
@@ -254,17 +260,16 @@
 <li><a href="#additional-resources">Additional resources</a></li>
 <li><a href="#roadmap-and-milestones">Roadmap and milestones</a></li>
 </ul>
-<p><small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small></p>
 <h2 id="prerequisites">Prerequisites</h2>
 <h3 id="required-tools">Required Tools</h3>
 <p>You need the following CLIs on your system to be able to run the script:</p>
 <ul>
-<li><code>ytt</code> <a href="https://carvel.dev/#install">install link</a> <a href="https://github.com/k14s/ytt">github repo</a>
+<li><a href="https://carvel.dev/#install"><code>ytt</code></a>
 <ul>
 <li>cf-for-k8s uses <code>ytt</code> to create and maintain reusable YAML templates. You can visit the ytt <a href="https://get-ytt.io/">playground</a> to learn more about its templating features.</li>
 </ul>
 </li>
-<li><code>kapp</code> <a href="https://carvel.dev/#install">install link</a> <a href="https://github.com/k14s/kapp">github repo</a>
+<li><a href="https://carvel.dev/#install"><code>kapp</code></a>
 <ul>
 <li>cf-for-k8s uses <code>kapp</code> to manage its lifecycle. <code>kapp</code> will first show you a list of resources it plans to install on the cluster and then will attempt to install those resources. <code>kapp</code> will not exit until all resources are deployed and their status is running. See all options by running <code>kapp help</code>.</li>
 </ul>
@@ -374,36 +379,20 @@ TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
 </ol>
 </li>
 <li>
-<p>provide log destinations:</p>
+<p>Run the following commands to install Cloud Foundry on your Kubernetes cluster:</p>
 <ol>
 <li>
-<p>To send logs to a destination via syslog you can setup app log destinations in your <code>cf-values.yml</code> file:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">app_log_destinations</span><span class="p">:</span><span class="w">
-</span><span class="w"></span><span class="c">#@overlay/append</span><span class="w">
-</span><span class="w"></span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;hostname&gt;</span><span class="w">
-</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port_number&gt;</span><span class="w">
-</span><span class="w">  </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;tls/tcp&gt;</span><span class="w"> </span><span class="c">#defaults to tls</span><span class="w">
-</span><span class="w">  </span><span class="nt">insecure_disable_tls_validation</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;false/true&gt;</span><span class="w"> </span><span class="c">#defaults false</span><span class="w">
-</span><span class="w"></span><span class="c">#@overlay/append</span><span class="w">
-</span><span class="w"></span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;hostname&gt;</span><span class="w">
-</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port_number&gt;</span><span class="w">
-</span><span class="w">  </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;tls/tcp&gt;</span><span class="w"> </span><span class="c">#defaults to tls</span><span class="w">
-</span><span class="w">  </span><span class="nt">insecure_disable_tls_validation</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;false/true&gt;</span><span class="w"> </span><span class="c">#defaults false</span><span class="w">
-</span></code></pre></div></li>
-</ol>
-</li>
+<p>Render the final K8s template to raw K8s configuration</p>
+<pre><code class="language-console" data-lang="console">ytt -f config -f ${TMP_DIR}/cf-values.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
+</code></pre></li>
 <li>
-<p>Run the following commands to install Cloud Foundry on your Kubernetes cluster:</p>
-<p>i. Render the final K8s template to raw K8s configuration</p>
-<pre><code>  ```console
-  ytt -f config -f ${TMP_DIR}/cf-values.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
-  ```
-</code></pre>
-<p>ii. Install using <code>kapp</code> and pass the above K8s configuration file</p>
-<pre><code>  ```console
-  kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
-  ```
-</code></pre>
+<p>Install using <code>kapp</code> and pass the above K8s configuration file</p>
+<pre><code class="language-console" data-lang="console">kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
+</code></pre></li>
+<li>
+<p>Save the values file somewhere secure (remember, it contains secrets!) for future upgrades. You also may want to consider saving the final rendered K8s configuration file for future reference.</p>
+</li>
+</ol>
 <p>Once you run the command, it should take about 10 minutes or less, depending on your cluster bandwidth and size. <code>kapp</code> will provide updates on pending resource creations in the cluster and will wait until all resources are created and running. Here is a sample snippet from <code>kapp</code> output:</p>
 <pre><code class="language-console" data-lang="console">4:08:19PM: ---- waiting on 1 changes [0/1 done] ----
 4:08:19PM: ok: reconcile serviceaccount/cc-kpack-registry-service-account (v1) namespace: cf-workloads-staging
@@ -433,7 +422,7 @@ Domain         Record Type  TTL  IP Address
 <li>
 <p>Login using the admin credentials for key <code>cf_admin_password</code> in <code>${TMP_DIR}/cf-values.yml</code>:</p>
 <pre><code class="language-console" data-lang="console">cf auth admin &lt;cf-values.yml.cf-admin_password&gt;
-# or using yq: cf auth admin &quot;$(yq -r '.cf_admin_password' ${TMP_DIR}/cf-values.yml)&quot;
+# or using python yq: cf auth admin &quot;$(yq -r '.cf_admin_password' ${TMP_DIR}/cf-values.yml)&quot;
 </code></pre></li>
 <li>
 <p>Create an org/space for your app:</p>
@@ -457,7 +446,7 @@ memory usage: 1024M
 routes: test-node-app.&lt;cf-domain&gt;
 state since cpu memory disk details
 #0 running 2020-03-18T02:24:51Z 0.0% 0 of 1G 0 of 1G
-</code></pre></br>
+</code></pre><p><br /></p>
 </li>
 <li>
 <p>Validate the app is reachable over <strong>https</strong>:</p>
@@ -472,10 +461,10 @@ state since cpu memory disk details
 </code></pre><h2 id="additional-resources">Additional resources</h2>
 <p>Use the following resources to enable additional features in cf-for-k8s:</p>
 <ul>
-<li><a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with letsencrypt</a></li>
-<li><a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup static loadbalancer IP</a></li>
-<li><a href="/docs/platform_operators/external-databases/">Setup an external database</a>, which we recommend for Production environments</li>
-<li><a href="/docs/platform_operators/external-blobstore/">Setup an external blobstore</a></li>
+<li><a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt">Setup ingress certs with letsencrypt</a></li>
+<li><a href="/docs/platform_operators/setup-static-loadbalancer-ip">Setup static loadbalancer IP</a></li>
+<li><a href="/docs/platform_operators/external-databases">Setup an external database</a>, which we recommend for Production environments</li>
+<li><a href="/docs/platform_operators/external-blobstore">Setup an external blobstore</a>, which we recommend for Production environments</li>
 </ul>
 <h2 id="roadmap-and-milestones">Roadmap and milestones</h2>
 <p>You can find the project roadmap (github project) <a href="https://github.com/cloudfoundry/cf-for-k8s/projects/4">here</a> and our upcoming milestones <a href="https://github.com/cloudfoundry/cf-for-k8s/milestones">here</a>. Feel free to ask questions in the <a href="https://cloudfoundry.slack.com/archives/CH9LF6V1P">#cf-for-k8s channel</a> in the CloudFoundry slack or submit new feature requests or issues on this repo.</p>
@@ -484,23 +473,6 @@ state since cpu memory disk details
         
 
         <hr>
-<div class='footline d-block'>
-  <div class="support-links">
-  
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BDeploying&#43;cf-for-k8s%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fdeploying%2F%29"
-       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
-
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/deploying/_index.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
-       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
-    
-  
-</div>
-
-</div>
 
       </div>
     </div>

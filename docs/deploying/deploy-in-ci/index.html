@@ -129,7 +129,7 @@
           </ul>
       </li>
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
-        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+        <a href="/docs/platform_operators/">Managing cf-for-k8s foundations</a>
           <ul class="ml-2">
       <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
         <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
@@ -163,6 +163,9 @@
       <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
         <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
+      <li data-nav-id="/docs/platform_operators/setup-external-syslog-destinations/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-external-syslog-destinations/">Setting Up External Syslog Destinations</a>
+      </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
       </li>
@@ -171,6 +174,9 @@
       </li>
       <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
         <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/upgrades/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/upgrades/">Upgrading CF</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -201,7 +207,7 @@
         <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
       </li>
       <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
-        <a href="/docs/maintaining/maintainers/"></a>
+        <a href="/docs/maintaining/maintainers/">Maintainers</a>
       </li>
           </ul>
       </li>
@@ -235,7 +241,7 @@
 
         <h1 id="deploy-cf-for-k8s-in-ci">Deploy CF for K8s in CI</h1>
 <h2 id="prerequisites">Prerequisites</h2>
-<p>You will need the same set of prerequisites listed in the <a href="/docs/deploying/">Deploy CF for K8s</a> documentation. The CLIs will need to be available in the image used by your CI system. The <a href="https://github.com/cloudfoundry/cf-for-k8s/tree/main/ci/dockerfiles">Dockerfiles in this repo</a>, especially <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/main/ci/dockerfiles/cf-for-k8s-ci/Dockerfile">cf-for-k8s-ci</a> may be helpful.</p>
+<p>You will need the same set of prerequisites listed in the <a href="/docs/deploying#prerequisites">Deploy CF for K8s</a> documentation. The CLIs will need to be available in the image used by your CI system. The <a href="https://github.com/cloudfoundry/cf-for-k8s/tree/main/ci/dockerfiles">Dockerfiles in this repo</a>, especially <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/main/ci/dockerfiles/cf-for-k8s-ci/Dockerfile">cf-for-k8s-ci</a> may be helpful.</p>
 <h2 id="available-scripts">Available Scripts</h2>
 <p>The following scripts are designed to be executable in a CI system, as well as locally:</p>
 <ul>
@@ -270,43 +276,26 @@ export SMOKE_TEST_SKIP_SSL=true
 </thead>
 <tbody>
 <tr>
-<td><code>relintdockerhubpushbot/cf-for-k8s-ci</code></td>
-<td>This image contains everything required to generate your installation values and install CF for K8s to a K8s cluster.</td>
+<td><code>cloudfoundry/cf-for-k8s-ci</code></td>
+<td>Our catch-all image. It contains everything required to generate your installation values and install CF for K8s to a K8s cluster.</td>
 </tr>
 <tr>
-<td><code>relintdockerhubpushbot/cf-test-runner</code></td>
-<td>This image contains everything required to run the smoke tests.</td>
+<td><code>cloudfoundry/cf-for-k8s-aws</code></td>
+<td>Used for deploying cf-for-k8s onto an Amazon (EKS) cluster.</td>
 </tr>
 <tr>
-<td><code>relintdockerhubpushbot/cf-for-k8s-azure</code></td>
+<td><code>cloudfoundry/cf-for-k8s-azure</code></td>
 <td>Used for deploying cf-for-k8s onto an Azure (AKS) cluster.</td>
 </tr>
 </tbody>
 </table>
 <h2 id="concourse-example">Concourse Example</h2>
-<p>You can see an example of how we combined these scripts in our own CI pipeline <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/main/ci/pipelines/cf-for-k8s-main.yml">here</a>.</p>
+<p>You can see an example of how we combined these scripts in our own CI pipeline <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/main/ci/pipelines/cf-for-k8s.yml">here</a>.</p>
 
 
         
 
         <hr>
-<div class='footline d-block'>
-  <div class="support-links">
-  
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BDeploy&#43;CF&#43;for&#43;K8s&#43;in&#43;CI%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fdeploying%2Fdeploy-in-ci%2F%29"
-       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
-
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/deploying/deploy-in-ci.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
-       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
-    
-  
-</div>
-
-</div>
 
       </div>
     </div>

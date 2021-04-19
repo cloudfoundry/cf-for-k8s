@@ -1,129 +1,71 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://cf-for-k8s.io/docs/contributing/code-of-conduct/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/deploying/deploy-local/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/maintaining/preparing-for-development/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/features/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/contributing/networking/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/platform_operators/platform-availability/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/deploying/deploy-in-ci/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/deploying/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/platform_operators/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/platform_operators/networking/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/contributing/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/debugging/</loc>
-  </url>
-  
-  <url>
-    <loc>https://cf-for-k8s.io/docs/maintaining/</loc>
-  </url>
-  
-  <url>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/maintaining/preparing-for-development/</loc>
+  </url><url>
+    <loc>https://cf-for-k8s.io/features/</loc>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/</loc>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/maintaining/maintainers/</loc>
-  </url>
-  
-  <url>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/contributing/networking/</loc>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/platform-availability/</loc>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/deploying/deploy-in-ci/</loc>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/</loc>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/networking/</loc>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/contributing/</loc>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/debugging/</loc>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/maintaining/</loc>
+  </url><url>
     <loc>https://cf-for-k8s.io/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/config-values/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/networking/gateway-access-logs/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/networking/ingress-routing-topology/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/warning-regarding-kubectl-usage/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/networking/networking-metrics-and-monitoring/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/rotating-secrets-and-certs/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/scaling/</loc>
-  </url>
-  
-  <url>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/setup-external-syslog-destinations/</loc>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/setup-static-loadbalancer-ip/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/setup-ingress-certs-with-letsencrypt/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/networking/sidecar-access-logs/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/system-registry-management/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/tags/</loc>
-  </url>
-  
-  <url>
+  </url><url>
+    <loc>https://cf-for-k8s.io/docs/platform_operators/upgrades/</loc>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/external-blobstore/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://cf-for-k8s.io/docs/platform_operators/external-databases/</loc>
   </url>
-  
 </urlset>

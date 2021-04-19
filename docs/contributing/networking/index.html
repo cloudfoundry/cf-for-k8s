@@ -129,7 +129,7 @@
           </ul>
       </li>
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
-        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+        <a href="/docs/platform_operators/">Managing cf-for-k8s foundations</a>
           <ul class="ml-2">
       <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
         <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
@@ -163,6 +163,9 @@
       <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
         <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
+      <li data-nav-id="/docs/platform_operators/setup-external-syslog-destinations/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-external-syslog-destinations/">Setting Up External Syslog Destinations</a>
+      </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
       </li>
@@ -171,6 +174,9 @@
       </li>
       <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
         <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/upgrades/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/upgrades/">Upgrading CF</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -201,7 +207,7 @@
         <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
       </li>
       <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
-        <a href="/docs/maintaining/maintainers/"></a>
+        <a href="/docs/maintaining/maintainers/">Maintainers</a>
       </li>
           </ul>
       </li>
@@ -373,30 +379,13 @@ for your own component that allows it to egress to UAA.</p>
 <h2 id="istio-sidecar-injection">Istio Sidecar Injection</h2>
 <h3 id="namespaces-and-istio-sidecar-injection">Namespaces and Istio Sidecar Injection</h3>
 <p>CF for Kubernetes uses Istio&rsquo;s <a href="https://istio.io/latest/docs/tasks/security/authentication/authn-policy/#auto-mutual-tls">automatic mTLS</a> with a <code>STRICT</code> authentication policy. This means that all <code>Pods</code> that have an Istio sidecar will require incoming traffic to use mutual TLS.</p>
-<p>When you create a new namespace, in order to take advantage of all of Istio&rsquo;s features, and communicate with other <code>Pods</code> that Istio sidecars, your namespace must have an <code>istio-injection=enabled</code> label to turn on automatic <a href="https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/">Sidecar Injection</a>. This makes it so the pods in your namespace will contain an <a href="https://istio.io/latest/docs/reference/config/networking/sidecar/">Istio sidecar proxy</a> running alongside them. In CF for Kubernetes, Istio sidecar injection is added automatically by a <code>ytt</code> <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/develop/config/istio/add-istio-injection.yml">overlay</a>.</p>
+<p>When you create a new namespace, in order to take advantage of all of Istio&rsquo;s features, and communicate with other <code>Pods</code> that Istio sidecars, your namespace must have an <code>istio-injection=enabled</code> label to turn on automatic <a href="https://istio.io/latest/docs/setup/additional-setup/sidecar-injection/">Sidecar Injection</a>. This makes it so the pods in your namespace will contain an <a href="https://istio.io/latest/docs/reference/config/networking/sidecar/">Istio sidecar proxy</a> running alongside them. In CF for Kubernetes, Istio sidecar injection is added automatically by a <code>ytt</code> overlay <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/develop/config/istio/add-istio-injection.yml">config/istio/add-istio-injection.yml</a>.</p>
 <p>To confirm your namespace has automatic sidecar injection enabled, you can describe your namespace with <code>kubectl get namespace &lt;namespace_name&gt; -L istio-injection</code> and see that Istio Injection is set to &ldquo;enabled&rdquo;.</p>
 
 
         
 
         <hr>
-<div class='footline d-block'>
-  <div class="support-links">
-  
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BNetworking&#43;Configuration&#43;for&#43;System&#43;Components%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fcontributing%2Fnetworking%2F%29"
-       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
-
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/contributing/networking.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
-       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
-    
-  
-</div>
-
-</div>
 
       </div>
     </div>

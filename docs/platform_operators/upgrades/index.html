@@ -7,8 +7,8 @@
 <meta charset="utf-8">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="System Registry Management"/>
-<link rel="canonical" content="https://cf-for-k8s.io/docs/platform_operators/system-registry-management/">
+<meta name="description" content="Upgrading CF"/>
+<link rel="canonical" content="https://cf-for-k8s.io/docs/platform_operators/upgrades/">
 <link rel="icon" type="image/png" href="/images/favicon.png">
 
 
@@ -16,12 +16,12 @@
 
 
 
-<meta property="og:title" content="System Registry Management · Cloud Foundry for Kubernetes">
+<meta property="og:title" content="Upgrading CF · Cloud Foundry for Kubernetes">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://cf-for-k8s.io/docs/platform_operators/system-registry-management/">
+<meta property="og:url" content="https://cf-for-k8s.io/docs/platform_operators/upgrades/">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="Cloud Foundry for Kubernetes">
-<meta property="og:description" content="System Registry Management">
+<meta property="og:description" content="Upgrading CF">
 <meta property="og:type" content="article">
 <meta property="og:image" content="https://cf-for-k8s.io/images/cf-for-k8s-logo.png">
 <meta property="og:image:alt" content="CF for K8s project logo">
@@ -32,7 +32,7 @@
 
 
 
-<meta property="twitter:title" content="System Registry Management · Cloud Foundry for Kubernetes">
+<meta property="twitter:title" content="Upgrading CF · Cloud Foundry for Kubernetes">
 <meta property="twitter:card" content="summary">
 <meta property="twitter:image" content="https://cf-for-k8s.io/images/cf-for-k8s-logo.png">
 <meta property="twitter:image:alt" content="CF for K8s project logo">
@@ -74,7 +74,7 @@
       });
     </script>
 
-    <title>System Registry Management · Cloud Foundry for Kubernetes</title>
+    <title>Upgrading CF · Cloud Foundry for Kubernetes</title>
   </head>
   <body>
     
@@ -172,10 +172,10 @@
       <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1 active">
+      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
         <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/upgrades/" class="dd-item depth-1">
+      <li data-nav-id="/docs/platform_operators/upgrades/" class="dd-item depth-1 active">
         <a href="/docs/platform_operators/upgrades/">Upgrading CF</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
@@ -223,12 +223,12 @@
   
     
     
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BSystem&#43;Registry&#43;Management%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fsystem-registry-management%2F%29"
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BUpgrading&#43;CF%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fupgrades%2F%29"
        class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
 
     
     
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/platform_operators/system-registry-management.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/platform_operators/upgrades.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
        class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
     
   
@@ -236,53 +236,73 @@
 
 
         <div class="heading">
-          <h1 class="title">System Registry Management</h1>
+          <h1 class="title">Upgrading CF</h1>
         </div>
 
-        <h1 id="system-registry-management">System Registry Management</h1>
-<h2 id="host-system-images-in-a-specified-registry">Host system images in a specified registry</h2>
-<p>As an operator, you may want to deploy cf-for-k8s with system images hosted in your own repository. (For instance, to guarantee image availability or to manage Dockerhub rate limiting.) To do so, you can leverage <code>kbld</code> for image relocation and the system_registry data values to pass your credentials as imagePullSecrets. Note that for TLS communication, you will need to use a publicly trusted repository.</p>
-<ol>
-<li>Relocate all system images into your private registry and generate a relocated-images file:</li>
-</ol>
-<pre><code class="language-console" data-lang="console">TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
-PRIVATE_REGISTRY_HOSTNAME=&lt;your-private-registry&gt;  # &quot;index.docker.io/&lt;docker-user-or-org&gt;&quot; for example, if using Dockerhub
-
-ytt -f config -f ${TMP_DIR}/cf-values.yml | kbld -f - --lock-output ${TMP_DIR}/cf-for-k8s-images.tmp
-kbld relocate -f ${TMP_DIR}/cf-for-k8s-images.tmp --repository ${PRIVATE_REGISTRY_HOSTNAME}/cf-for-k8s --lock-output ${TMP_DIR}/cf-for-k8s-relocated-images.yml
-</code></pre><ol start="2">
-<li>If your Kubernetes Nodes are not already configured and able to pull images from the private registry, you will need to configure their credentials in your cf-values.yml to add image-pull-secrets</li>
-</ol>
-<pre><code class="language-console" data-lang="console">cat &gt;&gt;${TMP_DIR}/cf-values.yml &lt;&lt;EOF
-system_registry:
-  add_image_pull_secrets: true
-  hostname: &lt;registry-hostname&gt;  #! example: index.docker.io/&lt;docker-user-or-org&gt;
-  username: &lt;registry-username&gt;
-  password: &lt;registry-password&gt;
-EOF
-</code></pre><ol start="3">
-<li>Render the final K8s template using <code>ytt</code> with the relocated-images file</li>
-</ol>
-<pre><code class="language-console" data-lang="console">ytt -f config -f ${TMP_DIR}/cf-values.yml | kbld -f - -f ${TMP_DIR}/cf-for-k8s-relocated-images.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
-</code></pre><ol start="4">
-<li>Install using <code>kapp</code>, providing the rendered <code>cf-for-k8s</code> yaml</li>
-</ol>
-<pre><code class="language-console" data-lang="console">kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
-</code></pre><h1 id="package-registry-management">Package Registry Management</h1>
-<h2 id="delete-images-from-harbor-package-registry">Delete images from Harbor package registry</h2>
-<p>If you are using Harbor as a package registry and a package gets deleted or when an expired package is cleaned up, an empty repository remains even when the image itself is deleted. As an operator, you may want to clean up these empty repos and there are two ways to do that both from the Harbor registry UI:</p>
-<ol>
-<li>
-<p>Navigate to the empty repo in Harbor, select the empty repo, click on the three dots in the top right corner and hit <code>delete</code></p>
-</li>
-<li>
-<p>Clean up all the empty repos by <a href="https://goharbor.io/docs/2.1.0/administration/garbage-collection/">running the garbage collection</a></p>
-</li>
-</ol>
+        <h1 id="upgrading-cf">Upgrading CF</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
 <ul>
-<li>Run this adhoc by going to the <code>Run Garbage Collection</code> tab under <code>Harbor Administration</code></li>
-<li>It is also possible to schedule a garbage collection job using a cron job</li>
+<li><a href="#overview">Overview</a>
+<ul>
+<li><a href="#performing-the-upgrade">Performing the Upgrade</a>
+<ul>
+<li><a href="#updating-values">Updating Values</a></li>
+<li><a href="#deploying-cf">Deploying CF</a></li>
 </ul>
+</li>
+</ul>
+</li>
+<li><a href="#rotating-secrets-and-certs">Rotating Secrets and Certs</a></li>
+<li><a href="#networking-considerations">Networking Considerations</a>
+<ul>
+<li><a href="#upgrading-istio">Upgrading Istio</a></li>
+<li><a href="#dns-considerations">DNS Considerations</a></li>
+</ul>
+</li>
+<li><a href="#platform-availability">Platform Availability</a></li>
+<li><a href="#rolling-back">Rolling Back</a></li>
+</ul>
+<h2 id="overview">Overview</h2>
+<p>CF for Kubernetes uses <a href="https://github.com/vmware-tanzu/carvel-kapp"><code>kapp</code></a> to manage its lifecycle. When upgrading, <code>kapp</code> will diff the changes you are applying with the deployed CF on the cluster. It will then show you a list of changes it plans to make on the cluster. <code>kapp</code> will not exit until all changes are applied and the updated resources are running.</p>
+<h3 id="performing-the-upgrade">Performing the Upgrade</h3>
+<h4 id="updating-values">Updating Values</h4>
+<p>Read the cf-for-k8s release notes (specifically the <code>Notices</code>) to determine if there are any new data values required by the new cf-for-k8s release. If there are, add them to the values file you used in the previous deploy.</p>
+<h4 id="deploying-cf">Deploying CF</h4>
+<ol>
+<li>
+<p>Render the new K8s template to raw K8s configuration</p>
+<pre><code class="language-console" data-lang="console">ytt -f config -f /path/to/updated-cf-values.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
+</code></pre></li>
+<li>
+<p>Install CF using <code>kapp</code> and pass the above K8s configuration file. Carefully look over the <code>kapp</code> output to make sure nothing is changing unexpectedly (for example secrets are unlikely to change unless explicitly rotated).</p>
+<pre><code class="language-console" data-lang="console">kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml
+</code></pre></li>
+<li>
+<p>Save the updated values file somewhere secure (remember, it contains secrets!) for future upgrades. You also may want to consider saving the final rendered K8s configuration file for future reference.</p>
+</li>
+<li>
+<p>Validate your apps continue to exist and are routable. You may also consider pushing a new app to validate the CF control plane.</p>
+</li>
+</ol>
+<h2 id="rotating-secrets-and-certs">Rotating Secrets and Certs</h2>
+<p>It&rsquo;s possible to update most secrets and certs as part of the upgrade. See the <a href="rotating-secrets-and-certs.md">Rotating Secrets and Certs docs</a> for more details.</p>
+<h2 id="networking-considerations">Networking Considerations</h2>
+<h3 id="upgrading-istio">Upgrading Istio</h3>
+<p>Some releases of cf-for-k8s may include Istio upgrades (refer to the release notes to see if this is the case). Istio does not support jump upgrades across multiple minor versions, so it is important to keep this in mind when upgrading cf-for-k8s.</p>
+<p>For example, consider the following scenario:</p>
+<ul>
+<li>cf-for-k8s version <em>x</em> includes Istio 1.7</li>
+<li>cf-for-k8s version <em>y</em> includes Istio 1.8</li>
+<li>cf-for-k8s version <em>z</em> includes Istio 1.9</li>
+</ul>
+<p>If you are currently on cf-for-k8s version <em>x</em> <strong>you must</strong> first upgrade to version <em>y</em> before upgrading to version <em>z</em> to upgrade Istio successfully with minimal downtime.</p>
+<h3 id="dns-considerations">DNS Considerations</h3>
+<p>If you did not explicitly specify an external IP for the <code>istio-ingressgateway</code> <code>LoadBalancer</code> service to use via <a href="setup-static-loadbalancer-ip.md">these instructions</a>,
+you should double check that you update the DNS records for your foundation&rsquo;s app and system domains appropriately as outlined <a href="../deploy.md#steps-to-deploy">here</a>.</p>
+<h2 id="platform-availability">Platform Availability</h2>
+<p>See the <a href="../platform-availability.md">platform availability docs</a> for more info.</p>
+<h2 id="rolling-back">Rolling Back</h2>
+<p>The CF API (Cloud Controller) does not support rollbacks after its database has been migrated. As a consequence, cf-for-k8s does not support rolling back versions and we strongly advise that you do not attempt to.</p>
 
 
         

@@ -129,7 +129,7 @@
           </ul>
       </li>
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 parent haschildren">
-        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+        <a href="/docs/platform_operators/">Managing cf-for-k8s foundations</a>
           <ul class="ml-2">
       <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
         <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
@@ -163,6 +163,9 @@
       <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1 active">
         <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
+      <li data-nav-id="/docs/platform_operators/setup-external-syslog-destinations/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-external-syslog-destinations/">Setting Up External Syslog Destinations</a>
+      </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
       </li>
@@ -171,6 +174,9 @@
       </li>
       <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
         <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/upgrades/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/upgrades/">Upgrading CF</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -201,7 +207,7 @@
         <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
       </li>
       <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
-        <a href="/docs/maintaining/maintainers/"></a>
+        <a href="/docs/maintaining/maintainers/">Maintainers</a>
       </li>
           </ul>
       </li>
@@ -233,24 +239,27 @@
           <h1 class="title">Scaling</h1>
         </div>
 
-        <h1 id="scaling">Scaling</h1>
-<ul>
+        <ul>
 <li><a href="#scaling-cf-for-k8s">Scaling cf-for-k8s</a>
 <ul>
 <li><a href="#horizontal-scaling">Horizontal Scaling</a></li>
-<li><a href="#vertical-scaling">Vertical Scaling</a></li>
-<li><a href="#discovering-all-cf-for-k8s-pods">Discovering all cf-for-k8s Pods</a></li>
+<li><a href="#vertical-scaling">Vertical Scaling</a>
+<ul>
+<li><a href="#simple-ytt-interface-for-scaling-all-pods">Simple ytt interface for scaling all pods</a></li>
+</ul>
+</li>
+<li><a href="#example-resource-scaling-for-a-massive-cf-for-k8s">Example resource scaling for a massive cf-for-k8s</a></li>
 <li><a href="#component-specific-scaling">Component-specific Scaling</a>
 <ul>
 <li><a href="#scaling-cf-api">Scaling CF API</a></li>
 <li><a href="#scaling-networking">Scaling Networking</a></li>
 </ul>
 </li>
+<li><a href="#discovering-all-cf-for-k8s-pods">Discovering all cf-for-k8s Pods</a></li>
 <li><a href="#ytt-overlay-troubleshooting">ytt overlay troubleshooting</a></li>
 </ul>
 </li>
 </ul>
-<p><small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small></p>
 <h1 id="scaling-cf-for-k8s">Scaling cf-for-k8s</h1>
 <p>cf-for-k8s ships by default in a small-footprint, developer configuration to allow for quick testing, for example on a minikube or KinD local cluster. For production use cases, cf-for-k8s needs to be scaled up. This document describes different ways of scaling cf-for-k8s and gives examples that you can use as a starting point.</p>
 <h2 id="horizontal-scaling">Horizontal Scaling</h2>
@@ -310,10 +319,10 @@ $ diff /tmp/rendered-contents.yml /tmp/new-rendered-contents.yml
 ---
 &gt;             cpu: 2000m
 &gt;             memory: 2.4Gi
-</code></pre></div><h2 id="discovering-all-cf-for-k8s-pods">Discovering all cf-for-k8s Pods</h2>
-<p><code>cf-for-k8s</code> puts pods in several different namespaces, so the most straightforward way to list all the pods that can be scaled up is by ignoring the kubernetes pods, with this command:</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ kubectl get pods -A <span class="p">|</span> grep -v -e kube-system -e cf-workloads
-</code></pre></div><p>Note: The <code>cf-workloads</code> namespace is controlled by <code>cf-for-k8s</code> internals, and should not require scaling.</p>
+</code></pre></div><h3 id="simple-ytt-interface-for-scaling-all-pods">Simple ytt interface for scaling all pods</h3>
+<p>For an example ytt overlay that provides a simple values file interface for scaling any pod/container, please checkout this example from the Carvel team in the ytt playground: <a href="https://get-ytt.io/#gist:https://gist.github.com/cppforlife/32d6ed87a18c66333dab8e710e180dea">https://get-ytt.io/#gist:https://gist.github.com/cppforlife/32d6ed87a18c66333dab8e710e180dea</a></p>
+<h2 id="example-resource-scaling-for-a-massive-cf-for-k8s">Example resource scaling for a massive cf-for-k8s</h2>
+<p>For a massive scale test, we recommend the values used by the SAP team in their latest cf-for-k8s scaling write-up, which can always be found in our latest release notes: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases">https://github.com/cloudfoundry/cf-for-k8s/releases</a></p>
 <h2 id="component-specific-scaling">Component-specific Scaling</h2>
 <h3 id="scaling-cf-api">Scaling CF API</h3>
 <p>Please see <a href="https://docs.cloudfoundry.org/running/managing-cf/scaling-cloud-controller-k8s.html">https://docs.cloudfoundry.org/running/managing-cf/scaling-cloud-controller-k8s.html</a></p>
@@ -437,7 +446,11 @@ need more than that.</p>
 </span><span class="w">          </span><span class="nt">requests</span><span class="p">:</span><span class="w">
 </span><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="c">#@ routecontroller_cpu_request</span><span class="w">
 </span><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="c">#@ routecontroller_mem_request</span><span class="w">
-</span></code></pre></div><h2 id="ytt-overlay-troubleshooting">ytt overlay troubleshooting</h2>
+</span></code></pre></div><h2 id="discovering-all-cf-for-k8s-pods">Discovering all cf-for-k8s Pods</h2>
+<p><code>cf-for-k8s</code> puts pods in several different namespaces, so the most straightforward way to list all the pods that can be scaled up is by ignoring the kubernetes pods, with this command:</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ kubectl get pods -A <span class="p">|</span> grep -v -e kube-system -e cf-workloads
+</code></pre></div><p>Note: The <code>cf-workloads</code> namespace is controlled by <code>cf-for-k8s</code> internals, and should not require scaling.</p>
+<h2 id="ytt-overlay-troubleshooting">ytt overlay troubleshooting</h2>
 <p><code>ytt</code> <em>will</em> give error messages if it finds a problem in some code. If there is no problem, it will emit over 16,000 lines of YAML. Normally, when you run <code>ytt</code> you should direct its output to a file, as we&rsquo;ve done in the above examples. If there&rsquo;s an error, the message will be written to <code>stderr</code> and not to the redirected file. For example, let&rsquo;s rerun the vertical scaling example with one small change in the overlay code, saved in a file called <code>vertically-scale-api-server-missing-list-hyphen.yml</code>:</p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c">#@ load(&#34;@ytt:overlay&#34;, &#34;overlay&#34;)</span><span class="w">
 </span><span class="w"></span><span class="nn">---</span><span class="w">
@@ -466,23 +479,6 @@ need more than that.</p>
         
 
         <hr>
-<div class='footline d-block'>
-  <div class="support-links">
-  
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BScaling%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fscaling%2F%29"
-       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
-
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/platform_operators/scaling.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
-       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
-    
-  
-</div>
-
-</div>
 
       </div>
     </div>

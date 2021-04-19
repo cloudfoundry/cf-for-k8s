@@ -7,8 +7,8 @@
 <meta charset="utf-8">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="System Registry Management"/>
-<link rel="canonical" content="https://cf-for-k8s.io/docs/platform_operators/system-registry-management/">
+<meta name="description" content="Setting Up External Syslog Destinations"/>
+<link rel="canonical" content="https://cf-for-k8s.io/docs/platform_operators/setup-external-syslog-destinations/">
 <link rel="icon" type="image/png" href="/images/favicon.png">
 
 
@@ -16,12 +16,12 @@
 
 
 
-<meta property="og:title" content="System Registry Management · Cloud Foundry for Kubernetes">
+<meta property="og:title" content="Setting Up External Syslog Destinations · Cloud Foundry for Kubernetes">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://cf-for-k8s.io/docs/platform_operators/system-registry-management/">
+<meta property="og:url" content="https://cf-for-k8s.io/docs/platform_operators/setup-external-syslog-destinations/">
 <meta property="og:locale" content="en_US">
 <meta property="og:site_name" content="Cloud Foundry for Kubernetes">
-<meta property="og:description" content="System Registry Management">
+<meta property="og:description" content="Setting Up External Syslog Destinations">
 <meta property="og:type" content="article">
 <meta property="og:image" content="https://cf-for-k8s.io/images/cf-for-k8s-logo.png">
 <meta property="og:image:alt" content="CF for K8s project logo">
@@ -32,7 +32,7 @@
 
 
 
-<meta property="twitter:title" content="System Registry Management · Cloud Foundry for Kubernetes">
+<meta property="twitter:title" content="Setting Up External Syslog Destinations · Cloud Foundry for Kubernetes">
 <meta property="twitter:card" content="summary">
 <meta property="twitter:image" content="https://cf-for-k8s.io/images/cf-for-k8s-logo.png">
 <meta property="twitter:image:alt" content="CF for K8s project logo">
@@ -74,7 +74,7 @@
       });
     </script>
 
-    <title>System Registry Management · Cloud Foundry for Kubernetes</title>
+    <title>Setting Up External Syslog Destinations · Cloud Foundry for Kubernetes</title>
   </head>
   <body>
     
@@ -163,7 +163,7 @@
       <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
         <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/setup-external-syslog-destinations/" class="dd-item depth-1">
+      <li data-nav-id="/docs/platform_operators/setup-external-syslog-destinations/" class="dd-item depth-1 active">
         <a href="/docs/platform_operators/setup-external-syslog-destinations/">Setting Up External Syslog Destinations</a>
       </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
@@ -172,7 +172,7 @@
       <li data-nav-id="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt/">Setup ingress certs with Lets Encrypt</a>
       </li>
-      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1 active">
+      <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
         <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
       </li>
       <li data-nav-id="/docs/platform_operators/upgrades/" class="dd-item depth-1">
@@ -223,12 +223,12 @@
   
     
     
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BSystem&#43;Registry&#43;Management%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fsystem-registry-management%2F%29"
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BSetting&#43;Up&#43;External&#43;Syslog&#43;Destinations%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Fsetup-external-syslog-destinations%2F%29"
        class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
 
     
     
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/platform_operators/system-registry-management.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
+    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/platform_operators/setup-external-syslog-destinations.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
        class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
     
   
@@ -236,54 +236,23 @@
 
 
         <div class="heading">
-          <h1 class="title">System Registry Management</h1>
+          <h1 class="title">Setting Up External Syslog Destinations</h1>
         </div>
 
-        <h1 id="system-registry-management">System Registry Management</h1>
-<h2 id="host-system-images-in-a-specified-registry">Host system images in a specified registry</h2>
-<p>As an operator, you may want to deploy cf-for-k8s with system images hosted in your own repository. (For instance, to guarantee image availability or to manage Dockerhub rate limiting.) To do so, you can leverage <code>kbld</code> for image relocation and the system_registry data values to pass your credentials as imagePullSecrets. Note that for TLS communication, you will need to use a publicly trusted repository.</p>
-<ol>
-<li>Relocate all system images into your private registry and generate a relocated-images file:</li>
-</ol>
-<pre><code class="language-console" data-lang="console">TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
-PRIVATE_REGISTRY_HOSTNAME=&lt;your-private-registry&gt;  # &quot;index.docker.io/&lt;docker-user-or-org&gt;&quot; for example, if using Dockerhub
-
-ytt -f config -f ${TMP_DIR}/cf-values.yml | kbld -f - --lock-output ${TMP_DIR}/cf-for-k8s-images.tmp
-kbld relocate -f ${TMP_DIR}/cf-for-k8s-images.tmp --repository ${PRIVATE_REGISTRY_HOSTNAME}/cf-for-k8s --lock-output ${TMP_DIR}/cf-for-k8s-relocated-images.yml
-</code></pre><ol start="2">
-<li>If your Kubernetes Nodes are not already configured and able to pull images from the private registry, you will need to configure their credentials in your cf-values.yml to add image-pull-secrets</li>
-</ol>
-<pre><code class="language-console" data-lang="console">cat &gt;&gt;${TMP_DIR}/cf-values.yml &lt;&lt;EOF
-system_registry:
-  add_image_pull_secrets: true
-  hostname: &lt;registry-hostname&gt;  #! example: index.docker.io/&lt;docker-user-or-org&gt;
-  username: &lt;registry-username&gt;
-  password: &lt;registry-password&gt;
-EOF
-</code></pre><ol start="3">
-<li>Render the final K8s template using <code>ytt</code> with the relocated-images file</li>
-</ol>
-<pre><code class="language-console" data-lang="console">ytt -f config -f ${TMP_DIR}/cf-values.yml | kbld -f - -f ${TMP_DIR}/cf-for-k8s-relocated-images.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
-</code></pre><ol start="4">
-<li>Install using <code>kapp</code>, providing the rendered <code>cf-for-k8s</code> yaml</li>
-</ol>
-<pre><code class="language-console" data-lang="console">kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
-</code></pre><h1 id="package-registry-management">Package Registry Management</h1>
-<h2 id="delete-images-from-harbor-package-registry">Delete images from Harbor package registry</h2>
-<p>If you are using Harbor as a package registry and a package gets deleted or when an expired package is cleaned up, an empty repository remains even when the image itself is deleted. As an operator, you may want to clean up these empty repos and there are two ways to do that both from the Harbor registry UI:</p>
-<ol>
-<li>
-<p>Navigate to the empty repo in Harbor, select the empty repo, click on the three dots in the top right corner and hit <code>delete</code></p>
-</li>
-<li>
-<p>Clean up all the empty repos by <a href="https://goharbor.io/docs/2.1.0/administration/garbage-collection/">running the garbage collection</a></p>
-</li>
-</ol>
-<ul>
-<li>Run this adhoc by going to the <code>Run Garbage Collection</code> tab under <code>Harbor Administration</code></li>
-<li>It is also possible to schedule a garbage collection job using a cron job</li>
-</ul>
-
+        <h1 id="setting-up-external-syslog-destinations">Setting Up External Syslog Destinations</h1>
+<p>To send logs to an external destination via syslog you can setup app log destinations in your <code>cf-values.yml</code> file:</p>
+<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">app_log_destinations</span><span class="p">:</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/append</span><span class="w">
+</span><span class="w"></span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;hostname&gt;</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port_number&gt;</span><span class="w">
+</span><span class="w">  </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;tls/tcp&gt;</span><span class="w"> </span><span class="c">#defaults to tls</span><span class="w">
+</span><span class="w">  </span><span class="nt">insecure_disable_tls_validation</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;false/true&gt;</span><span class="w"> </span><span class="c">#defaults false</span><span class="w">
+</span><span class="w"></span><span class="c">#@overlay/append</span><span class="w">
+</span><span class="w"></span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;hostname&gt;</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port_number&gt;</span><span class="w">
+</span><span class="w">  </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;tls/tcp&gt;</span><span class="w"> </span><span class="c">#defaults to tls</span><span class="w">
+</span><span class="w">  </span><span class="nt">insecure_disable_tls_validation</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;false/true&gt;</span><span class="w"> </span><span class="c">#defaults false</span><span class="w">
+</span></code></pre></div>
 
         
 

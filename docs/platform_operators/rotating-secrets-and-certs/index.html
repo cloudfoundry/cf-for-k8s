@@ -129,7 +129,7 @@
           </ul>
       </li>
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 parent haschildren">
-        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+        <a href="/docs/platform_operators/">Managing cf-for-k8s foundations</a>
           <ul class="ml-2">
       <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
         <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
@@ -163,6 +163,9 @@
       <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
         <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
+      <li data-nav-id="/docs/platform_operators/setup-external-syslog-destinations/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-external-syslog-destinations/">Setting Up External Syslog Destinations</a>
+      </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
       </li>
@@ -171,6 +174,9 @@
       </li>
       <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
         <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/upgrades/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/upgrades/">Upgrading CF</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -201,7 +207,7 @@
         <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
       </li>
       <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
-        <a href="/docs/maintaining/maintainers/"></a>
+        <a href="/docs/maintaining/maintainers/">Maintainers</a>
       </li>
           </ul>
       </li>
@@ -236,7 +242,48 @@
         <h1 id="rotating-secrets">Rotating Secrets</h1>
 <p>Most secrets in cf-for-k8s can be rotated by simply changing the values in your <code>cf-values.yml</code> file and running a standard deploy using ytt and kapp. The rotation is complete when the kapp deploy succeeds.</p>
 <h2 id="exceptions">Exceptions</h2>
-<p>As of September 2020, it is currently not possible to rotate <code>app_registry</code> credentials. Future work on this will be tracked by <a href="https://www.pivotaltracker.com/story/show/173090115">https://www.pivotaltracker.com/story/show/173090115</a></p>
+<p>The following fields currently cannot be rotated:</p>
+<ul>
+<li><code>blobstore.secret_access_key</code></li>
+<li><code>capi.database.encryption_key</code></li>
+<li><code>capi.database.password</code></li>
+</ul>
+<p>For example, rotating the cloud controller db encryption key is a breaking change. Rotating the key will
+require a recreating your environment (including deleting database contents) in order to prevent decryption errors when fetching
+previously-saved data.</p>
+<p>If you find you must rotate one of the above fields:</p>
+<ol>
+<li>Delete your cf with <code>kapp delete -a cf</code></li>
+<li>Then, in your <code>cf-values.yaml</code>, you will need to update the properties that need rotating.</li>
+<li>Enter your updated values and rerun <code>kapp deploy -a cf ...</code>.</li>
+</ol>
+<h2 id="specific-issues">Specific Issues</h2>
+<h3 id="outright-errors">Outright Errors</h3>
+<ul>
+<li>
+<p><a href="https://github.com/cloudfoundry/cf-for-k8s/issues/216">Rotating non-admin user/role credentials in postgres fails</a></p>
+</li>
+<li>
+<p><a href="https://github.com/cloudfoundry/cf-for-k8s/issues/527">Support rotation of <code>blobstore.secret_access_key</code></a></p>
+</li>
+<li>
+<p><a href="https://github.com/cloudfoundry/cf-for-k8s/issues/529">Support rotation of <code>capi.database.encryption_key</code></a></p>
+</li>
+<li>
+<p><a href="https://github.com/cloudfoundry/cf-for-k8s/issues/530">Support rotation of <code>capi.database.password</code></a></p>
+</li>
+<li>
+<p><a href="https://github.com/cloudfoundry/cf-for-k8s/issues/566">Support rotation of <code>uaa.database.password</code></a></p>
+</li>
+</ul>
+<h3 id="concourseci-issues">Concourse/CI Issues</h3>
+<p>The following fields can be modified and are updated eventually, but
+<code>uptimer</code>-type checking in the pipelines are currently configured to
+use either the old password or the new one, and will fail.</p>
+<ul>
+<li><code>cf_admin_password</code> - manual upgrade works, CI/upgrade fails</li>
+</ul>
+<h2 id="notes-on-currently-supported-rotations">Notes on Currently Supported Rotations</h2>
 <h3 id="rotating-ingress-certificates">Rotating Ingress Certificates</h3>
 <p>To rotate the application domain certificate or system domain certificate, you
 can do the following:</p>
@@ -250,41 +297,11 @@ successfully rotated in the Istio Ingress Gateway.</li>
 <p>If you have multiple app domains, they all share the <code>workloads_certificate</code>.
 You cannot rotate the app domains' certificates separately because there is only
 one certificate.</p>
-<h3 id="cloud-controller-database-encryption-key">Cloud Controller Database Encryption Key</h3>
-<p>Prior to cf-for-k8s 1.0, rotating the cloud controller db encryption key is a breaking change. Rotating the key will
-require a recreating your environment (including deleting database contents) in order to prevent decryption errors when fetching
-previously-saved data.</p>
-<p>If you find you must rotate the encryption key,</p>
-<ol>
-<li>Delete your cf with <code>kapp delete -a cf</code></li>
-<li>Then, in your <code>cf-values.yaml</code>, you will need to update the following property:</li>
-</ol>
-<pre><code>capi:
-  database:
-    encryption_key: [KEY]
-</code></pre><p>1.Enter a secure value for [KEY] and deploy.</p>
 
 
         
 
         <hr>
-<div class='footline d-block'>
-  <div class="support-links">
-  
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BRotating&#43;Secrets%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fplatform_operators%2Frotating-secrets-and-certs%2F%29"
-       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
-
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/platform_operators/rotating-secrets-and-certs.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
-       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
-    
-  
-</div>
-
-</div>
 
       </div>
     </div>

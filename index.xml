@@ -34,6 +34,15 @@
     </item>
     
     <item>
+      <title>Maintainers</title>
+      <link>https://cf-for-k8s.io/docs/maintaining/maintainers/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/maintaining/maintainers/</guid>
+      <description>Maintainers</description>
+    </item>
+    
+    <item>
       <title>Networking Configuration for System Components</title>
       <link>https://cf-for-k8s.io/docs/contributing/networking/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -58,16 +67,6 @@
       
       <guid>https://cf-for-k8s.io/docs/deploying/deploy-in-ci/</guid>
       <description>Deploy CF for K8s in CI</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://cf-for-k8s.io/docs/maintaining/maintainers/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://cf-for-k8s.io/docs/maintaining/maintainers/</guid>
-      <description>cf-for-k8s Maintainers GOVERNANCE doc describes governance guidelines and maintainer responsibilities.
-Maintainers    Maintainer GitHub ID Affiliation     Andrew Costa acosta11 VMware   Andrew Wittrock Birdrock VMware   Dave Walter davewalter VMware   Eric Promislow paulcwarren SUSE   James Pollard jamespollard8 VMware   Paul Warren paulcwarren VMware   Renee Chu reneighbor VMware    Have a question or feedback, reach out to us We are very active in slack channel #cf-for-k8s in the Cloud Foundry workspace.</description>
     </item>
     
     <item>
@@ -134,6 +133,15 @@ Maintainers    Maintainer GitHub ID Affiliation     Andrew Costa acosta11 VMware
     </item>
     
     <item>
+      <title>Setting Up External Syslog Destinations</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/setup-external-syslog-destinations/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/setup-external-syslog-destinations/</guid>
+      <description>Setting Up External Syslog Destinations</description>
+    </item>
+    
+    <item>
       <title>Setup a static IP for loadbalancer</title>
       <link>https://cf-for-k8s.io/docs/platform_operators/setup-static-loadbalancer-ip/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -167,6 +175,15 @@ Maintainers    Maintainer GitHub ID Affiliation     Andrew Costa acosta11 VMware
       
       <guid>https://cf-for-k8s.io/docs/platform_operators/system-registry-management/</guid>
       <description>System Registry Management</description>
+    </item>
+    
+    <item>
+      <title>Upgrading CF</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/upgrades/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/upgrades/</guid>
+      <description>Upgrading CF</description>
     </item>
     
     <item>

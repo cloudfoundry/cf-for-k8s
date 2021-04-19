@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Extend cf-for-k8s on Cloud Foundry for Kubernetes</title>
+    <title>Managing cf-for-k8s foundations on Cloud Foundry for Kubernetes</title>
     <link>https://cf-for-k8s.io/docs/platform_operators/</link>
-    <description>Recent content in Extend cf-for-k8s on Cloud Foundry for Kubernetes</description>
+    <description>Recent content in Managing cf-for-k8s foundations on Cloud Foundry for Kubernetes</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language><atom:link href="https://cf-for-k8s.io/docs/platform_operators/index.xml" rel="self" type="application/rss+xml" />
     <item>
@@ -52,6 +52,15 @@
     </item>
     
     <item>
+      <title>Setting Up External Syslog Destinations</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/setup-external-syslog-destinations/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/setup-external-syslog-destinations/</guid>
+      <description>Setting Up External Syslog Destinations</description>
+    </item>
+    
+    <item>
       <title>Setup a static IP for loadbalancer</title>
       <link>https://cf-for-k8s.io/docs/platform_operators/setup-static-loadbalancer-ip/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -76,6 +85,15 @@
       
       <guid>https://cf-for-k8s.io/docs/platform_operators/system-registry-management/</guid>
       <description>System Registry Management</description>
+    </item>
+    
+    <item>
+      <title>Upgrading CF</title>
+      <link>https://cf-for-k8s.io/docs/platform_operators/upgrades/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://cf-for-k8s.io/docs/platform_operators/upgrades/</guid>
+      <description>Upgrading CF</description>
     </item>
     
     <item>

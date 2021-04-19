@@ -129,7 +129,7 @@
           </ul>
       </li>
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
-        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+        <a href="/docs/platform_operators/">Managing cf-for-k8s foundations</a>
           <ul class="ml-2">
       <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
         <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
@@ -163,6 +163,9 @@
       <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
         <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
+      <li data-nav-id="/docs/platform_operators/setup-external-syslog-destinations/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-external-syslog-destinations/">Setting Up External Syslog Destinations</a>
+      </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
       </li>
@@ -171,6 +174,9 @@
       </li>
       <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
         <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/upgrades/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/upgrades/">Upgrading CF</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -201,7 +207,7 @@
         <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
       </li>
       <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1">
-        <a href="/docs/maintaining/maintainers/"></a>
+        <a href="/docs/maintaining/maintainers/">Maintainers</a>
       </li>
           </ul>
       </li>
@@ -252,12 +258,65 @@
 <li><code>build/</code> includes building instructions for components that do not provide plain YAML or ytt templates
 <ul>
 <li>this directory is only used by cf-for-k8s maintainers</li>
-<li><code>build.sh</code> in each sub-directory has specific build instructions</li>
+<li><code>&lt;component&gt;/build.sh</code> in each sub-directory has specific build instructions
+<ul>
+<li>These <code>build.sh</code> scripts take no arguments and can be run from any directory</li>
+<li>Each <code>build.sh</code> also runs <code>kbld</code>, which verifies that every image reference includes its digest</li>
+</ul>
+</li>
+<li><code>&lt;component&gt;/_vendir</code> contains the unmodified configuration fetched from the component&rsquo;s repo (controlled via <code>/vendir.yml</code>)
+<ul>
+<li>The structure under each component varies depending on the component&rsquo;s own helm chart</li>
+</ul>
+</li>
+<li>Every <code>&lt;component&gt;/</code> directory contains a <code>values</code> file used to configure <code>helm</code>; sometimes it&rsquo;s called <code>values.yml</code>, but the name is always used explicitly in <code>build.sh</code></li>
+<li>All the components use <code>helm</code> to generate yaml manifests except <code>istio</code>, which is using its own <a href="https://istio.io/v1.7/docs/reference/commands/istioctl/#istioctl-manifest-generate"><code>istioctl manifest generate</code></a> command</li>
 </ul>
 </li>
 </ul>
 <h2 id="image-references">Image References</h2>
 <p>Image references are expected to use an image SHA digest. If using <a href="https://get-kbld.io/">kbld</a> to build images as suggested in the component development flow, the image reference should include the digest by default.</p>
+<h2 id="update-example">Update Example</h2>
+<p>Suppose we want to update <code>eirini</code> from version <code>A</code> to <code>B</code>.</p>
+<ol>
+<li>
+<p>First update the tag field in <code>vendir.yml</code> under <code>path: build/eirini/_vendir</code>.  It should currently be set to whatever the value of <code>A</code> is; change this to <code>B</code> and save the file.</p>
+</li>
+<li>
+<p>Run <code>vendir sync</code>. This should update the contents of the <code>_vendir</code> subdirectory of <code>build/eirini</code></p>
+</li>
+<li>
+<p>Change to <code>build/eirini</code></p>
+</li>
+<li>
+<p>Review local changes by running <code>git diff _vendir/eirini/</code></p>
+</li>
+<li>
+<p>Run <code>./build.sh</code></p>
+</li>
+<li>
+<p>Change back to the main directory (<code>cd ../../</code>), <code>kapp deploy</code> the new version of eirini, and if everything&rsquo;s good you can commit the local changes.</p>
+</li>
+</ol>
+<h3 id="pipeline-updates">Pipeline Updates</h3>
+<p>The pipeline code in <code>ci/tasks/bump-core-component/task.sh</code> does the above generically:</p>
+<ol>
+<li>
+<p>It sets the tag to either the explicit release tag (e.g. <code>v1.9.0</code>) or a git commit SHA</p>
+</li>
+<li>
+<p>It updates the tag field in <code>vendir.yml</code></p>
+</li>
+<li>
+<p>It runs <code>vendir sync</code></p>
+</li>
+<li>
+<p>It runs <code>build.sh</code> if it exists</p>
+</li>
+<li>
+<p>It finally does a <code>git commit</code> to bump the new version</p>
+</li>
+</ol>
 <h2 id="tips">Tips</h2>
 <ul>
 <li><code>alias k=kubectl</code>
@@ -276,23 +335,6 @@
         
 
         <hr>
-<div class='footline d-block'>
-  <div class="support-links">
-  
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BMaintaining&#43;%26lt%3Bbr%26gt%3B%28for&#43;Release&#43;Integration&#43;Engineers%29%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fmaintaining%2F%29"
-       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
-
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/maintaining/_index.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
-       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
-    
-  
-</div>
-
-</div>
 
       </div>
     </div>

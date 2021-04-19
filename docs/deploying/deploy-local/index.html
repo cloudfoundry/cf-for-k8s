@@ -129,7 +129,7 @@
           </ul>
       </li>
       <li data-nav-id="/docs/platform_operators/" class="dd-item depth-0 haschildren">
-        <a href="/docs/platform_operators/">Extend cf-for-k8s</a>
+        <a href="/docs/platform_operators/">Managing cf-for-k8s foundations</a>
           <ul class="ml-2">
       <li data-nav-id="/docs/platform_operators/platform-availability/" class="dd-item depth-1">
         <a href="/docs/platform_operators/platform-availability/">Platform Availability</a>
@@ -163,6 +163,9 @@
       <li data-nav-id="/docs/platform_operators/scaling/" class="dd-item depth-1">
         <a href="/docs/platform_operators/scaling/">Scaling</a>
       </li>
+      <li data-nav-id="/docs/platform_operators/setup-external-syslog-destinations/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/setup-external-syslog-destinations/">Setting Up External Syslog Destinations</a>
+      </li>
       <li data-nav-id="/docs/platform_operators/setup-static-loadbalancer-ip/" class="dd-item depth-1">
         <a href="/docs/platform_operators/setup-static-loadbalancer-ip/">Setup a static IP for loadbalancer</a>
       </li>
@@ -171,6 +174,9 @@
       </li>
       <li data-nav-id="/docs/platform_operators/system-registry-management/" class="dd-item depth-1">
         <a href="/docs/platform_operators/system-registry-management/">System Registry Management</a>
+      </li>
+      <li data-nav-id="/docs/platform_operators/upgrades/" class="dd-item depth-1">
+        <a href="/docs/platform_operators/upgrades/">Upgrading CF</a>
       </li>
       <li data-nav-id="/docs/platform_operators/external-blobstore/" class="dd-item depth-1">
         <a href="/docs/platform_operators/external-blobstore/">Using external blobstore</a>
@@ -201,7 +207,7 @@
         <a href="/docs/maintaining/preparing-for-development/">Developing CF Components</a>
       </li>
       <li data-nav-id="/docs/maintaining/maintainers/" class="dd-item depth-1 collapse">
-        <a href="/docs/maintaining/maintainers/"></a>
+        <a href="/docs/maintaining/maintainers/">Maintainers</a>
       </li>
           </ul>
       </li>
@@ -245,7 +251,6 @@
 <li><a href="#steps-to-deploy-on-kind">Steps to Deploy on KinD</a></li>
 <li><a href="#steps-to-deploy-on-minikube">Steps to Deploy on Minikube</a></li>
 </ul>
-<p><small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small></p>
 <h2 id="prerequisites">Prerequisites</h2>
 <h3 id="required-tools">Required Tools</h3>
 <p>See the requirements in <a href="/docs/deploying/#required-tools">Deploying CF for K8s</a>.</p>
@@ -285,13 +290,59 @@ creation.</p>
 <p>The docker driver for minikube is significantly faster than the default
 virtualbox driver as it uses the local Docker for Mac installation.</p>
 </li>
+<li>
+<p>Here&rsquo;s how many apps cf-for-k8s (v1.0) was able to support on a tiny 4CPU/6GB KinD cluster</p>
+</li>
 </ol>
+<table>
+<thead>
+<tr>
+<th><strong>app</strong></th>
+<th><strong>cf memory</strong></th>
+<th><strong>cf push count with first error</strong></th>
+<th><strong>error type</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>catnip</td>
+<td>16M</td>
+<td>12</td>
+<td>Insufficient cpu</td>
+</tr>
+<tr>
+<td>node</td>
+<td>16M</td>
+<td>13</td>
+<td>Insufficient cpu</td>
+</tr>
+<tr>
+<td>java</td>
+<td>600M</td>
+<td>4</td>
+<td>Insufficient memory</td>
+</tr>
+<tr>
+<td>spring-petclinic</td>
+<td>1G</td>
+<td>1</td>
+<td>Staging timeout</td>
+</tr>
+<tr>
+<td>spring-petclinic with &ldquo;retries&rdquo;</td>
+<td>1G</td>
+<td>3</td>
+<td>Insufficient memory</td>
+</tr>
+</tbody>
+</table>
 <h2 id="steps-to-deploy-on-kind">Steps to Deploy on KinD</h2>
 <ol start="0">
 <li>
 <p>(Optional) Choose the version of Kubernetes you&rsquo;d like to use to deploy KinD.</p>
 <p>To grab the latest KinD patch version of a K8s minor release:</p>
 <pre><code class="language-console" data-lang="console"># from the cf-for-k8s repo/directory
+# NOTE: this project uses python yq module (https://kislyuk.github.io/yq/)
 k8s_minor_version=&quot;$(yq -r .newest_version supported_k8s_versions.yml)&quot;  # or k8s_minor_version=&quot;1.17&quot;
 patch_version=$(wget -q https://registry.hub.docker.com/v1/repositories/kindest/node/tags -O - | \
   jq -r '.[].name' | grep -E &quot;^v${k8s_minor_version}.[0-9]+$&quot; | \
@@ -321,7 +372,7 @@ configure DNS for the domain.</p>
 </span><span class="w"></span><span class="nt">metrics_server_prefer_internal_kubelet_address</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span><span class="w"></span><span class="nt">remove_resource_requirements</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span><span class="w"></span><span class="nt">use_first_party_jwt_tokens</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">
+</span><span class="w">   
 </span><span class="w"></span><span class="nt">load_balancer</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
 </span></code></pre></div></li>
@@ -396,23 +447,6 @@ docker ps
         
 
         <hr>
-<div class='footline d-block'>
-  <div class="support-links">
-  
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/issues/new?body=%2A%2AOn&#43;Page%3A%2A%2A&#43;%5BDeploying&#43;CF&#43;for&#43;K8s&#43;Locally%5D%28https%3A%2F%2Fcf-for-k8s.io%2Fdocs%2Fdeploying%2Fdeploy-local%2F%29"
-       class="btn-light blue-text btn-small icon-button blank inline-flex" target="_blank">Report Issues</a>
-
-    
-    
-    <a href="https://github.com/cloudfoundry/cf-for-k8s-docs/edit/main/content/docs/deploying/deploy-local.md?description=Signed-off-by%3A&#43;NAME&#43;%3CEMAIL_ADDRESS%3E%0A%0A%3E&#43;_By&#43;signing&#43;off&#43;you&#43;acknowledge&#43;adhering&#43;to&#43;the&#43;requirements&#43;listed&#43;here%3A&#43;https%3A%2F%2Fprobot.github.io%2Fapps%2Fdco%2F_"
-       class="btn-light blue-text btn-small icon-button github-button inline-flex" target="_blank">Edit</a>
-    
-  
-</div>
-
-</div>
 
       </div>
     </div>

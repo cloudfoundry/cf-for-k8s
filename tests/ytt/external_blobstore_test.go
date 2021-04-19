@@ -24,7 +24,6 @@ var _ = Describe("External Blobstore", func() {
 
 		valueFiles = []string{
 			pathToFile("tests/ytt/blobstore/blobstore-values.yml"),
-			pathToFile("config/values/10-minio-images.yml"),
 		}
 	})
 

@@ -1,6 +1,0 @@
-#@data/values
-#@overlay/match-child-defaults missing_ok=True
----
-images:
-  postgres:
-    postgres: index.docker.io/bitnami/postgresql@sha256:0f76a419cfd9996036e3a53672f50cf69ed7699f1241cbf8e20af17bbbdf0683

@@ -267,7 +267,7 @@ cd cf-for-k8s
 TMP_DIR=&lt;your-tmp-dir-path&gt;; mkdir -p ${TMP_DIR}
 </code></pre><p>Note: if you would like to use the latest release, replace the branch reference in the clone command with that release tag. (E.G. <code>-b v1.0.0</code>)</p>
 <p>Next, create the local kubernetes cluster that we will deploy cf-for-k8s to presently:</p>
-<pre><code>kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.19.1
+<pre><code>kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.20.2
 </code></pre><p>NOTE: the versions of kubernetes that cf-for-k8s supports are <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/develop/supported_k8s_versions.yml">here</a>.</p>
 <p>Create your cf values file. This is the file that configures your deployment:</p>
 <pre><code>$ ./hack/generate-values.sh -d vcap.me &gt; ${TMP_DIR}/cf-values.yml

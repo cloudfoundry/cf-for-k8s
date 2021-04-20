@@ -8,11 +8,11 @@
 | --------------- | --------- | ----------- |
 | Andrew Costa | [acosta11](https://github.com/acosta11) | [VMware](https://www.github.com/vmware/) |
 | Andrew Wittrock | [Birdrock](https://github.com/Birdrock) | [VMware](https://www.github.com/vmware/) |
+| Caitlyn Yu | [heycait](https://github.com/heycait) | [VMware](https://www.github.com/vmware/) |
 | Dave Walter | [davewalter](https://github.com/davewalter) | [VMware](https://www.github.com/vmware/) |
-| Jwal Pawar | [jspawar](https://github.com/jspawar/) | [VMware](https://www.github.com/vmware/) |
-| James Pollard | [jamespollard8](https://github.com/jamespollard8) | [VMware](https://www.github.com/vmware/) |
-| Raina Masand | [rainmaker](https://github.com/rainmaker) | [VMware](https://www.github.com/vmware/) |
-| Renee Chu | [reneighbor](https://github.com/reneighbor) | [VMware](https://www.github.com/vmware/) |
+| Jaskanwal Pawar | [jspawar](https://github.com/jspawar) | [VMware](https://www.github.com/vmware/) |
+| Matt Royal | [matt-royal](https://github.com/matt-royal) | [VMware](https://www.github.com/vmware/) |
+| Tim Downey | [tcdowney](https://github.com/tcdowney) | [VMware](https://www.github.com/vmware/) |
 
 ## Have a question or feedback, reach out to us
 

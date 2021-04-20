@@ -2,10 +2,10 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
-      commitTitle: kind-cf-for-k8s-kind -> kind-cf-for-k8s
-      sha: 6f4521c89b65a1f4181a4701b3ea99ac07872f7a
+      commitTitle: Move task_client specific tests from api/task -> task_client_test...
+      sha: bb3251269759b218d2ab03256ab6a5f3d164ec30
       tags:
-      - 3.1.0
+      - 4.0.0
     path: .
   path: sources/eirini
 - contents:
@@ -43,7 +43,7 @@ directories:
       commitTitle: Migrate the networking image pipeline and associated tasks...
       sha: b76db5fa45bbaa5733d4fc930b4d0c8fe861b218
       tags:
-      - v0.0.6-319-gb76db5f
+      - v0.4.0-160-gb76db5f
     path: .
   path: sources/cf-k8s-networking
 - contents:

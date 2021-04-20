@@ -79,6 +79,21 @@ sources:
       - --env
       - "BP_OCI_SOURCE=https://github.com/cloudfoundry-incubator/eirini"
 
+- imageRepo: index.docker.io/eirini/resource-validator
+  path: sources/eirini
+  pack:
+    build:
+      builder: paketobuildpacks/builder:tiny
+      buildpacks:
+        - gcr.io/paketo-buildpacks/go
+      rawOptions:
+      - --env
+      - "BP_GO_TARGETS=./cmd/resource-validator"
+      - --env
+      - #@ "BP_OCI_REVISION=" + data.values.git_sha
+      - --env
+      - "BP_OCI_SOURCE=https://github.com/cloudfoundry-incubator/eirini"
+
 destinations:
   - imageRepo: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s
     newImage: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s

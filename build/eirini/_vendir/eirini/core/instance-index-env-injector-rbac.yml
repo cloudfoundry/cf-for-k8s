@@ -58,14 +58,6 @@ rules:
   - use
   resourceNames:
   - eirini-instance-index-env-injector
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - create
-  - delete
-  - get
 ---
 # Source: eirini/templates/core/instance-index-env-injector-rbac.yml
 apiVersion: rbac.authorization.k8s.io/v1

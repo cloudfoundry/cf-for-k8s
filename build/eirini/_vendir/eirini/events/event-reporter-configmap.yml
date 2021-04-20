@@ -19,4 +19,4 @@ data:
     # have entries tls.ca, tls.crt and tls.key, for the TLS certificate
     # authority, client certificate and key respectively, used for mTLS with
     # the Cloud Controller.
-    cc_tls_disabled: false
+    cc_tls_disabled: true

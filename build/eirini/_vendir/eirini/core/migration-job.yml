@@ -21,7 +21,7 @@ spec:
         runAsNonRoot: true
       containers:
       - name: migration
-        image: eirini/migration@sha256:551998e0a0051989e45d875641620a143e268c6c25f44ebfcfff9d76ddeb14e8
+        image: eirini/migration@sha256:8bf6bf4041015e447362eaf5c584f69f7baa9009bb3adeffee7405df917553f9
         imagePullPolicy: IfNotPresent
         resources:
           requests:

@@ -60,6 +60,27 @@ rules:
   verbs:
   - list
   - patch
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - list
+  - patch
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - get
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
+  - patch
 ---
 # Source: eirini/templates/core/migration-rbac.yml
 # Bind to the default service account

@@ -58,7 +58,7 @@ sources:
         - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
-      - "BP_GO_TARGETS=./cmd/opi"
+      - "BP_GO_TARGETS=./cmd/api"
       - --env
       - #@ "BP_OCI_REVISION=" + data.values.git_sha
       - --env

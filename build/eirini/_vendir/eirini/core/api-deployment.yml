@@ -15,13 +15,13 @@ spec:
         name: eirini-api
     spec:
       dnsPolicy: ClusterFirst
-      serviceAccountName: opi
+      serviceAccountName: api
       volumes:
         - name: config-map
           configMap:
             name: api
         - name: cc-certs
-          # The secret below is required when opi.cc_tls_disabled is false in
+          # The secret below is required when api.cc_tls_disabled is false in
           # the core/api-configmap.yml. It must have keys tls.ca, tls.crt and
           # tls.key for the certificate authority, client certificate and
           # private key respectively, used for mTLS with the Cloud Controller.
@@ -29,7 +29,7 @@ spec:
             secretName: eirini-internal-tls-certs
             optional: true
         - name: eirini-certs
-          # The secret below is required when opi.serve_plaintext is false in
+          # The secret below is required when api.serve_plaintext is false in
           # the core/api-configmap.yml. It must have keys tls.ca, tls.crt and
           # tls.key for the certificate authority, client certificate and
           # private key respectively, used to serve the REST API on TLS.
@@ -39,8 +39,9 @@ spec:
       securityContext:
         runAsNonRoot: true
       containers:
-      - name: opi
-        image: eirini/opi@sha256:43a8f908b7bd13ad9c9e02391616c18d0e724b09bb9b88e2401a36b949dcdd20
+      - name: api
+        image: eirini/api@sha256:9d8366b23c7f5267b0bedd4f30a952b2b5ce2972f2901a0cd43d81c6ca9bf1c4
+        args: [ "--config", "/etc/eirini/config/api.yml" ]
         imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: config-map

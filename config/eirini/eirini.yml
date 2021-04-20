@@ -21,6 +21,17 @@ stringData:
   tls.key: #@ data.values.instance_index_env_injector_certificate.key
   tls.ca: #@ data.values.instance_index_env_injector_certificate.ca
 
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: resource-validator-certs
+  namespace: #@ system_namespace()
+stringData:
+  tls.crt: #@ data.values.resource_validator_certificate.crt
+  tls.key: #@ data.values.resource_validator_certificate.key
+  tls.ca: #@ data.values.resource_validator_certificate.ca
+
 #! Allow app traffic from the istio-ingressgateway
 ---
 apiVersion: networking.k8s.io/v1
@@ -48,7 +59,7 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: registry-credentials
+  name: app-registry-credentials
   namespace: #@ workloads_namespace()
 type: kubernetes.io/dockerconfigjson
 data:

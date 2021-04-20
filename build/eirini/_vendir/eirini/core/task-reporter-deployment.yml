@@ -21,7 +21,8 @@ spec:
         runAsNonRoot: true
       containers:
       - name: task-reporter
-        image: eirini/task-reporter@sha256:4bdaaae070e98ee124727bc1cdec2d256a3a8720ca10ec9864f03429af4587b1
+        image: eirini/task-reporter@sha256:d4cb7d7a1ffe5b57d545c5b487bf1a4158854b81221d2ab6a3f98d96835e7252
+        args: [ "--config", "/etc/eirini/config/task-reporter.yml" ]
         imagePullPolicy: IfNotPresent
         resources:
           requests:

@@ -1,6 +1,6 @@
 #@ load("@ytt:data", "data")
 
-#@ image_list = [ "opi", "event-reporter", "task-reporter", "instance-index-env-injector" ]
+#@ image_list = [ "api", "event-reporter", "task-reporter", "instance-index-env-injector" ]
 
 #@ tag_version = "3.1.0"
 ---

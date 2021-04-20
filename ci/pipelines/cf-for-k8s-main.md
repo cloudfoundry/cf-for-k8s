@@ -1,15 +1,37 @@
 # cf-for-k8s-main
 
+## Purpose
+This pipeline validates changes to cf-for-k8s and automates the creation of artifacts used in the release process.
+
 ## Groups
 
 * cf-for-k8s-main; jobs that test commits to the develop branch of cf-for-k8s
   and merge them to main
-* ship-it; jobs used to create new release candidates of cf-for-k8s and convert
-  them to final releases
+* ship-it; jobs used to create new release candidates of cf-for-k8s and convert them to final releases
+
+## Validation Strategy
+
+### Unit Testing and Vendir Sync Validation
+We block acceptance testing on unit testing and vendored dependency validation. Ginkgo unit test suites validate configuration logic in the [ytt](https://github.com/vmware-tanzu/carvel-ytt) templates with the help of the [yttk8smatchers](https://github.com/cloudfoundry/yttk8smatchers) library. We validate the declarative state of dependencies managed by [vendir](https://github.com/vmware-tanzu/carvel-vendir) with a git diff check on the repository after running `vendir sync` and the `build.sh` script of each component included in the `build/` directory.
+
+### Acceptance Testing Fan-out
+
+Once unit testing is complete, we use smoke-tests to validate a matrix of configuration scenarios including the following dimensions:
+* Fresh installation, upgrade
+* Image registry: Dockerhub, Google Container Registry
+* Persistent data stores (database, blobstore): internally deployed, external service
+  * Note that our external database infrastructure is managed by a terraform template in the `dev-tooling` pipeline
+* Kubernetes version: oldest and newest versions of the known compatible window (declared in `supported_k8s_versions.yml`)
+* Kubernetes provider: Aside from the kubernetes version-specific checks which run on [KinD](https://github.com/kubernetes-sigs/kind), acceptance testing runs against a [GKE](https://cloud.google.com/kubernetes-engine) cluster on the [rapid release channel](https://cloud.google.com/kubernetes-engine/docs/concepts/release-channels).
+
+Additionally, we run a subset of cf-acceptance-tests against a GKE cluster with internally deployed persistent data stores and dockerhub as its container registry.
+
+### Integration of Validated Commits
+After unit testing and the acceptance testing fan out succeed, we promote the commit to the `main` branch of cf-for-k8s and mark any related [Pivotal Tracker](https://www.pivotaltracker.com) story using the [concourse tracker resource](https://github.com/concourse/tracker-resource).
 
 ## Release Management
 
-Release management consists of the following steps:
+Release management is a manual process and consists of the following steps:
 
 1. Choose whether the next release is going to be a major, minor or patch
    release.

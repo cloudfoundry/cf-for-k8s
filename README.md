@@ -1,4 +1,4 @@
-![](docs/assets/cf-for-k8s-banner.png)
+![](https://github.com/cloudfoundry/cf-for-k8s-docs/blob/main/content/docs/assets/cf-for-k8s-banner.png)
 
 # cf push comes to Kubernetes
 
@@ -7,15 +7,15 @@ Cloud Foundry For Kubernetes (cf-for-k8s) blends the popular CF developer API wi
 Cloud Foundry is an open-source cloud platform as a service (PaaS) on which developers can build, deploy, run and scale applications. For more information on what Cloud Foundry is and how it can help developers build cloud native applications and platform operators to manage those apps at scale, please visit [cloudfoundry.org](https://cloudfoundry.org) and [docs.cloudfoundry.org](https://docs.cloudfoundry.org/)
 
 ## Getting Started
-If you're new to Kubernetes, we recommend this [Getting Started Guide](docs/getting-started-tutorial.md), which walks you though deploying cf-for-k8s on your machine using a local [kind](https://kind.sigs.k8s.io/) (Kubernetes In Docker) cluster.  The guide configures your cf-for-k8s deployment as a developer-edition that runs on your laptop and can handle approximately 10 small applications.  
+If you're new to Kubernetes, we recommend this [Getting Started Guide](https://cf-for-k8s.io/docs/), which walks you though deploying cf-for-k8s on your machine using a local [kind](https://kind.sigs.k8s.io/) (Kubernetes In Docker) cluster.  The guide configures your cf-for-k8s deployment as a developer-edition that runs on your laptop and can handle approximately 10 small applications.  
 
-For more generic and flexible instructions, see [Deploying CF for K8s](docs/deploy.md).
+For more generic and flexible instructions, see [Deploying CF for K8s](https://cf-for-k8s.io/docs/deploying/).
 
 ## Contributing
 Please read [CONTRIBUTING.md](community/CONTRIBUTING.md) for details on the process for submitting pull requests to us.
 
 ## Built with
-![](docs/assets/architecture.png)
+![](https://github.com/cloudfoundry/cf-for-k8s-docs/blob/main/content/docs/assets/architecture.png)
 
 cf-for-k8s is built on top of well known Kubernetes projects like:
 

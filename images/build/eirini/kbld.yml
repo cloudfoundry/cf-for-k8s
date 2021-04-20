@@ -105,3 +105,5 @@ destinations:
     newImage: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s
   - imageRepo: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s
     newImage: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s
+  - imageRepo: index.docker.io/eirini/resource-validator
+    newImage: index.docker.io/cloudfoundry/eirini-resource-validator-cf-for-k8s

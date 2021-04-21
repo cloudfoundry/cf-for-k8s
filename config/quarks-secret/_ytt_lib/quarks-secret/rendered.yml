@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: cf-quarks-secret
+  name: quarks-secret
   namespace: cf-system
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -164,7 +164,7 @@ roleRef:
   name: cf-quarks-secret
 subjects:
 - kind: ServiceAccount
-  name: cf-quarks-secret
+  name: quarks-secret
   namespace: cf-system
 ---
 apiVersion: apps/v1
@@ -173,10 +173,11 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Type: preresolved
-          URL: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd
-        URL: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd
-  name: cf-quarks-secret
+        - Tag: v1.0.758
+          Type: resolved
+          URL: ghcr.io/cloudfoundry-incubator/quarks-secret:v1.0.758
+        URL: ghcr.io/cloudfoundry-incubator/quarks-secret@sha256:265adf83e2f4ccef62b2c93999fe830c783d92ad2e703ff1c21c20d6ecbf357e
+  name: quarks-secret
   namespace: cf-system
 spec:
   replicas: 1
@@ -212,10 +213,10 @@ spec:
               fieldPath: metadata.name
         - name: OPERATOR_NAME
           value: quarks-secret
-        image: index.docker.io/cloudfoundry/quarks-secret@sha256:582a52c1d20b1b263ecada60196e214ffcfaa455ebfac5a43646ab9d13bb86fd
+        image: ghcr.io/cloudfoundry-incubator/quarks-secret@sha256:265adf83e2f4ccef62b2c93999fe830c783d92ad2e703ff1c21c20d6ecbf357e
         imagePullPolicy: IfNotPresent
         name: quarks-secret
         ports:
         - containerPort: 60000
           name: metrics
-      serviceAccountName: cf-quarks-secret
+      serviceAccountName: quarks-secret

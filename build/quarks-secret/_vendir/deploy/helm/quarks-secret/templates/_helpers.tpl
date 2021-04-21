@@ -16,8 +16,8 @@ If release name contains chart name it will be used as a full name.
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- if contains $name .Release.Namespace -}}
+{{- .Release.Namespace | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -36,7 +36,7 @@ Create the name of the quarks-secret service account to use
 */}}
 {{- define "quarks-secret.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "quarks-secret.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "quarks-secret.name" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "quarks-secret.fullname" . }}
+  name: {{ template "quarks-secret.name" . }}
   namespace: "{{ .Release.Namespace }}"
 spec:
   replicas: 1

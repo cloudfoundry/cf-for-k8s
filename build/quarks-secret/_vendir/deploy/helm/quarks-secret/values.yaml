@@ -50,6 +50,10 @@ global:
   image:
     # pullPolicy defines the policy used for pulling docker images.
     pullPolicy: IfNotPresent
+    credentials: ~
+      # username:
+      # password:
+      # servername:
   # monitoredID is a string that has to match the content of the 'monitored' label in each monitored namespace.
   # The monitoredID helper uses the release fullname, unless this is set.
   monitoredID:

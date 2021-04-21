@@ -2,8 +2,8 @@ fullnameOverride: cf-quarks-secret
 
 image:
   repository: quarks-secret
-  org: cloudfoundry
-  tag: v1.0.744
+  org: ghcr.io/cloudfoundry-incubator
+  tag: v1.0.758
 
 global:
   monitoredID: cf-quarks-secret

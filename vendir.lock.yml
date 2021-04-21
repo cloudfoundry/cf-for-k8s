@@ -74,11 +74,10 @@ directories:
   path: build/postgres/_vendir
 - contents:
   - git:
-      commitTitle: Fix quarks secret `SecretLabels` & `SecretAnnotations` update bug
-        (#59)...
-      sha: 4171053d17e66a93044795924abdca66cac09785
+      commitTitle: Bump go version to 1.15.8
+      sha: a2afaeacad761388a738d01a0c8a7647f80d4afa
       tags:
-      - v1.0.744
+      - v1.0.758
     path: .
   path: build/quarks-secret/_vendir
 kind: LockConfig

@@ -116,6 +116,6 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry-incubator/quarks-secret
-      ref: 4171053d17e66a93044795924abdca66cac09785 # version: 1.0.744
+      ref: v1.0.758
     includePaths:
     - deploy/helm/quarks-secret/**/*

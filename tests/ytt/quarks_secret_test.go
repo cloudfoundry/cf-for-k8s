@@ -54,7 +54,7 @@ var _ = Describe("QuarksSecret", func() {
 
 		It("should not have a deployment for quarks secret", func() {
 			Expect(ctx).To(ProduceYAML(
-				Not(WithDeployment("cf-quarks-secret", "cf-system")),
+				Not(WithDeployment("quarks-secret", "cf-system")),
 			))
 		})
 	})
@@ -67,7 +67,7 @@ var _ = Describe("QuarksSecret", func() {
 
 		It("should have a deployment for quarks secret", func() {
 			Expect(ctx).To(ProduceYAML(
-				WithDeployment("cf-quarks-secret", "cf-system"),
+				WithDeployment("quarks-secret", "cf-system"),
 			))
 		})
 		// MAYBE TODO: Add check for the actual CRD?

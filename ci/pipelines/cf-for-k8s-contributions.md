@@ -35,7 +35,7 @@ Once unit testing is complete, we validate a fresh install on [KinD](https://git
 
 PR validation matches the matrix tested in the `cf-for-k8s-main` pipeline. Note that a failed concourse job in the `pr-validation` group does not necessarily indicate action is required by pipeline maintainers. The failure is required to block acceptance testing on unit testing using a concourse passed constraint.
 
-## Notes
+## Pipeline Management
 
 This pipeline is managed via the `ci/templates/cf-for-k8s-contributions.yml` [ytt](https://github.com/vmware-tanzu/carvel-ytt) template. To make changes to the pipeline, update the template file (and its input values file `ci/inputs/cf-for-k8s-contributions.yml`), then run the `ci/configure` script to render the template with ytt and apply the changes with the [fly cli](https://concourse-ci.org/fly.html).
 

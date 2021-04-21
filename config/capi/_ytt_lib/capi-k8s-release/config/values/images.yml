@@ -4,7 +4,7 @@
 #@overlay/match missing_ok=True
 images:
   backup_metadata_generator: cloudfoundry/cf-api-backup-metadata-generator@sha256:0f3098d99b35bfb9608b580323e0cc454bd254afaf08cd02acec58af770fea4f
-  ccng: cloudfoundry/cloud-controller-ng@sha256:42e0566f5dae76b12aac3245df5227a582b73d57d5f9d0f9d424520755e89475
+  ccng: cloudfoundry/cloud-controller-ng@sha256:b486147f4ec63a543c1464733ae7fcdd6e4dc74d9171fcff0d68527f0b64459d
   cf_api_controllers: cloudfoundry/cf-api-controllers@sha256:eb1745059ae04a87044e388f78440dfcdbc0618d545c3ca0ce77456146bd44d9
   cf_autodetect_builder: cloudfoundry/cnb:0.0.94-bionic@sha256:5b03a853e636b78c44e475bbc514e2b7b140cc41cca8ab907e9753431ae8c0b0
   nginx: cloudfoundry/capi-nginx@sha256:67ad232b390a100a3c9e9b36ee1c6443843185e6df78f3fba57f9a708808b6da

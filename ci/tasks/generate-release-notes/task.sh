@@ -71,8 +71,8 @@ function append_component_line() {
       to_hyperlink="[${to_sha}](https://github.com/cloudfoundry/cf-k8s-logging/releases/tag/${to_sha})"
     elif [[ "${component_name}" == "Metrics" ]]; then
       to_hyperlink="[${to_sha}](https://github.com/cloudfoundry/metric-proxy/releases/tag/${to_sha})"
-    # elif [[ "${component_name}" == "QuarksSecret" ]]; then
-    #   to_hyperlink="[${to_sha}](https://github.com/cloudfoundry/uaa/releases/tag/${to_sha})"
+    elif [[ "${component_name}" == "QuarksSecret" ]]; then
+      to_hyperlink="[${to_sha}](https://github.com/cloudfoundry-incubator/quarks-secret/releases/tag/${to_sha})"
     elif [[ "${component_name}" == "UAA" ]]; then
       to_hyperlink="[${to_sha}](https://github.com/cloudfoundry/uaa/releases/tag/${to_sha})"
     else
@@ -90,13 +90,12 @@ function build_component_bump_table_content() {
 
   append_component_line "CF API" "path: config/capi/_ytt_lib/capi-k8s-release"
   append_component_line "Eirini" "path: build/eirini/_vendir"
+  release_table_text+="\n| Istio | 1.7.3 | [1.8.4](https://github.com/istio/istio/releases/tag/1.8.4) |"
   append_component_line "Kpack" "path: config/kpack/_ytt_lib/kpack"
   append_component_line "Logging" "path: config/logging/_ytt_lib/cf-k8s-logging"
   append_component_line "Metrics" "path: config/metrics/_ytt_lib/metric-proxy"
   append_component_line "Networking" "path: config/networking/_ytt_lib/cf-k8s-networking"
-  # append_component_line "QuarksSecret" "path: build/quarks-secret/_vendir"
-  # TODO make Quarks normal after the 1.1 release
-  release_table_text+="\n| QuarksSecret | n/a | [4171053](https://github.com/cloudfoundry-incubator/quarks-secret/commit/4171053d17e66a93044795924abdca66cac09785) |"
+  append_component_line "QuarksSecret" "path: build/quarks-secret/_vendir"
   append_component_line "UAA" "path: config/uaa/_ytt_lib/uaa"
   release_table_text+="\n"
 

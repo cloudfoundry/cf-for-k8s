@@ -603,7 +603,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      name: instance-index-env-injector
+      name: eirini-instance-index-env-injector
   egress:
   - {}
   ingress:

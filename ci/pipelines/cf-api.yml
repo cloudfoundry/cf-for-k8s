@@ -15,6 +15,7 @@ groups:
   jobs:
   - cc-tests
   - cf-api-controllers-unit-tests
+  - check-nginx
   - registry-buddy-unit-tests
   - registry-buddy-integration-tests
   - build-capi-docker-image
@@ -108,6 +109,14 @@ resources:
     paths: [dockerfiles/nginx]
     private_key: ((private_key.private_key))
     uri: git@github.com:cloudfoundry/capi-k8s-release.git
+
+- name: capi-release-nginx-packaging
+  type: git
+  source:
+    branch: main
+    paths: [packages/nginx]
+    private_key: ((private_key.private_key))
+    uri: git@github.com:cloudfoundry/capi-release.git
 
 - name: cf-acceptance-tests
   type: git
@@ -253,6 +262,15 @@ jobs:
       params:
         text: '[cf-api-controllers-unit-tests] OH NO! Failed when running with kubebuilder'
         icon_emoji: ":pickle:"
+
+- name: check-nginx
+  plan:
+  - get: capi-release-nginx-packaging
+    trigger: true
+  - task: create-nginx-bump-story
+    file: cf-for-k8s-ci/ci/tasks/cake/create-nginx-bump-story.yml
+    params:
+      TRACKER_TOKEN: ((cf_relint_tracker_api_token))
 
 - name: registry-buddy-unit-tests
   plan:

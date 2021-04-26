@@ -1,0 +1,15 @@
+
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/cf-for-k8s-ci
+
+inputs:
+  - name: cf-for-k8s-ci
+
+run:
+  path: cf-for-k8s-ci/ci/tasks/create-nginx-bump-story.sh
+
+params:
+  TRACKER_TOKEN:

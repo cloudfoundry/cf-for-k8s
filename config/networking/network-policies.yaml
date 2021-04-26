@@ -612,21 +612,6 @@ spec:
   - Ingress
   - Egress
 ---
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: eirini-instance-index-env-injector-registrar
-  namespace: #@ system_namespace()
-spec:
-  podSelector:
-    matchLabels:
-      job-name: instance-index-env-injector
-  egress:
-  - {}
-  policyTypes:
-  - Ingress
-  - Egress
----
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:

@@ -9,7 +9,7 @@ inputs:
   - name: cf-for-k8s-ci
 
 run:
-  path: cf-for-k8s-ci/ci/tasks/create-nginx-bump-story.sh
+  path: cf-for-k8s-ci/ci/tasks/cake/create-nginx-bump-story.sh
 
 params:
   TRACKER_TOKEN:

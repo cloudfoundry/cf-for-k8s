@@ -265,8 +265,10 @@ jobs:
 
 - name: check-nginx
   plan:
-  - get: capi-release-nginx-packaging
-    trigger: true
+  - in_parallel:
+    - get: cf-for-k8s-ci
+    - get: capi-release-nginx-packaging
+      trigger: true
   - task: create-nginx-bump-story
     file: cf-for-k8s-ci/ci/tasks/cake/create-nginx-bump-story.yml
     params:

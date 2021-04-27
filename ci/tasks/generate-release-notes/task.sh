@@ -90,7 +90,8 @@ function build_component_bump_table_content() {
 
   append_component_line "CF API" "path: config/capi/_ytt_lib/capi-k8s-release"
   append_component_line "Eirini" "path: build/eirini/_vendir"
-  release_table_text+="\n| Istio | 1.7.3 | [1.8.4](https://github.com/istio/istio/releases/tag/1.8.4) |"
+  # TODO: Make versions dynamic by fetching from source of truth.
+  release_table_text+="\n| Istio | 1.8.4 | [1.9.4](https://github.com/istio/istio/releases/tag/1.9.4) |"
   append_component_line "Kpack" "path: config/kpack/_ytt_lib/kpack"
   append_component_line "Logging" "path: config/logging/_ytt_lib/cf-k8s-logging"
   append_component_line "Metrics" "path: config/metrics/_ytt_lib/metric-proxy"

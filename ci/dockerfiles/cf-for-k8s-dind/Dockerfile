@@ -12,7 +12,10 @@ RUN apt-get install -y --no-install-recommends \
   dmsetup \
   git \
   openssh-client \
+  python3-pip \
   software-properties-common
+
+RUN pip3 install yq
 
 RUN curl -LO "https://github.com/vmware-tanzu/carvel-kbld/releases/download/${KBLD_VERSION}/kbld-linux-amd64"
 RUN mv kbld-linux-amd64 /usr/local/bin/kbld

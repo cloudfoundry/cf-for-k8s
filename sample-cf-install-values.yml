@@ -61,13 +61,6 @@ instance_index_env_injector_certificate:
   key: &key instance_index_env_injector_private_key
   ca: instance_index_env_injector_ca
 
-#! certificate, private key, and certificate authority used for the lrp resource validating webhook in eirini
-#! - should be valid for *.cf-system.svc
-resource_validator_certificate:
-  crt: &crt resource_validator_certificate
-  key: &key resource_validator_private_key
-  ca: resource_validator_ca
-
 uaa:
   database:
     #! The db password shared between UAA and the database.

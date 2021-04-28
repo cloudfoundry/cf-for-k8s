@@ -5,7 +5,7 @@
 #! These values cannot be changed later when rendering cf-for-k8s templates.
 #! Values related to CF should NOT be in this file.
 
-istio_version: 1.8.4
+istio_version: 1.9.4
 
 fluentbit:
   image: cloudfoundry/cf-k8s-networking-fluentbit@sha256:2b8563a032c007bdb5f8a1cdbd093edd8505fadd21a3443a2b891e87caee7504

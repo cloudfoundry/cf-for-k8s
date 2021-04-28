@@ -13,6 +13,7 @@ RUN apt-get install -y --no-install-recommends \
   git \
   openssh-client \
   python3-pip \
+  python3-setuptools \
   software-properties-common
 
 RUN pip3 install yq

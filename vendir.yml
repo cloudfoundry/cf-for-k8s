@@ -35,14 +35,14 @@ directories:
       slug: cloudfoundry/metric-proxy
       tag: 1.3.0
       disableAutoChecksumValidation: true
-- path: config/uaa/_ytt_lib/uaa
+- path: config/uaa/_ytt_lib/uaa-k8s-release
   contents:
   - path: .
     git:
-      url: https://github.com/cloudfoundry/uaa
-      ref: v75.1.0
+      url: https://github.com/cloudfoundry/uaa-k8s-release
+      ref: 177656349-ci-pipeline
     includePaths:
-    - k8s/templates/**/*
+    - config/**/*
 - path: config/kpack/_ytt_lib/kpack
   contents:
   - path: .

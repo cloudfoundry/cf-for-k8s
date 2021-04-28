@@ -30,7 +30,7 @@ spec:
       serviceAccountName: uaa
       initContainers:
       - name: build-uaa-truststore
-        image: #@ data.values.image
+        image: #@ data.values.images.uaa
         command:
         - 'sh'
         - '-c'
@@ -111,7 +111,7 @@ spec:
           mountPath: #@ truststore_dir
       containers:
       - name: uaa
-        image: #@ data.values.image
+        image: #@ data.values.images.uaa
         resources:
           requests:
             memory: #@ data.values.resources.uaa.requests.memory

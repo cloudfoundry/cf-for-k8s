@@ -222,7 +222,7 @@ uaa:
 #@   return yaml.encode(overlay.apply(yaml.decode(old), uaa_config()))
 #@ end
 
-#@ uaa = library.get("uaa")
+#@ uaa = library.get("uaa-k8s-release")
 ---
   #@ template.replace(uaa.with_data_values(uaa_values()).eval())
 
@@ -307,7 +307,7 @@ stringData:
 --- #@ template.replace(secret_uaa_client_credentials("cf", "", "uaa-cf-client-secret"))
 
 
-#@ load("@uaa/k8s:templates/deployment.star",
+#@ load("@uaa-k8s-release:config/deployment.star",
 #@  "secrets_dir")
 #@overlay/match by=overlay.subset({"kind":"Deployment", "metadata":{"name":"uaa"}})
 ---

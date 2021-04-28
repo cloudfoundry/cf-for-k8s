@@ -28,12 +28,10 @@ directories:
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:
   - git:
-      commitTitle: Update UAA image reference in k8s deployment template to 75.1.0
-      sha: 2776c98e3135745803ecbd099d3298ef8feb2f3b
-      tags:
-      - v75.1.0
+      commitTitle: WIP
+      sha: d435d1a0f50f185cd09d490ae0fa630961d23242
     path: .
-  path: config/uaa/_ytt_lib/uaa
+  path: config/uaa/_ytt_lib/uaa-k8s-release
 - contents:
   - githubRelease:
       url: https://api.github.com/repos/pivotal/kpack/releases/39468815

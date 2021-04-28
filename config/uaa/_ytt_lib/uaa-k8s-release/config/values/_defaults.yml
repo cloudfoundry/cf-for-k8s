@@ -2,7 +2,6 @@
 ---
 #! UAA Deployment Values
 version: ""
-image: ""
 namespace: default
 labels:
   instance: standalone
@@ -30,11 +29,6 @@ issuer:
 
 tomcat:
   accessLoggingEnabled: "y"
-
-#! Statsd Deployment Values
-images:
-  statsd_exporter: cloudfoundry/statsd_exporter:v0.15.0@sha256:10a64dc4ad0a3e3fe88372f0481dea5c02595c38d168617836a99a649d3ac407
-
 
 #! UAA Application Values
 database:

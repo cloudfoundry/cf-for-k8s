@@ -11,6 +11,7 @@ RUN apt-get install -y --no-install-recommends \
   curl \
   dmsetup \
   git \
+  jq \
   openssh-client \
   python3-pip \
   python3-setuptools \

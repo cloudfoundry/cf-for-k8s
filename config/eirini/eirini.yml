@@ -14,7 +14,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: instance-index-env-injector-certs
+  name: eirini-instance-index-env-injector-certs
   namespace: #@ system_namespace()
 stringData:
   tls.crt: #@ data.values.instance_index_env_injector_certificate.crt

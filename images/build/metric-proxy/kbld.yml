@@ -1,0 +1,23 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.28.0
+sources:
+- imageRepo: cloudfoundry/metric-proxy
+  path: sources/metric-proxy
+  pack:
+    build:
+      builder: paketobuildpacks/builder:tiny
+      buildpacks:
+        - gcr.io/paketo-buildpacks/go
+      rawOptions:
+      - --env
+      - #@ "BP_OCI_REVISION=" + data.values.git_sha
+      - --env
+      - "BP_OCI_SOURCE=https://github.com/cloudfoundry/metric-proxy"
+      - --env
+      - #@ "BP_GO_BUILD_LDFLAGS=-X main.version={}".format(data.values.git_sha)
+destinations:
+  - imageRepo: cloudfoundry/metric-proxy
+    newImage: index.docker.io/cloudfoundry/metric-proxy

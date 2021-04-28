@@ -583,21 +583,6 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: eirini-controller
-  namespace: #@ system_namespace()
-spec:
-  podSelector:
-    matchLabels:
-      name: eirini-controller
-  egress:
-  - {}
-  policyTypes:
-  - Ingress
-  - Egress
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
   name: eirini-instance-index-env-injector
   namespace: #@ system_namespace()
 spec:

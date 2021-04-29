@@ -79,21 +79,6 @@ sources:
       - --env
       - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
 
-- imageRepo: index.docker.io/eirini/resource-validator
-  path: sources/eirini
-  pack:
-    build:
-      builder: paketobuildpacks/builder:tiny
-      buildpacks:
-        - gcr.io/paketo-buildpacks/go
-      rawOptions:
-      - --env
-      - "BP_GO_TARGETS=./cmd/resource-validator"
-      - --env
-      - #@ "BP_OCI_REVISION=" + data.values.git_sha
-      - --env
-      - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
-
 destinations:
 - imageRepo: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s
   newImage: index.docker.io/cloudfoundry/eirini-event-reporter-cf-for-k8s
@@ -105,5 +90,3 @@ destinations:
   newImage: index.docker.io/cloudfoundry/eirini-opi-cf-for-k8s
 - imageRepo: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s
   newImage: index.docker.io/cloudfoundry/eirini-task-reporter-cf-for-k8s
-- imageRepo: index.docker.io/eirini/resource-validator
-  newImage: index.docker.io/cloudfoundry/eirini-resource-validator-cf-for-k8s

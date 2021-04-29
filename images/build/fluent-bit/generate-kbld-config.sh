@@ -25,8 +25,7 @@ git_url: "https://github.com/fluent/fluent-bit"
 EOF
 )
 
-  local kbld_config
-  echo "${kbld_config_values}" | ytt -f "${SCRIPT_DIR}/kbld.yml" -f - > ${kbld_config_path}
+  echo "${kbld_config_values}" | ytt -f "${SCRIPT_DIR}/kbld.yml" -f - > "${kbld_config_path}"
 }
 
 function main() {

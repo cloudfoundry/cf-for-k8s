@@ -13,6 +13,12 @@ function generate_kbld_config() {
   pushd "${source_path}" > /dev/null
     local git_ref
     git_ref=$(git rev-parse HEAD)
+    version=$(git tag --points-at ${git_ref} | head -1 | sed 's/^v//')
+
+    if [ -z "$version" ]
+    then
+      version="0.0.0"
+    fi
   popd > /dev/null
 
   echo "Creating UAA kbld config with ytt"
@@ -21,7 +27,8 @@ function generate_kbld_config() {
 #@data/values
 ---
 git_ref: ${git_ref}
-git_url: https://github.com/cloudfoundry/uaa
+git_url: https://github.com/cloudfoundry/uaa-k8s-release
+version: ${version}
 EOF
 )
 

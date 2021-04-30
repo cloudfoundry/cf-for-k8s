@@ -45,6 +45,12 @@ directories:
     git:
       url: https://github.com/cloudfoundry/cf-k8s-logging-fluent.git
       ref: 35b578f86027750372852635a3a291f4caf04e09
+- path: sources/logging
+  contents:
+  - path: .
+    git:
+      url: https://github.com/cloudfoundry/cf-k8s-logging
+      ref: 0.7.0
 - path: sources/metric-proxy
   contents:
   - path: .

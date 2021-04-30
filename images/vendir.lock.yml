@@ -54,6 +54,14 @@ directories:
   path: sources/cf-k8s-logging-fluent
 - contents:
   - git:
+      commitTitle: Replace deplab with OCI spec image labels...
+      sha: 742eeaf757eb234998899853032b17ec60897ea2
+      tags:
+      - 0.7.0
+    path: .
+  path: sources/logging
+- contents:
+  - git:
       commitTitle: bump to 1.3.0
       sha: 3ef5fc115d12845c1731d9c519dcd6bc990889e1
       tags:

@@ -1,0 +1,87 @@
+#@ load("@ytt:data", "data")
+---
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.28.0
+sources:
+- imageRepo: cloudfoundry/log-cache
+  path: sources/logging/vendor/log-cache/src
+  pack:
+    build:
+      builder: paketobuildpacks/builder:tiny
+      buildpacks:
+      - gcr.io/paketo-buildpacks/go
+      rawOptions:
+      - --env
+      - "BP_GO_TARGETS=./cmd/log-cache"
+      - --env
+      - #@ "BP_OCI_REVISION={}".format(data.values.git_ref)
+      - --env
+      - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
+
+- imageRepo: cloudfoundry/log-cache-gateway
+  path: sources/logging/vendor/log-cache/src
+  pack:
+    build:
+      builder: paketobuildpacks/builder:tiny
+      buildpacks:
+      - gcr.io/paketo-buildpacks/go
+      rawOptions:
+      - --env
+      - "BP_GO_TARGETS=./cmd/gateway"
+      - --env
+      - #@ "BP_OCI_REVISION={}".format(data.values.git_ref)
+      - --env
+      - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
+
+- imageRepo: cloudfoundry/log-cache-cf-auth-proxy
+  path: sources/logging/vendor/log-cache/src
+  pack:
+    build:
+      builder: paketobuildpacks/builder:tiny
+      buildpacks:
+      - gcr.io/paketo-buildpacks/go
+      rawOptions:
+      - --env
+      - "BP_GO_TARGETS=./cmd/cf-auth-proxy"
+      - --env
+      - #@ "BP_OCI_REVISION={}".format(data.values.git_ref)
+      - --env
+      - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
+
+- imageRepo: cloudfoundry/syslog-server
+  path: sources/logging/vendor/log-cache/src
+  pack:
+    build:
+      builder: paketobuildpacks/builder:tiny
+      buildpacks:
+      - gcr.io/paketo-buildpacks/go
+      rawOptions:
+      - --env
+      - "BP_GO_TARGETS=./cmd/syslog-server"
+      - --env
+      - #@ "BP_OCI_REVISION={}".format(data.values.git_ref)
+      - --env
+      - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
+
+- imageRepo: cloudfoundry/cf-k8s-logging
+  path: sources/logging/vendor/cf-k8s-logging-fluent/fluentd
+  docker:
+    build:
+      rawOptions:
+      - --label
+      - #@ "org.opencontainers.image.revision={}".format(data.values.git_ref)
+      - --label
+      - #@ "org.opencontainers.image.source={}".format(data.values.git_url)
+
+destinations:
+- imageRepo: cloudfoundry/log-cache
+  newImage: index.docker.io/cloudfoundry/log-cache
+- imageRepo: cloudfoundry/log-cache-gateway
+  newImage: index.docker.io/cloudfoundry/log-cache-gateway
+- imageRepo: cloudfoundry/log-cache-cf-auth-proxy
+  newImage: index.docker.io/cloudfoundry/log-cache-cf-auth-proxy
+- imageRepo: cloudfoundry/syslog-server
+  newImage: index.docker.io/cloudfoundry/syslog-server
+- imageRepo: cloudfoundry/cf-k8s-logging
+  newImage: index.docker.io/cloudfoundry/cf-k8s-logging

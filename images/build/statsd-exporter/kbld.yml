@@ -10,12 +10,13 @@ sources:
     build:
       builder: paketobuildpacks/builder:tiny
       buildpacks:
-        - gcr.io/paketo-buildpacks/go
+      - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
-      - #@ "BP_OCI_REVISION=" + data.values.git_sha
+      - #@ "BP_OCI_REVISION={}".format(data.values.git_ref)
       - --env
-      - "BP_OCI_SOURCE=https://github.com/prometheus/statsd_exporter"
+      - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
+
 destinations:
-  - imageRepo: cloudfoundry/statsd_exporter-cf-for-k8s
-    newImage: index.docker.io/cloudfoundry/statsd_exporter-cf-for-k8s
+- imageRepo: cloudfoundry/statsd_exporter-cf-for-k8s
+  newImage: index.docker.io/cloudfoundry/statsd_exporter-cf-for-k8s

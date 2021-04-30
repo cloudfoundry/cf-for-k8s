@@ -10,12 +10,13 @@ sources:
     build:
       builder: paketobuildpacks/builder:tiny
       buildpacks:
-        - gcr.io/paketo-buildpacks/go
+      - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
-      - #@ "BP_OCI_REVISION=" + data.values.git_ref
+      - #@ "BP_OCI_REVISION={}".format(data.values.git_ref)
       - --env
-      - "BP_OCI_SOURCE=https://github.com/cloudfoundry/capi-k8s-release"
+      - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
+
 - imageRepo: cloudfoundry/cf-api-backup-metadata-generator
   path: sources/capi-k8s-release/src/backup-metadata-generator
   pack:
@@ -28,36 +29,39 @@ sources:
       - "--default-process"
       - "wait"
       - --env
-      - #@ "BP_OCI_REVISION=" + data.values.git_ref
+      - #@ "BP_OCI_REVISION={}".format(data.values.git_ref)
       - --env
-      - "BP_OCI_SOURCE=https://github.com/cloudfoundry/capi-k8s-release"
+      - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
+
 - imageRepo: cloudfoundry/cf-api-package-registry-buddy
   path: sources/capi-k8s-release/src/registry-buddy
   pack:
     build:
       builder: paketobuildpacks/builder:tiny
       buildpacks:
-        - gcr.io/paketo-buildpacks/go
+      - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
-      - #@ "BP_OCI_REVISION=" + data.values.git_ref
+      - #@ "BP_OCI_REVISION={}".format(data.values.git_ref)
       - --env
-      - "BP_OCI_SOURCE=https://github.com/cloudfoundry/capi-k8s-release"
+      - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
+
 - imageRepo: cloudfoundry/capi-nginx
   path: sources/capi-k8s-release/dockerfiles/nginx
   docker:
     build:
       rawOptions:
-        - --label
-        - #@ "org.opencontainers.image.source={}".format(data.values.git_url)
-        - --label
-        - #@ "org.opencontainers.image.revision={}".format(data.values.git_ref)
+      - --label
+      - #@ "org.opencontainers.image.revision={}".format(data.values.git_ref)
+      - --label
+      - #@ "org.opencontainers.image.source={}".format(data.values.git_url)
+
 destinations:
-  - imageRepo: cloudfoundry/cf-api-controllers
-    newImage: index.docker.io/cloudfoundry/cf-api-controllers
-  - imageRepo: cloudfoundry/cf-api-backup-metadata-generator
-    newImage: index.docker.io/cloudfoundry/cf-api-backup-metadata-generator
-  - imageRepo: cloudfoundry/cf-api-package-registry-buddy
-    newImage: index.docker.io/cloudfoundry/cf-api-package-registry-buddy
-  - imageRepo: cloudfoundry/capi-nginx
-    newImage: index.docker.io/cloudfoundry/capi-nginx
+- imageRepo: cloudfoundry/cf-api-controllers
+  newImage: index.docker.io/cloudfoundry/cf-api-controllers
+- imageRepo: cloudfoundry/cf-api-backup-metadata-generator
+  newImage: index.docker.io/cloudfoundry/cf-api-backup-metadata-generator
+- imageRepo: cloudfoundry/cf-api-package-registry-buddy
+  newImage: index.docker.io/cloudfoundry/cf-api-package-registry-buddy
+- imageRepo: cloudfoundry/capi-nginx
+  newImage: index.docker.io/cloudfoundry/capi-nginx

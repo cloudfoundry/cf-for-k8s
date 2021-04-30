@@ -11,8 +11,8 @@ function generate_kbld_config() {
   source_path="${SCRIPT_DIR}/../../sources/cloud_controller_ng"
 
   pushd "${source_path}" > /dev/null
-    local git_sha
-    git_sha=$(git rev-parse HEAD)
+    local git_ref
+    git_ref=$(git rev-parse HEAD)
   popd > /dev/null
 
   echo "Creating CCNG kbld config with ytt..."
@@ -20,7 +20,8 @@ function generate_kbld_config() {
   kbld_config_values=$(cat <<EOF
 #@data/values
 ---
-git_sha: ${git_sha}
+git_ref: ${git_ref}
+git_url: https://github.com/cloudfoundry/cloud_controller_ng
 EOF
 )
 

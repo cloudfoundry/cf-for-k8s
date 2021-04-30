@@ -11,8 +11,8 @@ function generate_kbld_config() {
   source_path="${SCRIPT_DIR}/../../sources/cf-k8s-networking"
 
   pushd "${source_path}" > /dev/null
-    local git_sha
-    git_sha=$(git rev-parse HEAD)
+    local git_ref
+    git_ref=$(git rev-parse HEAD)
   popd > /dev/null
 
   echo "Creating CF Networking release kbld config with ytt..."
@@ -20,8 +20,8 @@ function generate_kbld_config() {
   kbld_config_values=$(cat <<EOF
 #@data/values
 ---
-git_sha: ${git_sha}
-git_url: "https://github.com/cloudfoundry/cf-k8s-networking"
+git_ref: ${git_ref}
+git_url: https://github.com/cloudfoundry/cf-k8s-networking
 EOF
 )
 

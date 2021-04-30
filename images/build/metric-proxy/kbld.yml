@@ -10,14 +10,15 @@ sources:
     build:
       builder: paketobuildpacks/builder:tiny
       buildpacks:
-        - gcr.io/paketo-buildpacks/go
+      - gcr.io/paketo-buildpacks/go
       rawOptions:
       - --env
-      - #@ "BP_OCI_REVISION=" + data.values.git_sha
+      - #@ "BP_GO_BUILD_LDFLAGS=-X main.version={}".format(data.values.git_ref)
       - --env
-      - "BP_OCI_SOURCE=https://github.com/cloudfoundry/metric-proxy"
+      - #@ "BP_OCI_REVISION={}".format(data.values.git_ref)
       - --env
-      - #@ "BP_GO_BUILD_LDFLAGS=-X main.version={}".format(data.values.git_sha)
+      - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
+
 destinations:
-  - imageRepo: cloudfoundry/metric-proxy
-    newImage: index.docker.io/cloudfoundry/metric-proxy
+- imageRepo: cloudfoundry/metric-proxy
+  newImage: index.docker.io/cloudfoundry/metric-proxy

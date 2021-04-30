@@ -21,7 +21,7 @@ function generate_kbld_config() {
 #@data/values
 ---
 git_ref: ${git_ref}
-git_url: "https://github.com/fluent/fluent-bit"
+git_url: https://github.com/fluent/fluent-bit
 EOF
 )
 

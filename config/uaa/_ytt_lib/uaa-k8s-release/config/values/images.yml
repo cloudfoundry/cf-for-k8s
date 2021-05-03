@@ -1,8 +1,7 @@
-
 #@ load("@ytt:overlay", "overlay")
 #@data/values
 ---
 #@overlay/match missing_ok=True
 images:
-  uaa: "cloudfoundry/uaa@sha256:7fd48f08134e279a4fe2b8a200ecfdca8cda847175df38f1293e9818d7dd53cc"
   statsd_exporter: cloudfoundry/statsd_exporter:v0.15.0@sha256:10a64dc4ad0a3e3fe88372f0481dea5c02595c38d168617836a99a649d3ac407
+  uaa: cloudfoundry/uaa@sha256:dba86d459394fed4751e3c0df9a1a59afcb3924a27f4cf0926792d59c2656290

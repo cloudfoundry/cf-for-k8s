@@ -35,8 +35,10 @@ releases:
   github_org: cloudfoundry
   vendir_github_release: true
   build_dir: ""
-- name: uaa
-  github_release: true
+- name: uaa-k8s-release
+  github_release: false
+  github_branch: ci-passed
+  github_uri: git@github.com:cloudfoundry/uaa-k8s-release
   github_org: cloudfoundry
   vendir_github_release: false
   build_dir: ""

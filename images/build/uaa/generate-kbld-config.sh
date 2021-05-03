@@ -23,6 +23,8 @@ function generate_kbld_config() {
 
   echo "Creating UAA kbld config with ytt"
   local kbld_config_values
+  # Note: uaa-k8s-release also generates its own version of these data values
+  # if we change the values schema here we will need to change it there as well
   kbld_config_values=$(cat <<EOF
 #@data/values
 ---

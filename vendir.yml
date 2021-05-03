@@ -40,7 +40,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/uaa-k8s-release
-      ref: 177656349-ci-pipeline
+      ref: 6a4c75bde4b5bfdce22e06ce35a23fd58cfef711
     includePaths:
     - config/**/*
 - path: config/kpack/_ytt_lib/kpack

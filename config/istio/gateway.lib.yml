@@ -3,22 +3,15 @@ apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
   name: istio-ingressgateway
-  namespace: #@ system_namespace
+  namespace: cf-system
 spec:
   selector:
     istio: ingressgateway
   servers:
   - hosts:
-    #! TODO: restrict this
-    - '*'
-    port:
-      name: http
-      number: 80
-      protocol: HTTP
-    tls:
-      httpsRedirect: #@ https_only
-  - hosts:
-    - #@ ('' if system_domain in app_domains else '*/') + '*.' + system_domain
+    - #@ 'api.' + system_domain
+    - #@ 'uaa.' + system_domain
+    - #@ 'login.' + system_domain
     port:
       name: https-system
       number: 443

@@ -1,0 +1,6 @@
+#@data/values
+---
+#@overlay/match missing_ok=True
+istio_cert_issuer_name: "letsencrypt-staging"
+#@overlay/match missing_ok=True
+istio_cert_issuer_kind: "ClusterIssuer"

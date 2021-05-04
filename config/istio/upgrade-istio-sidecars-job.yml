@@ -1,9 +1,7 @@
+#@ load("@ytt:overlay", "overlay")
 #@ load("/namespaces.star", "workloads_namespace")
 #@ load("/namespaces.star", "system_namespace")
-
-#@ def build_version():
-#@   return "1.9.4"
-#@ end
+#@ load("istio-version.star", "istio_version")
 
 ---
 kind: ServiceAccount
@@ -91,13 +89,13 @@ subjects:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: #@ "restart-workloads-for-istio" + build_version().replace(".", "-")
+  name: #@ "restart-workloads-for-istio" + istio_version().replace(".", "-")
   namespace: #@ workloads_namespace()
   annotations:
     kapp.k14s.io/update-strategy: "skip"
     kapp.k14s.io/change-group: cf-for-k8s.cloudfoundry.org/upgrade-istio-sidecars
   labels:
-    cloudfoundry.org/istio_version: #@ build_version()
+    cloudfoundry.org/istio_version: #@ istio_version()
 spec:
   backoffLimit: 2
   template:
@@ -112,4 +110,4 @@ spec:
           image: cloudfoundry/cf-k8s-networking-upgrade-sidecars@sha256:b5f0e3204a0e9c6d7bc5fa828f70898d0f714e859060fa218c4341fd95b630e8
           env:
           - name: ISTIO_VERSION
-            value: #@ build_version()
+            value: #@ istio_version()

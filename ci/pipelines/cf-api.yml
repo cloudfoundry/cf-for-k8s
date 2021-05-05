@@ -368,6 +368,7 @@ jobs:
       file: cf-for-k8s-ci/ci/tasks/cake/build-with-pack.yml
       params:
         CONTEXT_PATH: src/cf-api-controllers
+        ADDITIONAL_ARGS: "-b gcr.io/paketo-buildpacks/go"
       input_mapping:
         source-repository: cf-api-controllers
     - task: run-deplab
@@ -391,6 +392,7 @@ jobs:
       file: cf-for-k8s-ci/ci/tasks/cake/build-with-pack.yml
       params:
         CONTEXT_PATH: src/registry-buddy
+        ADDITIONAL_ARGS: "-b gcr.io/paketo-buildpacks/go"
       input_mapping:
         source-repository: registry-buddy
     - task: run-deplab
@@ -408,13 +410,48 @@ jobs:
       - get: capi-nginx
         trigger: true
       - get: cf-for-k8s-ci
+    - task: generate-image-labels-file
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: cloudfoundry/capi
+            tag: cf-for-k8s
+        inputs:
+        - name: capi-nginx
+        outputs:
+        - name: capi-nginx-labels
+        run:
+          path: /bin/bash
+          args:
+          - -c
+          - |
+            set -euo pipefail
+            function parse_git_source() {
+              pushd capi-nginx >/dev/null
+                git remote get-url origin
+              popd >/dev/null
+            }
+
+            # Manually parse revision info from input git resource
+            git_ref=$(cat capi-nginx/.git/ref)
+            git_source=$(parse_git_source)
+
+            cat <<EOF > capi-nginx-labels/oci-image-labels
+            org.opencontainers.image.revision=${git_ref}
+            org.opencontainers.image.source=${git_source}
+            EOF
+
     - task: build
       privileged: true
       file: cf-for-k8s-ci/ci/tasks/cake/oci-build-task.yml
       input_mapping:
         context-repository: capi-nginx
+        image-labels-file: capi-nginx-labels
       params:
         CONTEXT: context-repository/dockerfiles/nginx
+        LABELS_FILE: image-labels-file/oci-image-labels
     - task: run-deplab
       privileged: true
       file: cf-for-k8s-ci/ci/tasks/cake/run-deplab.yml

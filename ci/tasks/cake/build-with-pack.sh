@@ -85,11 +85,24 @@ function stop_docker() {
   service docker stop
 }
 
+function parse_git_source() {
+  pushd source-repository >/dev/null
+    git remote get-url origin
+  popd >/dev/null
+}
+
 start_docker
+
+# Manually parse revision info from input git resource
+git_ref=$(cat source-repository/.git/ref)
+git_source=$(parse_git_source)
+
+export BP_OCI_REVISION=$git_ref
+export BP_OCI_SOURCE=$git_source
 
 # parameterizing this is hard in place - ADDITIONAL_ARGS is a hack
 # TODO: revert to using latest `full` builder once pack v0.18.1 has been cut
-pack build built-image --builder paketobuildpacks/builder:full --path "source-repository/${CONTEXT_PATH}" ${ADDITIONAL_ARGS}
+pack build built-image --builder paketobuildpacks/builder:full --path "source-repository/${CONTEXT_PATH}" --env BP_OCI_SOURCE --env BP_OCI_REVISION ${ADDITIONAL_ARGS}
 
 docker save built-image -o image/image.tar
 

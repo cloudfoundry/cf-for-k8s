@@ -44,6 +44,16 @@ spec:
             limits:
               cpu: 1000m
               memory: 4Gi
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - --unix-socket
+                - /data/cloud_controller_ng/cloud_controller.sock
+                - -f
+                - http://ignored-host/healthz
+            initialDelaySeconds: 5
+            periodSeconds: 5
           volumeMounts:
           - #@ template.replace(shared_config_volume_mounts())
           - name: server-sock
@@ -111,10 +121,11 @@ spec:
           ports:
           - containerPort: 80
           - containerPort: 9023
-          readinessProbe:
-            httpGet:
+          livenessProbe:
+            tcpSocket:
               port: 80
-              path: "/healthz"
+            periodSeconds: 5
+            initialDelaySeconds: 5
           resources:
             requests:
               cpu: 100m

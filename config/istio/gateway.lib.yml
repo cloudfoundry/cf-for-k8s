@@ -12,6 +12,7 @@ spec:
     - #@ 'api.' + system_domain
     - #@ 'uaa.' + system_domain
     - #@ 'login.' + system_domain
+    - #@ 'log-cache.' + system_domain
     port:
       name: https-system
       number: 443
@@ -23,7 +24,7 @@ spec:
   #@ if/end len(non_system_domain_app_domains) > 0:
   - hosts:
     #@ for/end app_domain in non_system_domain_app_domains:
-    - #@ workloads_namespace + '/*.' + app_domain
+    - #@ "dora." + app_domain
     port:
       name: https-workloads
       number: 443
@@ -31,4 +32,11 @@ spec:
     tls:
       credentialName: cf-workloads-cert
       mode: SIMPLE
+  - hosts:
+    #@ for/end app_domain in non_system_domain_app_domains:
+    - #@ "dora." + app_domain
+    port:
+      name: http-workloads
+      number: 80
+      protocol: HTTP
 #@ end

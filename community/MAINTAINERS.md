@@ -6,11 +6,11 @@
 
 | Maintainer | GitHub ID | Affiliation |
 | --------------- | --------- | ----------- |
+| Akira Wong | [gnovv](https://github.com/gnovv) | [VMware](https://www.github.com/vmware/) |
 | Andrew Costa | [acosta11](https://github.com/acosta11) | [VMware](https://www.github.com/vmware/) |
 | Andrew Wittrock | [Birdrock](https://github.com/Birdrock) | [VMware](https://www.github.com/vmware/) |
-| Caitlyn Yu | [heycait](https://github.com/heycait) | [VMware](https://www.github.com/vmware/) |
+| Caitlyn Yu | [heycait](https://github.com/heycait) | [VMware](https://www.github.com/vmware/) 
 | Dave Walter | [davewalter](https://github.com/davewalter) | [VMware](https://www.github.com/vmware/) |
-| Jaskanwal Pawar | [jspawar](https://github.com/jspawar) | [VMware](https://www.github.com/vmware/) |
 | Matt Royal | [matt-royal](https://github.com/matt-royal) | [VMware](https://www.github.com/vmware/) |
 | Tim Downey | [tcdowney](https://github.com/tcdowney) | [VMware](https://www.github.com/vmware/) |
 

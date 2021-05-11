@@ -100,6 +100,17 @@ resources:
     private_key: ((private_key.private_key))
     uri: git@github.com:cloudfoundry/capi-k8s-release.git
 
+- name: capi-k8s-release-version
+  type: semver
+  source:
+    driver: git
+    uri: git@github.com:cloudfoundry/capi-k8s-release.git
+    branch: main
+    private_key: ((private_key.private_key))
+    git_user: "relint-ci <cf-release-integration@pivotal.io>"
+    file: version
+    initial_version: 0.5.0
+
 # currently nginx Dockerfile and source are in the
 # capi-k8s-release repo
 - name: capi-nginx
@@ -196,14 +207,6 @@ resources:
     user: cloudfoundry
     repository: capi-k8s-release
     drafts: true
-    access_token: ((github_access_token))
-
-- name: capi-k8s-github-published-release
-  type: github-release
-  source:
-    user: cloudfoundry
-    repository: capi-k8s-release
-    drafts: false
     access_token: ((github_access_token))
 
 - name: ready-pool
@@ -753,14 +756,9 @@ jobs:
       passed: [k8s-ci-passed]
     - get: cloud-controller-ng
       passed: [k8s-ci-passed]
-    - get: capi-k8s-github-published-release
-  - task: bump-version-from-github-release
-    file: cf-for-k8s-ci/ci/tasks/cake/bump_minor_version_from_github_release.yml
-    input_mapping:
-      github-release: capi-k8s-github-published-release
+    - get: capi-k8s-release-version
   - task: generate-github-release
     input_mapping:
-      capi-k8s-release-version: bumped-minor-version
       capi-k8s-release: capi-k8s-release-ci-passed
     file: cf-for-k8s-ci/ci/tasks/cake/generate_k8s_github_release.yml
   - put: capi-k8s-release-ci-passed
@@ -774,3 +772,6 @@ jobs:
       commitish: generated-release/commitish
       name: generated-release/name
       tag: generated-release/version
+  - put: capi-k8s-release-version
+    params:
+      bump: minor

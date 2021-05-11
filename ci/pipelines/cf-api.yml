@@ -414,37 +414,11 @@ jobs:
         trigger: true
       - get: cf-for-k8s-ci
     - task: generate-image-labels-file
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: cloudfoundry/capi
-            tag: cf-for-k8s
-        inputs:
-        - name: capi-nginx
-        outputs:
-        - name: capi-nginx-labels
-        run:
-          path: /bin/bash
-          args:
-          - -c
-          - |
-            set -euo pipefail
-            function parse_git_source() {
-              pushd capi-nginx >/dev/null
-                git remote get-url origin
-              popd >/dev/null
-            }
-
-            # Manually parse revision info from input git resource
-            git_ref=$(cat capi-nginx/.git/ref)
-            git_source=$(parse_git_source)
-
-            cat <<EOF > capi-nginx-labels/oci-image-labels
-            org.opencontainers.image.revision=${git_ref}
-            org.opencontainers.image.source=${git_source}
-            EOF
+      file: cf-for-k8s-ci/ci/tasks/generate-oci-image-labels/task.yml
+      input_mapping:
+        source-repo: capi-nginx
+      output_mapping:
+        labels: capi-nginx-labels
 
     - task: build
       privileged: true

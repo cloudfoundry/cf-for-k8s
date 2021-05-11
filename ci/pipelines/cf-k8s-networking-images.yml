@@ -195,24 +195,30 @@ jobs:
   - name: build-upgrade-sidecars-job-image
     plan:
       - in_parallel:
-          - get: cf-for-k8s-develop
-          - get: cf-k8s-networking
-          - get: cf-for-k8s-ci
-          - get: cf-k8s-networking-docker-images
-            trigger: true
+        - get: cf-for-k8s-develop
+        - get: cf-k8s-networking
+        - get: cf-for-k8s-ci
+        - get: cf-k8s-networking-docker-images
+          trigger: true
       - in_parallel:
-          - task: build-upgrade-sidecars-job-image
-            privileged: true
-            file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-oci-image.yml
-            input_mapping:
-              repository: cf-k8s-networking-docker-images
-            output_mapping:
-              image: upgrade-sidecars-image
-            params:
-              CONTEXT: ci/dockerfiles/upgrade
-              DOCKERFILE: ci/dockerfiles/upgrade/Dockerfile
-          - task: build-tag-file
-            file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-tag-file-for-image.yml
+        - task: build-tag-file
+          file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-tag-file-for-image.yml
+        - task: build-labels-file
+          file: cf-for-k8s-ci/ci/tasks/generate-oci-image-labels/task.yml
+          input_mapping:
+            source-repo: cf-k8s-networking
+      - task: build-upgrade-sidecars-job-image
+        privileged: true
+        file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-oci-image.yml
+        input_mapping:
+          repository: cf-k8s-networking-docker-images
+          image-labels-file: labels
+        output_mapping:
+          image: upgrade-sidecars-image
+        params:
+          CONTEXT: ci/dockerfiles/upgrade
+          DOCKERFILE: ci/dockerfiles/upgrade/Dockerfile
+          LABELS_FILE: image-labels-file/oci-image-labels
       - put: upgrade-sidecars-image
         params:
           image: upgrade-sidecars-image/image.tar

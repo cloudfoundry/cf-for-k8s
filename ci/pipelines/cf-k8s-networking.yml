@@ -172,16 +172,50 @@ jobs:
         file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-tag-file-for-image.yml
         input_mapping:
           cf-k8s-networking: routecontroller
+      - task: generate-image-labels-file
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: cloudfoundry/capi
+              tag: cf-for-k8s
+          inputs:
+            - name: routecontroller
+          outputs:
+            - name: routecontroller-labels
+          run:
+            path: /bin/bash
+            args:
+              - -c
+              - |
+                set -euo pipefail
+                function parse_git_source() {
+                  pushd routecontroller >/dev/null
+                    git remote get-url origin
+                  popd >/dev/null
+                }
+
+                # Manually parse revision info from input git resource
+                git_ref=$(cat routecontroller/.git/ref)
+                git_source=$(parse_git_source)
+
+                cat <<EOF > routecontroller-labels/oci-image-labels
+                org.opencontainers.image.revision=${git_ref}
+                org.opencontainers.image.source=${git_source}
+                EOF
       - task: build-routecontroller
         privileged: true
         file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-oci-image.yml
         input_mapping:
           repository: routecontroller
+          image-labels-file: routecontroller-labels
         output_mapping:
           image: routecontroller-image
         params:
           CONTEXT: routecontroller
           DOCKERFILE: routecontroller/Dockerfile
+          LABELS_FILE: image-labels-file/oci-image-labels
     - put: routecontroller-image
       params:
         image: routecontroller-image/image.tar

@@ -11,6 +11,7 @@ run:
 inputs:
 - name: repository
   path: .
+- name: image-labels-file
 
 outputs:
 - name: image
@@ -18,4 +19,5 @@ outputs:
 params:
   CONTEXT:
   DOCKERFILE:
+  LABELS_FILE: /dev/null
 

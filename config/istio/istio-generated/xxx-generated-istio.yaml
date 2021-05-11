@@ -5658,7 +5658,7 @@ spec:
         - mountPath: /etc/istio/ingressgateway-ca-certs
           name: ingressgateway-ca-certs
           readOnly: true
-      - image: index.docker.io/cloudfoundry/cf-k8s-networking-fluentbit@sha256:2b8563a032c007bdb5f8a1cdbd093edd8505fadd21a3443a2b891e87caee7504
+      - image: index.docker.io/cloudfoundry/cf-k8s-networking-fluentbit@sha256:64d67dc076d4160c351272261d7730c08c1b906a881d1812778b6da93871d4e4
         name: fluent-bit
         resources:
           limits:

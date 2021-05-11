@@ -107,13 +107,43 @@ jobs:
           - get: cf-for-k8s-ci
           - get: cf-k8s-logging-fluent
             trigger: true
+      - task: build-labels-file
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source:
+              repository: cloudfoundry/capi
+              tag: cf-for-k8s
+          inputs:
+            - name: cf-k8s-logging-fluent
+          outputs:
+            - name: labels
+          run:
+            path: /bin/bash
+            args:
+              - -c
+              - |
+                set -euo pipefail
+
+                # Manually extract fluent-bit version from the Dockerfile
+                # See images/build/fluent-bit/generate-kbld-config.sh
+                git_ref="$(grep FLB_VERSION cf-k8s-logging-fluent/fluent-bit/Dockerfile | cut -d ' ' -f 3 | head -n 1)"
+                git_source="https://github.com/fluent/fluent-bit"
+
+                cat <<EOF > labels/oci-image-labels
+                org.opencontainers.image.revision=${git_ref}
+                org.opencontainers.image.source=${git_source}
+                EOF
       - task: build-fluent-bit-image
         file: cf-for-k8s-ci/ci/tasks/cf-k8s-networking/build-oci-image.yml
         privileged: true
         input_mapping:
           repository: cf-k8s-logging-fluent
+          image-labels-file: labels
         params:
           DOCKERFILE: fluent-bit/Dockerfile
+          LABELS_FILE: image-labels-file/oci-image-labels
         output_mapping:
           image: fluent-bit-image
       - task: prepare-fluent-bit-source-code

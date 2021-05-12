@@ -22,7 +22,7 @@ Once you are CLA'ed, we'll be able to accept your pull requests.
 
 ## Project Management Committee
 
-The cf-for-k8s is maintained by projects that are governed by the Project Management Committee (PMC). Any contribution to cf-for-k8s should be started by first engaging with the appropriate project group. You can find the full list of projects, their leads and contact information [here](https://docs.google.com/spreadsheets/d/1hg0EA3aB9wiCq8SgCU90ft4qrHvczsUjK0W_31APWxM/edit#gid=0).
+The cf-for-k8s is maintained by projects that are governed by the Project Management Committee (PMC). Any contribution to cf-for-k8s should be started by first engaging with the appropriate project group. You can find the full list of projects, their leads and contact information [here](https://www.cloudfoundry.org/projects).
 
 ## Setting up to contribute
 
@@ -73,4 +73,4 @@ In order to contribute a feature to cf-for-k8s, you'll need to go through the fo
 
 ## Have a question or feedback, reach out to us
 
-We are very active in slack channel [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) in the Cloud Foundry workspace. Please hit us up with any questions you may have or to share your experience with the cf-for-k8s community. To request a fast reponse during Pacific business hours, begin your message with `#release-integration @interrupt`
+We are very active in slack channel [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) in the Cloud Foundry workspace. Please hit us up with any questions you may have or to share your experience with the cf-for-k8s community. To request a fast reponse during Pacific business hours, begin your message with `#cf-for-k8s @interrupt`

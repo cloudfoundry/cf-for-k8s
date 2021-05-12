@@ -18,21 +18,21 @@
 
 ## High-Level Flow
 
-### Step 1: Do local development
+### Step 1: Do local development and make a component PR
 
 In the component repo (e.g. `capi-k8s-release`, `uaa`, `cf-k8s-networking`, etc. ):
 1. make changes and create a new Docker image
 1. tell your local copy of `cf-for-k8s` to use that new image by updating the image reference
-1. test that these changes integrate well (i.e. [deploy](/docs/deploy.md) and [run smoke tests](#running-smoke-tests))
-1. commit and push your changes
+1. test that these changes integrate well (i.e. [deploy](https://cf-for-k8s.io/docs/deploying/) and [run smoke tests](#running-smoke-tests))
+1. make a PR to the component repo following its contributions guidelines
 
 _(See a suggested local development workflow, [below](#suggested-component-directory-structure-and-local-development-workflow))_
 
 ### Step 2: PR those changes into CF for K8s
 
-In `cf-for-k8s` repo:
+Once the component PR has been merged, in `cf-for-k8s` repo:
 1. checkout `develop` and create a new branch
-    - If you do not have access to creating branches and believe you should, please inquire in the [#release-integration](https://cloudfoundry.slack.com/archives/C0FAEKGUQ) slack channel
+    - If you do not have access to creating branches and believe you should, please inquire in the [#cf-for-k8s](https://cloudfoundry.slack.com/archives/CH9LF6V1P) slack channel
     - Otherwise please submit changes from a fork
 1. If you are adding/updating data values (i.e. `config/values.yml`), please also add those changes to the `sample-cf-install-values.yml` file
 1. tell `vendir` about the change by updating the `ref:` in `vendir.yml` to the new commit SHA
@@ -55,7 +55,7 @@ In `cf-for-k8s` repo:
 
 ## Running Smoke tests
 
-1. [Deploy](/docs/deploy.md) your instance of cf-for-k8s.
+1. [Deploy](https://cf-for-k8s.io/docs/deploying/) your instance of cf-for-k8s.
 1. Configure the smoke test environment variables as suggested, below
 
    ```
@@ -95,8 +95,6 @@ To simplify the component development workflow, we recommend repositories organi
 │   └── build                - configuration for the build of CF-for-K8s
 │       └── kbld.yml
 ```
-
-_Note: a working example structure this way can be found at [`./example-component`](example-component)._
 
 Notes:
 - place all K8s configuration under one directory. e.g. `config/` _(so that while invoking `ytt` you always specify just that one directory.)_
@@ -152,7 +150,7 @@ These instructions assume that you are using the directory structure, above.
 
 ### Sample kbld config
 
-See [kbld docs](https://github.com/k14s/kbld/blob/master/docs/config.md) to configure your own `kbld.yml`.
+See [kbld docs](https://carvel.dev/kbld/docs/latest/config/) to configure your own `kbld.yml`.
 
 Assuming your `ytt` template takes the data value at `image.example` as the image reference...
 

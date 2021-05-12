@@ -2,7 +2,7 @@
 #@ load("/namespaces.star", "system_namespace")
 
 #@ def build_version():
-#@   return "1.9.4"
+#@   return "1.9.5"
 #@ end
 
 ---

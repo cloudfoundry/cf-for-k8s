@@ -15,11 +15,11 @@ sources:
       - --env
       - "BP_GRADLE_BUILT_MODULE=uaa"
       - --env
+      - #@ "BP_GRADLE_BUILD_ARGUMENTS=-Pversion={} --no-daemon assemble".format(data.values.version)
+      - --env
       - #@ "BP_OCI_REVISION={}".format(data.values.git_ref)
       - --env
       - #@ "BP_OCI_SOURCE={}".format(data.values.git_url)
-      - --env
-      - #@ "BP_GRADLE_BUILD_ARGUMENTS=-Pversion=" + data.values.version
 destinations:
 - imageRepo: cloudfoundry/uaa
   newImage: index.docker.io/cloudfoundry/uaa

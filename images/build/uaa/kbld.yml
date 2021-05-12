@@ -4,7 +4,7 @@ apiVersion: kbld.k14s.io/v1alpha1
 kind: Config
 minimumRequiredVersion: 0.28.0
 sources:
-- imageRepo: index.docker.io/cloudfoundry/uaa
+- imageRepo: cloudfoundry/uaa
   path: sources/uaa
   pack:
     build:
@@ -21,5 +21,5 @@ sources:
       - --env
       - #@ "BP_GRADLE_BUILD_ARGUMENTS=-Pversion=" + data.values.version
 destinations:
-- imageRepo: index.docker.io/cloudfoundry/uaa
+- imageRepo: cloudfoundry/uaa
   newImage: index.docker.io/cloudfoundry/uaa

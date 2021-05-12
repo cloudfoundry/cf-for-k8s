@@ -1,0 +1,19 @@
+#@ load("@ytt:overlay", "overlay")
+#@ load("istio-version.star", "istio_version")
+
+#@ is_deployment = overlay.subset({"kind":"Deployment"})
+#@ is_daemonset = overlay.subset({"kind":"DaemonSet"})
+#@ is_statefulset = overlay.subset({"kind":"StatefulSet"})
+#@ is_podspec = overlay.or_op(is_deployment, is_daemonset, is_statefulset)
+#@ not_istio_ns = overlay.not_op(overlay.subset({"metadata":{"namespace":"istio-system"}}))
+
+#@overlay/match by=overlay.and_op(is_podspec, not_istio_ns), expects="1+"
+---
+spec:
+  template:
+    #@overlay/match missing_ok=True
+    metadata:
+      #@overlay/match missing_ok=True
+      labels:
+        #@overlay/match missing_ok=True
+        cloudfoundry.org/istio_version: #@ istio_version()

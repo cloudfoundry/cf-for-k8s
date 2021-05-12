@@ -6,7 +6,7 @@ resources:
   source:
     owner: istio
     repository: istio
-    tag_filter: '1\.8\..*'
+    tag_filter: '1\.9\..*'
     access_token: ((cf_for_k8s_release_bot_access_token))
 
 - name: cf-for-k8s-istio-bump-branch
@@ -108,7 +108,7 @@ jobs:
             exit 1
           fi
 
-          pushd cf-for-k8s > /dev/null
+          pushd cf-for-k8s-develop > /dev/null
             git config --global user.name "cf-for-k8s-release bot"
             git config --global user.email "cf-release-integration+cf-for-k8s-release-bot@pivotal.io"
             git commit -a -m "Bump Istio to ${ISTIO_VERSION}"

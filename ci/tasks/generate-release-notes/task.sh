@@ -74,7 +74,7 @@ function append_component_line() {
     elif [[ "${component_name}" == "QuarksSecret" ]]; then
       to_hyperlink="[${to_sha}](https://github.com/cloudfoundry-incubator/quarks-secret/releases/tag/${to_sha})"
     elif [[ "${component_name}" == "UAA" ]]; then
-      to_hyperlink="[${to_sha}](https://github.com/cloudfoundry/uaa/releases/tag/${to_sha})"
+      to_hyperlink="[${to_sha}](https://github.com/cloudfoundry/uaa-k8s-release/commit/${to_sha})"
     else
       echo "ERROR: Unrecognized component name: ${component_name}"
       ex
@@ -97,7 +97,7 @@ function build_component_bump_table_content() {
   append_component_line "Metrics" "path: config/metrics/_ytt_lib/metric-proxy"
   append_component_line "Networking" "path: config/networking/_ytt_lib/cf-k8s-networking"
   append_component_line "QuarksSecret" "path: build/quarks-secret/_vendir"
-  append_component_line "UAA" "path: config/uaa/_ytt_lib/uaa"
+  append_component_line "UAA" "path: config/uaa/_ytt_lib/uaa-k8s-release"
   release_table_text+="\n"
 
 }

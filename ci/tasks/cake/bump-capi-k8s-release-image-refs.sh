@@ -12,6 +12,8 @@ CAPI_IMAGE="cloudfoundry/cloud-controller-ng@$(get_image_digest_for_resource cap
 NGINX_IMAGE="cloudfoundry/capi-nginx@$(get_image_digest_for_resource nginx-docker-image)"
 CONTROLLERS_IMAGE="cloudfoundry/cf-api-controllers@$(get_image_digest_for_resource cf-api-controllers-docker-image)"
 REGISTRY_BUDDY_IMAGE="cloudfoundry/cf-api-package-registry-buddy@$(get_image_digest_for_resource registry-buddy-docker-image)"
+BACKUP_METADATA_GENERATOR_IMAGE="cloudfoundry/cf-api-backup-metadata-generator@$(get_image_digest_for_resource backup-metadata-generator-docker-image)"
+STATSD_EXPORTER_IMAGE="cloudfoundry/statsd_exporter-cf-for-k8s@$(get_image_digest_for_resource statsd-exporter-docker-image)"
 
 function bump_image_references() {
     cat <<- EOF > "${PWD}/update-images.yml"
@@ -28,6 +30,12 @@ function bump_image_references() {
 - type: replace
   path: /images/registry_buddy
   value: ${REGISTRY_BUDDY_IMAGE}
+- type: replace
+  path: /images/backup_metadata_generator
+  value: ${BACKUP_METADATA_GENERATOR_IMAGE}
+- type: replace
+  path: /images/statsd_exporter
+  value: ${STATSD_EXPORTER_IMAGE}
 EOF
 
     pushd "capi-k8s-release"

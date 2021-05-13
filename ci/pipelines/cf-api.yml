@@ -151,6 +151,13 @@ resources:
     username: ((dockerhub_user.username))
     password: ((dockerhub_user.password))
 
+- name: statsd-exporter-docker-image
+  type: registry-image
+  source:
+    repository: cloudfoundry/statsd_exporter-cf-for-k8s
+    username: ((dockerhub_user.username))
+    password: ((dockerhub_user.password))
+
 - name: cf-for-k8s
   type: git
   source:
@@ -471,6 +478,8 @@ jobs:
       passed: [registry-buddy-docker-image]
     - get: capi-nginx
       passed: [build-nginx-docker-image]
+    - get: statsd-exporter-docker-image
+      trigger: true
     - get: cf-acceptance-tests
   - put: ready-pool
     params:
@@ -500,6 +509,7 @@ jobs:
       - name: registry-buddy-docker-image
       - name: backup-metadata-generator-docker-image
       - name: nginx-docker-image
+      - name: statsd-exporter-docker-image
       outputs:
       - name: cf-for-k8s-dirty
       run:
@@ -520,6 +530,7 @@ jobs:
             CONTROLLERS_IMAGE="cloudfoundry/cf-api-controllers@$(get_image_digest_for_resource cf-api-controllers-docker-image)"
             REGISTRY_BUDDY_IMAGE="cloudfoundry/cf-api-package-registry-buddy@$(get_image_digest_for_resource registry-buddy-docker-image)"
             BACKUP_METADATA_GENERATOR_IMAGE="cloudfoundry/cf-api-backup-metadata-generator@$(get_image_digest_for_resource backup-metadata-generator-docker-image)"
+            STATSD_EXPORTER_IMAGE="cloudfoundry/statsd_exporter-cf-for-k8s@$(get_image_digest_for_resource statsd-exporter-docker-image)"
 
             echo "Updating images..."
             echo "Updating ccng image to cloud_controller_ng digest: ${CAPI_IMAGE}"
@@ -527,6 +538,7 @@ jobs:
             echo "Updating cf-api-controllers image to capi-k8s-release digest: ${CONTROLLERS_IMAGE}"
             echo "Updating registry buddy image to capi-k8s-release digest: ${REGISTRY_BUDDY_IMAGE}"
             echo "Updating backup metadata generator image to capi-k8s-release digest: ${BACKUP_METADATA_GENERATOR_IMAGE}"
+            echo "Updating statsd exporter image to digest: ${STATSD_EXPORTER_IMAGE}"
 
             cat <<- EOF > "${PWD}/update-images.yml"
             ---
@@ -545,6 +557,9 @@ jobs:
             - type: replace
               path: /images/backup_metadata_generator
               value: ${BACKUP_METADATA_GENERATOR_IMAGE}
+            - type: replace
+              path: /images/statsd_exporter
+              value: ${STATSD_EXPORTER_IMAGE}
             EOF
 
             export CF_FOR_K8s_DIR="$PWD/cf-for-k8s"

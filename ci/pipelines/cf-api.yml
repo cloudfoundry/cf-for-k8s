@@ -715,6 +715,9 @@ jobs:
     - get: nginx-docker-image
       trigger: true
       passed: [cf-api-tests]
+    - get: statsd-exporter-docker-image
+      trigger: true
+      passed: [cf-api-tests]
     - get: backup-metadata-generator-docker-image
       passed: [cf-api-tests]
       trigger: true

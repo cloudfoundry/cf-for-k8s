@@ -83,6 +83,8 @@ resources:
     branch: main
     private_key: ((private_key.private_key))
     uri: git@github.com:cloudfoundry/capi-k8s-release.git
+    ignore_paths:
+    - version
 
 - name: capi-k8s-release-except-images
   type: git
@@ -91,7 +93,9 @@ resources:
     branch: main
     private_key: ((private_key.private_key))
     uri: git@github.com:cloudfoundry/capi-k8s-release.git
-    ignore_paths: [config/values/images.yml]
+    ignore_paths:
+    - config/values/images.yml
+    - version
 
 - name: capi-k8s-release-ci-passed
   type: git
@@ -173,6 +177,8 @@ resources:
     branch: develop
     private_key: ((private_key.private_key))
     uri: git@github.com:cloudfoundry/cf-for-k8s.git
+    paths:
+    - ci/**
 
 - name: cloud-controller-ng
   type: git

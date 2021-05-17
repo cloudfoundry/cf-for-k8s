@@ -33,6 +33,8 @@ resources:
     uri: git@github.com:cloudfoundry/cf-for-k8s
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
     branch: develop
+    ignore_paths:
+    - ci
 
 - name: cf-for-k8s-ci
   type: git
@@ -51,6 +53,8 @@ resources:
     branch: develop
     private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
     uri: git@github.com:cloudfoundry/cf-k8s-networking.git
+    ignore_paths:
+    - version
 
 - name: cf-k8s-networking-rc
   type: git
@@ -69,6 +73,7 @@ resources:
     uri: git@github.com:cloudfoundry/cf-k8s-networking.git
     ignore_paths:
     - routecontroller
+    - version
 
 - name: routecontroller
   type: git
@@ -101,9 +106,9 @@ resources:
     driver: git
     uri: git@github.com:cloudfoundry/cf-k8s-networking.git
     private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
-    branch: version
-    file: version
     git_user: "relint-ci <cf-release-integration@pivotal.io>"
+    file: version
+    intial_version: 0.6.0
 
 - name: cf-k8s-networking-release
   type: github-release

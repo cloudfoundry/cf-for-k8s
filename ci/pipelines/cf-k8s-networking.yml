@@ -105,10 +105,10 @@ resources:
   source:
     driver: git
     uri: git@github.com:cloudfoundry/cf-k8s-networking.git
+    branch: develop
     private_key: ((cf_k8s_networking_readwrite_deploy_key.private_key))
     git_user: "relint-ci <cf-release-integration@pivotal.io>"
     file: version
-    intial_version: 0.6.0
 
 - name: cf-k8s-networking-release
   type: github-release
@@ -278,7 +278,7 @@ jobs:
         INCLUDE_APPS: true
         INCLUDE_ROUTING: true
         SKIP_REGEXP:
-    
+
   ensure:
     do:
     - put: destroy-pool

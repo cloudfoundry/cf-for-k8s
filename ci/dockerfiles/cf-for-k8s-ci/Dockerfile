@@ -48,8 +48,7 @@ RUN export GO_TAR=go1.15.10.linux-amd64.tar.gz && \
     wget --tries=3 https://dl.google.com/go/${GO_TAR} && \
     tar -C /usr/local -xzf ${GO_TAR}
 
-# https://github.com/golang/go/issues/28065
-ENV CGO_ENABLED=0
+ENV CGO_ENABLED=1
 
 ENV GOPATH /go
 ENV PATH=$PATH:/go/bin:/usr/local/go/bin

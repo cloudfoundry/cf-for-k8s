@@ -28,8 +28,8 @@ directories:
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:
   - git:
-      commitTitle: 'CI: switch uaa-k8s-release resource back to main/ci-passed...'
-      sha: 6a4c75bde4b5bfdce22e06ce35a23fd58cfef711
+      commitTitle: images.yml updated by CI
+      sha: 657c77fa7793dc69ce3dd57de9062b5b7f17a0a0
     path: .
   path: config/uaa/_ytt_lib/uaa-k8s-release
 - contents:

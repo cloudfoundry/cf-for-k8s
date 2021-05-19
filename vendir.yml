@@ -40,7 +40,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/uaa-k8s-release
-      ref: 6a4c75bde4b5bfdce22e06ce35a23fd58cfef711
+      ref: 657c77fa7793dc69ce3dd57de9062b5b7f17a0a0
     includePaths:
     - config/**/*
 - path: config/kpack/_ytt_lib/kpack

@@ -10,10 +10,10 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: Update routecontroller image digest to sha256:2f221c14d685da798baaec9b7db5b0fab8cba2e11fbe228611a9d09defb29f75
-      sha: 13704358a4d81139f8bcf595cc2f07ae771df3bc
+      commitTitle: Test app connectivity on startup...
+      sha: 9726f4997c57c8cf250a345ac7e19c89dbd570a3
       tags:
-      - v0.5.0-3-g1370435
+      - v0.5.0-5-g9726f49
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

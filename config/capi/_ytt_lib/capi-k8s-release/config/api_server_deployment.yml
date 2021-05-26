@@ -101,10 +101,23 @@ spec:
             limits:
               cpu: 1500m
               memory: 1Gi
+          livenessProbe:
+            exec:
+              command:
+              #! We cannot use a http liveness probe for security concerns. See this ADR for more information:
+              #! https://github.com/cloudfoundry/capi-k8s-release/blob/main/decisions/0005-exec-curl-instead-of-http-liveness-probe-registry-buddy.md
+              - curl
+              - --silent
+              - --fail
+              - --show-error
+              - localhost:8080/healthz
+            initialDelaySeconds: 5
           volumeMounts:
           - name: tmp-packages
             mountPath: /tmp/packages
           env:
+          - name: REGISTRY_BASE_PATH
+            value: #@ data.values.kpack.registry.repository_prefix
           - name: REGISTRY_USERNAME
             valueFrom:
               secretKeyRef:

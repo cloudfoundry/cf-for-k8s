@@ -57,6 +57,8 @@ spec:
           image: #@ data.values.images.registry_buddy
           imagePullPolicy: Always
           env:
+            - name: REGISTRY_BASE_PATH
+              value: #@ data.values.kpack.registry.repository_prefix
             - name: REGISTRY_USERNAME
               valueFrom:
                 secretKeyRef:
@@ -67,6 +69,17 @@ spec:
                 secretKeyRef:
                   name: cc-package-registry-upload-secret
                   key: password
+          livenessProbe:
+            exec:
+              command:
+              #! We cannot use a http liveness probe for security concerns. See this ADR for more information:
+              #! https://github.com/cloudfoundry/capi-k8s-release/blob/main/decisions/0005-exec-curl-instead-of-http-liveness-probe-registry-buddy.md
+              - curl
+              - --silent
+              - --fail
+              - --show-error
+              - localhost:8080/healthz
+            initialDelaySeconds: 5
           resources:
             requests:
               cpu: 500m

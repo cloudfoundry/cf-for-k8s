@@ -28,8 +28,8 @@ directories:
   path: config/metrics/_ytt_lib/metric-proxy
 - contents:
   - git:
-      commitTitle: images.yml updated by CI
-      sha: 657c77fa7793dc69ce3dd57de9062b5b7f17a0a0
+      commitTitle: Migrated image build scripts from cf-for-k8s...
+      sha: e96a5beb54cc623eaff8e9cfa87caac60e2f3124
     path: .
   path: config/uaa/_ytt_lib/uaa-k8s-release
 - contents:

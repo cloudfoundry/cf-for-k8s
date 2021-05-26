@@ -10,10 +10,10 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: Test app connectivity on startup...
-      sha: 9726f4997c57c8cf250a345ac7e19c89dbd570a3
+      commitTitle: fix reference to generate-github-release...
+      sha: feef5ea1d32f69a081f6d4e92b71d9610f6e5f95
       tags:
-      - v0.5.0-5-g9726f49
+      - v0.5.0-11-gfeef5ea
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

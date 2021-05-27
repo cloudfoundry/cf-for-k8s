@@ -25,9 +25,9 @@ metadata:
 spec:
   id: "io.buildpacks.stacks.bionic"
   buildImage:
-    image: "index.docker.io/paketobuildpacks/build@sha256:cce82c07a2f2b336afc3d47724b35db8292d623b7818f5c49f6c6655e93b501b"
+    image: "index.docker.io/paketobuildpacks/build@sha256:4de964b2c96b5b40f5a1d8baed0e47a72baedd5318252e4bf2b0ef4316877c86"
   runImage:
-    image: "index.docker.io/paketobuildpacks/run@sha256:67ee42649446bd5949f484cb0be1148759a6b30c60e37d42b9ac967ebc1d6cad"
+    image: "index.docker.io/paketobuildpacks/run@sha256:4084e0709d573ae9aad05950fa06ecd0824c4f55de025aba4d1dc0a56b66f32b"
 
 ---
 apiVersion: kpack.io/v1alpha1

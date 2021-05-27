@@ -3,6 +3,7 @@ FROM ubuntu:xenial
 ENV PACK_VERSION="v0.18.1"
 ENV KBLD_VERSION="v0.29.0"
 ENV YTT_VERSION="v0.32.0"
+ENV VENDIR_VERSION="v0.19.0"
 
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
@@ -26,6 +27,10 @@ RUN chmod +x /usr/local/bin/kbld
 RUN curl -LO "https://github.com/vmware-tanzu/carvel-ytt/releases/download/${YTT_VERSION}/ytt-linux-amd64"
 RUN mv ytt-linux-amd64 /usr/local/bin/ytt
 RUN chmod +x /usr/local/bin/ytt
+
+RUN curl -LO "https://github.com/vmware-tanzu/carvel-vendir/releases/download/${VENDIR_VERSION}/vendir-linux-amd64"
+RUN mv vendir-linux-amd64 /usr/local/bin/vendir
+RUN chmod +x /usr/local/bin/vendir
 
 ADD install-docker.sh /tmp/install-docker.sh
 RUN /tmp/install-docker.sh

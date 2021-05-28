@@ -42,7 +42,7 @@ resources:
   source:
     interval: 2m
     start: 7:00 AM
-    stop: 5:00 PM
+    stop: 6:00 PM
     days: [Monday, Tuesday, Wednesday, Thursday, Friday]
     location: America/Los_Angeles
 

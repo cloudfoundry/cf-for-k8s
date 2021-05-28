@@ -282,33 +282,34 @@ jobs:
       env_name_file: building-pool/name
       delete_on_failure: true
       var_files: [ tf-vars/input.tfvars ]
+    on_success:
+      do:
+      - task: write-metadata-to-lock-file
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: cloudfoundry/cf-deployment-concourse-tasks}
+          inputs:
+          - name: building-pool
+          - name: terraform
+          outputs:
+          - name: ready-cluster
+          run:
+            path: /bin/bash
+            args:
+            - -ec
+            - |
+              cp -v building-pool/name ready-cluster/name
+              cp -v terraform/metadata ready-cluster/metadata
 
-  - task: write-metadata-to-lock-file
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source: {repository: cloudfoundry/cf-deployment-concourse-tasks}
-      inputs:
-      - name: building-pool
-      - name: terraform
-      outputs:
-      - name: ready-cluster
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          cp -v building-pool/name ready-cluster/name
-          cp -v terraform/metadata ready-cluster/metadata
-
-  - put: ready-pool
-    params:
-      add: ready-cluster
-
-  - put: building-pool
-    params:
-      remove: building-pool
+      - put: ready-pool
+        params:
+          add: ready-cluster
+    ensure:
+      put: building-pool
+      params:
+        remove: building-pool
 
 - name: destroy-cluster
   plan:

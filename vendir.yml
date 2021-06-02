@@ -18,7 +18,7 @@ directories:
   - path: .
     git:
       url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: feef5ea1d32f69a081f6d4e92b71d9610f6e5f95
+      ref: 0fb6b575d0206e0fb7d59f46368673a6c4fe34bb
     includePaths:
     - config/**/*
 - path: config/logging/_ytt_lib/cf-k8s-logging

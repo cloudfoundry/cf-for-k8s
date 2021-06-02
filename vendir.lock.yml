@@ -10,10 +10,10 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: fix reference to generate-github-release...
-      sha: feef5ea1d32f69a081f6d4e92b71d9610f6e5f95
+      commitTitle: 'Merge pull request #77 from cloudfoundry/kbld-move...'
+      sha: 0fb6b575d0206e0fb7d59f46368673a6c4fe34bb
       tags:
-      - v0.5.0-11-gfeef5ea
+      - v0.5.0-13-g0fb6b57
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

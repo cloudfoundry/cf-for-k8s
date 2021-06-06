@@ -1,121 +1,167 @@
 ---
-apiVersion: vendir.k14s.io/v1alpha1
-kind: Config
+'# $*.' 
+'# $*. 
+'apiVersion: 
+vendir.k14s.io/v1alpha1
+kind: 
+Config
 minimumRequiredVersion: 0.11.0
 directories:
-- path: config/capi/_ytt_lib/capi-k8s-release
+- path: 
+config/capi/_ytt_lib/capi-k8s-release
   contents:
   - path: .
     git:
-      url: https://github.com/cloudfoundry/capi-k8s-release
-      ref: 3085c0372c39e4ce7d51ab352b837ecb97bc5e5c
+      url: 
+      https://github.com/cloudfoundry/capi-k8s-release
+      ref: 
+      3085c0372c39e4ce7d51ab352b837ecb97bc5e5c
     includePaths:
     - config/**/*
     - templates/**/*
     - values/**/*
-- path: config/networking/_ytt_lib/cf-k8s-networking
+- path: 
+config/networking/_ytt_lib/cf-k8s-networking
   contents:
   - path: .
     git:
-      url: https://github.com/cloudfoundry/cf-k8s-networking
-      ref: 0fb6b575d0206e0fb7d59f46368673a6c4fe34bb
+      url:
+      https://github.com/cloudfoundry/cf-k8s-networking
+      ref: 
+      0fb6b575d0206e0fb7d59f46368673a6c4fe34bb
     includePaths:
     - config/**/*
-- path: config/logging/_ytt_lib/cf-k8s-logging
+- path: 
+config/logging/_ytt_lib/cf-k8s-logging
   contents:
   - path: .
     githubRelease:
-      slug: cloudfoundry/cf-k8s-logging
+      slug: 
+      cloudfoundry/cf-k8s-logging
       tag: 0.7.0
-      disableAutoChecksumValidation: true
-- path: config/metrics/_ytt_lib/metric-proxy
+      disableAutoChecksumValidation: 'true
+- path: 
+config/metrics/_ytt_lib/metric-proxy
   contents:
   - path: .
     githubRelease:
-      slug: cloudfoundry/metric-proxy
+      slug: 
+      cloudfoundry/metric-proxy
       tag: 1.3.0
-      disableAutoChecksumValidation: true
-- path: config/uaa/_ytt_lib/uaa-k8s-release
+      disableAutoChecksumValidation: 'true
+- path: 
+config/uaa/_ytt_lib/uaa-k8s-release
   contents:
   - path: .
     git:
-      url: https://github.com/cloudfoundry/uaa-k8s-release
-      ref: ef6abbf8bc712f7a8be31f237ff354dd46c225d0
+      url: 
+      https://github.com/cloudfoundry/uaa-k8s-release
+      ref: 
+      ef6abbf8bc712f7a8be31f237ff354dd46c225d0
     includePaths:
     - config/**/*
-- path: config/kpack/_ytt_lib/kpack
+- path: 
+config/kpack/_ytt_lib/kpack
   contents:
   - path: .
     githubRelease:
-      slug: pivotal/kpack
-      tag: v0.2.2
-      disableAutoChecksumValidation: true
+      slug: 
+      pivotal/kpack
+      tag: 
+      v0.2.2
+      disableAutoChecksumValidation: 'true
     includePaths:
     - release-*.yaml
-# the components in this section below are handled by their corresponding build scripts
-# the manual param tells vendir to not override/touch the contents of these config/_ytt_lib/<eirini|minio|postgres> directories
-- path: config/eirini/_ytt_lib
+ the components in this section below are handled by their corresponding build scripts
+ the manual param tells vendir to not override/touch the contents of these config/_ytt_lib/<eirini|minio|postgres> directories
+- path: 
+config/eirini/_ytt_lib
   contents:
-  - path: eirini
-    manual: {}
+  - path:
+  eirini
+    manual:
+    {}
 
-- path: config/minio/_ytt_lib
+- path: 
+config/minio/_ytt_lib
   contents:
-  - path: minio
-    manual: {}
+  - path:
+  minio
+    manual:
+    {}
 
-- path: config/postgres/_ytt_lib
+- path: 
+config/postgres/_ytt_lib
   contents:
-  - path: postgres
-    manual: {}
+  - path: 
+  postgres
+    manual: 
+    {}
 
-- path: config/quarks-secret/_ytt_lib
+- path:
+config/quarks-secret/_ytt_lib
   contents:
-    - path: quarks-secret
-      manual: {}
+    - path: 
+    quarks-secret
+      manual: 
+      {}
 
-# When adding a helm chart to our set of components:
-# 1. Find the chart you need from https://hub.helm.sh/charts/stable
-# 2. Note the latest (or desired) version from the "Chart Versions" section on the right.
-# 3. Navigate to the corresponding directory of https://github.com/helm/charts/tree/master/stable or related repo
-# 4. Look at the history or blame log of the Chart.yaml file to find when the version was bumped to the version you found earlier.
-# 5. The SHA of the commit that bumped the version will be the SHA you use as the 'ref' of the git section below.
+ When adding a helm chart to our set of components:
+ 1. Find the chart you need from https://hub.helm.sh/charts/stable
+ 2. Note the latest (or desired) version from the "Chart Versions" section on the right.
+ 3. Navigate to the corresponding directory of https://github.com/helm/charts/tree/master/stable or related repo
+ 4. Look at the history or blame log of the Chart.yaml file to find when the version was bumped to the version you found earlier.
+ 5. The SHA of the commit that bumped the version will be the SHA you use as the 'ref' of the git section below.
 - path: build/minio/_vendir
   contents:
   - path: .
     git:
-      url: https://github.com/helm/charts
-      ref: 921eb8a969fb9d7b7b7d13904f740c76748ec2c9 # version: 5.0.30
+      url:
+      https://github.com/helm/charts
+      ref: 
+      921eb8a969fb9d7b7b7d13904f740c76748ec2c9 
+      version:
+      5.0.30
     includePaths:
     - stable/minio/**/*
 
-- path: build/eirini/_vendir
+- path:
+build/eirini/_vendir
   contents:
   - path: .
     githubRelease:
-      slug: cloudfoundry-incubator/eirini-release
-      tag: v4.0.0
-      disableAutoChecksumValidation: true
+      slug:
+      cloudfoundry-incubator/eirini-release
+      tag: 
+      v4.0.0
+      disableAutoChecksumValidation: 'true
       unpackArchive:
-        path: eirini.tgz
+        path:
+        eirini.tgz
     excludePaths:
     - eirini/**/controller-*.yml
     - eirini/**/*-crd.yml
 
-- path: build/postgres/_vendir
+- path:
+build/postgres/_vendir
   contents:
   - path: .
     git:
-      url: https://github.com/bitnami/charts
-      ref: f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe # version: 8.10.6
+      url: 
+      https://github.com/bitnami/charts
+      ref: 
+      f9cb0102f1e03d9ee7f09dbb65e9d7cdc25f84fe # version: 8.10.6
     includePaths:
     - bitnami/postgresql/**/*
 
-- path: build/quarks-secret/_vendir
+- path: 
+build/quarks-secret/_vendir
   contents:
   - path: .
     git:
-      url: https://github.com/cloudfoundry-incubator/quarks-secret
-      ref: v1.0.758
+      url:
+      https://github.com/cloudfoundry-incubator/quarks-secret
+      ref: 
+      v1.0.758
     includePaths:
     - deploy/helm/quarks-secret/**/*

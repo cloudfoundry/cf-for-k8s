@@ -1,0 +1,3 @@
+# NOTE: There is no reference in the templates for this image. This file is a token to trigger the kbld process.
+---
+image: cloudfoundry/statsd_exporter-cf-for-k8s

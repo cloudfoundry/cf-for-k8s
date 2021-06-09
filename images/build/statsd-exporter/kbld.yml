@@ -5,7 +5,7 @@ kind: Config
 minimumRequiredVersion: 0.28.0
 sources:
 - imageRepo: cloudfoundry/statsd_exporter-cf-for-k8s
-  path: sources/statsd_exporter
+  path: sources
   pack:
     build:
       builder: paketobuildpacks/builder:tiny
@@ -20,3 +20,5 @@ sources:
 destinations:
 - imageRepo: cloudfoundry/statsd_exporter-cf-for-k8s
   newImage: index.docker.io/cloudfoundry/statsd_exporter-cf-for-k8s
+  tags:
+  - latest

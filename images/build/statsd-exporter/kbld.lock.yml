@@ -1,0 +1,7 @@
+apiVersion: kbld.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.30.0
+overrides:
+- image: cloudfoundry/statsd_exporter-cf-for-k8s
+  newImage: index.docker.io/cloudfoundry/statsd_exporter-cf-for-k8s@sha256:a5d55aeb278f3665551dfd841f91cfd7e6be5cf5031190028b36a9edd650ed70
+  preresolved: true

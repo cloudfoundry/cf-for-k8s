@@ -7,4 +7,5 @@ tmp
 .idea
 *~
 images/sources/
+images/build/statsd-exporter/sources/
 tests/smoke/smoke.test

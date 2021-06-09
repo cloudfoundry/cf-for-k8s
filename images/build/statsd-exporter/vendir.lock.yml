@@ -1,0 +1,11 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: 'Changelog for #361 & release 0.20.0...'
+      sha: fbcadbf71b2bd3732596d7018f3692c030f1af6f
+      tags:
+      - v0.20.0
+    path: .
+  path: sources
+kind: LockConfig

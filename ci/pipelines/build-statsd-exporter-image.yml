@@ -1,4 +1,13 @@
 resources:
+- name: cf-for-k8s-images
+  type: git
+  icon: github
+  source:
+    branch: main
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+    - images/**
 - name: cf-for-k8s-ci
   type: git
   icon: github
@@ -19,49 +28,16 @@ resources:
   source:
     uri: git@github.com:cloudfoundry/cf-k8s-prometheus
     private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
-- name: statsd_exporter-cf-for-k8s-registry-image
-  type: registry-image
-  source:
-    repository: cloudfoundry/statsd_exporter-cf-for-k8s
-    username: ((dockerhub.username))
-    password: ((dockerhub.password))
 jobs:
 - name: build-statsd_exporter-cf-for-k8s-image
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
+    - get: cf-for-k8s-images
     - get: statsd_exporter
       trigger: true
     - get: cf-k8s-prometheus
-  - task: generate-image-labels-file
-    file: cf-for-k8s-ci/ci/tasks/generate-oci-image-labels/task.yml
-    input_mapping:
-      source-repo: statsd_exporter
-    output_mapping:
-      labels: statsd-exporter-labels
-  - task: build-statsd_exporter-cf-for-k8s-image
+  # this tasks build and tags statsd image with latest that later gets picked up by capi and uaa
+  - task: build-statsd-exporter-image
+    file: cf-for-k8s-ci/ci/tasks/build-statsd-exporter-image/task.yml
     privileged: true
-    input_mapping:
-      dockerfile: cf-k8s-prometheus
-      context: statsd_exporter
-    config:
-      platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          repository: vito/oci-build-task
-      inputs:
-      - name: dockerfile
-      - name: context
-      outputs:
-      - name: image
-      caches:
-      - path: cache
-      run:
-        path: build
-      params:
-        DOCKERFILE: dockerfile/exporters/statsd_exporter/Dockerfile
-        CONTEXT: context/.
-  - put: statsd_exporter-cf-for-k8s-registry-image
-    params:
-      image: image/image.tar

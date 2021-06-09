@@ -8,7 +8,7 @@ function generate_kbld_config() {
   local kbld_config_path="${1}"
 
   local source_path
-  source_path="${SCRIPT_DIR}/../../sources/statsd_exporter"
+  source_path="${SCRIPT_DIR}/sources"
 
   pushd "${source_path}" > /dev/null
     local git_ref

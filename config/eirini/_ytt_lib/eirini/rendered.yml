@@ -251,6 +251,238 @@ spec:
 ---
 apiVersion: v1
 data:
+  controller.yml: |
+    # application_service_account is name of the service account used by
+    # running LRPs and tasks. It must match the service account name in
+    # workloads/app-rbac.yml
+    application_service_account: eirini
+
+    # registry_secret_name is the name of the secret containing the docker
+    # credentials to pull LRP images
+    registry_secret_name: app-registry-credentials
+
+    # allow_run_image_as_root will allow containers to run as root when set
+    # to true.  As kubernetes does not use user namespaces, this will be the
+    # same root user as on the kubernetes node, and so is a security concern.
+    # It should be generally left as false.
+    allow_run_image_as_root: false
+
+    # unsafe_allow_automount_service_account_token when set to true causes
+    # Kubernetes to mount the service account token in the LRP and task
+    # containers. This gives the code running there access to the Kubernetes
+    # API with the privileges of the application service account.
+    #
+    # This should generally be left as the default false unless there is a
+    # good reason and the implications are understood. It is required when
+    # running cf-for-k8s in a kind cluster, for example.
+    unsafe_allow_automount_service_account_token: false
+
+    # prometheus_port is the port used to expose Prometheus metrics. When set
+    # to 0, the metrics endpoint is disabled.
+    prometheus_port: 8080
+kind: ConfigMap
+metadata:
+  name: controller
+  namespace: cf-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kbld.k14s.io/images: |
+      null
+  name: eirini-controller
+  namespace: cf-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: eirini-controller
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "8080"
+        prometheus.io/scrape: "true"
+      labels:
+        name: eirini-controller
+    spec:
+      containers:
+      - args:
+        - --config
+        - /etc/eirini/config/controller.yml
+        image: index.docker.io/eirini/eirini-controller@sha256:657baa2f7e515055ed201087ec512d5ce78e6343c801d82c487497e99b364fe4
+        imagePullPolicy: IfNotPresent
+        name: eirini-controller
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 15m
+            memory: 15Mi
+        volumeMounts:
+        - mountPath: /etc/eirini/config
+          name: config-map
+      dnsPolicy: ClusterFirst
+      securityContext:
+        runAsNonRoot: true
+      serviceAccountName: eirini-controller
+      volumes:
+      - configMap:
+          name: controller
+        name: config-map
+---
+apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
+    seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
+  name: eirini-controller
+spec:
+  allowPrivilegeEscalation: false
+  fsGroup:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  hostIPC: false
+  hostNetwork: false
+  hostPID: false
+  privileged: false
+  readOnlyRootFilesystem: false
+  requiredDropCapabilities:
+  - ALL
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    ranges:
+    - max: 65535
+      min: 1
+    rule: MustRunAs
+  volumes:
+  - configMap
+  - secret
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: eirini-controller
+  namespace: cf-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: eirini-controller-cluster-role
+rules:
+- apiGroups:
+  - eirini.cloudfoundry.org
+  resources:
+  - lrps
+  - tasks
+  verbs:
+  - watch
+  - list
+  - get
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - get
+  - watch
+  - list
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: eirini-controller-cluster-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: eirini-controller-cluster-role
+subjects:
+- kind: ServiceAccount
+  name: eirini-controller
+  namespace: cf-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: eirini-controller-role
+  namespace: cf-system
+rules:
+- apiGroups:
+  - policy
+  resourceNames:
+  - eirini-controller
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - create
+  - update
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - create
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: eirini-controller-rolebinding
+  namespace: cf-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: eirini-controller-role
+subjects:
+- kind: ServiceAccount
+  name: eirini-controller
+  namespace: cf-system
+---
+apiVersion: v1
+data:
   instance-index-env-injector.yml: |
     # service_port is the port exposed by the instance index env injector
     # webhook Service.
@@ -423,6 +655,180 @@ webhooks:
   sideEffects: None
   timeoutSeconds: 10
 ---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: lrps.eirini.cloudfoundry.org
+spec:
+  group: eirini.cloudfoundry.org
+  names:
+    kind: LRP
+    plural: lrps
+    shortNames:
+    - lrp
+    singular: lrp
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              GUID:
+                type: string
+              appGUID:
+                type: string
+              appName:
+                type: string
+              appRoutes:
+                items:
+                  properties:
+                    hostname:
+                      type: string
+                    port:
+                      format: in32
+                      type: integer
+                  type: object
+                type: array
+              command:
+                items:
+                  type: string
+                type: array
+              cpuWeight:
+                format: uint8
+                type: integer
+              diskMB:
+                format: int64
+                minimum: 1
+                type: integer
+              env:
+                additionalProperties:
+                  type: string
+                type: object
+              health:
+                properties:
+                  endpoint:
+                    type: string
+                  port:
+                    format: int32
+                    type: integer
+                  timeoutMs:
+                    format: uint8
+                    type: integer
+                  type:
+                    type: string
+                type: object
+              image:
+                type: string
+              instances:
+                type: integer
+              lastUpdated:
+                type: string
+              memoryMB:
+                format: int64
+                type: integer
+              orgGUID:
+                type: string
+              orgName:
+                type: string
+              ports:
+                items:
+                  format: int32
+                  type: integer
+                type: array
+              privateRegistry:
+                properties:
+                  password:
+                    type: string
+                  username:
+                    type: string
+                type: object
+              processType:
+                type: string
+              sidecars:
+                items:
+                  properties:
+                    command:
+                      items:
+                        type: string
+                      type: array
+                    env:
+                      additionalProperties:
+                        type: string
+                      type: object
+                    memoryMB:
+                      format: int64
+                      type: integer
+                    name:
+                      type: string
+                  required:
+                  - name
+                  - command
+                  type: object
+                type: array
+              spaceGUID:
+                type: string
+              spaceName:
+                type: string
+              userDefinedAnnotations:
+                additionalProperties:
+                  type: string
+                type: object
+              version:
+                type: string
+              volumeMounts:
+                items:
+                  properties:
+                    claimName:
+                      type: string
+                    mountPath:
+                      type: string
+                  type: object
+                type: array
+            required:
+            - diskMB
+            type: object
+          status:
+            properties:
+              instances:
+                items:
+                  properties:
+                    crashCount:
+                      format: uint64
+                      type: integer
+                    crashTimestamp:
+                      format: uint64
+                      type: integer
+                    exitReason:
+                      type: string
+                    exitStatus:
+                      format: uint32
+                      type: integer
+                    index:
+                      format: uint32
+                      type: integer
+                    since:
+                      format: uint64
+                      type: integer
+                    state:
+                      default: Pending
+                      enum:
+                      - Pending
+                      - Running
+                      - Failed
+                      type: string
+                  type: object
+                type: array
+              replicas:
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -575,6 +981,83 @@ subjects:
 - kind: ServiceAccount
   name: migration
   namespace: cf-system
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: tasks.eirini.cloudfoundry.org
+spec:
+  group: eirini.cloudfoundry.org
+  names:
+    kind: Task
+    plural: tasks
+    shortNames:
+    - t
+    singular: task
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            properties:
+              appGuid:
+                type: string
+              appName:
+                type: string
+              command:
+                items:
+                  type: string
+                type: array
+              completionCallback:
+                type: string
+              cpuWeight:
+                format: uint8
+                type: integer
+              diskMB:
+                format: int64
+                type: integer
+              env:
+                additionalProperties:
+                  type: string
+                type: object
+              guid:
+                type: string
+              image:
+                type: string
+              memoryMB:
+                format: int64
+                type: integer
+              name:
+                type: string
+              orgGuid:
+                type: string
+              orgName:
+                type: string
+              privateRegistry:
+                properties:
+                  password:
+                    type: string
+                  server:
+                    type: string
+                  username:
+                    type: string
+                type: object
+              spaceGuid:
+                type: string
+              spaceName:
+                type: string
+            required:
+            - guid
+            - image
+            - command
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
 ---
 apiVersion: v1
 data:
@@ -1120,6 +1603,75 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: api
+  namespace: cf-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: eirini-controller-namespaced-role
+  namespace: cf-workloads
+rules:
+- apiGroups:
+  - eirini.cloudfoundry.org
+  resources:
+  - lrps/status
+  verbs:
+  - update
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - create
+  - update
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - create
+  - update
+- apiGroups:
+  - policy
+  resources:
+  - poddisruptionbudgets
+  verbs:
+  - create
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  verbs:
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - patch
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: eirini-controller-namespaced-rolebinding
+  namespace: cf-workloads
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: eirini-controller-namespaced-role
+subjects:
+- kind: ServiceAccount
+  name: eirini-controller
   namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1

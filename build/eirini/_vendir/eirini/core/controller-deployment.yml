@@ -1,0 +1,45 @@
+---
+# Source: eirini/templates/core/controller-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eirini-controller
+  namespace: cf-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: eirini-controller
+  template:
+    metadata:
+      labels:
+        name: eirini-controller
+      annotations:
+        
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        
+    spec:
+      dnsPolicy: ClusterFirst
+      serviceAccountName: eirini-controller
+      securityContext:
+        runAsNonRoot: true
+      containers:
+      - name: eirini-controller
+        image: eirini/eirini-controller@sha256:657baa2f7e515055ed201087ec512d5ce78e6343c801d82c487497e99b364fe4
+        args: [ "--config", "/etc/eirini/config/controller.yml" ]
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 15m
+            memory: 15Mi
+          limits:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: config-map
+          mountPath: /etc/eirini/config
+      volumes:
+        - name: config-map
+          configMap:
+            name: controller

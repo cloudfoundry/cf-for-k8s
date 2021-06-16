@@ -28,7 +28,7 @@ variable "google_service_account_key" {
 
 variable "location" {
   type = string
-  default = "westus"
+  default = "West US"
 }
 
 variable "env_name" {

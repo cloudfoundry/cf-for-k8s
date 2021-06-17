@@ -34,7 +34,7 @@ directories:
   path: config/uaa/_ytt_lib/uaa-k8s-release
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/pivotal/kpack/releases/39468815
+      url: https://api.github.com/repos/pivotal/kpack/releases/44756915
     path: .
   path: config/kpack/_ytt_lib/kpack
 - contents:

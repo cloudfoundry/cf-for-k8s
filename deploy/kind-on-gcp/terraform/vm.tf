@@ -94,7 +94,8 @@ EOF
   jq --version
 
   echo "Installing kind..."
-  retry 5 curl -Lo ./kind "https://kind.sigs.k8s.io/dl/v0.9.0/kind-linux-amd64"
+  KIND_VERSION=$(curl --silent https://api.github.com/repos/kubernetes-sigs/kind/releases/latest | jq -r .tag_name)
+  retry 5 curl -Lo ./kind "https://github.com/kubernetes-sigs/kind/releases/download/$KIND_VERSION/kind-linux-amd64"
   chmod +x kind
   kind --version
 

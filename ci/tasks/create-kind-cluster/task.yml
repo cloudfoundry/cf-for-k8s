@@ -11,6 +11,8 @@ inputs:
 - name: cf-for-k8s
   # Used as the task file source
 - name: cf-for-k8s-ci
+  # Used to set cluster version ranges
+- name: cf-for-k8s-cluster-versions
 - name: terraform
 
 params:

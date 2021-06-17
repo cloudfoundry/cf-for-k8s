@@ -74,6 +74,16 @@ resources:
     paths:
       - ci/**
 
+- name: cf-for-k8s-cluster-versions
+  type: git
+  icon: github
+  source:
+    branch: develop
+    uri: git@github.com:cloudfoundry/cf-for-k8s
+    private_key: ((cf_for_k8s_readonly_deploy_key.private_key))
+    paths:
+      - supported_k8s_versions.yml
+
 - name: cf-acceptance-tests
   type: git
   icon: github
@@ -1022,6 +1032,7 @@ jobs:
       - run-unit-tests-on-pr
       - test-vendir-sync-on-pr
     - get: cf-for-k8s-ci
+    - get: cf-for-k8s-cluster-versions
     - get: cf-for-k8s-kind-gcp-terraform-templates
     - get: runtime-ci
 
@@ -1119,6 +1130,7 @@ jobs:
       - run-unit-tests-on-pr
       - test-vendir-sync-on-pr
     - get: cf-for-k8s-ci
+    - get: cf-for-k8s-cluster-versions
     - get: cf-for-k8s-kind-gcp-terraform-templates
     - get: runtime-ci
 
@@ -1245,6 +1257,7 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
+    - get: cf-for-k8s-cluster-versions
     - get: cf-for-k8s-develop
       passed:
       - #@ "{}-run-unit-tests".format(release.name)
@@ -1329,6 +1342,7 @@ jobs:
   plan:
   - in_parallel:
     - get: cf-for-k8s-ci
+    - get: cf-for-k8s-cluster-versions
     - get: cf-for-k8s-develop
       passed:
       - #@ "{}-run-unit-tests".format(release.name)

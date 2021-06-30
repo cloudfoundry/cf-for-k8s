@@ -1302,20 +1302,20 @@ Footer
       font-weight: 300;
       position: relative;
       font-size: 20px; }
-  .sidebar li.active[class*="depth-"] a {
+  .sidebar li[class*="depth-"].active a {
     color: #2977BC; }
-    .sidebar li.active[class*="depth-"] a ~ ul a {
+    .sidebar li[class*="depth-"].active a ~ ul a {
       color: #fff; }
   .sidebar li[class*="depth-"]:not(.depth-0) {
     margin-left: 15px;
     font-size: 16px; }
     .sidebar li[class*="depth-"]:not(.depth-0) a {
       padding: .25rem 1rem; }
-    .sidebar li.parent[class*="depth-"]:not(.depth-0) {
+    .sidebar li[class*="depth-"]:not(.depth-0).parent {
       background: 0 0.75rem url("/images/list-item.svg") no-repeat; }
-      .sidebar li.parent[class*="depth-"]:not(.depth-0) > a {
+      .sidebar li[class*="depth-"]:not(.depth-0).parent > a {
         color: #242960; }
-    .sidebar li.active[class*="depth-"]:not(.depth-0) > a {
+    .sidebar li[class*="depth-"]:not(.depth-0).active > a {
       color: #2977BC; }
 
 .docs {

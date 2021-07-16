@@ -5,8 +5,9 @@
 #@ not_minio_secret = overlay.not_op(overlay.subset({"kind":"Secret", "metadata":{"name": "cf-blobstore-minio"}}))
 #@ not_kpack_webhook_certs = overlay.not_op(overlay.subset({"kind":"Secret", "metadata":{"name": "webhook-certs"}}))
 #@ not_kpack_configmap = overlay.not_op(overlay.subset({"kind":"ConfigMap", "metadata":{"namespace": "kpack"}}))
+#@ not_istio_sidecar_configmap = overlay.not_op(overlay.subset({"kind":"ConfigMap", "metadata":{"name": "istio-sidecar-injector"}}))
 #@ configMap_and_secret_matcher = overlay.or_op(overlay.subset({"kind":"ConfigMap"}), overlay.subset({"kind":"Secret"}))
-#@overlay/match by=overlay.and_op(configMap_and_secret_matcher, not_eirini_app_registry_secret, not_postgres_creds, not_minio_secret, not_kpack_webhook_certs, not_kpack_configmap), expects="1+"
+#@overlay/match by=overlay.and_op(configMap_and_secret_matcher, not_eirini_app_registry_secret, not_postgres_creds, not_minio_secret, not_kpack_webhook_certs, not_kpack_configmap, not_istio_sidecar_configmap), expects="1+"
 #@overlay/match-child-defaults missing_ok=True
 ---
 metadata:

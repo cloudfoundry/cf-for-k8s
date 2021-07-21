@@ -29,7 +29,6 @@ cf-for-k8s/hack/generate-values.sh -d ${DNS_DOMAIN} -g gcp-service-account.json 
 cat <<EOT >> cf-install-values/cf-install-values.yml
 enable_automount_service_account_token: true
 remove_resource_requirements: true
-use_first_party_jwt_tokens: true
 
 EOT
 

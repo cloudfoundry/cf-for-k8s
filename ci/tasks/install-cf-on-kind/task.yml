@@ -17,6 +17,7 @@ outputs:
 params:
   GCP_KEY:
   GCP_PROJECT_NAME:
+  VERSION_SELECTOR:
 
 run:
   path: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.sh

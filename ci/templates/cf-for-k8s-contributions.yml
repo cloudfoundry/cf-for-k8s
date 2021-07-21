@@ -1078,6 +1078,7 @@ jobs:
         params:
           GCP_KEY: ((ci_k8s_gcp_service_account_json))
           GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          VERSION_SELECTOR: newest_version
 
       - task: run-smoke-tests
         file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
@@ -1176,6 +1177,7 @@ jobs:
         params:
           GCP_KEY: ((ci_k8s_gcp_service_account_json))
           GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          VERSION_SELECTOR: oldest_version
 
       - task: run-smoke-tests
         file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
@@ -1317,6 +1319,7 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: oldest_version
 
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
@@ -1402,6 +1405,7 @@ jobs:
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        VERSION_SELECTOR: newest_version
 
     - task: run-smoke-tests
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml

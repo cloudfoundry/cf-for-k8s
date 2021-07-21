@@ -5,12 +5,30 @@ source cf-for-k8s-ci/ci/helpers/auth-to-gcp.sh
 
 echo "Generating install values..."
 cf-for-k8s/hack/generate-values.sh -d vcap.me -g gcp-service-account.json > cf-install-values/cf-install-values.yml
+
+# If VERSION_SELECTOR not passed, will hit default case below.
+K8S_MINOR_VERSION=$(yq -r ".${VERSION_SELECTOR}" cf-for-k8s-cluster-versions/supported_k8s_versions.yml)
+# heredocs in case statements require no indentation (or tab indentation if used with <<-EOT)
+case $K8S_MINOR_VERSION in
+  1.18)
+cat <<EOT >> cf-install-values/cf-install-values.yml
+use_first_party_jwt_tokens: true
+EOT
+    ;;
+  1.19)
+cat <<EOT >> cf-install-values/cf-install-values.yml
+use_first_party_jwt_tokens: true
+EOT
+    ;;
+  *)
+    ;;
+esac
+
 cat <<EOT >> cf-install-values/cf-install-values.yml
 add_metrics_server_components: true
 enable_automount_service_account_token: true
 metrics_server_prefer_internal_kubelet_address: true
 remove_resource_requirements: true
-use_first_party_jwt_tokens: true
 
 load_balancer:
   enable: false

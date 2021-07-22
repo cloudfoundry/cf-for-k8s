@@ -284,6 +284,9 @@ load_balancer:
   enable: false
 metrics_server_prefer_internal_kubelet_address: true
 remove_resource_requirements: true
+EOF
+</code></pre><p>If you are using Kubernetes cluster versions 1.18 or 1.19, include this additional value in your install values file:</p>
+<pre><code>$ cat &lt;&lt; EOF &gt;&gt; ${TMP_DIR}/cf-values.yml
 use_first_party_jwt_tokens: true
 EOF
 </code></pre><p>NOTES:</p>
@@ -324,7 +327,7 @@ $ cf push test-app
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v4.1.0">v4.1.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
 </div>
 
       </div>

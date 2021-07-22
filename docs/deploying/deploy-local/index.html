@@ -371,10 +371,13 @@ configure DNS for the domain.</p>
 </span><span class="w"></span><span class="nt">enable_automount_service_account_token</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span><span class="w"></span><span class="nt">metrics_server_prefer_internal_kubelet_address</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span><span class="w"></span><span class="nt">remove_resource_requirements</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w"></span><span class="nt">use_first_party_jwt_tokens</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span><span class="w">
 </span><span class="w"></span><span class="nt">load_balancer</span><span class="p">:</span><span class="w">
 </span><span class="w">  </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></code></pre></div><ul>
+<li>If you are using Kubernetes cluster versions 1.18 or 1.19, include this additional value in your install values file:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">use_first_party_jwt_tokens</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span></code></pre></div></li>
 <li>
 <p>Once the <code>kapp deploy</code> succeeds, you should be able to run <code>cf api api.vcap.me --skip-ssl-validation</code>, etc</p>
@@ -429,7 +432,10 @@ configure DNS for the domain.</p>
 </ul>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">remove_resource_requirements</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span><span class="w"></span><span class="nt">enable_automount_service_account_token</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w"></span><span class="nt">use_first_party_jwt_tokens</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></code></pre></div><ul>
+<li>If you are using Kubernetes cluster versions 1.18 or 1.19, include this additional value in your install values file:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">use_first_party_jwt_tokens</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span></code></pre></div></li>
 <li>
 <p>You will be able to target your CF CLI to point to the new CF instance</p>
@@ -448,7 +454,7 @@ docker ps
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v4.1.0">v4.1.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
 </div>
 
       </div>

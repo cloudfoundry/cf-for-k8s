@@ -11,11 +11,13 @@ K8S_MINOR_VERSION=$(yq -r ".${VERSION_SELECTOR}" cf-for-k8s-cluster-versions/sup
 # heredocs in case statements require no indentation (or tab indentation if used with <<-EOT)
 case $K8S_MINOR_VERSION in
   1.18)
+echo "*** Kubernetes version $K8S_MINOR_VERSION - applying first party jwt tokens. ***"
 cat <<EOT >> cf-install-values/cf-install-values.yml
 use_first_party_jwt_tokens: true
 EOT
     ;;
   1.19)
+echo "*** Kubernetes version $K8S_MINOR_VERSION - applying first party jwt tokens. ***"
 cat <<EOT >> cf-install-values/cf-install-values.yml
 use_first_party_jwt_tokens: true
 EOT

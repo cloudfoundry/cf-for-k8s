@@ -23,6 +23,7 @@ use_first_party_jwt_tokens: true
 EOT
     ;;
   *)
+echo "*** Kubernetes version $K8S_MINOR_VERSION - using 3rd party jwt tokens. ***"
     ;;
 esac
 

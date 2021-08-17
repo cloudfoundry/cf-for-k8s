@@ -8,7 +8,7 @@ metadata:
   name: cf-buildpack-store
 spec:
   sources:
-  - image: gcr.io/paketo-buildpacks/ruby@sha256:809b928072fbc8a33508081d1f1bce43cbdf21a01bf084d2bd960af94128ee7d
+  - image: gcr.io/paketo-buildpacks/ruby@sha256:d4e170671063c5f7b0524f05272a19da745f3506f5d43102bbb177b36b1f2521
   - image: gcr.io/paketo-community/python@sha256:fc28df8bd74dd67dd865e73f162f08e78ddcc4ac4f42834e15d3c4eb7714007b
   - image: gcr.io/paketo-buildpacks/java@sha256:9f025c5c1a3a490f7681d5cb23be642a705423126b33dde1338284faf2fe09fe
   - image: gcr.io/paketo-buildpacks/nodejs@sha256:9887bb6b7d0c410ccdf6fa940658dddecfce5ded1ac5696ced608c78649594b3

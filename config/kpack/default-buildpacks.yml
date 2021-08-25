@@ -11,7 +11,7 @@ spec:
   - image: gcr.io/paketo-buildpacks/ruby@sha256:d4e170671063c5f7b0524f05272a19da745f3506f5d43102bbb177b36b1f2521
   - image: gcr.io/paketo-community/python@sha256:1228cfb8003f830b178b9b8a227889cae32df1aed74a746f2ac59b6bb8e88961
   - image: gcr.io/paketo-buildpacks/java@sha256:9f025c5c1a3a490f7681d5cb23be642a705423126b33dde1338284faf2fe09fe
-  - image: gcr.io/paketo-buildpacks/nodejs@sha256:9887bb6b7d0c410ccdf6fa940658dddecfce5ded1ac5696ced608c78649594b3
+  - image: gcr.io/paketo-buildpacks/nodejs@sha256:b114f412b8f60bee9e278d63694696f18d61305ca9d0a5799d61cc3014dff3e0
   - image: gcr.io/paketo-buildpacks/go@sha256:6a4fa7bb587fedeb0a3ba89c6a2bb2ab4f0787c16867b6645f251e50708a2121
   - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:d8db2502b808e294682d1380405ef0825a82565da8ffc8cbb5a9a9556ae8b771
   - image: gcr.io/paketo-buildpacks/php@sha256:db6291138c4b1ce33e15079ea3a38144147c86b8067d4fb7d3c85c746860a35d

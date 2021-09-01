@@ -16,12 +16,12 @@ spec:
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
-      serviceAccountName: migration
+      serviceAccountName: eirini-migration
       securityContext:
         runAsNonRoot: true
       containers:
       - name: migration
-        image: eirini/migration@sha256:8bf6bf4041015e447362eaf5c584f69f7baa9009bb3adeffee7405df917553f9
+        image: eirini/migration@sha256:88a8e2ef2c32fe6858040451c62a782d63fc00d24b525d669b82b8a91d87a633
         imagePullPolicy: IfNotPresent
         resources:
           requests:

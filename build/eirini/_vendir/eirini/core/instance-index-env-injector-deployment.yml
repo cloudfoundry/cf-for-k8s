@@ -3,16 +3,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: instance-index-env-injector
+  name: eirini-instance-index-env-injector
   namespace: cf-system
 spec:
   selector:
     matchLabels:
-      name: instance-index-env-injector
+      name: eirini-instance-index-env-injector
   template:
     metadata:
       labels:
-        name: instance-index-env-injector
+        name: eirini-instance-index-env-injector
       annotations:
         sidecar.istio.io/inject: "false"
     spec:
@@ -20,15 +20,15 @@ spec:
       volumes:
         - name: config-map-volume
           configMap:
-            name: instance-index-env-injector
+            name: eirini-instance-index-env-injector
         - name: certs
           secret:
-            secretName: instance-index-env-injector-certs
+            secretName: eirini-instance-index-env-injector-certs
       securityContext:
         runAsNonRoot: true
       containers:
       - name: instance-index-env-injector
-        image: eirini/instance-index-env-injector@sha256:be86bf2049e09d8c1234bb6b84f3795f3c9323c533d404481b2476b1d58c2d3d
+        image: eirini/instance-index-env-injector@sha256:9cb11536c8bec3cd4109f5ce34f551921e0dc3ea82ebac0851890390baf2ec3f
         args: [ "--config", "/etc/eirini/config/instance-index-env-injector.yml" ]
         imagePullPolicy: IfNotPresent
         volumeMounts:

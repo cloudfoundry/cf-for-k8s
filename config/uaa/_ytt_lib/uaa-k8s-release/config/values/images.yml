@@ -3,5 +3,5 @@
 ---
 #@overlay/match missing_ok=True
 images:
-  statsd_exporter: cloudfoundry/statsd_exporter-cf-for-k8s@sha256:01423de2bbc03a08bec9d32778a98bb223bd557dce8277d99c17eb358063c798
+  statsd_exporter: cloudfoundry/statsd_exporter-cf-for-k8s@sha256:3fa92c8c9cad4520e3ecee29ac2ed2c88ccc90689848086d1df4b6906e96302d
   uaa: cloudfoundry/uaa@sha256:2473af1233848bc857d8e5805c321a5de52b2241ce79c6fcffe1003d8d262300

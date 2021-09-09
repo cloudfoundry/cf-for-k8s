@@ -60,7 +60,7 @@ data:
     unsafe_allow_automount_service_account_token: false
 kind: ConfigMap
 metadata:
-  name: api
+  name: eirini-api
   namespace: cf-system
 ---
 apiVersion: apps/v1
@@ -84,7 +84,7 @@ spec:
       - args:
         - --config
         - /etc/eirini/config/api.yml
-        image: index.docker.io/eirini/api@sha256:9d8366b23c7f5267b0bedd4f30a952b2b5ce2972f2901a0cd43d81c6ca9bf1c4
+        image: index.docker.io/eirini/api@sha256:f84d3d5bab05c089c895e4316789e65f4f66b6bb02349e0a23a004276670f374
         imagePullPolicy: IfNotPresent
         name: api
         ports:
@@ -107,10 +107,10 @@ spec:
       dnsPolicy: ClusterFirst
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: api
+      serviceAccountName: eirini-api
       volumes:
       - configMap:
-          name: api
+          name: eirini-api
         name: config-map
       - name: cc-certs
         secret:
@@ -127,7 +127,7 @@ metadata:
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
     seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
-  name: eirini
+  name: eirini-api
 spec:
   allowPrivilegeEscalation: false
   fsGroup:
@@ -161,7 +161,7 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: api
+  name: eirini-api
   namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -204,19 +204,19 @@ roleRef:
   name: eirini-cluster-role
 subjects:
 - kind: ServiceAccount
-  name: api
+  name: eirini-api
   namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: eirini-role
+  name: eirini-api-role
   namespace: cf-system
 rules:
 - apiGroups:
   - policy
   resourceNames:
-  - eirini
+  - eirini-api
   resources:
   - podsecuritypolicies
   verbs:
@@ -225,15 +225,15 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: eirini-rolebinding
+  name: eirini-api-rolebinding
   namespace: cf-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: eirini-role
+  name: eirini-api-role
 subjects:
 - kind: ServiceAccount
-  name: api
+  name: eirini-api
   namespace: cf-system
 ---
 apiVersion: v1
@@ -257,7 +257,7 @@ data:
     service_port: 8443
 kind: ConfigMap
 metadata:
-  name: instance-index-env-injector
+  name: eirini-instance-index-env-injector
   namespace: cf-system
 ---
 apiVersion: apps/v1
@@ -266,24 +266,24 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       null
-  name: instance-index-env-injector
+  name: eirini-instance-index-env-injector
   namespace: cf-system
 spec:
   selector:
     matchLabels:
-      name: instance-index-env-injector
+      name: eirini-instance-index-env-injector
   template:
     metadata:
       annotations:
         sidecar.istio.io/inject: "false"
       labels:
-        name: instance-index-env-injector
+        name: eirini-instance-index-env-injector
     spec:
       containers:
       - args:
         - --config
         - /etc/eirini/config/instance-index-env-injector.yml
-        image: index.docker.io/eirini/instance-index-env-injector@sha256:be86bf2049e09d8c1234bb6b84f3795f3c9323c533d404481b2476b1d58c2d3d
+        image: index.docker.io/eirini/instance-index-env-injector@sha256:9cb11536c8bec3cd4109f5ce34f551921e0dc3ea82ebac0851890390baf2ec3f
         imagePullPolicy: IfNotPresent
         name: instance-index-env-injector
         ports:
@@ -306,11 +306,11 @@ spec:
       serviceAccountName: eirini-instance-index-env-injector
       volumes:
       - configMap:
-          name: instance-index-env-injector
+          name: eirini-instance-index-env-injector
         name: config-map-volume
       - name: certs
         secret:
-          secretName: instance-index-env-injector-certs
+          secretName: eirini-instance-index-env-injector-certs
 ---
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
@@ -383,7 +383,7 @@ subjects:
 apiVersion: v1
 kind: Service
 metadata:
-  name: instance-index-env-injector
+  name: eirini-instance-index-env-injector
   namespace: cf-system
 spec:
   ports:
@@ -392,7 +392,7 @@ spec:
     protocol: TCP
     targetPort: 8443
   selector:
-    name: instance-index-env-injector
+    name: eirini-instance-index-env-injector
 ---
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
@@ -404,7 +404,7 @@ webhooks:
   clientConfig:
     caBundle: null
     service:
-      name: instance-index-env-injector
+      name: eirini-instance-index-env-injector
       namespace: cf-system
   name: instance-index-env-injector.eirini.cloudfoundry.org
   objectSelector:
@@ -442,7 +442,7 @@ spec:
         name: eirini-app-migration
     spec:
       containers:
-      - image: index.docker.io/eirini/migration@sha256:8bf6bf4041015e447362eaf5c584f69f7baa9009bb3adeffee7405df917553f9
+      - image: index.docker.io/eirini/migration@sha256:88a8e2ef2c32fe6858040451c62a782d63fc00d24b525d669b82b8a91d87a633
         imagePullPolicy: IfNotPresent
         name: migration
         resources:
@@ -455,7 +455,7 @@ spec:
       restartPolicy: OnFailure
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: migration
+      serviceAccountName: eirini-migration
 ---
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
@@ -463,7 +463,7 @@ metadata:
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
     seccomp.security.alpha.kubernetes.io/defaultProfileName: runtime/default
-  name: migration
+  name: eirini-migration
 spec:
   allowPrivilegeEscalation: false
   fsGroup:
@@ -497,13 +497,13 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: migration
+  name: eirini-migration
   namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: migration-cluster-role
+  name: eirini-migration-cluster-role
 rules:
 - apiGroups:
   - apps
@@ -537,26 +537,26 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: migration-cluster-rolebinding
+  name: eirini-migration-cluster-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: migration-cluster-role
+  name: eirini-migration-cluster-role
 subjects:
 - kind: ServiceAccount
-  name: migration
+  name: eirini-migration
   namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: migration-role
+  name: eirini-migration-role
   namespace: cf-system
 rules:
 - apiGroups:
   - policy
   resourceNames:
-  - migration
+  - eirini-migration
   resources:
   - podsecuritypolicies
   verbs:
@@ -565,15 +565,15 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: migration-rolebinding
+  name: eirini-migration-rolebinding
   namespace: cf-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: migration-role
+  name: eirini-migration-role
 subjects:
 - kind: ServiceAccount
-  name: migration
+  name: eirini-migration
   namespace: cf-system
 ---
 apiVersion: v1
@@ -600,7 +600,7 @@ data:
     ttl_seconds: 5
 kind: ConfigMap
 metadata:
-  name: task-reporter
+  name: eirini-task-reporter
   namespace: cf-system
 ---
 apiVersion: apps/v1
@@ -625,7 +625,7 @@ spec:
       - args:
         - --config
         - /etc/eirini/config/task-reporter.yml
-        image: index.docker.io/eirini/task-reporter@sha256:d4cb7d7a1ffe5b57d545c5b487bf1a4158854b81221d2ab6a3f98d96835e7252
+        image: index.docker.io/eirini/task-reporter@sha256:c9cf7ebe1ff5190aafb1c58ee91e0da32a83eeaec34aec46cd13d32d30fea232
         imagePullPolicy: IfNotPresent
         name: task-reporter
         resources:
@@ -649,7 +649,7 @@ spec:
           items:
           - key: task-reporter.yml
             path: task-reporter.yml
-          name: task-reporter
+          name: eirini-task-reporter
         name: config-map-volume
       - name: cc-certs
         secret:
@@ -824,7 +824,7 @@ spec:
       - args:
         - --config
         - /etc/eirini-event-reporter/config/events.yml
-        image: index.docker.io/eirini/event-reporter@sha256:d2edff09c22c50968156edd5ad924b33849fbd8d1cfbd245ab77ac6fc7966eb6
+        image: index.docker.io/eirini/event-reporter@sha256:d298794619ded238bdaed0f755b59cfbae724752e26c87c796443025c0c76c2e
         imagePullPolicy: IfNotPresent
         name: event-reporter
         resources:
@@ -892,7 +892,7 @@ metadata:
   name: eirini-event-reporter
   namespace: cf-system
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: eirini-event-reporter-nodes-policy
@@ -921,7 +921,7 @@ rules:
   - list
   - watch
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: eirini-event-reporter-nodes-policy
@@ -1119,7 +1119,7 @@ roleRef:
   name: eirini-namespaced-role
 subjects:
 - kind: ServiceAccount
-  name: api
+  name: eirini-api
   namespace: cf-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1

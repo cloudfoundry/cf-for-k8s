@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: task-reporter
+  name: eirini-task-reporter
   namespace: cf-system
 data:
   task-reporter.yml: |

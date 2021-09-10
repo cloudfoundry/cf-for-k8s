@@ -18,7 +18,7 @@ webhooks:
   clientConfig:
     service:
       namespace: cf-system
-      name: instance-index-env-injector
+      name: eirini-instance-index-env-injector
     caBundle: 
   admissionReviewVersions: ["v1beta1"]
   sideEffects: None

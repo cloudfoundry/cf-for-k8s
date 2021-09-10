@@ -29,7 +29,7 @@ spec:
     - from:
         - source:
             notPrincipals:
-            - #@ principal(system_namespace(), "api")
+            - #@ principal(system_namespace(), "eirini-api")
             - #@ principal(system_namespace(), "eirini-event-reporter")
             - #@ principal(system_namespace(), "eirini-task-reporter")
       to:

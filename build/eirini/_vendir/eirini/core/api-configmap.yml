@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: api
+  name: eirini-api
   namespace: cf-system
 data:
   api.yml: |

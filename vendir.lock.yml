@@ -10,10 +10,10 @@ directories:
   path: config/capi/_ytt_lib/capi-k8s-release
 - contents:
   - git:
-      commitTitle: Fix typo in pipeline resource....
-      sha: b009c95a4db73dfccea0526b30b442cb8e5dd53e
+      commitTitle: images.yml updated by CI
+      sha: d211c748db00fe83ee6892a9a804c31ee6a1c78a
       tags:
-      - v0.5.0-24-gb009c95
+      - v0.5.0-33-gd211c74
     path: .
   path: config/networking/_ytt_lib/cf-k8s-networking
 - contents:

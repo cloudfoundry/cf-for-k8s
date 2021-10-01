@@ -213,10 +213,10 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas:
-        - Type: preresolved
-          URL: cloudfoundry/minio-cf-for-k8s@sha256:5cb64001e21d6e3adb05717ca49aca34d52f576cf8365af28860d4afad383ea4
-        URL: cloudfoundry/minio-cf-for-k8s@sha256:5cb64001e21d6e3adb05717ca49aca34d52f576cf8365af28860d4afad383ea4
+      - origins:
+        - preresolved:
+            url: cloudfoundry/minio-cf-for-k8s@sha256:5cb64001e21d6e3adb05717ca49aca34d52f576cf8365af28860d4afad383ea4
+        url: cloudfoundry/minio-cf-for-k8s@sha256:5cb64001e21d6e3adb05717ca49aca34d52f576cf8365af28860d4afad383ea4
   labels:
     app: minio
     chart: minio-5.0.30

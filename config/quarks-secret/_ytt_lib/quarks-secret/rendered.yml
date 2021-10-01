@@ -49,7 +49,8 @@ spec:
                 minLength: 1
                 type: string
               type:
-                description: 'What kind of secret to generate: password, certificate, ssh, rsa, basic-auth'
+                description: 'What kind of secret to generate: password, certificate,
+                  ssh, rsa, basic-auth'
                 minLength: 1
                 type: string
             required:
@@ -172,11 +173,11 @@ kind: Deployment
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas:
-        - Tag: v1.0.758
-          Type: resolved
-          URL: ghcr.io/cloudfoundry-incubator/quarks-secret:v1.0.758
-        URL: ghcr.io/cloudfoundry-incubator/quarks-secret@sha256:265adf83e2f4ccef62b2c93999fe830c783d92ad2e703ff1c21c20d6ecbf357e
+      - origins:
+        - resolved:
+            tag: v1.0.758
+            url: ghcr.io/cloudfoundry-incubator/quarks-secret:v1.0.758
+        url: ghcr.io/cloudfoundry-incubator/quarks-secret@sha256:265adf83e2f4ccef62b2c93999fe830c783d92ad2e703ff1c21c20d6ecbf357e
   name: quarks-secret
   namespace: cf-system
 spec:

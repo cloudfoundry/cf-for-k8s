@@ -57,11 +57,11 @@ kind: StatefulSet
 metadata:
   annotations:
     kbld.k14s.io/images: |
-      - Metas:
-        - Tag: 11.8.0-debian-10-r33
-          Type: resolved
-          URL: docker.io/bitnami/postgresql:11.8.0-debian-10-r33
-        URL: index.docker.io/bitnami/postgresql@sha256:0f76a419cfd9996036e3a53672f50cf69ed7699f1241cbf8e20af17bbbdf0683
+      - origins:
+        - resolved:
+            tag: 11.8.0-debian-10-r33
+            url: docker.io/bitnami/postgresql:11.8.0-debian-10-r33
+        url: index.docker.io/bitnami/postgresql@sha256:0f76a419cfd9996036e3a53672f50cf69ed7699f1241cbf8e20af17bbbdf0683
   labels:
     app: postgresql
     chart: postgresql-8.10.6

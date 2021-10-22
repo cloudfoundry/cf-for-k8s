@@ -12,7 +12,7 @@ spec:
   - image: gcr.io/paketo-community/python@sha256:1228cfb8003f830b178b9b8a227889cae32df1aed74a746f2ac59b6bb8e88961
   - image: gcr.io/paketo-buildpacks/java@sha256:b2fda4a6a85aebcc915289b585903eababee509f7cc02c8e3c8901745db29a83
   - image: gcr.io/paketo-buildpacks/nodejs@sha256:efb5d165782a11f9469e396174991a4eab09cf812be54d6b318b3f34e60b69fe
-  - image: gcr.io/paketo-buildpacks/go@sha256:950cb4eec8f9c97bb4735bd6c1dfbe7760000c83a8c90a5320bc3eee551afb44
+  - image: gcr.io/paketo-buildpacks/go@sha256:75a4a5ec352c80f08961b35643dea9d59671426248861be2e1950aa79e52a0b2
   - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:fc63ef4545c870cccc8fe5093dd3b35023e128349909fb2d4ecdc08c98aa750b
   - image: gcr.io/paketo-buildpacks/php@sha256:f0a142b51fa86b2fc68b284f8384cb3a3a885e96e4f640564fe4974734c380d9
   - image: gcr.io/paketo-buildpacks/procfile@sha256:11046ad58156ab3ee87cbc837336dfd138ff6c990374b4e116eafdb383d6523e

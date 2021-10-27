@@ -43,7 +43,7 @@ set -euo pipefail
 export HOME=/tmp/kind
 export PATH=/tmp/kind/bin:/tmp/kind/go/bin:$PATH
 kind create cluster --config=\$HOME/cluster.yml \
-  --image kindest/node:v${K8S_VERSION}
+  --image kindest/node:v${KIND_VERSION}
 EOT
 chmod +x remote-create-kind-cluster.sh
 

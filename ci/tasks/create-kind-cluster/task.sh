@@ -26,6 +26,16 @@ gcloud beta compute \
   --command "/tmp/remote-check-permissions.sh" \
   --zone "us-central1-a"
 
+case $K8S_VERSION in
+  1.22.2)
+    # kindest/node:v1.22.2 has an issue https://github.com/kubernetes-sigs/kind/issues/2518
+    KIND_VERSION=1.22.1
+    ;;
+  *)
+    KIND_VERSION=$K8S_VERSION
+    ;;
+esac
+
 cat <<EOT > remote-create-kind-cluster.sh
 #!/usr/bin/env bash
 set -euo pipefail

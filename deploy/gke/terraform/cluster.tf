@@ -1,5 +1,4 @@
 resource "google_container_cluster" "primary" {
-  provider           = google-beta
   name               = var.env_name
   location           = var.zone
   initial_node_count = var.node_count
@@ -20,9 +19,6 @@ resource "google_container_cluster" "primary" {
   }
 
   master_auth {
-    username = ""
-    password = ""
-
     client_certificate_config {
       issue_client_certificate = false
     }

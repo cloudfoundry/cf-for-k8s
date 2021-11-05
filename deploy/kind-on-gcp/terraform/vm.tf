@@ -8,7 +8,7 @@ resource "google_compute_firewall" "default" {
   name    = "kind-vm-${random_id.instance_id.hex}-firewall"
   network = google_compute_network.default.name
 
-  source_ranges = [ "0.0.0.0" ]
+  source_ranges = [ "0.0.0.0/0" ]
 
   allow {
     protocol = "tcp"

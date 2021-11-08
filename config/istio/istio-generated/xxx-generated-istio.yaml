@@ -7,7 +7,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     istio: security
     release: istio
@@ -52,6 +52,7 @@ spec:
                 properties:
                   name:
                     description: Specifies the name of the extension provider.
+                    format: string
                     type: string
                 type: object
               rules:
@@ -68,51 +69,61 @@ spec:
                               ipBlocks:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               namespaces:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               notIpBlocks:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               notNamespaces:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               notPrincipals:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               notRemoteIpBlocks:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               notRequestPrincipals:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               principals:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               remoteIpBlocks:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               requestPrincipals:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                             type: object
@@ -128,41 +139,49 @@ spec:
                               hosts:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               methods:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               notHosts:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               notMethods:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               notPaths:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               notPorts:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               paths:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                               ports:
                                 description: Optional.
                                 items:
+                                  format: string
                                   type: string
                                 type: array
                             type: object
@@ -174,15 +193,18 @@ spec:
                         properties:
                           key:
                             description: The name of an Istio attribute.
+                            format: string
                             type: string
                           notValues:
                             description: Optional.
                             items:
+                              format: string
                               type: string
                             type: array
                           values:
                             description: Optional.
                             items:
+                              format: string
                               type: string
                             type: array
                         type: object
@@ -194,6 +216,7 @@ spec:
                 properties:
                   matchLabels:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                 type: object
@@ -215,7 +238,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     release: istio
   name: destinationrules.networking.istio.io
@@ -258,20 +281,24 @@ spec:
                 description: A list of namespaces to which this destination rule is
                   exported.
                 items:
+                  format: string
                   type: string
                 type: array
               host:
                 description: The name of a service from the service registry.
+                format: string
                 type: string
               subsets:
                 items:
                   properties:
                     labels:
                       additionalProperties:
+                        format: string
                         type: string
                       type: object
                     name:
                       description: Name of the subset.
+                      format: string
                       type: string
                     trafficPolicy:
                       description: Traffic policies that apply to this subset.
@@ -405,9 +432,11 @@ spec:
                                   properties:
                                     name:
                                       description: Name of the cookie.
+                                      format: string
                                       type: string
                                     path:
                                       description: Path to set for the cookie.
+                                      format: string
                                       type: string
                                     ttl:
                                       description: Lifetime of the cookie.
@@ -415,10 +444,12 @@ spec:
                                   type: object
                                 httpHeaderName:
                                   description: Hash based on a specific HTTP header.
+                                  format: string
                                   type: string
                                 httpQueryParameterName:
                                   description: Hash based on a specific HTTP query
                                     parameter.
+                                  format: string
                                   type: string
                                 minimumRingSize:
                                   type: integer
@@ -436,6 +467,7 @@ spec:
                                       from:
                                         description: Originating locality, '/' separated,
                                           e.g.
+                                        format: string
                                         type: string
                                       to:
                                         additionalProperties:
@@ -458,8 +490,10 @@ spec:
                                     properties:
                                       from:
                                         description: Originating region.
+                                        format: string
                                         type: string
                                       to:
+                                        format: string
                                         type: string
                                     type: object
                                   type: array
@@ -490,9 +524,6 @@ spec:
                                 is ejected from the connection pool.
                               nullable: true
                               type: integer
-                            consecutiveLocalOriginFailures:
-                              nullable: true
-                              type: integer
                             interval:
                               description: Time interval between ejection sweep analysis.
                               type: string
@@ -502,10 +533,6 @@ spec:
                             minHealthPercent:
                               format: int32
                               type: integer
-                            splitExternalLocalOriginErrors:
-                              description: Determines whether to distinguish local
-                                origin failures from external errors.
-                              type: boolean
                           type: object
                         portLevelSettings:
                           description: Traffic policies specific to individual ports.
@@ -644,9 +671,11 @@ spec:
                                         properties:
                                           name:
                                             description: Name of the cookie.
+                                            format: string
                                             type: string
                                           path:
                                             description: Path to set for the cookie.
+                                            format: string
                                             type: string
                                           ttl:
                                             description: Lifetime of the cookie.
@@ -655,10 +684,12 @@ spec:
                                       httpHeaderName:
                                         description: Hash based on a specific HTTP
                                           header.
+                                        format: string
                                         type: string
                                       httpQueryParameterName:
                                         description: Hash based on a specific HTTP
                                           query parameter.
+                                        format: string
                                         type: string
                                       minimumRingSize:
                                         type: integer
@@ -676,6 +707,7 @@ spec:
                                             from:
                                               description: Originating locality, '/'
                                                 separated, e.g.
+                                              format: string
                                               type: string
                                             to:
                                               additionalProperties:
@@ -698,8 +730,10 @@ spec:
                                           properties:
                                             from:
                                               description: Originating region.
+                                              format: string
                                               type: string
                                             to:
+                                              format: string
                                               type: string
                                           type: object
                                         type: array
@@ -730,9 +764,6 @@ spec:
                                       host is ejected from the connection pool.
                                     nullable: true
                                     type: integer
-                                  consecutiveLocalOriginFailures:
-                                    nullable: true
-                                    type: integer
                                   interval:
                                     description: Time interval between ejection sweep
                                       analysis.
@@ -743,10 +774,6 @@ spec:
                                   minHealthPercent:
                                     format: int32
                                     type: integer
-                                  splitExternalLocalOriginErrors:
-                                    description: Determines whether to distinguish
-                                      local origin failures from external errors.
-                                    type: boolean
                                 type: object
                               port:
                                 properties:
@@ -758,11 +785,14 @@ spec:
                                   to the upstream service.
                                 properties:
                                   caCertificates:
+                                    format: string
                                     type: string
                                   clientCertificate:
                                     description: REQUIRED if mode is `MUTUAL`.
+                                    format: string
                                     type: string
                                   credentialName:
+                                    format: string
                                     type: string
                                   mode:
                                     enum:
@@ -773,13 +803,16 @@ spec:
                                     type: string
                                   privateKey:
                                     description: REQUIRED if mode is `MUTUAL`.
+                                    format: string
                                     type: string
                                   sni:
                                     description: SNI string to present to the server
                                       during TLS handshake.
+                                    format: string
                                     type: string
                                   subjectAltNames:
                                     items:
+                                      format: string
                                       type: string
                                     type: array
                                 type: object
@@ -790,11 +823,14 @@ spec:
                             upstream service.
                           properties:
                             caCertificates:
+                              format: string
                               type: string
                             clientCertificate:
                               description: REQUIRED if mode is `MUTUAL`.
+                              format: string
                               type: string
                             credentialName:
+                              format: string
                               type: string
                             mode:
                               enum:
@@ -805,13 +841,16 @@ spec:
                               type: string
                             privateKey:
                               description: REQUIRED if mode is `MUTUAL`.
+                              format: string
                               type: string
                             sni:
                               description: SNI string to present to the server during
                                 TLS handshake.
+                              format: string
                               type: string
                             subjectAltNames:
                               items:
+                                format: string
                                 type: string
                               type: array
                           type: object
@@ -949,9 +988,11 @@ spec:
                             properties:
                               name:
                                 description: Name of the cookie.
+                                format: string
                                 type: string
                               path:
                                 description: Path to set for the cookie.
+                                format: string
                                 type: string
                               ttl:
                                 description: Lifetime of the cookie.
@@ -959,9 +1000,11 @@ spec:
                             type: object
                           httpHeaderName:
                             description: Hash based on a specific HTTP header.
+                            format: string
                             type: string
                           httpQueryParameterName:
                             description: Hash based on a specific HTTP query parameter.
+                            format: string
                             type: string
                           minimumRingSize:
                             type: integer
@@ -979,6 +1022,7 @@ spec:
                                 from:
                                   description: Originating locality, '/' separated,
                                     e.g.
+                                  format: string
                                   type: string
                                 to:
                                   additionalProperties:
@@ -1000,8 +1044,10 @@ spec:
                               properties:
                                 from:
                                   description: Originating region.
+                                  format: string
                                   type: string
                                 to:
+                                  format: string
                                   type: string
                               type: object
                             type: array
@@ -1032,9 +1078,6 @@ spec:
                           from the connection pool.
                         nullable: true
                         type: integer
-                      consecutiveLocalOriginFailures:
-                        nullable: true
-                        type: integer
                       interval:
                         description: Time interval between ejection sweep analysis.
                         type: string
@@ -1044,10 +1087,6 @@ spec:
                       minHealthPercent:
                         format: int32
                         type: integer
-                      splitExternalLocalOriginErrors:
-                        description: Determines whether to distinguish local origin
-                          failures from external errors.
-                        type: boolean
                     type: object
                   portLevelSettings:
                     description: Traffic policies specific to individual ports.
@@ -1182,9 +1221,11 @@ spec:
                                   properties:
                                     name:
                                       description: Name of the cookie.
+                                      format: string
                                       type: string
                                     path:
                                       description: Path to set for the cookie.
+                                      format: string
                                       type: string
                                     ttl:
                                       description: Lifetime of the cookie.
@@ -1192,10 +1233,12 @@ spec:
                                   type: object
                                 httpHeaderName:
                                   description: Hash based on a specific HTTP header.
+                                  format: string
                                   type: string
                                 httpQueryParameterName:
                                   description: Hash based on a specific HTTP query
                                     parameter.
+                                  format: string
                                   type: string
                                 minimumRingSize:
                                   type: integer
@@ -1213,6 +1256,7 @@ spec:
                                       from:
                                         description: Originating locality, '/' separated,
                                           e.g.
+                                        format: string
                                         type: string
                                       to:
                                         additionalProperties:
@@ -1235,8 +1279,10 @@ spec:
                                     properties:
                                       from:
                                         description: Originating region.
+                                        format: string
                                         type: string
                                       to:
+                                        format: string
                                         type: string
                                     type: object
                                   type: array
@@ -1267,9 +1313,6 @@ spec:
                                 is ejected from the connection pool.
                               nullable: true
                               type: integer
-                            consecutiveLocalOriginFailures:
-                              nullable: true
-                              type: integer
                             interval:
                               description: Time interval between ejection sweep analysis.
                               type: string
@@ -1279,10 +1322,6 @@ spec:
                             minHealthPercent:
                               format: int32
                               type: integer
-                            splitExternalLocalOriginErrors:
-                              description: Determines whether to distinguish local
-                                origin failures from external errors.
-                              type: boolean
                           type: object
                         port:
                           properties:
@@ -1294,11 +1333,14 @@ spec:
                             upstream service.
                           properties:
                             caCertificates:
+                              format: string
                               type: string
                             clientCertificate:
                               description: REQUIRED if mode is `MUTUAL`.
+                              format: string
                               type: string
                             credentialName:
+                              format: string
                               type: string
                             mode:
                               enum:
@@ -1309,13 +1351,16 @@ spec:
                               type: string
                             privateKey:
                               description: REQUIRED if mode is `MUTUAL`.
+                              format: string
                               type: string
                             sni:
                               description: SNI string to present to the server during
                                 TLS handshake.
+                              format: string
                               type: string
                             subjectAltNames:
                               items:
+                                format: string
                                 type: string
                               type: array
                           type: object
@@ -1326,11 +1371,14 @@ spec:
                       service.
                     properties:
                       caCertificates:
+                        format: string
                         type: string
                       clientCertificate:
                         description: REQUIRED if mode is `MUTUAL`.
+                        format: string
                         type: string
                       credentialName:
+                        format: string
                         type: string
                       mode:
                         enum:
@@ -1341,13 +1389,16 @@ spec:
                         type: string
                       privateKey:
                         description: REQUIRED if mode is `MUTUAL`.
+                        format: string
                         type: string
                       sni:
                         description: SNI string to present to the server during TLS
                           handshake.
+                        format: string
                         type: string
                       subjectAltNames:
                         items:
+                          format: string
                           type: string
                         type: array
                     type: object
@@ -1386,20 +1437,24 @@ spec:
                 description: A list of namespaces to which this destination rule is
                   exported.
                 items:
+                  format: string
                   type: string
                 type: array
               host:
                 description: The name of a service from the service registry.
+                format: string
                 type: string
               subsets:
                 items:
                   properties:
                     labels:
                       additionalProperties:
+                        format: string
                         type: string
                       type: object
                     name:
                       description: Name of the subset.
+                      format: string
                       type: string
                     trafficPolicy:
                       description: Traffic policies that apply to this subset.
@@ -1533,9 +1588,11 @@ spec:
                                   properties:
                                     name:
                                       description: Name of the cookie.
+                                      format: string
                                       type: string
                                     path:
                                       description: Path to set for the cookie.
+                                      format: string
                                       type: string
                                     ttl:
                                       description: Lifetime of the cookie.
@@ -1543,10 +1600,12 @@ spec:
                                   type: object
                                 httpHeaderName:
                                   description: Hash based on a specific HTTP header.
+                                  format: string
                                   type: string
                                 httpQueryParameterName:
                                   description: Hash based on a specific HTTP query
                                     parameter.
+                                  format: string
                                   type: string
                                 minimumRingSize:
                                   type: integer
@@ -1564,6 +1623,7 @@ spec:
                                       from:
                                         description: Originating locality, '/' separated,
                                           e.g.
+                                        format: string
                                         type: string
                                       to:
                                         additionalProperties:
@@ -1586,8 +1646,10 @@ spec:
                                     properties:
                                       from:
                                         description: Originating region.
+                                        format: string
                                         type: string
                                       to:
+                                        format: string
                                         type: string
                                     type: object
                                   type: array
@@ -1618,9 +1680,6 @@ spec:
                                 is ejected from the connection pool.
                               nullable: true
                               type: integer
-                            consecutiveLocalOriginFailures:
-                              nullable: true
-                              type: integer
                             interval:
                               description: Time interval between ejection sweep analysis.
                               type: string
@@ -1630,10 +1689,6 @@ spec:
                             minHealthPercent:
                               format: int32
                               type: integer
-                            splitExternalLocalOriginErrors:
-                              description: Determines whether to distinguish local
-                                origin failures from external errors.
-                              type: boolean
                           type: object
                         portLevelSettings:
                           description: Traffic policies specific to individual ports.
@@ -1772,9 +1827,11 @@ spec:
                                         properties:
                                           name:
                                             description: Name of the cookie.
+                                            format: string
                                             type: string
                                           path:
                                             description: Path to set for the cookie.
+                                            format: string
                                             type: string
                                           ttl:
                                             description: Lifetime of the cookie.
@@ -1783,10 +1840,12 @@ spec:
                                       httpHeaderName:
                                         description: Hash based on a specific HTTP
                                           header.
+                                        format: string
                                         type: string
                                       httpQueryParameterName:
                                         description: Hash based on a specific HTTP
                                           query parameter.
+                                        format: string
                                         type: string
                                       minimumRingSize:
                                         type: integer
@@ -1804,6 +1863,7 @@ spec:
                                             from:
                                               description: Originating locality, '/'
                                                 separated, e.g.
+                                              format: string
                                               type: string
                                             to:
                                               additionalProperties:
@@ -1826,8 +1886,10 @@ spec:
                                           properties:
                                             from:
                                               description: Originating region.
+                                              format: string
                                               type: string
                                             to:
+                                              format: string
                                               type: string
                                           type: object
                                         type: array
@@ -1858,9 +1920,6 @@ spec:
                                       host is ejected from the connection pool.
                                     nullable: true
                                     type: integer
-                                  consecutiveLocalOriginFailures:
-                                    nullable: true
-                                    type: integer
                                   interval:
                                     description: Time interval between ejection sweep
                                       analysis.
@@ -1871,10 +1930,6 @@ spec:
                                   minHealthPercent:
                                     format: int32
                                     type: integer
-                                  splitExternalLocalOriginErrors:
-                                    description: Determines whether to distinguish
-                                      local origin failures from external errors.
-                                    type: boolean
                                 type: object
                               port:
                                 properties:
@@ -1886,11 +1941,14 @@ spec:
                                   to the upstream service.
                                 properties:
                                   caCertificates:
+                                    format: string
                                     type: string
                                   clientCertificate:
                                     description: REQUIRED if mode is `MUTUAL`.
+                                    format: string
                                     type: string
                                   credentialName:
+                                    format: string
                                     type: string
                                   mode:
                                     enum:
@@ -1901,13 +1959,16 @@ spec:
                                     type: string
                                   privateKey:
                                     description: REQUIRED if mode is `MUTUAL`.
+                                    format: string
                                     type: string
                                   sni:
                                     description: SNI string to present to the server
                                       during TLS handshake.
+                                    format: string
                                     type: string
                                   subjectAltNames:
                                     items:
+                                      format: string
                                       type: string
                                     type: array
                                 type: object
@@ -1918,11 +1979,14 @@ spec:
                             upstream service.
                           properties:
                             caCertificates:
+                              format: string
                               type: string
                             clientCertificate:
                               description: REQUIRED if mode is `MUTUAL`.
+                              format: string
                               type: string
                             credentialName:
+                              format: string
                               type: string
                             mode:
                               enum:
@@ -1933,13 +1997,16 @@ spec:
                               type: string
                             privateKey:
                               description: REQUIRED if mode is `MUTUAL`.
+                              format: string
                               type: string
                             sni:
                               description: SNI string to present to the server during
                                 TLS handshake.
+                              format: string
                               type: string
                             subjectAltNames:
                               items:
+                                format: string
                                 type: string
                               type: array
                           type: object
@@ -2077,9 +2144,11 @@ spec:
                             properties:
                               name:
                                 description: Name of the cookie.
+                                format: string
                                 type: string
                               path:
                                 description: Path to set for the cookie.
+                                format: string
                                 type: string
                               ttl:
                                 description: Lifetime of the cookie.
@@ -2087,9 +2156,11 @@ spec:
                             type: object
                           httpHeaderName:
                             description: Hash based on a specific HTTP header.
+                            format: string
                             type: string
                           httpQueryParameterName:
                             description: Hash based on a specific HTTP query parameter.
+                            format: string
                             type: string
                           minimumRingSize:
                             type: integer
@@ -2107,6 +2178,7 @@ spec:
                                 from:
                                   description: Originating locality, '/' separated,
                                     e.g.
+                                  format: string
                                   type: string
                                 to:
                                   additionalProperties:
@@ -2128,8 +2200,10 @@ spec:
                               properties:
                                 from:
                                   description: Originating region.
+                                  format: string
                                   type: string
                                 to:
+                                  format: string
                                   type: string
                               type: object
                             type: array
@@ -2160,9 +2234,6 @@ spec:
                           from the connection pool.
                         nullable: true
                         type: integer
-                      consecutiveLocalOriginFailures:
-                        nullable: true
-                        type: integer
                       interval:
                         description: Time interval between ejection sweep analysis.
                         type: string
@@ -2172,10 +2243,6 @@ spec:
                       minHealthPercent:
                         format: int32
                         type: integer
-                      splitExternalLocalOriginErrors:
-                        description: Determines whether to distinguish local origin
-                          failures from external errors.
-                        type: boolean
                     type: object
                   portLevelSettings:
                     description: Traffic policies specific to individual ports.
@@ -2310,9 +2377,11 @@ spec:
                                   properties:
                                     name:
                                       description: Name of the cookie.
+                                      format: string
                                       type: string
                                     path:
                                       description: Path to set for the cookie.
+                                      format: string
                                       type: string
                                     ttl:
                                       description: Lifetime of the cookie.
@@ -2320,10 +2389,12 @@ spec:
                                   type: object
                                 httpHeaderName:
                                   description: Hash based on a specific HTTP header.
+                                  format: string
                                   type: string
                                 httpQueryParameterName:
                                   description: Hash based on a specific HTTP query
                                     parameter.
+                                  format: string
                                   type: string
                                 minimumRingSize:
                                   type: integer
@@ -2341,6 +2412,7 @@ spec:
                                       from:
                                         description: Originating locality, '/' separated,
                                           e.g.
+                                        format: string
                                         type: string
                                       to:
                                         additionalProperties:
@@ -2363,8 +2435,10 @@ spec:
                                     properties:
                                       from:
                                         description: Originating region.
+                                        format: string
                                         type: string
                                       to:
+                                        format: string
                                         type: string
                                     type: object
                                   type: array
@@ -2395,9 +2469,6 @@ spec:
                                 is ejected from the connection pool.
                               nullable: true
                               type: integer
-                            consecutiveLocalOriginFailures:
-                              nullable: true
-                              type: integer
                             interval:
                               description: Time interval between ejection sweep analysis.
                               type: string
@@ -2407,10 +2478,6 @@ spec:
                             minHealthPercent:
                               format: int32
                               type: integer
-                            splitExternalLocalOriginErrors:
-                              description: Determines whether to distinguish local
-                                origin failures from external errors.
-                              type: boolean
                           type: object
                         port:
                           properties:
@@ -2422,11 +2489,14 @@ spec:
                             upstream service.
                           properties:
                             caCertificates:
+                              format: string
                               type: string
                             clientCertificate:
                               description: REQUIRED if mode is `MUTUAL`.
+                              format: string
                               type: string
                             credentialName:
+                              format: string
                               type: string
                             mode:
                               enum:
@@ -2437,13 +2507,16 @@ spec:
                               type: string
                             privateKey:
                               description: REQUIRED if mode is `MUTUAL`.
+                              format: string
                               type: string
                             sni:
                               description: SNI string to present to the server during
                                 TLS handshake.
+                              format: string
                               type: string
                             subjectAltNames:
                               items:
+                                format: string
                                 type: string
                               type: array
                           type: object
@@ -2454,11 +2527,14 @@ spec:
                       service.
                     properties:
                       caCertificates:
+                        format: string
                         type: string
                       clientCertificate:
                         description: REQUIRED if mode is `MUTUAL`.
+                        format: string
                         type: string
                       credentialName:
+                        format: string
                         type: string
                       mode:
                         enum:
@@ -2469,13 +2545,16 @@ spec:
                         type: string
                       privateKey:
                         description: REQUIRED if mode is `MUTUAL`.
+                        format: string
                         type: string
                       sni:
                         description: SNI string to present to the server during TLS
                           handshake.
+                        format: string
                         type: string
                       subjectAltNames:
                         items:
+                          format: string
                           type: string
                         type: array
                     type: object
@@ -2498,7 +2577,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     release: istio
   name: envoyfilters.networking.istio.io
@@ -2538,7 +2617,6 @@ spec:
                       - HTTP_ROUTE
                       - CLUSTER
                       - EXTENSION_CONFIG
-                      - BOOTSTRAP
                       type: string
                     match:
                       description: Match on listener/route configuration/cluster.
@@ -2563,6 +2641,7 @@ spec:
                           properties:
                             name:
                               description: The exact name of the cluster to match.
+                              format: string
                               type: string
                             portNumber:
                               description: The service port for which this cluster
@@ -2571,9 +2650,11 @@ spec:
                             service:
                               description: The fully qualified service name for this
                                 cluster.
+                              format: string
                               type: string
                             subset:
                               description: The subset associated with the service.
+                              format: string
                               type: string
                           type: object
                         context:
@@ -2593,6 +2674,7 @@ spec:
                               properties:
                                 applicationProtocols:
                                   description: Applies only to sidecars.
+                                  format: string
                                   type: string
                                 destinationPort:
                                   description: The destination_port value used by
@@ -2604,29 +2686,36 @@ spec:
                                   properties:
                                     name:
                                       description: The filter name to match on.
+                                      format: string
                                       type: string
                                     subFilter:
                                       properties:
                                         name:
                                           description: The filter name to match on.
+                                          format: string
                                           type: string
                                       type: object
                                   type: object
                                 name:
                                   description: The name assigned to the filter chain.
+                                  format: string
                                   type: string
                                 sni:
                                   description: The SNI value used by a filter chain's
                                     match condition.
+                                  format: string
                                   type: string
                                 transportProtocol:
                                   description: Applies only to `SIDECAR_INBOUND` context.
+                                  format: string
                                   type: string
                               type: object
                             name:
                               description: Match a specific listener by its name.
+                              format: string
                               type: string
                             portName:
+                              format: string
                               type: string
                             portNumber:
                               type: integer
@@ -2636,27 +2725,33 @@ spec:
                           properties:
                             metadata:
                               additionalProperties:
+                                format: string
                                 type: string
                               type: object
                             proxyVersion:
+                              format: string
                               type: string
                           type: object
                         routeConfiguration:
                           description: Match on envoy HTTP route configuration attributes.
                           properties:
                             gateway:
+                              format: string
                               type: string
                             name:
                               description: Route configuration name to match on.
+                              format: string
                               type: string
                             portName:
                               description: Applicable only for GATEWAY context.
+                              format: string
                               type: string
                             portNumber:
                               type: integer
                             vhost:
                               properties:
                                 name:
+                                  format: string
                                   type: string
                                 route:
                                   description: Match a specific route within the virtual
@@ -2672,6 +2767,7 @@ spec:
                                       - DIRECT_RESPONSE
                                       type: string
                                     name:
+                                      format: string
                                       type: string
                                   type: object
                               type: object
@@ -2707,15 +2803,11 @@ spec:
                       type: object
                   type: object
                 type: array
-              priority:
-                description: Priority defines the order in which patch sets are applied
-                  within a context.
-                format: int32
-                type: integer
               workloadSelector:
                 properties:
                   labels:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                 type: object
@@ -2737,7 +2829,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     release: istio
   name: gateways.networking.istio.io
@@ -2765,6 +2857,7 @@ spec:
             properties:
               selector:
                 additionalProperties:
+                  format: string
                   type: string
                 type: object
               servers:
@@ -2772,28 +2865,34 @@ spec:
                 items:
                   properties:
                     bind:
+                      format: string
                       type: string
                     defaultEndpoint:
+                      format: string
                       type: string
                     hosts:
                       description: One or more hosts exposed by this gateway.
                       items:
+                        format: string
                         type: string
                       type: array
                     name:
                       description: An optional name of the server, when set must be
                         unique across all servers.
+                      format: string
                       type: string
                     port:
                       properties:
                         name:
                           description: Label assigned to the port.
+                          format: string
                           type: string
                         number:
                           description: A valid non-negative integer port number.
                           type: integer
                         protocol:
                           description: The protocol exposed on the port.
+                          format: string
                           type: string
                         targetPort:
                           type: integer
@@ -2804,14 +2903,17 @@ spec:
                       properties:
                         caCertificates:
                           description: REQUIRED if mode is `MUTUAL`.
+                          format: string
                           type: string
                         cipherSuites:
                           description: 'Optional: If specified, only support the specified
                             cipher list.'
                           items:
+                            format: string
                             type: string
                           type: array
                         credentialName:
+                          format: string
                           type: string
                         httpsRedirect:
                           type: boolean
@@ -2843,20 +2945,25 @@ spec:
                           type: string
                         privateKey:
                           description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+                          format: string
                           type: string
                         serverCertificate:
                           description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+                          format: string
                           type: string
                         subjectAltNames:
                           items:
+                            format: string
                             type: string
                           type: array
                         verifyCertificateHash:
                           items:
+                            format: string
                             type: string
                           type: array
                         verifyCertificateSpki:
                           items:
+                            format: string
                             type: string
                           type: array
                       type: object
@@ -2881,6 +2988,7 @@ spec:
             properties:
               selector:
                 additionalProperties:
+                  format: string
                   type: string
                 type: object
               servers:
@@ -2888,28 +2996,34 @@ spec:
                 items:
                   properties:
                     bind:
+                      format: string
                       type: string
                     defaultEndpoint:
+                      format: string
                       type: string
                     hosts:
                       description: One or more hosts exposed by this gateway.
                       items:
+                        format: string
                         type: string
                       type: array
                     name:
                       description: An optional name of the server, when set must be
                         unique across all servers.
+                      format: string
                       type: string
                     port:
                       properties:
                         name:
                           description: Label assigned to the port.
+                          format: string
                           type: string
                         number:
                           description: A valid non-negative integer port number.
                           type: integer
                         protocol:
                           description: The protocol exposed on the port.
+                          format: string
                           type: string
                         targetPort:
                           type: integer
@@ -2920,14 +3034,17 @@ spec:
                       properties:
                         caCertificates:
                           description: REQUIRED if mode is `MUTUAL`.
+                          format: string
                           type: string
                         cipherSuites:
                           description: 'Optional: If specified, only support the specified
                             cipher list.'
                           items:
+                            format: string
                             type: string
                           type: array
                         credentialName:
+                          format: string
                           type: string
                         httpsRedirect:
                           type: boolean
@@ -2959,20 +3076,25 @@ spec:
                           type: string
                         privateKey:
                           description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+                          format: string
                           type: string
                         serverCertificate:
                           description: REQUIRED if mode is `SIMPLE` or `MUTUAL`.
+                          format: string
                           type: string
                         subjectAltNames:
                           items:
+                            format: string
                             type: string
                           type: array
                         verifyCertificateHash:
                           items:
+                            format: string
                             type: string
                           type: array
                         verifyCertificateSpki:
                           items:
+                            format: string
                             type: string
                           type: array
                       type: object
@@ -2992,7 +3114,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     release: istio
   name: istiooperators.install.istio.io
 spec:
@@ -3044,7 +3166,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     istio: security
     release: istio
@@ -3116,6 +3238,7 @@ spec:
                 properties:
                   matchLabels:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                 type: object
@@ -3137,7 +3260,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     istio: security
     release: istio
@@ -3171,6 +3294,7 @@ spec:
                   properties:
                     audiences:
                       items:
+                        format: string
                         type: string
                       type: array
                     forwardOriginalToken:
@@ -3183,30 +3307,38 @@ spec:
                         properties:
                           name:
                             description: The HTTP header name.
+                            format: string
                             type: string
                           prefix:
                             description: The prefix that should be stripped before
                               decoding the token.
+                            format: string
                             type: string
                         type: object
                       type: array
                     fromParams:
                       description: List of query parameters from which JWT is expected.
                       items:
+                        format: string
                         type: string
                       type: array
                     issuer:
                       description: Identifies the issuer that issued the JWT.
+                      format: string
                       type: string
                     jwks:
                       description: JSON Web Key Set of public keys to validate signature
                         of the JWT.
+                      format: string
                       type: string
                     jwks_uri:
+                      format: string
                       type: string
                     jwksUri:
+                      format: string
                       type: string
                     outputPayloadToHeader:
+                      format: string
                       type: string
                   type: object
                 type: array
@@ -3216,6 +3348,7 @@ spec:
                 properties:
                   matchLabels:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                 type: object
@@ -3237,7 +3370,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     release: istio
   name: serviceentries.networking.istio.io
@@ -3288,6 +3421,7 @@ spec:
               addresses:
                 description: The virtual IP addresses associated with the service.
                 items:
+                  format: string
                   type: string
                 type: array
               endpoints:
@@ -3295,16 +3429,20 @@ spec:
                 items:
                   properties:
                     address:
+                      format: string
                       type: string
                     labels:
                       additionalProperties:
+                        format: string
                         type: string
                       description: One or more labels associated with the endpoint.
                       type: object
                     locality:
                       description: The locality associated with the endpoint.
+                      format: string
                       type: string
                     network:
+                      format: string
                       type: string
                     ports:
                       additionalProperties:
@@ -3312,6 +3450,7 @@ spec:
                       description: Set of ports associated with the endpoint.
                       type: object
                     serviceAccount:
+                      format: string
                       type: string
                     weight:
                       description: The load balancing weight associated with the endpoint.
@@ -3321,11 +3460,13 @@ spec:
               exportTo:
                 description: A list of namespaces to which this service is exported.
                 items:
+                  format: string
                   type: string
                 type: array
               hosts:
                 description: The hosts associated with the ServiceEntry.
                 items:
+                  format: string
                   type: string
                 type: array
               location:
@@ -3339,12 +3480,14 @@ spec:
                   properties:
                     name:
                       description: Label assigned to the port.
+                      format: string
                       type: string
                     number:
                       description: A valid non-negative integer port number.
                       type: integer
                     protocol:
                       description: The protocol exposed on the port.
+                      format: string
                       type: string
                     targetPort:
                       type: integer
@@ -3359,6 +3502,7 @@ spec:
                 type: string
               subjectAltNames:
                 items:
+                  format: string
                   type: string
                 type: array
               workloadSelector:
@@ -3366,6 +3510,7 @@ spec:
                 properties:
                   labels:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                 type: object
@@ -3411,6 +3556,7 @@ spec:
               addresses:
                 description: The virtual IP addresses associated with the service.
                 items:
+                  format: string
                   type: string
                 type: array
               endpoints:
@@ -3418,16 +3564,20 @@ spec:
                 items:
                   properties:
                     address:
+                      format: string
                       type: string
                     labels:
                       additionalProperties:
+                        format: string
                         type: string
                       description: One or more labels associated with the endpoint.
                       type: object
                     locality:
                       description: The locality associated with the endpoint.
+                      format: string
                       type: string
                     network:
+                      format: string
                       type: string
                     ports:
                       additionalProperties:
@@ -3435,6 +3585,7 @@ spec:
                       description: Set of ports associated with the endpoint.
                       type: object
                     serviceAccount:
+                      format: string
                       type: string
                     weight:
                       description: The load balancing weight associated with the endpoint.
@@ -3444,11 +3595,13 @@ spec:
               exportTo:
                 description: A list of namespaces to which this service is exported.
                 items:
+                  format: string
                   type: string
                 type: array
               hosts:
                 description: The hosts associated with the ServiceEntry.
                 items:
+                  format: string
                   type: string
                 type: array
               location:
@@ -3462,12 +3615,14 @@ spec:
                   properties:
                     name:
                       description: Label assigned to the port.
+                      format: string
                       type: string
                     number:
                       description: A valid non-negative integer port number.
                       type: integer
                     protocol:
                       description: The protocol exposed on the port.
+                      format: string
                       type: string
                     targetPort:
                       type: integer
@@ -3482,6 +3637,7 @@ spec:
                 type: string
               subjectAltNames:
                 items:
+                  format: string
                   type: string
                 type: array
               workloadSelector:
@@ -3489,6 +3645,7 @@ spec:
                 properties:
                   labels:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                 type: object
@@ -3510,7 +3667,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     release: istio
   name: sidecars.networking.istio.io
@@ -3538,6 +3695,7 @@ spec:
                 items:
                   properties:
                     bind:
+                      format: string
                       type: string
                     captureMode:
                       enum:
@@ -3547,6 +3705,7 @@ spec:
                       type: string
                     hosts:
                       items:
+                        format: string
                         type: string
                       type: array
                     port:
@@ -3554,12 +3713,14 @@ spec:
                       properties:
                         name:
                           description: Label assigned to the port.
+                          format: string
                           type: string
                         number:
                           description: A valid non-negative integer port number.
                           type: integer
                         protocol:
                           description: The protocol exposed on the port.
+                          format: string
                           type: string
                         targetPort:
                           type: integer
@@ -3571,6 +3732,7 @@ spec:
                   properties:
                     bind:
                       description: The IP to which the listener should be bound.
+                      format: string
                       type: string
                     captureMode:
                       enum:
@@ -3579,18 +3741,21 @@ spec:
                       - NONE
                       type: string
                     defaultEndpoint:
+                      format: string
                       type: string
                     port:
                       description: The port associated with the listener.
                       properties:
                         name:
                           description: Label assigned to the port.
+                          format: string
                           type: string
                         number:
                           description: A valid non-negative integer port number.
                           type: integer
                         protocol:
                           description: The protocol exposed on the port.
+                          format: string
                           type: string
                         targetPort:
                           type: integer
@@ -3604,6 +3769,7 @@ spec:
                     properties:
                       host:
                         description: The name of a service from the service registry.
+                        format: string
                         type: string
                       port:
                         description: Specifies the port on the host that is being
@@ -3614,6 +3780,7 @@ spec:
                         type: object
                       subset:
                         description: The name of a subset within the service.
+                        format: string
                         type: string
                     type: object
                   mode:
@@ -3626,6 +3793,7 @@ spec:
                 properties:
                   labels:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                 type: object
@@ -3650,6 +3818,7 @@ spec:
                 items:
                   properties:
                     bind:
+                      format: string
                       type: string
                     captureMode:
                       enum:
@@ -3659,6 +3828,7 @@ spec:
                       type: string
                     hosts:
                       items:
+                        format: string
                         type: string
                       type: array
                     port:
@@ -3666,12 +3836,14 @@ spec:
                       properties:
                         name:
                           description: Label assigned to the port.
+                          format: string
                           type: string
                         number:
                           description: A valid non-negative integer port number.
                           type: integer
                         protocol:
                           description: The protocol exposed on the port.
+                          format: string
                           type: string
                         targetPort:
                           type: integer
@@ -3683,6 +3855,7 @@ spec:
                   properties:
                     bind:
                       description: The IP to which the listener should be bound.
+                      format: string
                       type: string
                     captureMode:
                       enum:
@@ -3691,18 +3864,21 @@ spec:
                       - NONE
                       type: string
                     defaultEndpoint:
+                      format: string
                       type: string
                     port:
                       description: The port associated with the listener.
                       properties:
                         name:
                           description: Label assigned to the port.
+                          format: string
                           type: string
                         number:
                           description: A valid non-negative integer port number.
                           type: integer
                         protocol:
                           description: The protocol exposed on the port.
+                          format: string
                           type: string
                         targetPort:
                           type: integer
@@ -3716,6 +3892,7 @@ spec:
                     properties:
                       host:
                         description: The name of a service from the service registry.
+                        format: string
                         type: string
                       port:
                         description: Specifies the port on the host that is being
@@ -3726,6 +3903,7 @@ spec:
                         type: object
                       subset:
                         description: The name of a subset within the service.
+                        format: string
                         type: string
                     type: object
                   mode:
@@ -3738,6 +3916,7 @@ spec:
                 properties:
                   labels:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                 type: object
@@ -3759,7 +3938,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     istio: telemetry
     release: istio
@@ -3795,114 +3974,12 @@ spec:
             description: Telemetry defines how the telemetry is generated for workloads
               within a mesh.
             properties:
-              accessLogging:
-                description: Optional.
-                items:
-                  properties:
-                    disabled:
-                      description: Controls logging.
-                      nullable: true
-                      type: boolean
-                    providers:
-                      description: Optional.
-                      items:
-                        properties:
-                          name:
-                            description: Required.
-                            type: string
-                        type: object
-                      type: array
-                  type: object
-                type: array
-              metrics:
-                description: Optional.
-                items:
-                  properties:
-                    overrides:
-                      description: Optional.
-                      items:
-                        properties:
-                          disabled:
-                            description: Optional.
-                            nullable: true
-                            type: boolean
-                          match:
-                            description: Match allows provides the scope of the override.
-                            oneOf:
-                            - not:
-                                anyOf:
-                                - required:
-                                  - metric
-                                - required:
-                                  - customMetric
-                            - required:
-                              - metric
-                            - required:
-                              - customMetric
-                            properties:
-                              customMetric:
-                                description: Allows free-form specification of a metric.
-                                type: string
-                              metric:
-                                description: One of the well-known Istio Standard
-                                  Metrics.
-                                enum:
-                                - ALL_METRICS
-                                - REQUEST_COUNT
-                                - REQUEST_DURATION
-                                - REQUEST_SIZE
-                                - RESPONSE_SIZE
-                                - TCP_OPENED_CONNECTIONS
-                                - TCP_CLOSED_CONNECTIONS
-                                - TCP_SENT_BYTES
-                                - TCP_RECEIVED_BYTES
-                                - GRPC_REQUEST_MESSAGES
-                                - GRPC_RESPONSE_MESSAGES
-                                type: string
-                              mode:
-                                description: 'Controls which mode of metrics generation
-                                  is selected: CLIENT and/or SERVER.'
-                                enum:
-                                - CLIENT_AND_SERVER
-                                - CLIENT
-                                - SERVER
-                                type: string
-                            type: object
-                          tagOverrides:
-                            additionalProperties:
-                              properties:
-                                operation:
-                                  description: Operation controls whether or not to
-                                    update/add a tag, or to remove it.
-                                  enum:
-                                  - UPSERT
-                                  - REMOVE
-                                  type: string
-                                value:
-                                  description: Value is only considered if the operation
-                                    is `UPSERT`.
-                                  type: string
-                              type: object
-                            description: Optional.
-                            type: object
-                        type: object
-                      type: array
-                    providers:
-                      description: Optional.
-                      items:
-                        properties:
-                          name:
-                            description: Required.
-                            type: string
-                        type: object
-                      type: array
-                  type: object
-                type: array
               selector:
                 description: Optional.
                 properties:
                   matchLabels:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                 type: object
@@ -3934,10 +4011,12 @@ spec:
                             properties:
                               defaultValue:
                                 description: Optional.
+                                format: string
                                 type: string
                               name:
                                 description: Name of the environment variable from
                                   which to extract the tag value.
+                                format: string
                                 type: string
                             type: object
                           header:
@@ -3946,10 +4025,12 @@ spec:
                             properties:
                               defaultValue:
                                 description: Optional.
+                                format: string
                                 type: string
                               name:
                                 description: Name of the header from which to extract
                                   the tag value.
+                                format: string
                                 type: string
                             type: object
                           literal:
@@ -3958,6 +4039,7 @@ spec:
                             properties:
                               value:
                                 description: The tag value to use.
+                                format: string
                                 type: string
                             type: object
                         type: object
@@ -3973,6 +4055,7 @@ spec:
                         properties:
                           name:
                             description: Required.
+                            format: string
                             type: string
                         type: object
                       type: array
@@ -3999,7 +4082,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     release: istio
   name: virtualservices.networking.istio.io
@@ -4046,17 +4129,20 @@ spec:
                 description: A list of namespaces to which this virtual service is
                   exported.
                 items:
+                  format: string
                   type: string
                 type: array
               gateways:
                 description: The names of gateways and sidecars that should apply
                   these routes.
                 items:
+                  format: string
                   type: string
                 type: array
               hosts:
                 description: The destination hosts to which traffic is being sent.
                 items:
+                  format: string
                   type: string
                 type: array
               http:
@@ -4071,18 +4157,21 @@ spec:
                           type: boolean
                         allowHeaders:
                           items:
+                            format: string
                             type: string
                           type: array
                         allowMethods:
                           description: List of HTTP methods allowed to access the
                             resource.
                           items:
+                            format: string
                             type: string
                           type: array
                         allowOrigin:
                           description: The list of origins that are allowed to perform
                             CORS requests.
                           items:
+                            format: string
                             type: string
                           type: array
                         allowOrigins:
@@ -4105,16 +4194,20 @@ spec:
                               - regex
                             properties:
                               exact:
+                                format: string
                                 type: string
                               prefix:
+                                format: string
                                 type: string
                               regex:
                                 description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                format: string
                                 type: string
                             type: object
                           type: array
                         exposeHeaders:
                           items:
+                            format: string
                             type: string
                           type: array
                         maxAge:
@@ -4124,10 +4217,12 @@ spec:
                       properties:
                         name:
                           description: Name specifies the name of the delegate VirtualService.
+                          format: string
                           type: string
                         namespace:
                           description: Namespace specifies the namespace where the
                             delegate VirtualService resides.
+                          format: string
                           type: string
                       type: object
                     fault:
@@ -4152,8 +4247,10 @@ spec:
                             - http2Error
                           properties:
                             grpcStatus:
+                              format: string
                               type: string
                             http2Error:
+                              format: string
                               type: string
                             httpStatus:
                               description: HTTP status code to use to abort the Http
@@ -4209,14 +4306,17 @@ spec:
                           properties:
                             add:
                               additionalProperties:
+                                format: string
                                 type: string
                               type: object
                             remove:
                               items:
+                                format: string
                                 type: string
                               type: array
                             set:
                               additionalProperties:
+                                format: string
                                 type: string
                               type: object
                           type: object
@@ -4224,14 +4324,17 @@ spec:
                           properties:
                             add:
                               additionalProperties:
+                                format: string
                                 type: string
                               type: object
                             remove:
                               items:
+                                format: string
                                 type: string
                               type: array
                             set:
                               additionalProperties:
+                                format: string
                                 type: string
                               type: object
                           type: object
@@ -4257,17 +4360,21 @@ spec:
                               - regex
                             properties:
                               exact:
+                                format: string
                                 type: string
                               prefix:
+                                format: string
                                 type: string
                               regex:
                                 description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                format: string
                                 type: string
                             type: object
                           gateways:
                             description: Names of gateways where the rule should be
                               applied.
                             items:
+                              format: string
                               type: string
                             type: array
                           headers:
@@ -4289,11 +4396,14 @@ spec:
                                 - regex
                               properties:
                                 exact:
+                                  format: string
                                   type: string
                                 prefix:
+                                  format: string
                                   type: string
                                 regex:
                                   description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                  format: string
                                   type: string
                               type: object
                             type: object
@@ -4319,15 +4429,19 @@ spec:
                               - regex
                             properties:
                               exact:
+                                format: string
                                 type: string
                               prefix:
+                                format: string
                                 type: string
                               regex:
                                 description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                format: string
                                 type: string
                             type: object
                           name:
                             description: The name assigned to a match.
+                            format: string
                             type: string
                           port:
                             description: Specifies the ports on the host that is being
@@ -4352,11 +4466,14 @@ spec:
                                 - regex
                               properties:
                                 exact:
+                                  format: string
                                   type: string
                                 prefix:
+                                  format: string
                                   type: string
                                 regex:
                                   description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                  format: string
                                   type: string
                               type: object
                             description: Query parameters for matching.
@@ -4379,20 +4496,25 @@ spec:
                               - regex
                             properties:
                               exact:
+                                format: string
                                 type: string
                               prefix:
+                                format: string
                                 type: string
                               regex:
                                 description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                format: string
                                 type: string
                             type: object
                           sourceLabels:
                             additionalProperties:
+                              format: string
                               type: string
                             type: object
                           sourceNamespace:
                             description: Source namespace constraining the applicability
                               of a rule to workloads in that namespace.
+                            format: string
                             type: string
                           uri:
                             oneOf:
@@ -4412,11 +4534,14 @@ spec:
                               - regex
                             properties:
                               exact:
+                                format: string
                                 type: string
                               prefix:
+                                format: string
                                 type: string
                               regex:
                                 description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                format: string
                                 type: string
                             type: object
                           withoutHeaders:
@@ -4438,11 +4563,14 @@ spec:
                                 - regex
                               properties:
                                 exact:
+                                  format: string
                                   type: string
                                 prefix:
+                                  format: string
                                   type: string
                                 regex:
                                   description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                  format: string
                                   type: string
                               type: object
                             description: withoutHeader has the same syntax with the
@@ -4454,6 +4582,7 @@ spec:
                       properties:
                         host:
                           description: The name of a service from the service registry.
+                          format: string
                           type: string
                         port:
                           description: Specifies the port on the host that is being
@@ -4464,6 +4593,7 @@ spec:
                           type: object
                         subset:
                           description: The name of a subset within the service.
+                          format: string
                           type: string
                       type: object
                     mirror_percent:
@@ -4486,16 +4616,19 @@ spec:
                       type: object
                     name:
                       description: The name assigned to the route for debugging purposes.
+                      format: string
                       type: string
                     redirect:
                       description: A HTTP rule can either redirect or forward (default)
                         traffic.
                       properties:
                         authority:
+                          format: string
                           type: string
                         redirectCode:
                           type: integer
                         uri:
+                          format: string
                           type: string
                       type: object
                     retries:
@@ -4513,6 +4646,7 @@ spec:
                         retryOn:
                           description: Specifies the conditions under which retry
                             takes place.
+                          format: string
                           type: string
                         retryRemoteLocalities:
                           description: Flag to specify whether the retries should
@@ -4526,8 +4660,10 @@ spec:
                         authority:
                           description: rewrite the Authority/Host header with this
                             value.
+                          format: string
                           type: string
                         uri:
+                          format: string
                           type: string
                       type: object
                     route:
@@ -4540,6 +4676,7 @@ spec:
                               host:
                                 description: The name of a service from the service
                                   registry.
+                                format: string
                                 type: string
                               port:
                                 description: Specifies the port on the host that is
@@ -4550,6 +4687,7 @@ spec:
                                 type: object
                               subset:
                                 description: The name of a subset within the service.
+                                format: string
                                 type: string
                             type: object
                           headers:
@@ -4558,14 +4696,17 @@ spec:
                                 properties:
                                   add:
                                     additionalProperties:
+                                      format: string
                                       type: string
                                     type: object
                                   remove:
                                     items:
+                                      format: string
                                       type: string
                                     type: array
                                   set:
                                     additionalProperties:
+                                      format: string
                                       type: string
                                     type: object
                                 type: object
@@ -4573,14 +4714,17 @@ spec:
                                 properties:
                                   add:
                                     additionalProperties:
+                                      format: string
                                       type: string
                                     type: object
                                   remove:
                                     items:
+                                      format: string
                                       type: string
                                     type: array
                                   set:
                                     additionalProperties:
+                                      format: string
                                       type: string
                                     type: object
                                 type: object
@@ -4606,12 +4750,14 @@ spec:
                             description: IPv4 or IPv6 ip addresses of destination
                               with optional subnet.
                             items:
+                              format: string
                               type: string
                             type: array
                           gateways:
                             description: Names of gateways where the rule should be
                               applied.
                             items:
+                              format: string
                               type: string
                             type: array
                           port:
@@ -4620,15 +4766,18 @@ spec:
                             type: integer
                           sourceLabels:
                             additionalProperties:
+                              format: string
                               type: string
                             type: object
                           sourceNamespace:
                             description: Source namespace constraining the applicability
                               of a rule to workloads in that namespace.
+                            format: string
                             type: string
                           sourceSubnet:
                             description: IPv4 or IPv6 ip address of source with optional
                               subnet.
+                            format: string
                             type: string
                         type: object
                       type: array
@@ -4642,6 +4791,7 @@ spec:
                               host:
                                 description: The name of a service from the service
                                   registry.
+                                format: string
                                 type: string
                               port:
                                 description: Specifies the port on the host that is
@@ -4652,6 +4802,7 @@ spec:
                                 type: object
                               subset:
                                 description: The name of a subset within the service.
+                                format: string
                                 type: string
                             type: object
                           weight:
@@ -4671,12 +4822,14 @@ spec:
                             description: IPv4 or IPv6 ip addresses of destination
                               with optional subnet.
                             items:
+                              format: string
                               type: string
                             type: array
                           gateways:
                             description: Names of gateways where the rule should be
                               applied.
                             items:
+                              format: string
                               type: string
                             type: array
                           port:
@@ -4686,15 +4839,18 @@ spec:
                           sniHosts:
                             description: SNI (server name indicator) to match on.
                             items:
+                              format: string
                               type: string
                             type: array
                           sourceLabels:
                             additionalProperties:
+                              format: string
                               type: string
                             type: object
                           sourceNamespace:
                             description: Source namespace constraining the applicability
                               of a rule to workloads in that namespace.
+                            format: string
                             type: string
                         type: object
                       type: array
@@ -4708,6 +4864,7 @@ spec:
                               host:
                                 description: The name of a service from the service
                                   registry.
+                                format: string
                                 type: string
                               port:
                                 description: Specifies the port on the host that is
@@ -4718,6 +4875,7 @@ spec:
                                 type: object
                               subset:
                                 description: The name of a subset within the service.
+                                format: string
                                 type: string
                             type: object
                           weight:
@@ -4765,17 +4923,20 @@ spec:
                 description: A list of namespaces to which this virtual service is
                   exported.
                 items:
+                  format: string
                   type: string
                 type: array
               gateways:
                 description: The names of gateways and sidecars that should apply
                   these routes.
                 items:
+                  format: string
                   type: string
                 type: array
               hosts:
                 description: The destination hosts to which traffic is being sent.
                 items:
+                  format: string
                   type: string
                 type: array
               http:
@@ -4790,18 +4951,21 @@ spec:
                           type: boolean
                         allowHeaders:
                           items:
+                            format: string
                             type: string
                           type: array
                         allowMethods:
                           description: List of HTTP methods allowed to access the
                             resource.
                           items:
+                            format: string
                             type: string
                           type: array
                         allowOrigin:
                           description: The list of origins that are allowed to perform
                             CORS requests.
                           items:
+                            format: string
                             type: string
                           type: array
                         allowOrigins:
@@ -4824,16 +4988,20 @@ spec:
                               - regex
                             properties:
                               exact:
+                                format: string
                                 type: string
                               prefix:
+                                format: string
                                 type: string
                               regex:
                                 description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                format: string
                                 type: string
                             type: object
                           type: array
                         exposeHeaders:
                           items:
+                            format: string
                             type: string
                           type: array
                         maxAge:
@@ -4843,10 +5011,12 @@ spec:
                       properties:
                         name:
                           description: Name specifies the name of the delegate VirtualService.
+                          format: string
                           type: string
                         namespace:
                           description: Namespace specifies the namespace where the
                             delegate VirtualService resides.
+                          format: string
                           type: string
                       type: object
                     fault:
@@ -4871,8 +5041,10 @@ spec:
                             - http2Error
                           properties:
                             grpcStatus:
+                              format: string
                               type: string
                             http2Error:
+                              format: string
                               type: string
                             httpStatus:
                               description: HTTP status code to use to abort the Http
@@ -4928,14 +5100,17 @@ spec:
                           properties:
                             add:
                               additionalProperties:
+                                format: string
                                 type: string
                               type: object
                             remove:
                               items:
+                                format: string
                                 type: string
                               type: array
                             set:
                               additionalProperties:
+                                format: string
                                 type: string
                               type: object
                           type: object
@@ -4943,14 +5118,17 @@ spec:
                           properties:
                             add:
                               additionalProperties:
+                                format: string
                                 type: string
                               type: object
                             remove:
                               items:
+                                format: string
                                 type: string
                               type: array
                             set:
                               additionalProperties:
+                                format: string
                                 type: string
                               type: object
                           type: object
@@ -4976,17 +5154,21 @@ spec:
                               - regex
                             properties:
                               exact:
+                                format: string
                                 type: string
                               prefix:
+                                format: string
                                 type: string
                               regex:
                                 description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                format: string
                                 type: string
                             type: object
                           gateways:
                             description: Names of gateways where the rule should be
                               applied.
                             items:
+                              format: string
                               type: string
                             type: array
                           headers:
@@ -5008,11 +5190,14 @@ spec:
                                 - regex
                               properties:
                                 exact:
+                                  format: string
                                   type: string
                                 prefix:
+                                  format: string
                                   type: string
                                 regex:
                                   description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                  format: string
                                   type: string
                               type: object
                             type: object
@@ -5038,15 +5223,19 @@ spec:
                               - regex
                             properties:
                               exact:
+                                format: string
                                 type: string
                               prefix:
+                                format: string
                                 type: string
                               regex:
                                 description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                format: string
                                 type: string
                             type: object
                           name:
                             description: The name assigned to a match.
+                            format: string
                             type: string
                           port:
                             description: Specifies the ports on the host that is being
@@ -5071,11 +5260,14 @@ spec:
                                 - regex
                               properties:
                                 exact:
+                                  format: string
                                   type: string
                                 prefix:
+                                  format: string
                                   type: string
                                 regex:
                                   description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                  format: string
                                   type: string
                               type: object
                             description: Query parameters for matching.
@@ -5098,20 +5290,25 @@ spec:
                               - regex
                             properties:
                               exact:
+                                format: string
                                 type: string
                               prefix:
+                                format: string
                                 type: string
                               regex:
                                 description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                format: string
                                 type: string
                             type: object
                           sourceLabels:
                             additionalProperties:
+                              format: string
                               type: string
                             type: object
                           sourceNamespace:
                             description: Source namespace constraining the applicability
                               of a rule to workloads in that namespace.
+                            format: string
                             type: string
                           uri:
                             oneOf:
@@ -5131,11 +5328,14 @@ spec:
                               - regex
                             properties:
                               exact:
+                                format: string
                                 type: string
                               prefix:
+                                format: string
                                 type: string
                               regex:
                                 description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                format: string
                                 type: string
                             type: object
                           withoutHeaders:
@@ -5157,11 +5357,14 @@ spec:
                                 - regex
                               properties:
                                 exact:
+                                  format: string
                                   type: string
                                 prefix:
+                                  format: string
                                   type: string
                                 regex:
                                   description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                  format: string
                                   type: string
                               type: object
                             description: withoutHeader has the same syntax with the
@@ -5173,6 +5376,7 @@ spec:
                       properties:
                         host:
                           description: The name of a service from the service registry.
+                          format: string
                           type: string
                         port:
                           description: Specifies the port on the host that is being
@@ -5183,6 +5387,7 @@ spec:
                           type: object
                         subset:
                           description: The name of a subset within the service.
+                          format: string
                           type: string
                       type: object
                     mirror_percent:
@@ -5205,16 +5410,19 @@ spec:
                       type: object
                     name:
                       description: The name assigned to the route for debugging purposes.
+                      format: string
                       type: string
                     redirect:
                       description: A HTTP rule can either redirect or forward (default)
                         traffic.
                       properties:
                         authority:
+                          format: string
                           type: string
                         redirectCode:
                           type: integer
                         uri:
+                          format: string
                           type: string
                       type: object
                     retries:
@@ -5232,6 +5440,7 @@ spec:
                         retryOn:
                           description: Specifies the conditions under which retry
                             takes place.
+                          format: string
                           type: string
                         retryRemoteLocalities:
                           description: Flag to specify whether the retries should
@@ -5245,8 +5454,10 @@ spec:
                         authority:
                           description: rewrite the Authority/Host header with this
                             value.
+                          format: string
                           type: string
                         uri:
+                          format: string
                           type: string
                       type: object
                     route:
@@ -5259,6 +5470,7 @@ spec:
                               host:
                                 description: The name of a service from the service
                                   registry.
+                                format: string
                                 type: string
                               port:
                                 description: Specifies the port on the host that is
@@ -5269,6 +5481,7 @@ spec:
                                 type: object
                               subset:
                                 description: The name of a subset within the service.
+                                format: string
                                 type: string
                             type: object
                           headers:
@@ -5277,14 +5490,17 @@ spec:
                                 properties:
                                   add:
                                     additionalProperties:
+                                      format: string
                                       type: string
                                     type: object
                                   remove:
                                     items:
+                                      format: string
                                       type: string
                                     type: array
                                   set:
                                     additionalProperties:
+                                      format: string
                                       type: string
                                     type: object
                                 type: object
@@ -5292,14 +5508,17 @@ spec:
                                 properties:
                                   add:
                                     additionalProperties:
+                                      format: string
                                       type: string
                                     type: object
                                   remove:
                                     items:
+                                      format: string
                                       type: string
                                     type: array
                                   set:
                                     additionalProperties:
+                                      format: string
                                       type: string
                                     type: object
                                 type: object
@@ -5325,12 +5544,14 @@ spec:
                             description: IPv4 or IPv6 ip addresses of destination
                               with optional subnet.
                             items:
+                              format: string
                               type: string
                             type: array
                           gateways:
                             description: Names of gateways where the rule should be
                               applied.
                             items:
+                              format: string
                               type: string
                             type: array
                           port:
@@ -5339,15 +5560,18 @@ spec:
                             type: integer
                           sourceLabels:
                             additionalProperties:
+                              format: string
                               type: string
                             type: object
                           sourceNamespace:
                             description: Source namespace constraining the applicability
                               of a rule to workloads in that namespace.
+                            format: string
                             type: string
                           sourceSubnet:
                             description: IPv4 or IPv6 ip address of source with optional
                               subnet.
+                            format: string
                             type: string
                         type: object
                       type: array
@@ -5361,6 +5585,7 @@ spec:
                               host:
                                 description: The name of a service from the service
                                   registry.
+                                format: string
                                 type: string
                               port:
                                 description: Specifies the port on the host that is
@@ -5371,6 +5596,7 @@ spec:
                                 type: object
                               subset:
                                 description: The name of a subset within the service.
+                                format: string
                                 type: string
                             type: object
                           weight:
@@ -5390,12 +5616,14 @@ spec:
                             description: IPv4 or IPv6 ip addresses of destination
                               with optional subnet.
                             items:
+                              format: string
                               type: string
                             type: array
                           gateways:
                             description: Names of gateways where the rule should be
                               applied.
                             items:
+                              format: string
                               type: string
                             type: array
                           port:
@@ -5405,15 +5633,18 @@ spec:
                           sniHosts:
                             description: SNI (server name indicator) to match on.
                             items:
+                              format: string
                               type: string
                             type: array
                           sourceLabels:
                             additionalProperties:
+                              format: string
                               type: string
                             type: object
                           sourceNamespace:
                             description: Source namespace constraining the applicability
                               of a rule to workloads in that namespace.
+                            format: string
                             type: string
                         type: object
                       type: array
@@ -5427,6 +5658,7 @@ spec:
                               host:
                                 description: The name of a service from the service
                                   registry.
+                                format: string
                                 type: string
                               port:
                                 description: Specifies the port on the host that is
@@ -5437,6 +5669,7 @@ spec:
                                 type: object
                               subset:
                                 description: The name of a subset within the service.
+                                format: string
                                 type: string
                             type: object
                           weight:
@@ -5464,7 +5697,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     release: istio
   name: workloadentries.networking.istio.io
@@ -5504,16 +5737,20 @@ spec:
               more details at: https://istio.io/docs/reference/config/networking/workload-entry.html'
             properties:
               address:
+                format: string
                 type: string
               labels:
                 additionalProperties:
+                  format: string
                   type: string
                 description: One or more labels associated with the endpoint.
                 type: object
               locality:
                 description: The locality associated with the endpoint.
+                format: string
                 type: string
               network:
+                format: string
                 type: string
               ports:
                 additionalProperties:
@@ -5521,6 +5758,7 @@ spec:
                 description: Set of ports associated with the endpoint.
                 type: object
               serviceAccount:
+                format: string
                 type: string
               weight:
                 description: The load balancing weight associated with the endpoint.
@@ -5556,16 +5794,20 @@ spec:
               more details at: https://istio.io/docs/reference/config/networking/workload-entry.html'
             properties:
               address:
+                format: string
                 type: string
               labels:
                 additionalProperties:
+                  format: string
                   type: string
                 description: One or more labels associated with the endpoint.
                 type: object
               locality:
                 description: The locality associated with the endpoint.
+                format: string
                 type: string
               network:
+                format: string
                 type: string
               ports:
                 additionalProperties:
@@ -5573,6 +5815,7 @@ spec:
                 description: Set of ports associated with the endpoint.
                 type: object
               serviceAccount:
+                format: string
                 type: string
               weight:
                 description: The load balancing weight associated with the endpoint.
@@ -5593,7 +5836,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     heritage: Tiller
     release: istio
   name: workloadgroups.networking.istio.io
@@ -5633,10 +5876,12 @@ spec:
                 properties:
                   annotations:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                   labels:
                     additionalProperties:
+                      format: string
                       type: string
                     type: object
                 type: object
@@ -5666,6 +5911,7 @@ spec:
                       command:
                         description: Command to run.
                         items:
+                          format: string
                           type: string
                         type: array
                     type: object
@@ -5679,24 +5925,29 @@ spec:
                       host:
                         description: Host name to connect to, defaults to the pod
                           IP.
+                        format: string
                         type: string
                       httpHeaders:
                         description: Headers the proxy will pass on to make the request.
                         items:
                           properties:
                             name:
+                              format: string
                               type: string
                             value:
+                              format: string
                               type: string
                           type: object
                         type: array
                       path:
                         description: Path to access on the HTTP server.
+                        format: string
                         type: string
                       port:
                         description: Port on which the endpoint lives.
                         type: integer
                       scheme:
+                        format: string
                         type: string
                     type: object
                   initialDelaySeconds:
@@ -5717,6 +5968,7 @@ spec:
                     description: Health is determined by if the proxy is able to connect.
                     properties:
                       host:
+                        format: string
                         type: string
                       port:
                         type: integer
@@ -5731,16 +5983,20 @@ spec:
                   resources that belong to this `WorkloadGroup`.
                 properties:
                   address:
+                    format: string
                     type: string
                   labels:
                     additionalProperties:
+                      format: string
                       type: string
                     description: One or more labels associated with the endpoint.
                     type: object
                   locality:
                     description: The locality associated with the endpoint.
+                    format: string
                     type: string
                   network:
+                    format: string
                     type: string
                   ports:
                     additionalProperties:
@@ -5748,6 +6004,7 @@ spec:
                     description: Set of ports associated with the endpoint.
                     type: object
                   serviceAccount:
+                    format: string
                     type: string
                   weight:
                     description: The load balancing weight associated with the endpoint.
@@ -5768,7 +6025,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio: ingressgateway
     istio.io/rev: default
@@ -5782,7 +6039,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: istio-reader
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     release: istio
   name: istio-reader-service-account
   namespace: istio-system
@@ -5792,17 +6049,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
-    release: istio
-  name: istiod
-  namespace: istio-system
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
-    app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     release: istio
   name: istiod-service-account
   namespace: istio-system
@@ -5812,87 +6059,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: istio-reader
-    cloudfoundry.org/istio_version: 1.11.4
-    release: istio
-  name: istio-reader-clusterrole-istio-system
-rules:
-- apiGroups:
-  - config.istio.io
-  - security.istio.io
-  - networking.istio.io
-  - authentication.istio.io
-  - rbac.istio.io
-  resources:
-  - '*'
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - endpoints
-  - pods
-  - services
-  - nodes
-  - replicationcontrollers
-  - namespaces
-  - secrets
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - networking.istio.io
-  resources:
-  - workloadentries
-  verbs:
-  - get
-  - watch
-  - list
-- apiGroups:
-  - apiextensions.k8s.io
-  resources:
-  - customresourcedefinitions
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - discovery.k8s.io
-  resources:
-  - endpointslices
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - apps
-  resources:
-  - replicasets
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - authentication.k8s.io
-  resources:
-  - tokenreviews
-  verbs:
-  - create
-- apiGroups:
-  - authorization.k8s.io
-  resources:
-  - subjectaccessreviews
-  verbs:
-  - create
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app: istio-reader
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     release: istio
   name: istio-reader-istio-system
 rules:
@@ -5966,204 +6133,13 @@ rules:
   - subjectaccessreviews
   verbs:
   - create
-- apiGroups:
-  - multicluster.x-k8s.io
-  resources:
-  - serviceexports
-  verbs:
-  - get
-  - watch
-  - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
-    release: istio
-  name: istiod-clusterrole-istio-system
-rules:
-- apiGroups:
-  - admissionregistration.k8s.io
-  resources:
-  - mutatingwebhookconfigurations
-  verbs:
-  - get
-  - list
-  - watch
-  - update
-  - patch
-- apiGroups:
-  - admissionregistration.k8s.io
-  resources:
-  - validatingwebhookconfigurations
-  verbs:
-  - get
-  - list
-  - watch
-  - update
-- apiGroups:
-  - config.istio.io
-  - security.istio.io
-  - networking.istio.io
-  - authentication.istio.io
-  - rbac.istio.io
-  - telemetry.istio.io
-  resources:
-  - '*'
-  verbs:
-  - get
-  - watch
-  - list
-- apiGroups:
-  - networking.istio.io
-  resources:
-  - workloadentries
-  verbs:
-  - get
-  - watch
-  - list
-  - update
-  - patch
-  - create
-  - delete
-- apiGroups:
-  - networking.istio.io
-  resources:
-  - workloadentries/status
-  verbs:
-  - get
-  - watch
-  - list
-  - update
-  - patch
-  - create
-  - delete
-- apiGroups:
-  - apiextensions.k8s.io
-  resources:
-  - customresourcedefinitions
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - ""
-  resources:
-  - pods
-  - nodes
-  - services
-  - namespaces
-  - endpoints
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - discovery.k8s.io
-  resources:
-  - endpointslices
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - networking.k8s.io
-  resources:
-  - ingresses
-  - ingressclasses
-  verbs:
-  - get
-  - list
-  - watch
-- apiGroups:
-  - networking.k8s.io
-  resources:
-  - ingresses/status
-  verbs:
-  - '*'
-- apiGroups:
-  - ""
-  resources:
-  - configmaps
-  verbs:
-  - create
-  - get
-  - list
-  - watch
-  - update
-- apiGroups:
-  - certificates.k8s.io
-  resources:
-  - certificatesigningrequests
-  - certificatesigningrequests/approval
-  - certificatesigningrequests/status
-  verbs:
-  - update
-  - create
-  - get
-  - delete
-  - watch
-- apiGroups:
-  - certificates.k8s.io
-  resourceNames:
-  - kubernetes.io/legacy-unknown
-  resources:
-  - signers
-  verbs:
-  - approve
-- apiGroups:
-  - authentication.k8s.io
-  resources:
-  - tokenreviews
-  verbs:
-  - create
-- apiGroups:
-  - authorization.k8s.io
-  resources:
-  - subjectaccessreviews
-  verbs:
-  - create
-- apiGroups:
-  - networking.x-k8s.io
-  resources:
-  - '*'
-  verbs:
-  - get
-  - watch
-  - list
-- apiGroups:
-  - networking.x-k8s.io
-  resources:
-  - '*'
-  verbs:
-  - update
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - get
-  - watch
-  - list
-- apiGroups:
-  - multicluster.x-k8s.io
-  resources:
-  - serviceexports
-  verbs:
-  - get
-  - watch
-  - list
-  - create
-  - delete
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  labels:
-    app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     release: istio
   name: istiod-istio-system
 rules:
@@ -6346,24 +6322,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: istio-reader
-    cloudfoundry.org/istio_version: 1.11.4
-    release: istio
-  name: istio-reader-clusterrole-istio-system
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: istio-reader-clusterrole-istio-system
-subjects:
-- kind: ServiceAccount
-  name: istio-reader-service-account
-  namespace: istio-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  labels:
-    app: istio-reader
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     release: istio
   name: istio-reader-istio-system
 roleRef:
@@ -6380,24 +6339,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
-    release: istio
-  name: istiod-clusterrole-istio-system
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: istiod-clusterrole-istio-system
-subjects:
-- kind: ServiceAccount
-  name: istiod
-  namespace: istio-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  labels:
-    app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     release: istio
   name: istiod-istio-system
 roleRef:
@@ -6414,11 +6356,10 @@ kind: ValidatingWebhookConfiguration
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     istio: istiod
-    istio.io/rev: default
     release: istio
-  name: istio-validator-istio-system
+  name: istiod-istio-system
 webhooks:
 - admissionReviewVersions:
   - v1beta1
@@ -6430,45 +6371,11 @@ webhooks:
       namespace: istio-system
       path: /validate
   failurePolicy: Ignore
-  name: rev.validation.istio.io
-  objectSelector:
-    matchExpressions:
-    - key: istio.io/rev
-      operator: In
-      values:
-      - default
-  rules:
-  - apiGroups:
-    - security.istio.io
-    - networking.istio.io
-    apiVersions:
-    - '*'
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - '*'
-  sideEffects: None
-- admissionReviewVersions:
-  - v1beta1
-  - v1
-  clientConfig:
-    caBundle: ""
-    service:
-      name: istiod
-      namespace: istio-system
-      path: /validate
-  failurePolicy: Ignore
   name: validation.istio.io
-  objectSelector:
-    matchExpressions:
-    - key: istio.io/rev
-      operator: DoesNotExist
   rules:
   - apiGroups:
     - security.istio.io
     - networking.istio.io
-    - telemetry.istio.io
     apiVersions:
     - '*'
     operations:
@@ -6482,7 +6389,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: Pilot
@@ -6576,101 +6483,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
-    install.operator.istio.io/owning-resource: unknown
-    istio.io/rev: default
-    operator.istio.io/component: Pilot
-  name: metadata-exchange-1.11
-  namespace: istio-system
-spec:
-  configPatches:
-  - applyTo: HTTP_FILTER
-    match:
-      context: SIDECAR_INBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
-  - applyTo: HTTP_FILTER
-    match:
-      context: SIDECAR_OUTBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
-  - applyTo: HTTP_FILTER
-    match:
-      context: GATEWAY
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: Pilot
@@ -6764,7 +6577,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     istio.io/rev: default
   name: stats-filter-1.10
   namespace: istio-system
@@ -6830,7 +6643,6 @@ spec:
                   {
                     "debug": "false",
                     "stat_prefix": "istio",
-                    "disable_host_header_fallback": true,
                     "metrics": [
                       {
                         "dimensions": {
@@ -6887,130 +6699,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
-    istio.io/rev: default
-  name: stats-filter-1.11
-  namespace: istio-system
-spec:
-  configPatches:
-  - applyTo: HTTP_FILTER
-    match:
-      context: SIDECAR_OUTBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-            subFilter:
-              name: envoy.filters.http.router
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.stats
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {
-                    "debug": "false",
-                    "stat_prefix": "istio"
-                  }
-              root_id: stats_outbound
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.stats
-                runtime: envoy.wasm.runtime.null
-                vm_id: stats_outbound
-  - applyTo: HTTP_FILTER
-    match:
-      context: SIDECAR_INBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-            subFilter:
-              name: envoy.filters.http.router
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.stats
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {
-                    "debug": "false",
-                    "stat_prefix": "istio",
-                    "disable_host_header_fallback": true,
-                    "metrics": [
-                      {
-                        "dimensions": {
-                          "destination_cluster": "node.metadata['CLUSTER_ID']",
-                          "source_cluster": "downstream_peer.cluster_id"
-                        }
-                      }
-                    ]
-                  }
-              root_id: stats_inbound
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.stats
-                runtime: envoy.wasm.runtime.null
-                vm_id: stats_inbound
-  - applyTo: HTTP_FILTER
-    match:
-      context: GATEWAY
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-            subFilter:
-              name: envoy.filters.http.router
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.stats
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {
-                    "debug": "false",
-                    "stat_prefix": "istio",
-                    "disable_host_header_fallback": true
-                  }
-              root_id: stats_outbound
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.stats
-                runtime: envoy.wasm.runtime.null
-                vm_id: stats_outbound
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     istio.io/rev: default
   name: stats-filter-1.9
   namespace: istio-system
@@ -7148,7 +6837,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     istio.io/rev: default
   name: tcp-metadata-exchange-1.10
   namespace: istio-system
@@ -7206,65 +6895,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
-    istio.io/rev: default
-  name: tcp-metadata-exchange-1.11
-  namespace: istio-system
-spec:
-  configPatches:
-  - applyTo: NETWORK_FILTER
-    match:
-      context: SIDECAR_INBOUND
-      listener: {}
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-          value:
-            protocol: istio-peer-exchange
-  - applyTo: CLUSTER
-    match:
-      cluster: {}
-      context: SIDECAR_OUTBOUND
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: MERGE
-      value:
-        filters:
-        - name: istio.metadata_exchange
-          typed_config:
-            '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-            type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-            value:
-              protocol: istio-peer-exchange
-  - applyTo: CLUSTER
-    match:
-      cluster: {}
-      context: GATEWAY
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: MERGE
-      value:
-        filters:
-        - name: istio.metadata_exchange
-          typed_config:
-            '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-            type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-            value:
-              protocol: istio-peer-exchange
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     istio.io/rev: default
   name: tcp-metadata-exchange-1.9
   namespace: istio-system
@@ -7322,7 +6953,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     istio.io/rev: default
   name: tcp-stats-filter-1.10
   namespace: istio-system
@@ -7437,122 +7068,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
-    istio.io/rev: default
-  name: tcp-stats-filter-1.11
-  namespace: istio-system
-spec:
-  configPatches:
-  - applyTo: NETWORK_FILTER
-    match:
-      context: SIDECAR_INBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.tcp_proxy
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.stats
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.network.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {
-                    "debug": "false",
-                    "stat_prefix": "istio",
-                    "metrics": [
-                      {
-                        "dimensions": {
-                          "destination_cluster": "node.metadata['CLUSTER_ID']",
-                          "source_cluster": "downstream_peer.cluster_id"
-                        }
-                      }
-                    ]
-                  }
-              root_id: stats_inbound
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.stats
-                runtime: envoy.wasm.runtime.null
-                vm_id: tcp_stats_inbound
-  - applyTo: NETWORK_FILTER
-    match:
-      context: SIDECAR_OUTBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.tcp_proxy
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.stats
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.network.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {
-                    "debug": "false",
-                    "stat_prefix": "istio"
-                  }
-              root_id: stats_outbound
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.stats
-                runtime: envoy.wasm.runtime.null
-                vm_id: tcp_stats_outbound
-  - applyTo: NETWORK_FILTER
-    match:
-      context: GATEWAY
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.tcp_proxy
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.stats
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.network.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {
-                    "debug": "false",
-                    "stat_prefix": "istio"
-                  }
-              root_id: stats_outbound
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.stats
-                runtime: envoy.wasm.runtime.null
-                vm_id: tcp_stats_outbound
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     istio.io/rev: default
   name: tcp-stats-filter-1.9
   namespace: istio-system
@@ -7734,7 +7250,7 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: Pilot
@@ -7763,6 +7279,7 @@ data:
             security.istio.io/tlsMode: {{ index .ObjectMeta.Labels `security.istio.io/tlsMode` | default "istio"  | quote }}
             service.istio.io/canonical-name: {{ index .ObjectMeta.Labels `service.istio.io/canonical-name` | default (index .ObjectMeta.Labels `app.kubernetes.io/name`) | default (index .ObjectMeta.Labels `app`) | default .DeploymentMeta.Name  | quote }}
             service.istio.io/canonical-revision: {{ index .ObjectMeta.Labels `service.istio.io/canonical-revision` | default (index .ObjectMeta.Labels `app.kubernetes.io/version`) | default (index .ObjectMeta.Labels `version`) | default "latest"  | quote }}
+            istio.io/rev: {{ .Revision | default "default" | quote }}
           annotations: {
             {{- if eq (len $containers) 1 }}
             kubectl.kubernetes.io/default-logs-container: "{{ index $containers 0 }}",
@@ -7895,7 +7412,7 @@ data:
             {{- end }}
             restartPolicy: Always
           {{ end -}}
-          {{- if eq (annotation .ObjectMeta `sidecar.istio.io/enableCoreDump` .Values.global.proxy.enableCoreDump) "true" }}
+          {{- if eq .Values.global.proxy.enableCoreDump true }}
           - name: enable-core-dump
             args:
             - -c
@@ -7938,6 +7455,12 @@ data:
             - sidecar
             - --domain
             - $(POD_NAMESPACE).svc.{{ .Values.global.proxy.clusterDomain }}
+            - --serviceCluster
+            {{ if ne "" (index .ObjectMeta.Labels "app") -}}
+            - "{{ index .ObjectMeta.Labels `app` }}.$(POD_NAMESPACE)"
+            {{ else -}}
+            - "{{ valueOrDefault .DeploymentMeta.Name `istio-proxy` }}.{{ valueOrDefault .DeploymentMeta.Namespace `default` }}"
+            {{ end -}}
             - --proxyLogLevel={{ annotation .ObjectMeta `sidecar.istio.io/logLevel` .Values.global.proxy.logLevel }}
             - --proxyComponentLogLevel={{ annotation .ObjectMeta `sidecar.istio.io/componentLogLevel` .Values.global.proxy.componentLogLevel }}
             - --log_output_level={{ annotation .ObjectMeta `sidecar.istio.io/agentLogLevel` .Values.global.logging.level }}
@@ -7947,9 +7470,9 @@ data:
           {{- if .Values.global.logAsJson }}
             - --log_as_json
           {{- end }}
-          {{- if gt .EstimatedConcurrency 0 }}
+          {{- if gt .ProxyConfig.Concurrency.GetValue 0 }}
             - --concurrency
-            - "{{ .EstimatedConcurrency }}"
+            - "{{ .ProxyConfig.Concurrency.GetValue }}"
           {{- end -}}
           {{- if .Values.global.proxy.lifecycle }}
             lifecycle:
@@ -7997,6 +7520,14 @@ data:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            - name: CANONICAL_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['service.istio.io/canonical-name']
+            - name: CANONICAL_REVISION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['service.istio.io/canonical-revision']
             - name: PROXY_CONFIG
               value: |
                      {{ protoToJSON .ProxyConfig }}
@@ -8023,6 +7554,11 @@ data:
             - name: ISTIO_META_NETWORK
               value: "{{ .Values.global.network }}"
             {{- end }}
+            {{ if .ObjectMeta.Annotations }}
+            - name: ISTIO_METAJSON_ANNOTATIONS
+              value: |
+                     {{ toJSON .ObjectMeta.Annotations }}
+            {{ end }}
             {{- if .DeploymentMeta.Name }}
             - name: ISTIO_META_WORKLOAD_NAME
               value: "{{ .DeploymentMeta.Name }}"
@@ -8082,7 +7618,7 @@ data:
                 drop:
                 - ALL
               privileged: {{ .Values.global.proxy.privileged }}
-              readOnlyRootFilesystem: {{ ne (annotation .ObjectMeta `sidecar.istio.io/enableCoreDump` .Values.global.proxy.enableCoreDump) "true" }}
+              readOnlyRootFilesystem: {{ not .Values.global.proxy.enableCoreDump }}
               runAsGroup: 1337
               fsGroup: 1337
               {{ if or (eq (annotation .ObjectMeta `sidecar.istio.io/interceptionMode` .ProxyConfig.InterceptionMode) `TPROXY`) (eq (annotation .ObjectMeta `sidecar.istio.io/capNetBindService` .Values.global.proxy.capNetBindService) `true`) -}}
@@ -8175,6 +7711,16 @@ data:
                 - path: "annotations"
                   fieldRef:
                     fieldPath: metadata.annotations
+                - path: "cpu-limit"
+                  resourceFieldRef:
+                    containerName: istio-proxy
+                    resource: limits.cpu
+                    divisor: 1m
+                - path: "cpu-request"
+                  resourceFieldRef:
+                    containerName: istio-proxy
+                    resource: requests.cpu
+                    divisor: 1m
           {{- if eq .Values.global.jwtPolicy "third-party-jwt" }}
           - name: istio-token
             projected:
@@ -8253,6 +7799,12 @@ data:
             - router
             - --domain
             - $(POD_NAMESPACE).svc.{{ .Values.global.proxy.clusterDomain }}
+            - --serviceCluster
+            {{ if ne "" (index .ObjectMeta.Labels "app") -}}
+            - "{{ index .ObjectMeta.Labels `app` }}.$(POD_NAMESPACE)"
+            {{ else -}}
+            - "{{ valueOrDefault .DeploymentMeta.Name `istio-proxy` }}.{{ valueOrDefault .DeploymentMeta.Namespace `default` }}"
+            {{ end -}}
             - --proxyLogLevel={{ annotation .ObjectMeta `sidecar.istio.io/logLevel` .Values.global.proxy.logLevel }}
             - --proxyComponentLogLevel={{ annotation .ObjectMeta `sidecar.istio.io/componentLogLevel` .Values.global.proxy.componentLogLevel }}
             - --log_output_level={{ annotation .ObjectMeta `sidecar.istio.io/agentLogLevel` .Values.global.logging.level }}
@@ -8297,6 +7849,14 @@ data:
               valueFrom:
                 fieldRef:
                   fieldPath: status.hostIP
+            - name: CANONICAL_SERVICE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['service.istio.io/canonical-name']
+            - name: CANONICAL_REVISION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['service.istio.io/canonical-revision']
             - name: PROXY_CONFIG
               value: |
                      {{ protoToJSON .ProxyConfig }}
@@ -8323,6 +7883,11 @@ data:
             - name: ISTIO_META_NETWORK
               value: "{{ .Values.global.network }}"
             {{- end }}
+            {{ if .ObjectMeta.Annotations }}
+            - name: ISTIO_METAJSON_ANNOTATIONS
+              value: |
+                     {{ toJSON .ObjectMeta.Annotations }}
+            {{ end }}
             {{- if .DeploymentMeta.Name }}
             - name: ISTIO_META_WORKLOAD_NAME
               value: "{{ .DeploymentMeta.Name }}"
@@ -8393,6 +7958,16 @@ data:
                 - path: "annotations"
                   fieldRef:
                     fieldPath: metadata.annotations
+                - path: "cpu-limit"
+                  resourceFieldRef:
+                    containerName: istio-proxy
+                    resource: limits.cpu
+                    divisor: 1m
+                - path: "cpu-request"
+                  resourceFieldRef:
+                    containerName: istio-proxy
+                    resource: requests.cpu
+                    divisor: 1m
           {{- if eq .Values.global.jwtPolicy "third-party-jwt" }}
           - name: istio-token
             projected:
@@ -8428,305 +8003,10 @@ data:
           securityContext:
             fsGroup: 1337
           {{- end }}
-      grpc-simple: |
-        spec:
-          initContainers:
-            - name: grpc-bootstrap-init
-              image: busybox:1.28
-              volumeMounts:
-                - mountPath: /var/lib/grpc/data/
-                  name: grpc-io-proxyless-bootstrap
-              env:
-                - name: INSTANCE_IP
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: status.podIP
-                - name: POD_NAME
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.name
-                - name: POD_NAMESPACE
-                  valueFrom:
-                    fieldRef:
-                      fieldPath: metadata.namespace
-              command:
-                - sh
-                - "-c"
-                - |-
-                  NODE_ID="sidecar~${INSTANCE_IP}~${POD_NAME}.${POD_NAMESPACE}~cluster.local"
-                  echo '
-                  {
-                    "xds_servers": [
-                      {
-                        "server_uri": "dns:///istiod.istio-system.svc:15010",
-                        "channel_creds": [{"type": "insecure"}],
-                        "server_features" : ["xds_v3"]
-                      }
-                    ],
-                    "node": {
-                      "id": "'${NODE_ID}'",
-                      "metadata": {
-                        "GENERATOR": "grpc"
-                      }
-                    }
-                  }' > /var/lib/grpc/data/bootstrap.json
-          containers:
-          {{- range $index, $container := .Spec.Containers }}
-          - name: {{ $container.Name }}
-            env:
-              - name: GRPC_XDS_BOOTSTRAP
-                value: /var/lib/grpc/data/bootstrap.json
-              - name: GRPC_GO_LOG_VERBOSITY_LEVEL
-                value: "99"
-              - name: GRPC_GO_LOG_SEVERITY_LEVEL
-                value: info
-            volumeMounts:
-              - mountPath: /var/lib/grpc/data/
-                name: grpc-io-proxyless-bootstrap
-          {{- end }}
-          volumes:
-            - name: grpc-io-proxyless-bootstrap
-              emptyDir: {}
-      grpc-agent: |
-        {{- $containers := list }}
-        {{- range $index, $container := .Spec.Containers }}{{ if not (eq $container.Name "istio-proxy") }}{{ $containers = append $containers $container.Name }}{{end}}{{- end}}
-        metadata:
-          annotations: {
-            {{- if eq (len $containers) 1 }}
-            kubectl.kubernetes.io/default-logs-container: "{{ index $containers 0 }}",
-            kubectl.kubernetes.io/default-container: "{{ index $containers 0 }}",
-            {{ end }}
-          }
-        spec:
-          containers:
-          {{- range $index, $container := .Spec.Containers  }}
-          {{ if not (eq $container.Name "istio-proxy") }}
-          - name: {{ $container.Name }}
-            env:
-            - name: "GRPC_XDS_BOOTSTRAP"
-              value: "/var/lib/istio/data/grpc-bootstrap.json"
-            - name: "GRPC_XDS_EXPERIMENTAL_SECURITY_SUPPORT"
-              value: "true"
-            volumeMounts:
-            - mountPath: /var/lib/istio/data
-              name: istio-data
-            # UDS channel between istioagent and gRPC client for XDS/SDS
-            - mountPath: /etc/istio/proxy
-              name: istio-xds
-          {{- end }}
-          {{- end }}
-          - name: istio-proxy
-          {{- if contains "/" (annotation .ObjectMeta `sidecar.istio.io/proxyImage` .Values.global.proxy.image) }}
-            image: "{{ annotation .ObjectMeta `sidecar.istio.io/proxyImage` .Values.global.proxy.image }}"
-          {{- else }}
-            image: "{{ .Values.global.hub }}/{{ .Values.global.proxy.image }}:{{ .Values.global.tag }}"
-          {{- end }}
-            args:
-            - proxy
-            - sidecar
-            - --domain
-            - $(POD_NAMESPACE).svc.{{ .Values.global.proxy.clusterDomain }}
-            - --log_output_level={{ annotation .ObjectMeta `sidecar.istio.io/agentLogLevel` .Values.global.logging.level }}
-          {{- if .Values.global.sts.servicePort }}
-            - --stsPort={{ .Values.global.sts.servicePort }}
-          {{- end }}
-          {{- if .Values.global.logAsJson }}
-            - --log_as_json
-          {{- end }}
-            env:
-            - name: "GRPC_XDS_BOOTSTRAP"
-              value: "/var/lib/istio/data/grpc-bootstrap.json"
-            - name: ISTIO_META_GENERATOR
-              value: grpc
-            - name: OUTPUT_CERTS
-              value: /var/lib/istio/data
-            {{- if eq (env "PILOT_ENABLE_INBOUND_PASSTHROUGH" "true") "false" }}
-            - name: REWRITE_PROBE_LEGACY_LOCALHOST_DESTINATION
-              value: "true"
-            {{- end }}
-            - name: JWT_POLICY
-              value: {{ .Values.global.jwtPolicy }}
-            - name: PILOT_CERT_PROVIDER
-              value: {{ .Values.global.pilotCertProvider }}
-            - name: CA_ADDR
-            {{- if .Values.global.caAddress }}
-              value: {{ .Values.global.caAddress }}
-            {{- else }}
-              value: istiod{{- if not (eq .Values.revision "") }}-{{ .Values.revision }}{{- end }}.{{ .Values.global.istioNamespace }}.svc:15012
-            {{- end }}
-            - name: POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: POD_NAMESPACE
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.namespace
-            - name: INSTANCE_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.podIP
-            - name: SERVICE_ACCOUNT
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.serviceAccountName
-            - name: HOST_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.hostIP
-            - name: PROXY_CONFIG
-              value: |
-                     {{ protoToJSON .ProxyConfig }}
-            - name: ISTIO_META_POD_PORTS
-              value: |-
-                [
-                {{- $first := true }}
-                {{- range $index1, $c := .Spec.Containers }}
-                  {{- range $index2, $p := $c.Ports }}
-                    {{- if (structToJSON $p) }}
-                    {{if not $first}},{{end}}{{ structToJSON $p }}
-                    {{- $first = false }}
-                    {{- end }}
-                  {{- end}}
-                {{- end}}
-                ]
-            - name: ISTIO_META_APP_CONTAINERS
-              value: "{{ $containers | join "," }}"
-            - name: ISTIO_META_CLUSTER_ID
-              value: "{{ valueOrDefault .Values.global.multiCluster.clusterName `Kubernetes` }}"
-            - name: ISTIO_META_INTERCEPTION_MODE
-              value: "{{ or (index .ObjectMeta.Annotations `sidecar.istio.io/interceptionMode`) .ProxyConfig.InterceptionMode.String }}"
-            {{- if .Values.global.network }}
-            - name: ISTIO_META_NETWORK
-              value: "{{ .Values.global.network }}"
-            {{- end }}
-            {{- if .DeploymentMeta.Name }}
-            - name: ISTIO_META_WORKLOAD_NAME
-              value: "{{ .DeploymentMeta.Name }}"
-            {{ end }}
-            {{- if and .TypeMeta.APIVersion .DeploymentMeta.Name }}
-            - name: ISTIO_META_OWNER
-              value: kubernetes://apis/{{ .TypeMeta.APIVersion }}/namespaces/{{ valueOrDefault .DeploymentMeta.Namespace `default` }}/{{ toLower .TypeMeta.Kind}}s/{{ .DeploymentMeta.Name }}
-            {{- end}}
-            {{- if .Values.global.meshID }}
-            - name: ISTIO_META_MESH_ID
-              value: "{{ .Values.global.meshID }}"
-            {{- else if (valueOrDefault .MeshConfig.TrustDomain .Values.global.trustDomain) }}
-            - name: ISTIO_META_MESH_ID
-              value: "{{ (valueOrDefault .MeshConfig.TrustDomain .Values.global.trustDomain) }}"
-            {{- end }}
-            {{- with (valueOrDefault .MeshConfig.TrustDomain .Values.global.trustDomain)  }}
-            - name: TRUST_DOMAIN
-              value: "{{ . }}"
-            {{- end }}
-            {{- range $key, $value := .ProxyConfig.ProxyMetadata }}
-            - name: {{ $key }}
-              value: "{{ $value }}"
-            {{- end }}
-            # grpc uses xds:/// to resolve – no need to resolve VIP
-            - name: ISTIO_META_DNS_CAPTURE
-              value: "false"
-            - name: DISABLE_ENVOY
-              value: "true"
-            {{with .Values.global.imagePullPolicy }}imagePullPolicy: "{{.}}"{{end}}
-            {{ if ne (annotation .ObjectMeta `status.sidecar.istio.io/port` .Values.global.proxy.statusPort) `0` }}
-            readinessProbe:
-              httpGet:
-                path: /healthz/ready
-                port: {{ .Values.global.proxy.statusPort }}
-              initialDelaySeconds: {{ annotation .ObjectMeta `readiness.status.sidecar.istio.io/initialDelaySeconds` .Values.global.proxy.readinessInitialDelaySeconds }}
-              periodSeconds: {{ annotation .ObjectMeta `readiness.status.sidecar.istio.io/periodSeconds` .Values.global.proxy.readinessPeriodSeconds }}
-              timeoutSeconds: 3
-              failureThreshold: {{ annotation .ObjectMeta `readiness.status.sidecar.istio.io/failureThreshold` .Values.global.proxy.readinessFailureThreshold }}
-            {{ end -}}
-            resources:
-          {{- if or (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPULimit`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemoryLimit`) }}
-            {{- if or (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory`) }}
-              requests:
-                {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU`) -}}
-                cpu: "{{ index .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU` }}"
-                {{ end }}
-                {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory`) -}}
-                memory: "{{ index .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory` }}"
-                {{ end }}
-            {{- end }}
-            {{- if or (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPULimit`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemoryLimit`) }}
-              limits:
-                {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPULimit`) -}}
-                cpu: "{{ index .ObjectMeta.Annotations `sidecar.istio.io/proxyCPULimit` }}"
-                {{ end }}
-                {{ if (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemoryLimit`) -}}
-                memory: "{{ index .ObjectMeta.Annotations `sidecar.istio.io/proxyMemoryLimit` }}"
-                {{ end }}
-            {{- end }}
-          {{- else }}
-            {{- if .Values.global.proxy.resources }}
-              {{ toYaml .Values.global.proxy.resources | indent 6 }}
-            {{- end }}
-          {{- end }}
-            volumeMounts:
-            {{- if eq .Values.global.pilotCertProvider "istiod" }}
-            - mountPath: /var/run/secrets/istio
-              name: istiod-ca-cert
-            {{- end }}
-            - mountPath: /var/lib/istio/data
-              name: istio-data
-            # UDS channel between istioagent and gRPC client for XDS/SDS
-            - mountPath: /etc/istio/proxy
-              name: istio-xds
-            {{- if eq .Values.global.jwtPolicy "third-party-jwt" }}
-            - mountPath: /var/run/secrets/tokens
-              name: istio-token
-            {{- end }}
-            - name: istio-podinfo
-              mountPath: /etc/istio/pod
-            {{- if isset .ObjectMeta.Annotations `sidecar.istio.io/userVolumeMount` }}
-            {{ range $index, $value := fromJSON (index .ObjectMeta.Annotations `sidecar.istio.io/userVolumeMount`) }}
-            - name: "{{  $index }}"
-            {{ toYaml $value | indent 6 }}
-            {{ end }}
-            {{- end }}
-          volumes:
-          # UDS channel between istioagent and gRPC client for XDS/SDS
-          - emptyDir:
-              medium: Memory
-            name: istio-xds
-          - name: istio-data
-            emptyDir: {}
-          - name: istio-podinfo
-            downwardAPI:
-              items:
-                - path: "labels"
-                  fieldRef:
-                    fieldPath: metadata.labels
-                - path: "annotations"
-                  fieldRef:
-                    fieldPath: metadata.annotations
-        {{- if eq .Values.global.jwtPolicy "third-party-jwt" }}
-          - name: istio-token
-            projected:
-              sources:
-              - serviceAccountToken:
-                  path: istio-token
-                  expirationSeconds: 43200
-                  audience: {{ .Values.global.sds.token.aud }}
-        {{- end }}
-          {{- if eq .Values.global.pilotCertProvider "istiod" }}
-          - name: istiod-ca-cert
-            configMap:
-              name: istio-ca-root-cert
-          {{- end }}
-          {{- if isset .ObjectMeta.Annotations `sidecar.istio.io/userVolume` }}
-          {{range $index, $value := fromJSON (index .ObjectMeta.Annotations `sidecar.istio.io/userVolume`) }}
-          - name: "{{ $index }}"
-          {{ toYaml $value | indent 4 }}
-          {{ end }}
-          {{ end }}
   values: |-
     {
       "global": {
         "caAddress": "",
-        "configCluster": false,
         "configValidation": true,
         "defaultNodeSelector": {},
         "defaultPodDisruptionBudget": {
@@ -8816,7 +8096,7 @@ data:
         "sts": {
           "servicePort": 0
         },
-        "tag": "1.11.4",
+        "tag": "1.10.5",
         "tracer": {
           "datadog": {
             "address": "$(HOST_IP):8126"
@@ -8852,13 +8132,14 @@ data:
           "enabled": true
         },
         "rewriteAppHTTPProbe": true,
-        "templates": {}
+        "templates": {},
+        "useLegacySelectors": false
       }
     }
 kind: ConfigMap
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: Pilot
@@ -8871,7 +8152,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   labels:
     app: sidecar-injector
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: Pilot
@@ -9026,12 +8307,12 @@ metadata:
     kbld.k14s.io/images: |
       - origins:
         - resolved:
-            tag: 1.11.4
-            url: index.docker.io/istio/proxyv2:1.11.4
-        url: index.docker.io/istio/proxyv2@sha256:68b1012e5ba209161671f0e76c92baad845cef810fa0a7cf1b105fee8f0d3e46
+            tag: 1.10.5
+            url: index.docker.io/istio/proxyv2:1.10.5
+        url: index.docker.io/istio/proxyv2@sha256:cf83e144b7188a8dbcb09810aab825c017e7030536fd17f4e15dd853093baeda
   labels:
     app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio: ingressgateway
     istio.io/rev: default
@@ -9054,7 +8335,7 @@ spec:
       labels:
         app: istio-ingressgateway
         chart: gateways
-        cloudfoundry.org/istio_version: 1.11.4
+        cloudfoundry.org/istio_version: 1.10.5
         heritage: Tiller
         install.operator.istio.io/owning-resource: unknown
         istio: ingressgateway
@@ -9107,6 +8388,8 @@ spec:
         - --proxyLogLevel=warning
         - --proxyComponentLogLevel=misc:error
         - --log_output_level=default:info
+        - --serviceCluster
+        - istio-ingressgateway
         env:
         - name: JWT_POLICY
           value: third-party-jwt
@@ -9143,6 +8426,14 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.serviceAccountName
+        - name: CANONICAL_SERVICE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['service.istio.io/canonical-name']
+        - name: CANONICAL_REVISION
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.labels['service.istio.io/canonical-revision']
         - name: ISTIO_META_WORKLOAD_NAME
           value: istio-ingressgateway
         - name: ISTIO_META_OWNER
@@ -9159,7 +8450,7 @@ spec:
           value: Kubernetes
         - name: TERMINATION_DRAIN_DURATION_SECONDS
           value: "60"
-        image: index.docker.io/istio/proxyv2@sha256:68b1012e5ba209161671f0e76c92baad845cef810fa0a7cf1b105fee8f0d3e46
+        image: index.docker.io/istio/proxyv2@sha256:cf83e144b7188a8dbcb09810aab825c017e7030536fd17f4e15dd853093baeda
         lifecycle:
           preStop:
             exec:
@@ -9259,6 +8550,16 @@ spec:
           - fieldRef:
               fieldPath: metadata.annotations
             path: annotations
+          - path: cpu-limit
+            resourceFieldRef:
+              containerName: istio-proxy
+              divisor: 1m
+              resource: limits.cpu
+          - path: cpu-request
+            resourceFieldRef:
+              containerName: istio-proxy
+              divisor: 1m
+              resource: requests.cpu
         name: podinfo
       - emptyDir: {}
         name: istio-envoy
@@ -9303,12 +8604,12 @@ metadata:
     kbld.k14s.io/images: |
       - origins:
         - resolved:
-            tag: 1.11.4
-            url: index.docker.io/istio/pilot:1.11.4
-        url: index.docker.io/istio/pilot@sha256:c590783fc54aec5d3edb44e3f588be5431db9f0844d44c4314a896728cdbbf77
+            tag: 1.10.5
+            url: index.docker.io/istio/pilot:1.10.5
+        url: index.docker.io/istio/pilot@sha256:070a32d1dc2488f1f3b62dded50134981629e22b5b7152b87d8ca7ffee6f041e
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio: pilot
     istio.io/rev: default
@@ -9332,7 +8633,7 @@ spec:
         sidecar.istio.io/inject: "false"
       labels:
         app: istiod
-        cloudfoundry.org/istio_version: 1.11.4
+        cloudfoundry.org/istio_version: 1.10.5
         install.operator.istio.io/owning-resource: unknown
         istio: pilot
         istio.io/rev: default
@@ -9384,7 +8685,7 @@ spec:
           value: "false"
         - name: CLUSTER_ID
           value: Kubernetes
-        image: index.docker.io/istio/pilot@sha256:c590783fc54aec5d3edb44e3f588be5431db9f0844d44c4314a896728cdbbf77
+        image: index.docker.io/istio/pilot@sha256:070a32d1dc2488f1f3b62dded50134981629e22b5b7152b87d8ca7ffee6f041e
         name: discovery
         ports:
         - containerPort: 8080
@@ -9425,7 +8726,7 @@ spec:
           readOnly: true
       securityContext:
         fsGroup: 1337
-      serviceAccountName: istiod
+      serviceAccountName: istiod-service-account
       volumes:
       - emptyDir:
           medium: Memory
@@ -9453,7 +8754,7 @@ metadata:
     kapp.k14s.io/update-strategy: fallback-on-replace
   labels:
     app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio: ingressgateway
     istio.io/rev: default
@@ -9475,7 +8776,7 @@ metadata:
     kapp.k14s.io/update-strategy: fallback-on-replace
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio: pilot
     istio.io/rev: default
@@ -9494,7 +8795,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: IngressGateways
@@ -9516,35 +8817,7 @@ kind: Role
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
-    release: istio
-  name: istiod
-  namespace: istio-system
-rules:
-- apiGroups:
-  - networking.istio.io
-  resources:
-  - gateways
-  verbs:
-  - create
-- apiGroups:
-  - ""
-  resources:
-  - secrets
-  verbs:
-  - create
-  - get
-  - watch
-  - list
-  - update
-  - delete
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  labels:
-    app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     release: istio
   name: istiod-istio-system
   namespace: istio-system
@@ -9571,7 +8844,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: IngressGateways
@@ -9591,25 +8864,7 @@ kind: RoleBinding
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
-    release: istio
-  name: istiod
-  namespace: istio-system
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: istiod
-subjects:
-- kind: ServiceAccount
-  name: istiod
-  namespace: istio-system
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  labels:
-    app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     release: istio
   name: istiod-istio-system
   namespace: istio-system
@@ -9627,7 +8882,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   labels:
     app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio: ingressgateway
     istio.io/rev: default
@@ -9653,7 +8908,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: Pilot
@@ -9679,7 +8934,7 @@ metadata:
   annotations: null
   labels:
     app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio: ingressgateway
     istio.io/rev: default
@@ -9716,7 +8971,7 @@ kind: Service
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
     install.operator.istio.io/owning-resource: unknown
     istio: pilot
     istio.io/rev: default
@@ -9747,14 +9002,14 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
   name: istio-system
 ---
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.4
+    cloudfoundry.org/istio_version: 1.10.5
   name: default
   namespace: istio-system
 spec:

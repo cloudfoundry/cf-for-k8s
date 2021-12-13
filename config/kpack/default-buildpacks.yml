@@ -8,14 +8,14 @@ metadata:
   name: cf-buildpack-store
 spec:
   sources:
-  - image: gcr.io/paketo-buildpacks/ruby@sha256:448eea31a447a58d053dbaf782431ffb066972d82f861b887656c90b77445a4a
+  - image: gcr.io/paketo-buildpacks/ruby@sha256:4a5523b7b802f9f0c0fb6e9cf80cd95ab6bed37273b1ef927b86219f7190ec60
   - image: gcr.io/paketo-community/python@sha256:1228cfb8003f830b178b9b8a227889cae32df1aed74a746f2ac59b6bb8e88961
-  - image: gcr.io/paketo-buildpacks/java@sha256:5443b449db386aee3dba82c5e9d5d20373739f1b7c31778f47980564b3ec8151
-  - image: gcr.io/paketo-buildpacks/nodejs@sha256:c8be93501445fc7d5b258fa9ac4dcda7847a7c215a6eecb0d9e02a6610e7c3a3
-  - image: gcr.io/paketo-buildpacks/go@sha256:75a4a5ec352c80f08961b35643dea9d59671426248861be2e1950aa79e52a0b2
-  - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:f4a5c422153d516b3adce4f435195656bed66afe47ea73aa588e0523f335e737
+  - image: gcr.io/paketo-buildpacks/java@sha256:3de33c861470bd5428f70a1fd67d6d0f810fc8dce8f2c982ad48ecf32cef39c0
+  - image: gcr.io/paketo-buildpacks/nodejs@sha256:e4e5efa04d9c4bc9eec29daab14e42c5fb4b16686036feddb55f93f0596fa883
+  - image: gcr.io/paketo-buildpacks/go@sha256:d5afd73e4a84506c3a8485ecd1627bda110ecba661a062daa3afb31f575896f5
+  - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:c4390d0b4454dfa445acd49ccbb46512fa09743e1eacc12d5c0b6eb2856bd668
   - image: gcr.io/paketo-buildpacks/php@sha256:351f89474d92307283a97c5da897456cf37aa9d0cc134a377328cf91ada01c2e
-  - image: gcr.io/paketo-buildpacks/procfile@sha256:11046ad58156ab3ee87cbc837336dfd138ff6c990374b4e116eafdb383d6523e
+  - image: gcr.io/paketo-buildpacks/procfile@sha256:b56f939041b4e25e55a5a7a415a42e3ed3cc686d82231c7d283721d59c2e7487
 
 ---
 apiVersion: kpack.io/v1alpha1

@@ -90,8 +90,9 @@ function append_yaml_line() {
   file=$4
   from_ver=$(yq -r $filter cf-for-k8s-last-release/$file)
   to_ver=$(yq -r $filter cf-for-k8s-rc/$file)
-
-  release_table_text+="\n| ${component_name} | ${from_ver} | [${to_ver}](${release_url}/${to_ver}) |"
+  if [ "$from_ver" != "$to_ver" ]; then
+    release_table_text+="\n| ${component_name} | ${from_ver} | [${to_ver}](${release_url}/${to_ver}) |"
+  fi
 }
 
 function build_component_bump_table_content() {

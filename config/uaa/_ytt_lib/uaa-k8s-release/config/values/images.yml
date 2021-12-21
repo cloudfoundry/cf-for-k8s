@@ -4,4 +4,4 @@
 #@overlay/match missing_ok=True
 images:
   statsd_exporter: cloudfoundry/statsd_exporter-cf-for-k8s@sha256:d5f14b2d08acdc86ac2691b052db58dbe3b1029fe5d16c086da7215f5a65ba7d
-  uaa: cloudfoundry/uaa@sha256:8c1b3a989d9d24d99686779317b5f49953379c87a9608e76b5fc6f4db31b96bd
+  uaa: cloudfoundry/uaa@sha256:6f6e2f9aeb4a445ea0092d8d8347828346f5dd382c7785f19bdcbb365e42bf93

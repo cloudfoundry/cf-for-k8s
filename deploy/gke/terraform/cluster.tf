@@ -36,7 +36,6 @@ resource "google_container_cluster" "primary" {
 
   node_config {
     machine_type = var.node_machine_type
-    image_type = "COS"
     service_account = google_service_account.node_service_account.email
 
     metadata = {

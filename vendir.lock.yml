@@ -34,7 +34,7 @@ directories:
   path: config/uaa/_ytt_lib/uaa-k8s-release
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/pivotal/kpack/releases/55222486
+      url: https://api.github.com/repos/pivotal/kpack/releases/59362720
     path: .
   path: config/kpack/_ytt_lib/kpack
 - contents:
@@ -61,7 +61,7 @@ directories:
   path: build/minio/_vendir
 - contents:
   - githubRelease:
-      url: https://api.github.com/repos/cloudfoundry-incubator/eirini-release/releases/48821308
+      url: https://api.github.com/repos/cloudfoundry/eirini-release/releases/48821308
     path: .
   path: build/eirini/_vendir
 - contents:

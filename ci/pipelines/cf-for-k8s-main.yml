@@ -289,65 +289,68 @@ jobs:
     params:
       acquire: true
 
-  - task: display-cluster-info
-    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
-  - task: install-cf
-    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
-      DOMAIN: k8s-dev.relint.rocks
-
-  - task: ensure-api-healthy
-    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
-
-  - in_parallel:
-    - task: run-smoke-tests
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+  - do:
+    - task: display-cluster-info
+      file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
       input_mapping:
+        pool-lock: ready-pool
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+    - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        pool-lock: ready-pool
         cf-for-k8s: cf-for-k8s-develop
       params:
-        SMOKE_TEST_SKIP_SSL: false
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        DOMAIN: k8s-dev.relint.rocks
 
-    - task: push-test-app
-      file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+    - task: ensure-api-healthy
+      file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
+
+    - in_parallel:
+      - task: run-smoke-tests
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
+        params:
+          SMOKE_TEST_SKIP_SSL: false
+
+      - task: push-test-app
+        file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
+        params:
+          APP_NAME: lingering-node-app
+          VERIFY_EXISTING_APP: false
+
+    - task: delete-cf
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
       input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
+        pool-lock: ready-pool
       params:
-        APP_NAME: lingering-node-app
-        VERIFY_EXISTING_APP: false
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
-  - task: delete-cf
-    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+    ensure:
+      do:
+      - put: destroy-pool
+        params:
+          add: ready-pool
 
-  - put: destroy-pool
-    params:
-      add: ready-pool
-
-  - put: ready-pool
-    params:
-      remove: ready-pool
+      - put: ready-pool
+        params:
+          remove: ready-pool
 
 - name: validate-upgrade
   public: true
@@ -366,88 +369,91 @@ jobs:
     params:
       acquire: true
 
-  - task: display-cluster-info
-    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
-  - task: install-cf-last-release
-    file: cf-for-k8s-last-release/ci/tasks/install-cf-on-gke/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-last-release
-      cf-for-k8s-ci: cf-for-k8s-last-release
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      DOMAIN: k8s-dev.relint.rocks
-
-  - task: push-test-app
-    file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-last-release
-    params:
-      APP_NAME: existing-node-app
-      VERIFY_EXISTING_APP: false
-
-  - task: upgrade-cf-to-develop
-    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      DOMAIN: k8s-dev.relint.rocks
-      UPGRADE: true
-      UPTIMER: true
-      UPTIMER_FAIL_ON_DOWNTIME: false
-      EMIT_UPTIMER_METRICS_TO_WAVEFRONT: true
-      WAVEFRONT_API_KEY: ((wavefront_ci_service_account))
-      WAVEFRONT_API_ENDPOINT: "https://vmwareprod.wavefront.com/report"
-      SOURCE_PIPELINE: upgrade-from-last-release
-
-  - task: ensure-api-healthy
-    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
-
-  - in_parallel:
-    - task: run-smoke-tests
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+  - do:
+    - task: display-cluster-info
+      file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
       input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
+        pool-lock: ready-pool
       params:
-        SMOKE_TEST_SKIP_SSL: false
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
-    - task: verify-existing-app
+    - task: install-cf-last-release
+      file: cf-for-k8s-last-release/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+        cf-for-k8s: cf-for-k8s-last-release
+        cf-for-k8s-ci: cf-for-k8s-last-release
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        DOMAIN: k8s-dev.relint.rocks
+
+    - task: push-test-app
       file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-last-release
       params:
         APP_NAME: existing-node-app
-        VERIFY_EXISTING_APP: true
+        VERIFY_EXISTING_APP: false
+
+    - task: upgrade-cf-to-develop
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
+        pool-lock: ready-pool
         cf-for-k8s: cf-for-k8s-develop
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        DOMAIN: k8s-dev.relint.rocks
+        UPGRADE: true
+        UPTIMER: true
+        UPTIMER_FAIL_ON_DOWNTIME: false
+        EMIT_UPTIMER_METRICS_TO_WAVEFRONT: true
+        WAVEFRONT_API_KEY: ((wavefront_ci_service_account))
+        WAVEFRONT_API_ENDPOINT: "https://vmwareprod.wavefront.com/report"
+        SOURCE_PIPELINE: upgrade-from-last-release
 
-  - task: delete-cf
-    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+    - task: ensure-api-healthy
+      file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
-  - put: destroy-pool
-    params:
-      add: ready-pool
+    - in_parallel:
+      - task: run-smoke-tests
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
+        params:
+          SMOKE_TEST_SKIP_SSL: false
 
-  - put: ready-pool
-    params:
-      remove: ready-pool
+      - task: verify-existing-app
+        file: cf-for-k8s-ci/ci/tasks/push-test-app/task.yml
+        params:
+          APP_NAME: existing-node-app
+          VERIFY_EXISTING_APP: true
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
+
+    - task: delete-cf
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+    ensure:
+      do:
+      - put: destroy-pool
+        params:
+          add: ready-pool
+
+      - put: ready-pool
+        params:
+          remove: ready-pool
 
 - name: run-cats
   public: true
@@ -466,45 +472,44 @@ jobs:
     params:
       acquire: true
 
-  - task: display-cluster-info
-    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+  - do:
+    - task: display-cluster-info
+      file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
-  - task: install-cf
-    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
-      DOMAIN: k8s-dev.relint.rocks
+    - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        DOMAIN: k8s-dev.relint.rocks
 
-  - task: ensure-api-healthy
-    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
+    - task: ensure-api-healthy
+      file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
-  - task: run-cats
-    file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
-    input_mapping:
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      INCLUDE_APPS: true
-      INCLUDE_ROUTING: true
-      INCLUDE_DETECT: true
-      INCLUDE_INTERNET_DEPENDENT: true
+    - task: run-cats
+      file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
+      input_mapping:
+        cf-for-k8s: cf-for-k8s-develop
+      params:
+        INCLUDE_APPS: true
+        INCLUDE_ROUTING: true
+        INCLUDE_DETECT: true
+        INCLUDE_INTERNET_DEPENDENT: true
 
-  ensure:
-    do:
     - task: delete-cf
       file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
       input_mapping:
@@ -514,13 +519,15 @@ jobs:
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
-    - put: destroy-pool
-      params:
-        add: ready-pool
+    ensure:
+      do:
+      - put: destroy-pool
+        params:
+          add: ready-pool
 
-    - put: ready-pool
-      params:
-        remove: ready-pool
+      - put: ready-pool
+        params:
+          remove: ready-pool
 
 - name: validate-external-db
   public: true
@@ -538,103 +545,106 @@ jobs:
     params:
       acquire: true
 
-  - task: display-cluster-info
-    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+  - do:
+    - task: display-cluster-info
+      file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
-  - task: install-postgres
-    file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+    - task: install-postgres
+      file: cf-for-k8s-ci/ci/tasks/install-postgres/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
-  - task: install-cf
-    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
-      USE_EXTERNAL_DB: true
-      DOMAIN: k8s-dev.relint.rocks
-
-  - task: ensure-api-healthy
-    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
-
-  - in_parallel:
-    - task: run-external-db-validation-test
-      file: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.yml
+    - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
         pool-lock: ready-pool
         cf-for-k8s: cf-for-k8s-develop
       params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        EXTERNAL_DB: "incluster"
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        USE_EXTERNAL_DB: true
+        DOMAIN: k8s-dev.relint.rocks
 
-    - task: run-smoke-tests
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+    - task: ensure-api-healthy
+      file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
+
+    - in_parallel:
+      - task: run-external-db-validation-test
+        file: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+          cf-for-k8s: cf-for-k8s-develop
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          EXTERNAL_DB: "incluster"
+
+      - task: run-smoke-tests
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
+        params:
+          SMOKE_TEST_SKIP_SSL: false
+
+    - task: delete-cf
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
       input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
+        pool-lock: ready-pool
       params:
-        SMOKE_TEST_SKIP_SSL: false
-
-  - task: delete-cf
-    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
-  - task: delete-postgres
-    input_mapping:
-      pool-lock: ready-pool
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: cf-for-k8s-ci
-      - name: pool-lock
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          source cf-for-k8s-ci/ci/helpers/gke.sh
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
-          cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}"
+    - task: delete-postgres
+      input_mapping:
+        pool-lock: ready-pool
+      config:
+        <<: *common-task-config
+        inputs:
+        - name: cf-for-k8s-ci
+        - name: pool-lock
+        params:
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            source cf-for-k8s-ci/ci/helpers/gke.sh
 
-          helm uninstall -n external-db postgresql
-          kubectl delete namespace external-db
+            cluster_name="$(cat pool-lock/name)"
+            gcloud_auth "${cluster_name}"
 
-  - put: destroy-pool
-    params:
-      add: ready-pool
+            helm uninstall -n external-db postgresql
+            kubectl delete namespace external-db
 
-  - put: ready-pool
-    params:
-      remove: ready-pool
+    ensure:
+      do:
+      - put: destroy-pool
+        params:
+          add: ready-pool
+
+      - put: ready-pool
+        params:
+          remove: ready-pool
 
 - name: validate-external-blobstore
   public: true
@@ -652,103 +662,106 @@ jobs:
     params:
       acquire: true
 
-  - task: display-cluster-info
-    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+  - do:
+    - task: display-cluster-info
+      file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
-  - task: install-minio
-    file: cf-for-k8s-ci/ci/tasks/install-minio/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+    - task: install-minio
+      file: cf-for-k8s-ci/ci/tasks/install-minio/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
-  - task: install-cf
-    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
-      USE_EXTERNAL_BLOBSTORE: true
-      DOMAIN: k8s-dev.relint.rocks
-
-  - task: ensure-api-healthy
-    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
-
-  - in_parallel:
-    - task: run-external-blobstore-validation-test
-      file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
+    - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
         pool-lock: ready-pool
         cf-for-k8s: cf-for-k8s-develop
       params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        EXTERNAL_BLOBSTORE: "incluster"
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        USE_EXTERNAL_BLOBSTORE: true
+        DOMAIN: k8s-dev.relint.rocks
 
-    - task: run-smoke-tests
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+    - task: ensure-api-healthy
+      file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
+
+    - in_parallel:
+      - task: run-external-blobstore-validation-test
+        file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+          cf-for-k8s: cf-for-k8s-develop
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          EXTERNAL_BLOBSTORE: "incluster"
+
+      - task: run-smoke-tests
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
+        params:
+          SMOKE_TEST_SKIP_SSL: false
+
+    - task: delete-cf
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
       input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
+        pool-lock: ready-pool
       params:
-        SMOKE_TEST_SKIP_SSL: false
-
-  - task: delete-cf
-    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
-  - task: delete-minio
-    input_mapping:
-      pool-lock: ready-pool
-    config:
-      <<: *common-task-config
-      inputs:
-      - name: cf-for-k8s-ci
-      - name: pool-lock
-      params:
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      run:
-        path: /bin/bash
-        args:
-        - -ec
-        - |
-          source cf-for-k8s-ci/ci/helpers/gke.sh
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
-          cluster_name="$(cat pool-lock/name)"
-          gcloud_auth "${cluster_name}"
+    - task: delete-minio
+      input_mapping:
+        pool-lock: ready-pool
+      config:
+        <<: *common-task-config
+        inputs:
+        - name: cf-for-k8s-ci
+        - name: pool-lock
+        params:
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        run:
+          path: /bin/bash
+          args:
+          - -ec
+          - |
+            source cf-for-k8s-ci/ci/helpers/gke.sh
 
-          helm uninstall -n external-blobstore minio
-          kubectl delete namespace external-blobstore
+            cluster_name="$(cat pool-lock/name)"
+            gcloud_auth "${cluster_name}"
 
-  - put: destroy-pool
-    params:
-      add: ready-pool
+            helm uninstall -n external-blobstore minio
+            kubectl delete namespace external-blobstore
 
-  - put: ready-pool
-    params:
-      remove: ready-pool
+    ensure:
+      do:
+      - put: destroy-pool
+        params:
+          add: ready-pool
+
+      - put: ready-pool
+        params:
+          remove: ready-pool
 
 - name: validate-rds
   serial: true
@@ -768,77 +781,79 @@ jobs:
     params:
       acquire: true
 
-  - task: display-cluster-info
-    file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
-  - task: initialize-rds
-    file: cf-for-k8s-ci/ci/tasks/initialize-rds/task.yml
-    params:
-      PGPASSWORD: ((ci_k8s_aws_rds_database_password))
-
-  - task: install-cf
-    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
-      USE_EXTERNAL_DB: true
-      DOMAIN: k8s-dev.relint.rocks
-
-  - task: ensure-api-healthy
-    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
-
-  - in_parallel:
-    - task: run-rds-validation-test
-      file: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.yml
+  - do:
+    - task: display-cluster-info
+      file: cf-for-k8s-ci/ci/tasks/display-gke-cluster-info/task.yml
       input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
+        pool-lock: ready-pool
+      params:
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+    - task: initialize-rds
+      file: cf-for-k8s-ci/ci/tasks/initialize-rds/task.yml
       params:
         PGPASSWORD: ((ci_k8s_aws_rds_database_password))
 
-    - task: run-smoke-tests
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+    - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
+        pool-lock: ready-pool
         cf-for-k8s: cf-for-k8s-develop
       params:
-        SMOKE_TEST_SKIP_SSL: false
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        USE_EXTERNAL_DB: true
+        DOMAIN: k8s-dev.relint.rocks
 
-  - task: delete-cf
-    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+    - task: ensure-api-healthy
+      file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
 
-  - in_parallel:
-    - do:
-      - put: destroy-pool
+    - in_parallel:
+      - task: run-rds-validation-test
+        file: cf-for-k8s-ci/ci/tasks/run-external-db-validation-test/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
         params:
-          add: ready-pool
+          PGPASSWORD: ((ci_k8s_aws_rds_database_password))
 
-      - put: ready-pool
+      - task: run-smoke-tests
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
         params:
-          remove: ready-pool
+          SMOKE_TEST_SKIP_SSL: false
 
-    - task: delete-rds
-      file: cf-for-k8s-ci/ci/tasks/delete-rds/task.yml
+    - task: delete-cf
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+      input_mapping:
+        pool-lock: ready-pool
       params:
-        PGPASSWORD: ((ci_k8s_aws_rds_database_password))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+    ensure:
+      in_parallel:
+      - do:
+        - put: destroy-pool
+          params:
+            add: ready-pool
+
+        - put: ready-pool
+          params:
+            remove: ready-pool
+
+      - task: delete-rds
+        file: cf-for-k8s-ci/ci/tasks/delete-rds/task.yml
+        params:
+          PGPASSWORD: ((ci_k8s_aws_rds_database_password))
 
 - name: validate-s3
   serial: true
@@ -858,90 +873,97 @@ jobs:
     params:
       acquire: true
 
-  - task: create-s3-tf-vars-file
-    file: cf-for-k8s-ci/ci/tasks/create-s3-tf-vars-file/task.yml
-    params:
-      AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
-      AWS_REGION: ((ci_k8s_aws_region))
+  - do:
+    - task: create-s3-tf-vars-file
+      file: cf-for-k8s-ci/ci/tasks/create-s3-tf-vars-file/task.yml
+      params:
+        AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
+        AWS_REGION: ((ci_k8s_aws_region))
 
-  - put: terraform-s3
-    params:
-      terraform_source: cf-for-k8s-s3-terraform-templates/deploy/s3/terraform
-      delete_on_failure: true
-      var_files: [tf-vars-s3/input.tfvars]
+    - put: create-s3-buckets
+      resource: terraform-s3
+      params:
+        terraform_source: cf-for-k8s-s3-terraform-templates/deploy/s3/terraform
+        delete_on_failure: true
+        var_files: [tf-vars-s3/input.tfvars]
 
-  - task: create-s3-bucket-data-values-file
-    file: cf-for-k8s-ci/ci/tasks/create-s3-bucket-data-values-file/task.yml
-    params:
-      AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
-      AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
-      AWS_REGION: ((ci_k8s_aws_region))
+    - task: create-s3-bucket-data-values-file
+      file: cf-for-k8s-ci/ci/tasks/create-s3-bucket-data-values-file/task.yml
+      input_mapping:
+        terraform-s3: create-s3-bucket-data-values-file
+      params:
+        AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
+        AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
+        AWS_REGION: ((ci_k8s_aws_region))
 
-  - task: install-cf
-    file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-      cf-for-k8s: cf-for-k8s-develop
-    params:
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
-      APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
-      APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
-      USE_EXTERNAL_BLOBSTORE: true
-      DOMAIN: k8s-dev.relint.rocks
-
-  - task: ensure-api-healthy
-    file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
-
-  - in_parallel:
-    - task: run-external-blobstore-validation-test
-      file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
+    - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-gke/task.yml
       input_mapping:
         pool-lock: ready-pool
         cf-for-k8s: cf-for-k8s-develop
       params:
+        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+        APP_REGISTRY_HOSTNAME: https://index.docker.io/v1/
+        APP_REGISTRY_REPOSITORY_PREFIX: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_USERNAME: ((cf_for_k8s_private_dockerhub.username))
+        APP_REGISTRY_PASSWORD: ((cf_for_k8s_private_dockerhub.password))
+        USE_EXTERNAL_BLOBSTORE: true
+        DOMAIN: k8s-dev.relint.rocks
+
+    - task: ensure-api-healthy
+      file: cf-for-k8s-ci/ci/tasks/ensure-api-healthy/task.yml
+
+    - in_parallel:
+      - task: run-external-blobstore-validation-test
+        file: cf-for-k8s-ci/ci/tasks/run-external-blobstore-validation-test/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+          cf-for-k8s: cf-for-k8s-develop
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+          EXTERNAL_BLOBSTORE: "s3"
+
+      - task: run-smoke-tests
+        file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
+        input_mapping:
+          cf-for-k8s: cf-for-k8s-develop
+        params:
+          GCP_KEY: ((ci_k8s_gcp_service_account_json))
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+
+    - task: delete-cf
+      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+      input_mapping:
+        pool-lock: ready-pool
+      params:
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
         GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-        EXTERNAL_BLOBSTORE: "s3"
 
-    - task: run-smoke-tests
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      input_mapping:
-        cf-for-k8s: cf-for-k8s-develop
-      params:
-        GCP_KEY: ((ci_k8s_gcp_service_account_json))
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+    ensure:
+      in_parallel:
+      - do:
+        - put: destroy-pool
+          params:
+            add: ready-pool
 
-  - task: delete-cf
-    file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-    input_mapping:
-      pool-lock: ready-pool
-    params:
-      GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-      GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-      GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+        - put: ready-pool
+          params:
+            remove: ready-pool
 
-  - put: destroy-pool
-    params:
-      add: ready-pool
-
-  - put: ready-pool
-    params:
-      remove: ready-pool
-
-  ensure:
-    put: terraform-s3
-    params:
-      terraform_source: cf-for-k8s-s3-terraform-templates/deploy/s3/terraform
-      var_files: [tf-vars-s3/input.tfvars]
-      action: destroy
-    get_params:
-      action: destroy
+      - put: destroy-s3-buckets
+        resource: terraform-s3
+        params:
+          terraform_source: cf-for-k8s-s3-terraform-templates/deploy/s3/terraform
+          var_files: [tf-vars-s3/input.tfvars]
+          action: destroy
+        get_params:
+          action: destroy
 
 - name: validate-oldest-k8s
   public: true
@@ -981,7 +1003,8 @@ jobs:
           machine_type = "n1-standard-8"
           EOT
 
-  - put: terraform
+  - put: create-kind-vm
+    resource: terraform
     params:
       terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
@@ -1017,7 +1040,8 @@ jobs:
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
 
     ensure:
-      put: terraform
+      put: destroy-kind-vm
+      resource: terraform
       params:
         terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt
@@ -1064,7 +1088,8 @@ jobs:
           machine_type = "n1-standard-8"
           EOT
 
-  - put: terraform
+  - put: create-kind-vm
+    resource: terraform
     params:
       terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
       env_name_file: tf-vars/env-name.txt
@@ -1100,7 +1125,8 @@ jobs:
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
 
     ensure:
-      put: terraform
+      put: destroy-kind-vm
+      resource: terraform
       params:
         terraform_source: cf-for-k8s-kind-gcp-terraform-templates/deploy/kind-on-gcp/terraform
         env_name_file: tf-vars/env-name.txt

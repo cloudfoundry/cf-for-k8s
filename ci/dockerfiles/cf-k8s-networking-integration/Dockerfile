@@ -1,6 +1,6 @@
 FROM cloudfoundry/cflinuxfs3
 
-ENV GO_VERSION 1.15.10
+ENV GO_VERSION 1.17.8
 
 RUN \
       apt update && \

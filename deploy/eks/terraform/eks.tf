@@ -4,7 +4,7 @@ module "eks" {
   cluster_version = var.eks_version
 
   vpc_id          = module.vpc.vpc_id
-  subnets         = module.vpc.private_subnets
+  subnet_ids      = module.vpc.private_subnets
 
   tags = {
     Environment = var.env_name

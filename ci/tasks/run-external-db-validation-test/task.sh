@@ -44,9 +44,9 @@ if [ ${EXTERNAL_DB} == "rds" ];then
 elif [ ${EXTERNAL_DB} == "incluster" ];then
   setup_external_db
   # shellcheck disable=SC2155
-  export PGPASSWORD=$(kubectl get secret -n external-db postgresql -o jsonpath="{.data.postgresql-password}" | base64 -d)
-  CAPI_TABLE_COUNT=$(kubectl exec -n external-db statefulset/postgresql-postgresql -i -- psql "postgresql://postgres:$PGPASSWORD@localhost:$CAPI_PORT/$CAPI_NAME" -c "select count(*) from information_schema.tables where table_schema='public';" -qtAX)
-  UAA_TABLE_COUNT=$(kubectl exec -n external-db statefulset/postgresql-postgresql -i -- psql "postgresql://postgres:$PGPASSWORD@localhost:$UAA_PORT/$UAA_NAME" -c "select count(*) from information_schema.tables where table_schema='public';" -qtAX)
+  export PGPASSWORD=$(kubectl get secret -n external-db postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
+  CAPI_TABLE_COUNT=$(kubectl exec -n external-db statefulset/postgresql -i -- psql "postgresql://postgres:$PGPASSWORD@localhost:$CAPI_PORT/$CAPI_NAME" -c "select count(*) from information_schema.tables where table_schema='public';" -qtAX)
+  UAA_TABLE_COUNT=$(kubectl exec -n external-db statefulset/postgresql -i -- psql "postgresql://postgres:$PGPASSWORD@localhost:$UAA_PORT/$UAA_NAME" -c "select count(*) from information_schema.tables where table_schema='public';" -qtAX)
 else
   echo "You need to specifiy an EXTERNAL_DB"
   exit 1

@@ -53,11 +53,10 @@ ENV CGO_ENABLED=1
 ENV GOPATH /go
 ENV PATH=$PATH:/go/bin:/usr/local/go/bin
 
-RUN go get -u github.com/cloudfoundry/uptimer
-RUN rm $GOPATH/src/github.com/cloudfoundry/uptimer/app/Procfile
+RUN go install github.com/cloudfoundry/uptimer@latest
 
 # https://github.com/onsi/ginkgo/releases
-RUN go get -u github.com/onsi/ginkgo/ginkgo
+RUN go install github.com/onsi/ginkgo/ginkgo@latest
 
 # https://github.com/cloudfoundry/cli/releases
 WORKDIR /tmp

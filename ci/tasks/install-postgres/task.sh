@@ -47,8 +47,8 @@ CREATE EXTENSION citext;
 EOT
 
 # shellcheck disable=SC2155
-export POSTGRES_PASSWORD=$(kubectl get secret -n external-db postgresql -o jsonpath="{.data.postgresql-password}" | base64 -d)
-kubectl exec -n external-db statefulset/postgresql-postgresql -i -- psql "postgresql://postgres:$POSTGRES_PASSWORD@localhost:5432/postgres" < /tmp/setup_db.sql
+export POSTGRES_PASSWORD=$(kubectl get secret -n external-db postgresql -o jsonpath="{.data.postgres-password}" | base64 -d)
+kubectl exec -n external-db statefulset/postgresql -i -- psql "postgresql://postgres:$POSTGRES_PASSWORD@localhost:5432/postgres" < /tmp/setup_db.sql
 
 cat > db-metadata/db-values.yaml <<EOT
 #@data/values

@@ -49,5 +49,5 @@ variable "node_machine_type" {
 variable "eks_version" {
   description = "Kubernetes cluster version"
   type = string
-  default = "1.18"
+  default = "1.21"
 }

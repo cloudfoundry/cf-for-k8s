@@ -191,13 +191,13 @@ jobs:
 
             export KUBECONFIG=kube-config.yml
             cluster_name="$(cat terraform/name)"
-            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
             aws eks update-kubeconfig --name "${cluster_name}"
 
             export DNS_DOMAIN="$(cat terraform/name).((ci_k8s_root_domain))"
             echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt
 
             echo "Generating install values..."
+            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
             cf-for-k8s-main/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
             cat <<EOT >> cf-install-values.yml
             add_metrics_server_components: true
@@ -263,15 +263,14 @@ jobs:
 
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      attempts: 2
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
       params:
         SMOKE_TEST_SKIP_SSL: false
+      attempts: 2
 
     - task: run-cats
       file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
-      attempts: 2
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
       params:
@@ -279,6 +278,7 @@ jobs:
         INCLUDE_ROUTING: true
         INCLUDE_DETECT: true
         INCLUDE_INTERNET_DEPENDENT: true
+      attempts: 2
 
     ensure:
       do:
@@ -301,17 +301,15 @@ jobs:
             args:
             - -ec
             - |
-              echo '((gcp_dns_admin_service_account_json))' > dns-service-account.json
-              gcloud auth activate-service-account  --key-file dns-service-account.json
-              gcloud config set project ((ci_k8s_gcp_project_name))
-
               cluster_name="$(cat terraform/name)"
               export KUBECONFIG=kube-config.yml
               jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
-              echo "Doing some special deletion of postgres resources..."
-              kubectl delete statefulset cf-db-postgresql -n cf-db
-              kubectl delete pod cf-db-postgresql-0 -n cf-db --force --grace-period 0
+              if kubectl get statefulset cf-db-postgresql -n cf-db > /dev/null 2>&1; then
+                echo "Doing some special deletion of postgres resources..."
+                kubectl delete statefulset cf-db-postgresql -n cf-db
+                kubectl delete pod cf-db-postgresql-0 -n cf-db --force --grace-period 0
+              fi
 
               echo "Deleting CF..."
               kapp delete -a cf --yes
@@ -331,6 +329,10 @@ jobs:
 
               ${old_zone_info}
               EOT
+
+                echo '((gcp_dns_admin_service_account_json))' > dns-service-account.json
+                gcloud auth activate-service-account  --key-file dns-service-account.json
+                gcloud config set project ((ci_k8s_gcp_project_name))
 
                 gcloud dns record-sets transaction start --zone=((ci_k8s_dns_zone_name))
 
@@ -436,12 +438,12 @@ jobs:
           - |
             export KUBECONFIG=kube-config.yml
             cluster_name="$(cat terraform/name)"
-            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
             jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
             export DNS_DOMAIN="$(cat terraform/name).((ci_k8s_root_domain))"
 
             echo "Generating install values..."
+            echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
             cf-for-k8s-main/hack/generate-values.sh --cf-domain "${DNS_DOMAIN}" --gcr-service-account-json gcp-service-account.json > cf-install-values.yml
             echo "load_balancer:" >> cf-install-values.yml
             echo "  static_ip: $(jq -r '.lb_static_ip' terraform/metadata)" >> cf-install-values.yml
@@ -458,15 +460,14 @@ jobs:
 
     - task: run-smoke-test
       file: cf-for-k8s-ci/ci/tasks/run-smoke-tests/task.yml
-      attempts: 2
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
       params:
         SMOKE_TEST_SKIP_SSL: false
+      attempts: 2
 
     - task: run-cats
       file: cf-for-k8s-ci/ci/tasks/run-cats/task.yml
-      attempts: 2
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
       params:
@@ -474,6 +475,7 @@ jobs:
         INCLUDE_ROUTING: true
         INCLUDE_DETECT: true
         INCLUDE_INTERNET_DEPENDENT: true
+      attempts: 2
 
     ensure:
       do:
@@ -491,10 +493,13 @@ jobs:
               export KUBECONFIG=kube-config.yml
               jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
-              echo "Doing some special deletion of postgres resources..."
-              kubectl delete statefulset cf-db-postgresql -n cf-db
-              kubectl delete pod cf-db-postgresql-0 -n cf-db --force --grace-period 0
+              if kubectl get statefulset cf-db-postgresql -n cf-db > /dev/null 2>&1; then
+                echo "Doing some special deletion of postgres resources..."
+                kubectl delete statefulset cf-db-postgresql -n cf-db
+                kubectl delete pod cf-db-postgresql-0 -n cf-db --force --grace-period 0
+              fi
 
+              echo "Deleting CF..."
               kapp delete -a cf --yes
 
       - put: terraform
@@ -560,28 +565,28 @@ jobs:
 
   - do:
     - task: create-minikube-cluster
-      attempts: 5
+      file: cf-for-k8s-ci/ci/tasks/create-minikube-cluster/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
-      file: cf-for-k8s-ci/ci/tasks/create-minikube-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         CPUS: "6"
         MEMORY: "16g"
+      attempts: 5
 
     - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-minikube/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-minikube/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
 
     - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-minikube/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-minikube/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -650,28 +655,28 @@ jobs:
 
   - do:
     - task: create-minikube-cluster
-      attempts: 5
+      file: cf-for-k8s-ci/ci/tasks/create-minikube-cluster/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
-      file: cf-for-k8s-ci/ci/tasks/create-minikube-cluster/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         CPUS: "4"
         MEMORY: "6g"
+      attempts: 5
 
     - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-minikube/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-minikube/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
 
     - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-minikube/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-main
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-minikube/task.yml
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))

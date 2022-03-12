@@ -236,9 +236,9 @@ jobs:
 - name: verify-every-task-is-used-in-a-pipeline
   public: true
   plan:
-  - in_parallel:
-    - get: cf-for-k8s-ci
-      trigger: true
+  - get: cf-for-k8s-ci
+    trigger: true
+
   - task: verify-every-task-is-used-in-a-pipeline
     file: cf-for-k8s-ci/ci/tasks/verify-every-task-is-used-in-a-pipeline/task.yml
 
@@ -333,17 +333,17 @@ jobs:
           APP_NAME: lingering-node-app
           VERIFY_EXISTING_APP: false
 
-    - task: delete-cf
-      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-      input_mapping:
-        pool-lock: ready-pool
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
     ensure:
       do:
+      - task: delete-cf
+        file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
       - put: destroy-pool
         params:
           add: ready-pool
@@ -436,17 +436,17 @@ jobs:
         input_mapping:
           cf-for-k8s: cf-for-k8s-develop
 
-    - task: delete-cf
-      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-      input_mapping:
-        pool-lock: ready-pool
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
     ensure:
       do:
+      - task: delete-cf
+        file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
       - put: destroy-pool
         params:
           add: ready-pool
@@ -510,17 +510,17 @@ jobs:
         INCLUDE_DETECT: true
         INCLUDE_INTERNET_DEPENDENT: true
 
-    - task: delete-cf
-      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-      input_mapping:
-        pool-lock: ready-pool
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
     ensure:
       do:
+      - task: delete-cf
+        file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
       - put: destroy-pool
         params:
           add: ready-pool
@@ -602,42 +602,42 @@ jobs:
         params:
           SMOKE_TEST_SKIP_SSL: false
 
-    - task: delete-cf
-      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-      input_mapping:
-        pool-lock: ready-pool
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
-    - task: delete-postgres
-      input_mapping:
-        pool-lock: ready-pool
-      config:
-        <<: *common-task-config
-        inputs:
-        - name: cf-for-k8s-ci
-        - name: pool-lock
-        params:
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        run:
-          path: /bin/bash
-          args:
-          - -ec
-          - |
-            source cf-for-k8s-ci/ci/helpers/gke.sh
-
-            cluster_name="$(cat pool-lock/name)"
-            gcloud_auth "${cluster_name}"
-
-            helm uninstall -n external-db postgresql
-            kubectl delete namespace external-db
-
     ensure:
       do:
+      - task: delete-cf
+        file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+      - task: delete-postgres
+        input_mapping:
+          pool-lock: ready-pool
+        config:
+          <<: *common-task-config
+          inputs:
+          - name: cf-for-k8s-ci
+          - name: pool-lock
+          params:
+            GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+            GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          run:
+            path: /bin/bash
+            args:
+            - -ec
+            - |
+              source cf-for-k8s-ci/ci/helpers/gke.sh
+
+              cluster_name="$(cat pool-lock/name)"
+              gcloud_auth "${cluster_name}"
+
+              helm uninstall -n external-db postgresql
+              kubectl delete namespace external-db
+
       - put: destroy-pool
         params:
           add: ready-pool
@@ -719,42 +719,42 @@ jobs:
         params:
           SMOKE_TEST_SKIP_SSL: false
 
-    - task: delete-cf
-      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-      input_mapping:
-        pool-lock: ready-pool
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
-    - task: delete-minio
-      input_mapping:
-        pool-lock: ready-pool
-      config:
-        <<: *common-task-config
-        inputs:
-        - name: cf-for-k8s-ci
-        - name: pool-lock
-        params:
-          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        run:
-          path: /bin/bash
-          args:
-          - -ec
-          - |
-            source cf-for-k8s-ci/ci/helpers/gke.sh
-
-            cluster_name="$(cat pool-lock/name)"
-            gcloud_auth "${cluster_name}"
-
-            helm uninstall -n external-blobstore minio
-            kubectl delete namespace external-blobstore
-
     ensure:
       do:
+      - task: delete-cf
+        file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+
+      - task: delete-minio
+        input_mapping:
+          pool-lock: ready-pool
+        config:
+          <<: *common-task-config
+          inputs:
+          - name: cf-for-k8s-ci
+          - name: pool-lock
+          params:
+            GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
+            GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+            GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          run:
+            path: /bin/bash
+            args:
+            - -ec
+            - |
+              source cf-for-k8s-ci/ci/helpers/gke.sh
+
+              cluster_name="$(cat pool-lock/name)"
+              gcloud_auth "${cluster_name}"
+
+              helm uninstall -n external-blobstore minio
+              kubectl delete namespace external-blobstore
+
       - put: destroy-pool
         params:
           add: ready-pool
@@ -830,30 +830,29 @@ jobs:
         params:
           SMOKE_TEST_SKIP_SSL: false
 
-    - task: delete-cf
-      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-      input_mapping:
-        pool-lock: ready-pool
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
     ensure:
-      in_parallel:
-      - do:
-        - put: destroy-pool
-          params:
-            add: ready-pool
-
-        - put: ready-pool
-          params:
-            remove: ready-pool
+      do:
+      - task: delete-cf
+        file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
       - task: delete-rds
         file: cf-for-k8s-ci/ci/tasks/delete-rds/task.yml
         params:
           PGPASSWORD: ((ci_k8s_aws_rds_database_password))
+
+      - put: destroy-pool
+        params:
+          add: ready-pool
+
+      - put: ready-pool
+        params:
+          remove: ready-pool
 
 - name: validate-s3
   serial: true
@@ -891,7 +890,7 @@ jobs:
     - task: create-s3-bucket-data-values-file
       file: cf-for-k8s-ci/ci/tasks/create-s3-bucket-data-values-file/task.yml
       input_mapping:
-        terraform-s3: create-s3-bucket-data-values-file
+        terraform-s3: create-s3-buckets
       params:
         AWS_ACCESS_KEY_ID: ((ci_k8s_aws_access_key_id))
         AWS_SECRET_ACCESS_KEY: ((ci_k8s_aws_secret_access_key))
@@ -936,25 +935,16 @@ jobs:
           GCP_KEY: ((ci_k8s_gcp_service_account_json))
           GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
 
-    - task: delete-cf
-      file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
-      input_mapping:
-        pool-lock: ready-pool
-      params:
-        GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
-        GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
-        GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
-
     ensure:
-      in_parallel:
-      - do:
-        - put: destroy-pool
-          params:
-            add: ready-pool
-
-        - put: ready-pool
-          params:
-            remove: ready-pool
+      do:
+      - task: delete-cf
+        file: cf-for-k8s-ci/ci/tasks/delete-cf/task.yml
+        input_mapping:
+          pool-lock: ready-pool
+        params:
+          GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
+          GCP_PROJECT_ZONE: ((ci_k8s_gcp_project_zone))
+          GCP_SERVICE_ACCOUNT_JSON: ((ci_k8s_gcp_service_account_json))
 
       - put: destroy-s3-buckets
         resource: terraform-s3
@@ -964,6 +954,14 @@ jobs:
           action: destroy
         get_params:
           action: destroy
+
+      - put: destroy-pool
+        params:
+          add: ready-pool
+
+      - put: ready-pool
+        params:
+          remove: ready-pool
 
 - name: validate-oldest-k8s
   public: true
@@ -1013,28 +1011,31 @@ jobs:
 
   - do:
     - task: create-kind-cluster
-      attempts: 5
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+        terraform: create-kind-vm
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: oldest_version
+      attempts: 5
 
     - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+        terraform: create-kind-vm
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: oldest_version
 
     - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+        terraform: create-kind-vm
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
@@ -1098,28 +1099,31 @@ jobs:
 
   - do:
     - task: create-kind-cluster
-      attempts: 5
+      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-      file: cf-for-k8s-ci/ci/tasks/create-kind-cluster/task.yml
+        terraform: create-kind-vm
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: newest_version
+      attempts: 5
 
     - task: install-cf
+      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-      file: cf-for-k8s-ci/ci/tasks/install-cf-on-kind/task.yml
+        terraform: create-kind-vm
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))
         VERSION_SELECTOR: newest_version
 
     - task: run-smoke-tests
+      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
       input_mapping:
         cf-for-k8s: cf-for-k8s-develop
-      file: cf-for-k8s-ci/ci/tasks/run-smoke-tests-on-kind/task.yml
+        terraform: create-kind-vm
       params:
         GCP_KEY: ((ci_k8s_gcp_service_account_json))
         GCP_PROJECT_NAME: ((ci_k8s_gcp_project_name))

@@ -1,4 +1,6 @@
-#!/bin/bash -eu
+#!/usr/bin/env bash
+
+set -euo pipefail
 
 source cf-for-k8s-ci/ci/helpers/gke.sh
 
@@ -24,12 +26,12 @@ fi
 
 gcloud_auth "${cluster_name}"
 
-if kubectl get namespace cf-db &>/dev/null ; then
+if kubectl get statefulset cf-db-postgresql -n cf-db > /dev/null 2>&1; then
   echo "Doing some special deletion of postgres resources..."
-  set +xe
+  set +e
   kubectl delete statefulset cf-db-postgresql -n cf-db
   kubectl delete pod cf-db-postgresql-0 -n cf-db --force --grace-period 0
-  set -xe
+  set -e
 fi
 
 kapp delete -a cf --yes

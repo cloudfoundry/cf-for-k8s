@@ -192,7 +192,7 @@ jobs:
             export KUBECONFIG=kube-config.yml
             cluster_name="$(cat terraform/name)"
             echo '((ci_k8s_gcp_service_account_json))' > gcp-service-account.json
-            jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
+            aws eks update-kubeconfig --name "${cluster_name}"
 
             export DNS_DOMAIN="$(cat terraform/name).((ci_k8s_root_domain))"
             echo "${DNS_DOMAIN}" > env-metadata/dns-domain.txt

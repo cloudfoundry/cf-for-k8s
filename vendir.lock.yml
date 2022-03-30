@@ -29,7 +29,7 @@ directories:
 - contents:
   - git:
       commitTitle: images.yml updated by CI
-      sha: 41533d4518046f45de81b09302682d0cdb4e65ec
+      sha: 05cb64ae44a8cb5da514c42be4dae19ed0799370
     path: .
   path: config/uaa/_ytt_lib/uaa-k8s-release
 - contents:

@@ -1,3 +1,3 @@
 def istio_version():
-  return "1.11.8"
+  return "1.12.5"
 end

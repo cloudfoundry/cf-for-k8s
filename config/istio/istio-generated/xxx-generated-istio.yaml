@@ -7,7 +7,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     istio: security
     release: istio
@@ -215,7 +215,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     release: istio
   name: destinationrules.networking.istio.io
@@ -429,8 +429,8 @@ spec:
                             localityLbSetting:
                               properties:
                                 distribute:
-                                  description: 'Optional: only one of distribute or
-                                    failover can be set.'
+                                  description: 'Optional: only one of distribute,
+                                    failover or failoverPriority can be set.'
                                   items:
                                     properties:
                                       from:
@@ -452,8 +452,8 @@ spec:
                                   nullable: true
                                   type: boolean
                                 failover:
-                                  description: 'Optional: only failover or distribute
-                                    can be set.'
+                                  description: 'Optional: only one of distribute,
+                                    failover or failoverPriority can be set.'
                                   items:
                                     properties:
                                       from:
@@ -462,6 +462,13 @@ spec:
                                       to:
                                         type: string
                                     type: object
+                                  type: array
+                                failoverPriority:
+                                  description: failoverPriority is an ordered list
+                                    of labels used to sort endpoints to do priority
+                                    based load balancing.
+                                  items:
+                                    type: string
                                   type: array
                               type: object
                             simple:
@@ -669,8 +676,8 @@ spec:
                                   localityLbSetting:
                                     properties:
                                       distribute:
-                                        description: 'Optional: only one of distribute
-                                          or failover can be set.'
+                                        description: 'Optional: only one of distribute,
+                                          failover or failoverPriority can be set.'
                                         items:
                                           properties:
                                             from:
@@ -692,8 +699,8 @@ spec:
                                         nullable: true
                                         type: boolean
                                       failover:
-                                        description: 'Optional: only failover or distribute
-                                          can be set.'
+                                        description: 'Optional: only one of distribute,
+                                          failover or failoverPriority can be set.'
                                         items:
                                           properties:
                                             from:
@@ -702,6 +709,13 @@ spec:
                                             to:
                                               type: string
                                           type: object
+                                        type: array
+                                      failoverPriority:
+                                        description: failoverPriority is an ordered
+                                          list of labels used to sort endpoints to
+                                          do priority based load balancing.
+                                        items:
+                                          type: string
                                         type: array
                                     type: object
                                   simple:
@@ -764,6 +778,9 @@ spec:
                                     type: string
                                   credentialName:
                                     type: string
+                                  insecureSkipVerify:
+                                    nullable: true
+                                    type: boolean
                                   mode:
                                     enum:
                                     - DISABLE
@@ -796,6 +813,9 @@ spec:
                               type: string
                             credentialName:
                               type: string
+                            insecureSkipVerify:
+                              nullable: true
+                              type: boolean
                             mode:
                               enum:
                               - DISABLE
@@ -972,8 +992,8 @@ spec:
                       localityLbSetting:
                         properties:
                           distribute:
-                            description: 'Optional: only one of distribute or failover
-                              can be set.'
+                            description: 'Optional: only one of distribute, failover
+                              or failoverPriority can be set.'
                             items:
                               properties:
                                 from:
@@ -994,8 +1014,8 @@ spec:
                             nullable: true
                             type: boolean
                           failover:
-                            description: 'Optional: only failover or distribute can
-                              be set.'
+                            description: 'Optional: only one of distribute, failover
+                              or failoverPriority can be set.'
                             items:
                               properties:
                                 from:
@@ -1004,6 +1024,12 @@ spec:
                                 to:
                                   type: string
                               type: object
+                            type: array
+                          failoverPriority:
+                            description: failoverPriority is an ordered list of labels
+                              used to sort endpoints to do priority based load balancing.
+                            items:
+                              type: string
                             type: array
                         type: object
                       simple:
@@ -1206,8 +1232,8 @@ spec:
                             localityLbSetting:
                               properties:
                                 distribute:
-                                  description: 'Optional: only one of distribute or
-                                    failover can be set.'
+                                  description: 'Optional: only one of distribute,
+                                    failover or failoverPriority can be set.'
                                   items:
                                     properties:
                                       from:
@@ -1229,8 +1255,8 @@ spec:
                                   nullable: true
                                   type: boolean
                                 failover:
-                                  description: 'Optional: only failover or distribute
-                                    can be set.'
+                                  description: 'Optional: only one of distribute,
+                                    failover or failoverPriority can be set.'
                                   items:
                                     properties:
                                       from:
@@ -1239,6 +1265,13 @@ spec:
                                       to:
                                         type: string
                                     type: object
+                                  type: array
+                                failoverPriority:
+                                  description: failoverPriority is an ordered list
+                                    of labels used to sort endpoints to do priority
+                                    based load balancing.
+                                  items:
+                                    type: string
                                   type: array
                               type: object
                             simple:
@@ -1300,6 +1333,9 @@ spec:
                               type: string
                             credentialName:
                               type: string
+                            insecureSkipVerify:
+                              nullable: true
+                              type: boolean
                             mode:
                               enum:
                               - DISABLE
@@ -1332,6 +1368,9 @@ spec:
                         type: string
                       credentialName:
                         type: string
+                      insecureSkipVerify:
+                        nullable: true
+                        type: boolean
                       mode:
                         enum:
                         - DISABLE
@@ -1557,8 +1596,8 @@ spec:
                             localityLbSetting:
                               properties:
                                 distribute:
-                                  description: 'Optional: only one of distribute or
-                                    failover can be set.'
+                                  description: 'Optional: only one of distribute,
+                                    failover or failoverPriority can be set.'
                                   items:
                                     properties:
                                       from:
@@ -1580,8 +1619,8 @@ spec:
                                   nullable: true
                                   type: boolean
                                 failover:
-                                  description: 'Optional: only failover or distribute
-                                    can be set.'
+                                  description: 'Optional: only one of distribute,
+                                    failover or failoverPriority can be set.'
                                   items:
                                     properties:
                                       from:
@@ -1590,6 +1629,13 @@ spec:
                                       to:
                                         type: string
                                     type: object
+                                  type: array
+                                failoverPriority:
+                                  description: failoverPriority is an ordered list
+                                    of labels used to sort endpoints to do priority
+                                    based load balancing.
+                                  items:
+                                    type: string
                                   type: array
                               type: object
                             simple:
@@ -1797,8 +1843,8 @@ spec:
                                   localityLbSetting:
                                     properties:
                                       distribute:
-                                        description: 'Optional: only one of distribute
-                                          or failover can be set.'
+                                        description: 'Optional: only one of distribute,
+                                          failover or failoverPriority can be set.'
                                         items:
                                           properties:
                                             from:
@@ -1820,8 +1866,8 @@ spec:
                                         nullable: true
                                         type: boolean
                                       failover:
-                                        description: 'Optional: only failover or distribute
-                                          can be set.'
+                                        description: 'Optional: only one of distribute,
+                                          failover or failoverPriority can be set.'
                                         items:
                                           properties:
                                             from:
@@ -1830,6 +1876,13 @@ spec:
                                             to:
                                               type: string
                                           type: object
+                                        type: array
+                                      failoverPriority:
+                                        description: failoverPriority is an ordered
+                                          list of labels used to sort endpoints to
+                                          do priority based load balancing.
+                                        items:
+                                          type: string
                                         type: array
                                     type: object
                                   simple:
@@ -1892,6 +1945,9 @@ spec:
                                     type: string
                                   credentialName:
                                     type: string
+                                  insecureSkipVerify:
+                                    nullable: true
+                                    type: boolean
                                   mode:
                                     enum:
                                     - DISABLE
@@ -1924,6 +1980,9 @@ spec:
                               type: string
                             credentialName:
                               type: string
+                            insecureSkipVerify:
+                              nullable: true
+                              type: boolean
                             mode:
                               enum:
                               - DISABLE
@@ -2100,8 +2159,8 @@ spec:
                       localityLbSetting:
                         properties:
                           distribute:
-                            description: 'Optional: only one of distribute or failover
-                              can be set.'
+                            description: 'Optional: only one of distribute, failover
+                              or failoverPriority can be set.'
                             items:
                               properties:
                                 from:
@@ -2122,8 +2181,8 @@ spec:
                             nullable: true
                             type: boolean
                           failover:
-                            description: 'Optional: only failover or distribute can
-                              be set.'
+                            description: 'Optional: only one of distribute, failover
+                              or failoverPriority can be set.'
                             items:
                               properties:
                                 from:
@@ -2132,6 +2191,12 @@ spec:
                                 to:
                                   type: string
                               type: object
+                            type: array
+                          failoverPriority:
+                            description: failoverPriority is an ordered list of labels
+                              used to sort endpoints to do priority based load balancing.
+                            items:
+                              type: string
                             type: array
                         type: object
                       simple:
@@ -2334,8 +2399,8 @@ spec:
                             localityLbSetting:
                               properties:
                                 distribute:
-                                  description: 'Optional: only one of distribute or
-                                    failover can be set.'
+                                  description: 'Optional: only one of distribute,
+                                    failover or failoverPriority can be set.'
                                   items:
                                     properties:
                                       from:
@@ -2357,8 +2422,8 @@ spec:
                                   nullable: true
                                   type: boolean
                                 failover:
-                                  description: 'Optional: only failover or distribute
-                                    can be set.'
+                                  description: 'Optional: only one of distribute,
+                                    failover or failoverPriority can be set.'
                                   items:
                                     properties:
                                       from:
@@ -2367,6 +2432,13 @@ spec:
                                       to:
                                         type: string
                                     type: object
+                                  type: array
+                                failoverPriority:
+                                  description: failoverPriority is an ordered list
+                                    of labels used to sort endpoints to do priority
+                                    based load balancing.
+                                  items:
+                                    type: string
                                   type: array
                               type: object
                             simple:
@@ -2428,6 +2500,9 @@ spec:
                               type: string
                             credentialName:
                               type: string
+                            insecureSkipVerify:
+                              nullable: true
+                              type: boolean
                             mode:
                               enum:
                               - DISABLE
@@ -2460,6 +2535,9 @@ spec:
                         type: string
                       credentialName:
                         type: string
+                      insecureSkipVerify:
+                        nullable: true
+                        type: boolean
                       mode:
                         enum:
                         - DISABLE
@@ -2498,7 +2576,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     release: istio
   name: envoyfilters.networking.istio.io
@@ -2737,7 +2815,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     release: istio
   name: gateways.networking.istio.io
@@ -2992,7 +3070,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiooperators.install.istio.io
 spec:
@@ -3044,7 +3122,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     istio: security
     release: istio
@@ -3137,7 +3215,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     istio: security
     release: istio
@@ -3174,8 +3252,8 @@ spec:
                         type: string
                       type: array
                     forwardOriginalToken:
-                      description: If set to true, the orginal token will be kept
-                        for the ustream request.
+                      description: If set to true, the original token will be kept
+                        for the upstream request.
                       type: boolean
                     fromHeaders:
                       description: List of header locations from which JWT is expected.
@@ -3211,8 +3289,7 @@ spec:
                   type: object
                 type: array
               selector:
-                description: The selector determines the workloads to apply the RequestAuthentication
-                  on.
+                description: Optional.
                 properties:
                   matchLabels:
                     additionalProperties:
@@ -3237,7 +3314,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     release: istio
   name: serviceentries.networking.istio.io
@@ -3356,6 +3433,7 @@ spec:
                 - NONE
                 - STATIC
                 - DNS
+                - DNS_ROUND_ROBIN
                 type: string
               subjectAltNames:
                 items:
@@ -3479,6 +3557,7 @@ spec:
                 - NONE
                 - STATIC
                 - DNS
+                - DNS_ROUND_ROBIN
                 type: string
               subjectAltNames:
                 items:
@@ -3510,7 +3589,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     release: istio
   name: sidecars.networking.istio.io
@@ -3759,7 +3838,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     istio: telemetry
     release: istio
@@ -3792,8 +3871,8 @@ spec:
       openAPIV3Schema:
         properties:
           spec:
-            description: Telemetry defines how the telemetry is generated for workloads
-              within a mesh.
+            description: 'Telemetry configuration for workloads. See more details
+              at: https://istio.io/docs/reference/config/telemetry.html'
             properties:
               accessLogging:
                 description: Optional.
@@ -3999,7 +4078,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     release: istio
   name: virtualservices.networking.istio.io
@@ -4490,11 +4569,35 @@ spec:
                     redirect:
                       description: A HTTP rule can either redirect or forward (default)
                         traffic.
+                      oneOf:
+                      - not:
+                          anyOf:
+                          - required:
+                            - port
+                          - required:
+                            - derivePort
+                      - required:
+                        - port
+                      - required:
+                        - derivePort
                       properties:
                         authority:
                           type: string
+                        derivePort:
+                          enum:
+                          - FROM_PROTOCOL_DEFAULT
+                          - FROM_REQUEST_PORT
+                          type: string
+                        port:
+                          description: On a redirect, overwrite the port portion of
+                            the URL with this value.
+                          type: integer
                         redirectCode:
                           type: integer
+                        scheme:
+                          description: On a redirect, overwrite the scheme portion
+                            of the URL with this value.
+                          type: string
                         uri:
                           type: string
                       type: object
@@ -5209,11 +5312,35 @@ spec:
                     redirect:
                       description: A HTTP rule can either redirect or forward (default)
                         traffic.
+                      oneOf:
+                      - not:
+                          anyOf:
+                          - required:
+                            - port
+                          - required:
+                            - derivePort
+                      - required:
+                        - port
+                      - required:
+                        - derivePort
                       properties:
                         authority:
                           type: string
+                        derivePort:
+                          enum:
+                          - FROM_PROTOCOL_DEFAULT
+                          - FROM_REQUEST_PORT
+                          type: string
+                        port:
+                          description: On a redirect, overwrite the port portion of
+                            the URL with this value.
+                          type: integer
                         redirectCode:
                           type: integer
+                        scheme:
+                          description: On a redirect, overwrite the scheme portion
+                            of the URL with this value.
+                          type: string
                         uri:
                           type: string
                       type: object
@@ -5464,7 +5591,104 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
+    heritage: Tiller
+    release: istio
+  name: wasmplugins.extensions.istio.io
+spec:
+  group: extensions.istio.io
+  names:
+    categories:
+    - istio-io
+    - extensions-istio-io
+    kind: WasmPlugin
+    listKind: WasmPluginList
+    plural: wasmplugins
+    singular: wasmplugin
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: 'CreationTimestamp is a timestamp representing the server time
+        when this object was created. It is not guaranteed to be set in happens-before
+        order across separate operations. Clients may not set this value. It is represented
+        in RFC3339 form and is in UTC. Populated by the system. Read-only. Null for
+        lists. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata'
+      jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        properties:
+          spec:
+            description: 'Extend the functionality provided by the Istio proxy through
+              WebAssembly filters. See more details at: https://istio.io/docs/reference/config/proxy_extensions/wasm-plugin.html'
+            properties:
+              imagePullPolicy:
+                description: The pull behaviour to be applied when fetching an OCI
+                  image.
+                enum:
+                - UNSPECIFIED_POLICY
+                - IfNotPresent
+                - Always
+                type: string
+              imagePullSecret:
+                description: Credentials to use for OCI image pulling.
+                type: string
+              phase:
+                description: Determines where in the filter chain this `WasmPlugin`
+                  is to be injected.
+                enum:
+                - UNSPECIFIED_PHASE
+                - AUTHN
+                - AUTHZ
+                - STATS
+                type: string
+              pluginConfig:
+                description: The configuration that will be passed on to the plugin.
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+              pluginName:
+                type: string
+              priority:
+                description: Determines ordering of `WasmPlugins` in the same `phase`.
+                nullable: true
+                type: integer
+              selector:
+                properties:
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    type: object
+                type: object
+              sha256:
+                description: SHA256 checksum that will be used to verify Wasm module
+                  or OCI container.
+                type: string
+              url:
+                description: URL of a Wasm module or OCI container.
+                type: string
+              verificationKey:
+                type: string
+            type: object
+          status:
+            type: object
+            x-kubernetes-preserve-unknown-fields: true
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    helm.sh/resource-policy: keep
+  labels:
+    app: istio-pilot
+    chart: istio
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     release: istio
   name: workloadentries.networking.istio.io
@@ -5593,7 +5817,7 @@ metadata:
   labels:
     app: istio-pilot
     chart: istio
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     heritage: Tiller
     release: istio
   name: workloadgroups.networking.istio.io
@@ -5768,7 +5992,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio: ingressgateway
     istio.io/rev: default
@@ -5782,7 +6006,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: istio-reader
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istio-reader-service-account
   namespace: istio-system
@@ -5792,7 +6016,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiod
   namespace: istio-system
@@ -5802,7 +6026,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiod-service-account
   namespace: istio-system
@@ -5812,7 +6036,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: istio-reader
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istio-reader-clusterrole-istio-system
 rules:
@@ -5867,6 +6091,22 @@ rules:
   - list
   - watch
 - apiGroups:
+  - multicluster.x-k8s.io
+  resources:
+  - serviceexports
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - multicluster.x-k8s.io
+  resources:
+  - serviceimports
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
   - apps
   resources:
   - replicasets
@@ -5892,7 +6132,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: istio-reader
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istio-reader-istio-system
 rules:
@@ -5974,13 +6214,21 @@ rules:
   - get
   - watch
   - list
+- apiGroups:
+  - multicluster.x-k8s.io
+  resources:
+  - serviceimports
+  verbs:
+  - get
+  - watch
+  - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiod-clusterrole-istio-system
 rules:
@@ -6010,6 +6258,7 @@ rules:
   - authentication.istio.io
   - rbac.istio.io
   - telemetry.istio.io
+  - extensions.istio.io
   resources:
   - '*'
   verbs:
@@ -6127,6 +6376,7 @@ rules:
   - create
 - apiGroups:
   - networking.x-k8s.io
+  - gateway.networking.k8s.io
   resources:
   - '*'
   verbs:
@@ -6135,10 +6385,12 @@ rules:
   - list
 - apiGroups:
   - networking.x-k8s.io
+  - gateway.networking.k8s.io
   resources:
   - '*'
   verbs:
   - update
+  - patch
 - apiGroups:
   - ""
   resources:
@@ -6157,13 +6409,55 @@ rules:
   - list
   - create
   - delete
+- apiGroups:
+  - multicluster.x-k8s.io
+  resources:
+  - serviceimports
+  verbs:
+  - get
+  - watch
+  - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
+    release: istio
+  name: istiod-gateway-controller-istio-system
+rules:
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - get
+  - watch
+  - list
+  - update
+  - patch
+  - create
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - services
+  verbs:
+  - get
+  - watch
+  - list
+  - update
+  - patch
+  - create
+  - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app: istiod
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiod-istio-system
 rules:
@@ -6310,6 +6604,7 @@ rules:
   - create
 - apiGroups:
   - networking.x-k8s.io
+  - gateway.networking.k8s.io
   resources:
   - '*'
   verbs:
@@ -6318,6 +6613,7 @@ rules:
   - list
 - apiGroups:
   - networking.x-k8s.io
+  - gateway.networking.k8s.io
   resources:
   - '*'
   verbs:
@@ -6340,13 +6636,21 @@ rules:
   - list
   - create
   - delete
+- apiGroups:
+  - multicluster.x-k8s.io
+  resources:
+  - serviceimports
+  verbs:
+  - get
+  - watch
+  - list
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   labels:
     app: istio-reader
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istio-reader-clusterrole-istio-system
 roleRef:
@@ -6363,7 +6667,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: istio-reader
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istio-reader-istio-system
 roleRef:
@@ -6380,7 +6684,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiod-clusterrole-istio-system
 roleRef:
@@ -6397,7 +6701,24 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
+    release: istio
+  name: istiod-gateway-controller-istio-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: istiod-gateway-controller-istio-system
+subjects:
+- kind: ServiceAccount
+  name: istiod
+  namespace: istio-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: istiod
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiod-istio-system
 roleRef:
@@ -6414,7 +6735,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     istio: istiod
     istio.io/rev: default
     release: istio
@@ -6441,34 +6762,8 @@ webhooks:
   - apiGroups:
     - security.istio.io
     - networking.istio.io
-    apiVersions:
-    - '*'
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - '*'
-  sideEffects: None
-- admissionReviewVersions:
-  - v1beta1
-  - v1
-  clientConfig:
-    caBundle: ""
-    service:
-      name: istiod
-      namespace: istio-system
-      path: /validate
-  failurePolicy: Ignore
-  name: validation.istio.io
-  objectSelector:
-    matchExpressions:
-    - key: istio.io/rev
-      operator: DoesNotExist
-  rules:
-  - apiGroups:
-    - security.istio.io
-    - networking.istio.io
     - telemetry.istio.io
+    - extensions.istio.io
     apiVersions:
     - '*'
     operations:
@@ -6482,289 +6777,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
-    install.operator.istio.io/owning-resource: unknown
-    istio.io/rev: default
-    operator.istio.io/component: Pilot
-  name: metadata-exchange-1.10
-  namespace: istio-system
-spec:
-  configPatches:
-  - applyTo: HTTP_FILTER
-    match:
-      context: SIDECAR_INBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.10.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
-  - applyTo: HTTP_FILTER
-    match:
-      context: SIDECAR_OUTBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.10.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
-  - applyTo: HTTP_FILTER
-    match:
-      context: GATEWAY
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.10.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.11.8
-    install.operator.istio.io/owning-resource: unknown
-    istio.io/rev: default
-    operator.istio.io/component: Pilot
-  name: metadata-exchange-1.11
-  namespace: istio-system
-spec:
-  configPatches:
-  - applyTo: HTTP_FILTER
-    match:
-      context: SIDECAR_INBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
-  - applyTo: HTTP_FILTER
-    match:
-      context: SIDECAR_OUTBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
-  - applyTo: HTTP_FILTER
-    match:
-      context: GATEWAY
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.11.8
-    install.operator.istio.io/owning-resource: unknown
-    istio.io/rev: default
-    operator.istio.io/component: Pilot
-  name: metadata-exchange-1.9
-  namespace: istio-system
-spec:
-  configPatches:
-  - applyTo: HTTP_FILTER
-    match:
-      context: SIDECAR_INBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.9.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
-  - applyTo: HTTP_FILTER
-    match:
-      context: SIDECAR_OUTBOUND
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.9.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
-  - applyTo: HTTP_FILTER
-    match:
-      context: GATEWAY
-      listener:
-        filterChain:
-          filter:
-            name: envoy.filters.network.http_connection_manager
-      proxy:
-        proxyVersion: ^1\.9.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.extensions.filters.http.wasm.v3.Wasm
-          value:
-            config:
-              configuration:
-                '@type': type.googleapis.com/google.protobuf.StringValue
-                value: |
-                  {}
-              vm_config:
-                code:
-                  local:
-                    inline_string: envoy.wasm.metadata_exchange
-                runtime: envoy.wasm.runtime.null
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     istio.io/rev: default
   name: stats-filter-1.10
   namespace: istio-system
@@ -6887,7 +6900,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     istio.io/rev: default
   name: stats-filter-1.11
   namespace: istio-system
@@ -7010,9 +7023,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     istio.io/rev: default
-  name: stats-filter-1.9
+  name: stats-filter-1.12
   namespace: istio-system
 spec:
   configPatches:
@@ -7026,7 +7039,7 @@ spec:
             subFilter:
               name: envoy.filters.http.router
       proxy:
-        proxyVersion: ^1\.9.*
+        proxyVersion: ^1\.12.*
     patch:
       operation: INSERT_BEFORE
       value:
@@ -7041,15 +7054,7 @@ spec:
                 value: |
                   {
                     "debug": "false",
-                    "stat_prefix": "istio",
-                    "metrics": [
-                      {
-                        "dimensions": {
-                          "source_cluster": "node.metadata['CLUSTER_ID']",
-                          "destination_cluster": "upstream_peer.cluster_id"
-                        }
-                      }
-                    ]
+                    "stat_prefix": "istio"
                   }
               root_id: stats_outbound
               vm_config:
@@ -7068,7 +7073,7 @@ spec:
             subFilter:
               name: envoy.filters.http.router
       proxy:
-        proxyVersion: ^1\.9.*
+        proxyVersion: ^1\.12.*
     patch:
       operation: INSERT_BEFORE
       value:
@@ -7084,6 +7089,7 @@ spec:
                   {
                     "debug": "false",
                     "stat_prefix": "istio",
+                    "disable_host_header_fallback": true,
                     "metrics": [
                       {
                         "dimensions": {
@@ -7110,7 +7116,7 @@ spec:
             subFilter:
               name: envoy.filters.http.router
       proxy:
-        proxyVersion: ^1\.9.*
+        proxyVersion: ^1\.12.*
     patch:
       operation: INSERT_BEFORE
       value:
@@ -7126,15 +7132,7 @@ spec:
                   {
                     "debug": "false",
                     "stat_prefix": "istio",
-                    "disable_host_header_fallback": true,
-                    "metrics": [
-                      {
-                        "dimensions": {
-                          "source_cluster": "node.metadata['CLUSTER_ID']",
-                          "destination_cluster": "upstream_peer.cluster_id"
-                        }
-                      }
-                    ]
+                    "disable_host_header_fallback": true
                   }
               root_id: stats_outbound
               vm_config:
@@ -7148,181 +7146,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
-    istio.io/rev: default
-  name: tcp-metadata-exchange-1.10
-  namespace: istio-system
-spec:
-  configPatches:
-  - applyTo: NETWORK_FILTER
-    match:
-      context: SIDECAR_INBOUND
-      listener: {}
-      proxy:
-        proxyVersion: ^1\.10.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-          value:
-            protocol: istio-peer-exchange
-  - applyTo: CLUSTER
-    match:
-      cluster: {}
-      context: SIDECAR_OUTBOUND
-      proxy:
-        proxyVersion: ^1\.10.*
-    patch:
-      operation: MERGE
-      value:
-        filters:
-        - name: istio.metadata_exchange
-          typed_config:
-            '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-            type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-            value:
-              protocol: istio-peer-exchange
-  - applyTo: CLUSTER
-    match:
-      cluster: {}
-      context: GATEWAY
-      proxy:
-        proxyVersion: ^1\.10.*
-    patch:
-      operation: MERGE
-      value:
-        filters:
-        - name: istio.metadata_exchange
-          typed_config:
-            '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-            type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-            value:
-              protocol: istio-peer-exchange
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.11.8
-    istio.io/rev: default
-  name: tcp-metadata-exchange-1.11
-  namespace: istio-system
-spec:
-  configPatches:
-  - applyTo: NETWORK_FILTER
-    match:
-      context: SIDECAR_INBOUND
-      listener: {}
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-          value:
-            protocol: istio-peer-exchange
-  - applyTo: CLUSTER
-    match:
-      cluster: {}
-      context: SIDECAR_OUTBOUND
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: MERGE
-      value:
-        filters:
-        - name: istio.metadata_exchange
-          typed_config:
-            '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-            type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-            value:
-              protocol: istio-peer-exchange
-  - applyTo: CLUSTER
-    match:
-      cluster: {}
-      context: GATEWAY
-      proxy:
-        proxyVersion: ^1\.11.*
-    patch:
-      operation: MERGE
-      value:
-        filters:
-        - name: istio.metadata_exchange
-          typed_config:
-            '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-            type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-            value:
-              protocol: istio-peer-exchange
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.11.8
-    istio.io/rev: default
-  name: tcp-metadata-exchange-1.9
-  namespace: istio-system
-spec:
-  configPatches:
-  - applyTo: NETWORK_FILTER
-    match:
-      context: SIDECAR_INBOUND
-      listener: {}
-      proxy:
-        proxyVersion: ^1\.9.*
-    patch:
-      operation: INSERT_BEFORE
-      value:
-        name: istio.metadata_exchange
-        typed_config:
-          '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-          type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-          value:
-            protocol: istio-peer-exchange
-  - applyTo: CLUSTER
-    match:
-      cluster: {}
-      context: SIDECAR_OUTBOUND
-      proxy:
-        proxyVersion: ^1\.9.*
-    patch:
-      operation: MERGE
-      value:
-        filters:
-        - name: istio.metadata_exchange
-          typed_config:
-            '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-            type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-            value:
-              protocol: istio-peer-exchange
-  - applyTo: CLUSTER
-    match:
-      cluster: {}
-      context: GATEWAY
-      proxy:
-        proxyVersion: ^1\.9.*
-    patch:
-      operation: MERGE
-      value:
-        filters:
-        - name: istio.metadata_exchange
-          typed_config:
-            '@type': type.googleapis.com/udpa.type.v1.TypedStruct
-            type_url: type.googleapis.com/envoy.tcp.metadataexchange.config.MetadataExchange
-            value:
-              protocol: istio-peer-exchange
----
-apiVersion: networking.istio.io/v1alpha3
-kind: EnvoyFilter
-metadata:
-  labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     istio.io/rev: default
   name: tcp-stats-filter-1.10
   namespace: istio-system
@@ -7437,7 +7261,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     istio.io/rev: default
   name: tcp-stats-filter-1.11
   namespace: istio-system
@@ -7552,9 +7376,9 @@ apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     istio.io/rev: default
-  name: tcp-stats-filter-1.9
+  name: tcp-stats-filter-1.12
   namespace: istio-system
 spec:
   configPatches:
@@ -7566,7 +7390,7 @@ spec:
           filter:
             name: envoy.filters.network.tcp_proxy
       proxy:
-        proxyVersion: ^1\.9.*
+        proxyVersion: ^1\.12.*
     patch:
       operation: INSERT_BEFORE
       value:
@@ -7606,7 +7430,7 @@ spec:
           filter:
             name: envoy.filters.network.tcp_proxy
       proxy:
-        proxyVersion: ^1\.9.*
+        proxyVersion: ^1\.12.*
     patch:
       operation: INSERT_BEFORE
       value:
@@ -7621,15 +7445,7 @@ spec:
                 value: |
                   {
                     "debug": "false",
-                    "stat_prefix": "istio",
-                    "metrics": [
-                      {
-                        "dimensions": {
-                          "source_cluster": "node.metadata['CLUSTER_ID']",
-                          "destination_cluster": "upstream_peer.cluster_id"
-                        }
-                      }
-                    ]
+                    "stat_prefix": "istio"
                   }
               root_id: stats_outbound
               vm_config:
@@ -7646,7 +7462,7 @@ spec:
           filter:
             name: envoy.filters.network.tcp_proxy
       proxy:
-        proxyVersion: ^1\.9.*
+        proxyVersion: ^1\.12.*
     patch:
       operation: INSERT_BEFORE
       value:
@@ -7661,15 +7477,7 @@ spec:
                 value: |
                   {
                     "debug": "false",
-                    "stat_prefix": "istio",
-                    "metrics": [
-                      {
-                        "dimensions": {
-                          "source_cluster": "node.metadata['CLUSTER_ID']",
-                          "destination_cluster": "upstream_peer.cluster_id"
-                        }
-                      }
-                    ]
+                    "stat_prefix": "istio"
                   }
               root_id: stats_outbound
               vm_config:
@@ -7734,7 +7542,7 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: Pilot
@@ -7775,7 +7583,7 @@ data:
             sidecar.istio.io/interceptionMode: "{{ annotation .ObjectMeta `sidecar.istio.io/interceptionMode` .ProxyConfig.InterceptionMode }}",
             {{ with annotation .ObjectMeta `traffic.sidecar.istio.io/includeOutboundIPRanges` .Values.global.proxy.includeIPRanges }}traffic.sidecar.istio.io/includeOutboundIPRanges: "{{.}}",{{ end }}
             {{ with annotation .ObjectMeta `traffic.sidecar.istio.io/excludeOutboundIPRanges` .Values.global.proxy.excludeIPRanges }}traffic.sidecar.istio.io/excludeOutboundIPRanges: "{{.}}",{{ end }}
-            traffic.sidecar.istio.io/includeInboundPorts: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` `*` }}",
+            {{ with annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` .Values.global.proxy.includeInboundPorts }}traffic.sidecar.istio.io/includeInboundPorts: "{{.}}",{{ end }}
             traffic.sidecar.istio.io/excludeInboundPorts: "{{ excludeInboundPort (annotation .ObjectMeta `status.sidecar.istio.io/port` .Values.global.proxy.statusPort) (annotation .ObjectMeta `traffic.sidecar.istio.io/excludeInboundPorts` .Values.global.proxy.excludeInboundPorts) }}",
             {{ if or (isset .ObjectMeta.Annotations `traffic.sidecar.istio.io/includeOutboundPorts`) (ne (valueOrDefault .Values.global.proxy.includeOutboundPorts "") "") }}
             traffic.sidecar.istio.io/includeOutboundPorts: "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeOutboundPorts` .Values.global.proxy.includeOutboundPorts }}",
@@ -7803,7 +7611,7 @@ data:
             args:
             - istio-iptables
             - "-p"
-            - "15001"
+            - {{ .MeshConfig.ProxyListenPort | default "15001" | quote }}
             - "-z"
             - "15006"
             - "-u"
@@ -7815,7 +7623,7 @@ data:
             - "-x"
             - "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/excludeOutboundIPRanges` .Values.global.proxy.excludeIPRanges }}"
             - "-b"
-            - "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` `*` }}"
+            - "{{ annotation .ObjectMeta `traffic.sidecar.istio.io/includeInboundPorts` .Values.global.proxy.includeInboundPorts }}"
             - "-d"
           {{- if excludeInboundPort (annotation .ObjectMeta `status.sidecar.istio.io/port` .Values.global.proxy.statusPort) (annotation .ObjectMeta `traffic.sidecar.istio.io/excludeInboundPorts` .Values.global.proxy.excludeInboundPorts) }}
             - "15090,15021,{{ excludeInboundPort (annotation .ObjectMeta `status.sidecar.istio.io/port` .Values.global.proxy.statusPort) (annotation .ObjectMeta `traffic.sidecar.istio.io/excludeInboundPorts` .Values.global.proxy.excludeInboundPorts) }}"
@@ -8068,6 +7876,20 @@ data:
               failureThreshold: {{ annotation .ObjectMeta `readiness.status.sidecar.istio.io/failureThreshold` .Values.global.proxy.readinessFailureThreshold }}
             {{ end -}}
             securityContext:
+              {{- if eq (index .ProxyConfig.ProxyMetadata "IPTABLES_TRACE_LOGGING") "true" }}
+              allowPrivilegeEscalation: true
+              capabilities:
+                add:
+                - NET_ADMIN
+                drop:
+                - ALL
+              privileged: true
+              readOnlyRootFilesystem: {{ ne (annotation .ObjectMeta `sidecar.istio.io/enableCoreDump` .Values.global.proxy.enableCoreDump) "true" }}
+              runAsGroup: 1337
+              fsGroup: 1337
+              runAsNonRoot: false
+              runAsUser: 0
+              {{- else }}
               allowPrivilegeEscalation: {{ .Values.global.proxy.privileged }}
               capabilities:
                 {{ if or (eq (annotation .ObjectMeta `sidecar.istio.io/interceptionMode` .ProxyConfig.InterceptionMode) `TPROXY`) (eq (annotation .ObjectMeta `sidecar.istio.io/capNetBindService` .Values.global.proxy.capNetBindService) `true`) -}}
@@ -8091,6 +7913,7 @@ data:
               {{- else -}}
               runAsNonRoot: true
               runAsUser: 1337
+              {{- end }}
               {{- end }}
             resources:
           {{- if or (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPU`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemory`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyCPULimit`) (isset .ObjectMeta.Annotations `sidecar.istio.io/proxyMemoryLimit`) }}
@@ -8118,6 +7941,11 @@ data:
             {{- end }}
           {{- end }}
             volumeMounts:
+            {{- if eq .Values.global.caName "GkeWorkloadCertificate" }}
+            - name: gke-workload-certificate
+              mountPath: /var/run/secrets/workload-spiffe-credentials
+              readOnly: true
+            {{- end }}
             {{- if eq .Values.global.pilotCertProvider "istiod" }}
             - mountPath: /var/run/secrets/istio
               name: istiod-ca-cert
@@ -8155,6 +7983,11 @@ data:
               {{ end }}
               {{- end }}
           volumes:
+          {{- if eq .Values.global.caName "GkeWorkloadCertificate" }}
+          - name: gke-workload-certificate
+            csi:
+              driver: workloadcertificates.security.cloud.google.com
+          {{- end }}
           {{- if (isset .ObjectMeta.Annotations `sidecar.istio.io/bootstrapOverride`) }}
           - name: custom-bootstrap-volume
             configMap:
@@ -8356,6 +8189,11 @@ data:
               timeoutSeconds: 3
               failureThreshold: {{ .Values.global.proxy.readinessFailureThreshold }}
             volumeMounts:
+            {{- if eq .Values.global.caName "GkeWorkloadCertificate" }}
+            - name: gke-workload-certificate
+              mountPath: /var/run/secrets/workload-spiffe-credentials
+              readOnly: true
+            {{- end }}
             {{- if eq .Values.global.pilotCertProvider "istiod" }}
             - mountPath: /var/run/secrets/istio
               name: istiod-ca-cert
@@ -8378,6 +8216,11 @@ data:
             - name: istio-podinfo
               mountPath: /etc/istio/pod
           volumes:
+          {{- if eq .Values.global.caName "GkeWorkloadCertificate" }}
+          - name: gke-workload-certificate
+            csi:
+              driver: workloadcertificates.security.cloud.google.com
+          {{- end }}
           # SDS channel between istioagent and Envoy
           - emptyDir:
               medium: Memory
@@ -8429,6 +8272,8 @@ data:
             fsGroup: 1337
           {{- end }}
       grpc-simple: |
+        metadata:
+          sidecar.istio.io/rewriteAppHTTPProbers: "false"
         spec:
           initContainers:
             - name: grpc-bootstrap-init
@@ -8449,16 +8294,20 @@ data:
                   valueFrom:
                     fieldRef:
                       fieldPath: metadata.namespace
+                - name: ISTIO_NAMESPACE
+                  value: |
+                     {{ .Values.global.istioNamespace }}
               command:
                 - sh
                 - "-c"
                 - |-
                   NODE_ID="sidecar~${INSTANCE_IP}~${POD_NAME}.${POD_NAMESPACE}~cluster.local"
+                  SERVER_URI="dns:///istiod.${ISTIO_NAMESPACE}.svc:15010"
                   echo '
                   {
                     "xds_servers": [
                       {
-                        "server_uri": "dns:///istiod.istio-system.svc:15010",
+                        "server_uri": "'${SERVER_URI}'",
                         "channel_creds": [{"type": "insecure"}],
                         "server_features" : ["xds_v3"]
                       }
@@ -8496,6 +8345,7 @@ data:
             kubectl.kubernetes.io/default-logs-container: "{{ index $containers 0 }}",
             kubectl.kubernetes.io/default-container: "{{ index $containers 0 }}",
             {{ end }}
+            sidecar.istio.io/rewriteAppHTTPProbers: "false",
           }
         spec:
           containers:
@@ -8503,10 +8353,10 @@ data:
           {{ if not (eq $container.Name "istio-proxy") }}
           - name: {{ $container.Name }}
             env:
-            - name: "GRPC_XDS_BOOTSTRAP"
-              value: "/var/lib/istio/data/grpc-bootstrap.json"
             - name: "GRPC_XDS_EXPERIMENTAL_SECURITY_SUPPORT"
               value: "true"
+            - name: "GRPC_XDS_BOOTSTRAP"
+              value: "/etc/istio/proxy/grpc-bootstrap.json"
             volumeMounts:
             - mountPath: /var/lib/istio/data
               name: istio-data
@@ -8534,8 +8384,6 @@ data:
             - --log_as_json
           {{- end }}
             env:
-            - name: "GRPC_XDS_BOOTSTRAP"
-              value: "/var/lib/istio/data/grpc-bootstrap.json"
             - name: ISTIO_META_GENERATOR
               value: grpc
             - name: OUTPUT_CERTS
@@ -8726,6 +8574,7 @@ data:
     {
       "global": {
         "caAddress": "",
+        "caName": "",
         "configCluster": false,
         "configValidation": true,
         "defaultNodeSelector": {},
@@ -8776,6 +8625,8 @@ data:
           "holdApplicationUntilProxyStarts": false,
           "image": "proxyv2",
           "includeIPRanges": "*",
+          "includeInboundPorts": "*",
+          "includeOutboundPorts": "",
           "logLevel": "warning",
           "privileged": false,
           "readinessFailureThreshold": 30,
@@ -8816,7 +8667,7 @@ data:
         "sts": {
           "servicePort": 0
         },
-        "tag": "1.11.8",
+        "tag": "1.12.5",
         "tracer": {
           "datadog": {
             "address": "$(HOST_IP):8126"
@@ -8858,7 +8709,7 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: Pilot
@@ -8871,7 +8722,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   labels:
     app: sidecar-injector
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: Pilot
@@ -9026,12 +8877,12 @@ metadata:
     kbld.k14s.io/images: |
       - origins:
         - resolved:
-            tag: 1.11.8
-            url: index.docker.io/istio/proxyv2:1.11.8
-        url: index.docker.io/istio/proxyv2@sha256:4a4790097d8ac55adb7f14bc18766105e8fc107620f0c39f379dc4fdb12c5aff
+            tag: 1.12.5
+            url: index.docker.io/istio/proxyv2:1.12.5
+        url: index.docker.io/istio/proxyv2@sha256:780f49744311374e0905e5d15a4bd251bbc48284cb653ca9d609ac3894558462
   labels:
     app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio: ingressgateway
     istio.io/rev: default
@@ -9054,7 +8905,7 @@ spec:
       labels:
         app: istio-ingressgateway
         chart: gateways
-        cloudfoundry.org/istio_version: 1.11.8
+        cloudfoundry.org/istio_version: 1.12.5
         heritage: Tiller
         install.operator.istio.io/owning-resource: unknown
         istio: ingressgateway
@@ -9153,13 +9004,11 @@ spec:
           value: cluster.local
         - name: ISTIO_META_UNPRIVILEGED_POD
           value: "true"
-        - name: ISTIO_META_ROUTER_MODE
-          value: standard
         - name: ISTIO_META_CLUSTER_ID
           value: Kubernetes
         - name: TERMINATION_DRAIN_DURATION_SECONDS
           value: "60"
-        image: index.docker.io/istio/proxyv2@sha256:4a4790097d8ac55adb7f14bc18766105e8fc107620f0c39f379dc4fdb12c5aff
+        image: index.docker.io/istio/proxyv2@sha256:780f49744311374e0905e5d15a4bd251bbc48284cb653ca9d609ac3894558462
         lifecycle:
           preStop:
             exec:
@@ -9303,12 +9152,12 @@ metadata:
     kbld.k14s.io/images: |
       - origins:
         - resolved:
-            tag: 1.11.8
-            url: index.docker.io/istio/pilot:1.11.8
-        url: index.docker.io/istio/pilot@sha256:f6ba84bbb6a15ff70e1f16cb31be025b92d9eb957ac4e8d007281878eacd8d5a
+            tag: 1.12.5
+            url: index.docker.io/istio/pilot:1.12.5
+        url: index.docker.io/istio/pilot@sha256:903d7eb3a4b7369c5b8d3a6f886245fb6e2d4a4666b324e691d6fd7a7a28890b
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio: pilot
     istio.io/rev: default
@@ -9332,7 +9181,7 @@ spec:
         sidecar.istio.io/inject: "false"
       labels:
         app: istiod
-        cloudfoundry.org/istio_version: 1.11.8
+        cloudfoundry.org/istio_version: 1.12.5
         install.operator.istio.io/owning-resource: unknown
         istio: pilot
         istio.io/rev: default
@@ -9384,7 +9233,7 @@ spec:
           value: "false"
         - name: CLUSTER_ID
           value: Kubernetes
-        image: index.docker.io/istio/pilot@sha256:f6ba84bbb6a15ff70e1f16cb31be025b92d9eb957ac4e8d007281878eacd8d5a
+        image: index.docker.io/istio/pilot@sha256:903d7eb3a4b7369c5b8d3a6f886245fb6e2d4a4666b324e691d6fd7a7a28890b
         name: discovery
         ports:
         - containerPort: 8080
@@ -9408,6 +9257,7 @@ spec:
           capabilities:
             drop:
             - ALL
+          readOnlyRootFilesystem: true
           runAsGroup: 1337
           runAsNonRoot: true
           runAsUser: 1337
@@ -9453,7 +9303,7 @@ metadata:
     kapp.k14s.io/update-strategy: fallback-on-replace
   labels:
     app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio: ingressgateway
     istio.io/rev: default
@@ -9475,7 +9325,7 @@ metadata:
     kapp.k14s.io/update-strategy: fallback-on-replace
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio: pilot
     istio.io/rev: default
@@ -9494,7 +9344,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: IngressGateways
@@ -9516,7 +9366,7 @@ kind: Role
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiod
   namespace: istio-system
@@ -9544,7 +9394,7 @@ kind: Role
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiod-istio-system
   namespace: istio-system
@@ -9571,7 +9421,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: IngressGateways
@@ -9591,7 +9441,7 @@ kind: RoleBinding
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiod
   namespace: istio-system
@@ -9609,7 +9459,7 @@ kind: RoleBinding
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     release: istio
   name: istiod-istio-system
   namespace: istio-system
@@ -9627,7 +9477,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   labels:
     app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio: ingressgateway
     istio.io/rev: default
@@ -9653,7 +9503,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio.io/rev: default
     operator.istio.io/component: Pilot
@@ -9679,7 +9529,7 @@ metadata:
   annotations: null
   labels:
     app: istio-ingressgateway
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio: ingressgateway
     istio.io/rev: default
@@ -9716,7 +9566,7 @@ kind: Service
 metadata:
   labels:
     app: istiod
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
     install.operator.istio.io/owning-resource: unknown
     istio: pilot
     istio.io/rev: default
@@ -9747,14 +9597,14 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
   name: istio-system
 ---
 apiVersion: security.istio.io/v1beta1
 kind: PeerAuthentication
 metadata:
   labels:
-    cloudfoundry.org/istio_version: 1.11.8
+    cloudfoundry.org/istio_version: 1.12.5
   name: default
   namespace: istio-system
 spec:

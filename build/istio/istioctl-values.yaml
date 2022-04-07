@@ -76,5 +76,3 @@ spec:
           "x_forwarded_for": "%REQ(X-FORWARDED-FOR)%",
           "x_forwarded_proto": "%REQ(X-FORWARDED-PROTO)%"
         }
-      defaultConfig:
-        holdApplicationUntilProxyStarts: true

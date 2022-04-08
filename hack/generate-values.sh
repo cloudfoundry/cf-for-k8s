@@ -73,7 +73,7 @@ if [[ -z ${DOMAIN:=} ]]; then
 fi
 
 if [[ -n ${GCP_SERVICE_ACCOUNT_JSON_FILE:=} ]]; then
-  if [[ ! -r ${GCP_SERVICE_ACCOUNT_JSON_FILE} ]]; then
+  if [[ ! -f ${GCP_SERVICE_ACCOUNT_JSON_FILE} ]]; then
     echo "Error: Unable to read GCP service account JSON from file: ${GCP_SERVICE_ACCOUNT_JSON_FILE}" >&2
     exit 1
   fi

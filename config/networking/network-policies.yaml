@@ -153,6 +153,20 @@ spec:
       port: 53
   policyTypes:
   - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-iaas-metadata-egress
+  namespace: #@ system_namespace()
+spec:
+  podSelector: {}
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 169.254.169.254/32
+  policyTypes:
+  - Egress
 #@ if cfdb_enabled():
 ---
 apiVersion: networking.k8s.io/v1
@@ -170,6 +184,20 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
+  policyTypes:
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-iaas-metadata-egress
+  namespace: cf-db
+spec:
+  podSelector: {}
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 169.254.169.254/32
   policyTypes:
   - Egress
 #@ end
@@ -190,6 +218,20 @@ spec:
       port: 53
     - protocol: TCP
       port: 53
+  policyTypes:
+  - Egress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-iaas-metadata-egress
+  namespace: cf-blobstore
+spec:
+  podSelector: {}
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 169.254.169.254/32
   policyTypes:
   - Egress
 #@ end

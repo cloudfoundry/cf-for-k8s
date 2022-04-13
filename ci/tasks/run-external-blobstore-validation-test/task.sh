@@ -48,7 +48,7 @@ cf target -o org -s space
 echo "Pushing ${APP_NAME}"
 trap "{ rm -rf $TMP; }" EXIT
 cp -R cf-for-k8s/tests/smoke/assets/test-node-app/* $TMP
-dd if=/dev/urandom of=$TMP/a-big-file bs=64k count=1
+dd if=/dev/urandom of=$TMP/a-big-file bs=128k count=1
 cf push ${APP_NAME} -p $TMP
 echo "Verify availability of ${APP_NAME}"
 curl -k https://${APP_NAME}.apps.${DNS_DOMAIN}

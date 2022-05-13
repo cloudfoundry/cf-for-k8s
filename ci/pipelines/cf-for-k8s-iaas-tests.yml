@@ -301,9 +301,9 @@ jobs:
             args:
             - -ec
             - |
-              cluster_name="$(cat terraform/name)"
               export KUBECONFIG=kube-config.yml
-              jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
+              cluster_name="$(cat terraform/name)"
+              aws eks update-kubeconfig --name "${cluster_name}"
 
               if kubectl get statefulset cf-db-postgresql -n cf-db > /dev/null 2>&1; then
                 echo "Doing some special deletion of postgres resources..."

@@ -1,5 +1,6 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
+  version = "18.21.0"
 
   cluster_name    = var.env_name
   cluster_version = var.eks_version
@@ -7,14 +8,14 @@ module "eks" {
   vpc_id          = module.vpc.vpc_id
   subnet_ids      = module.vpc.private_subnets
 
-  self_managed_node_groups = {
-    worker_group = {
-      name          = "worker-group"
-      instance_type = var.node_machine_type
-      desired_size  = var.node_count
-      max_size      = var.node_count
-      min_size      = var.node_count
-    }
+  eks_managed_node_groups = {
+    worker-group = {
+      instance_types = [var.node_machine_type]
+      capacity_type  = "SPOT"
+      min_size       = var.node_count
+      max_size       = var.node_count
+      desired_size   = var.node_count
+    },
   }
 
   tags = {

@@ -305,7 +305,7 @@ jobs:
               cluster_name="$(cat terraform/name)"
               aws eks update-kubeconfig --name "${cluster_name}"
 
-              if kubectl get statefulset cf-db-postgresql -n cf-db > /dev/null 2>&1; then
+              if kubectl get pod cf-db-postgresql-0 -n cf-db > /dev/null 2>&1; then
                 echo "Doing some special deletion of postgres resources..."
                 kubectl delete statefulset cf-db-postgresql -n cf-db
                 kubectl delete pod cf-db-postgresql-0 -n cf-db --force --grace-period 0
@@ -321,6 +321,10 @@ jobs:
                 exit 1
               fi
 
+              echo '((gcp_dns_admin_service_account_json))' > dns-service-account.json
+              gcloud auth activate-service-account  --key-file dns-service-account.json
+              gcloud config set project ((ci_k8s_gcp_project_name))
+
               old_zone_info=$(gcloud dns record-sets list --zone=((ci_k8s_dns_zone_name)) --filter "${DNS_DOMAIN}")
 
               if [[ -n "${old_zone_info}" ]]; then
@@ -329,10 +333,6 @@ jobs:
 
               ${old_zone_info}
               EOT
-
-                echo '((gcp_dns_admin_service_account_json))' > dns-service-account.json
-                gcloud auth activate-service-account  --key-file dns-service-account.json
-                gcloud config set project ((ci_k8s_gcp_project_name))
 
                 gcloud dns record-sets transaction start --zone=((ci_k8s_dns_zone_name))
 
@@ -493,7 +493,7 @@ jobs:
               export KUBECONFIG=kube-config.yml
               jq -r '.kubeconfig' terraform/metadata >> ${KUBECONFIG}
 
-              if kubectl get statefulset cf-db-postgresql -n cf-db > /dev/null 2>&1; then
+              if kubectl get pod cf-db-postgresql-0 -n cf-db > /dev/null 2>&1; then
                 echo "Doing some special deletion of postgres resources..."
                 kubectl delete statefulset cf-db-postgresql -n cf-db
                 kubectl delete pod cf-db-postgresql-0 -n cf-db --force --grace-period 0

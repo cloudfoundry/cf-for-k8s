@@ -2,44 +2,6 @@
 
 #! These overlays are required to make Istio compatible with kapp deploy
 
-#! remove empty caBundle key to avoid having kapp consider it
-#! as a change from what cluster automatically fills in
-#@overlay/match by=overlay.subset({"kind":"MutatingWebhookConfiguration", "metadata":{"name": "istio-sidecar-injector"}})
----
-webhooks:
-#@overlay/match by="name"
-- name: rev.namespace.sidecar-injector.istio.io
-  clientConfig:
-    #@overlay/remove
-    caBundle:
-
-#@overlay/match by=overlay.subset({"kind":"MutatingWebhookConfiguration", "metadata":{"name": "istio-sidecar-injector"}})
----
-webhooks:
-#@overlay/match by="name"
-- name: rev.object.sidecar-injector.istio.io
-  clientConfig:
-    #@overlay/remove
-    caBundle:
-
-#@overlay/match by=overlay.subset({"kind":"MutatingWebhookConfiguration", "metadata":{"name": "istio-sidecar-injector"}})
----
-webhooks:
-#@overlay/match by="name"
-- name: namespace.sidecar-injector.istio.io
-  clientConfig:
-    #@overlay/remove
-    caBundle:
-
-#@overlay/match by=overlay.subset({"kind":"MutatingWebhookConfiguration", "metadata":{"name": "istio-sidecar-injector"}})
----
-webhooks:
-#@overlay/match by="name"
-- name: object.sidecar-injector.istio.io
-  clientConfig:
-    #@overlay/remove
-    caBundle:
-
 #! PodDisruptionBudget cannot be updated in place, so allow kapp to replace for upgrade
 #@overlay/match by=overlay.subset({"kind": "PodDisruptionBudget"}), expects="1+"
 ---

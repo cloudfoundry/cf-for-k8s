@@ -48,7 +48,7 @@ directories:
   - path: .
     githubRelease:
       slug: pivotal/kpack
-      tag: v0.6.0
+      tag: v0.6.1
       disableAutoChecksumValidation: true
     includePaths:
     - release-*.yaml

@@ -301,7 +301,7 @@ resources:
 - name: python-buildpack
   type: docker-image
   source:
-    repository: gcr.io/paketo-community/python
+    repository: gcr.io/paketo-buildpacks/python
 - name: ruby-buildpack
   type: docker-image
   source:

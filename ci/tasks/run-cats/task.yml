@@ -36,7 +36,7 @@ params:
   INCLUDE_TASKS: false
   INCLUDE_V3: false
   RUBY_BUILDPACK: paketo-buildpacks/ruby
-  PYTHON_BUILDPACK: paketo-community/python
+  PYTHON_BUILDPACK: paketo-buildpacks/python
   GO_BUILDPACK: paketo-buildpacks/go
   JAVA_BUILDPACK: paketo-buildpacks/java
   NODEJS_BUILDPACK: paketo-buildpacks/nodejs

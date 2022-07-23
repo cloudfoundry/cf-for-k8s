@@ -83,7 +83,7 @@ pushd cf-acceptance-tests
     -keepGoing \
     -randomizeAllSpecs \
     -flakeAttempts=${NUM_FLAKE_ATTEMPTS} \
-    -nodes=${NUM_NODES}
+    -nodes=${NUM_NODES} \
     -skip="Buildpacks php"
 
   # Around 2020-08-02, we saw CATS failures when using >6 nodes.

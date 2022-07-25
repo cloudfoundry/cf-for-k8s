@@ -80,11 +80,12 @@ set -x
 pushd cf-acceptance-tests
   export CONFIG="${CATS_CONFIG_FILE}"
   ./bin/test \
-    -keepGoing \
-    -randomizeAllSpecs \
-    -flakeAttempts=${NUM_FLAKE_ATTEMPTS} \
-    -nodes=${NUM_NODES} \
-    -skip="Buildpacks php"
+    --keep-going \
+    --randomize-all \
+    --flake-attempts=${NUM_FLAKE_ATTEMPTS} \
+    --nodes=${NUM_NODES} \
+    --no-color \
+    --skip="Buildpacks php"
 
   # Around 2020-08-02, we saw CATS failures when using >6 nodes.
   #

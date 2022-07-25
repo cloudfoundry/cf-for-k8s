@@ -8,14 +8,15 @@ metadata:
   name: cf-buildpack-store
 spec:
   sources:
+  #! Ruby buildpacks releases > 0.11.0 are incompatible without a Procfile
   - image: gcr.io/paketo-buildpacks/ruby@sha256:19254ce071ad2139309280e0f88f19f7b44ff58e684c6ac834f48d1b87b946d5
-  - image: gcr.io/paketo-community/python@sha256:1228cfb8003f830b178b9b8a227889cae32df1aed74a746f2ac59b6bb8e88961
-  - image: gcr.io/paketo-buildpacks/java@sha256:4273a77d48f48a991e39eb65deffc0ba23cee5fae4ef155c272d6a3c59e4924f
-  - image: gcr.io/paketo-buildpacks/nodejs@sha256:eddcc60e36d4a85628dd178f5de285be7d94ea093db32cdb4169471fcb48b0f0
-  - image: gcr.io/paketo-buildpacks/go@sha256:23a4374cc66cced4ceb4e5bfcccdad19b97c7768083a654160cb9ba6745c5e1a
-  - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:7a415c1700e1628d0da9fb00f77cf301687a7c4780e0882089909a89c1b9de67
-  - image: gcr.io/paketo-buildpacks/php@sha256:7516823021bdd1355c130bbb754b725cd2b87870d78f62bfabcd7381d5dd274e
-  - image: gcr.io/paketo-buildpacks/procfile@sha256:68aa25bd61299e91b8df1d99ed88e90365edc05bfb17e71828880b42c6da2ddb
+  - image: gcr.io/paketo-buildpacks/python@sha256:f08de16aa7d8d225ee05543dd21910b67a7004d57290adfed11c6bf47b08ad64
+  - image: gcr.io/paketo-buildpacks/java@sha256:8d2173a4af33ea5389bc1477e336a828cfa2599f6f1e79464a9c9b603f7a584a
+  - image: gcr.io/paketo-buildpacks/nodejs@sha256:9288250d56e686444bc5c21f7f333a5a4ebf910485aa2c56df84c181b099b69a
+  - image: gcr.io/paketo-buildpacks/go@sha256:afa5b221be6c70c65d6692d34157ac921677fb3555c8d0034d052dbe07147ddc
+  - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:13f4d9445a07290edcd1a21c2f1ee109e888ecc68cd0344acf5d44eceb414576
+  - image: gcr.io/paketo-buildpacks/php@sha256:c55493eb80d5b71e98bc2fc3eb051bc533b8d8f93e849b630de600bdb7090859
+  - image: gcr.io/paketo-buildpacks/procfile@sha256:6701ee01a2f358310feff0bb2b26bc7efc197768ae0249f2a40fa5950337e9db
 
 ---
 apiVersion: kpack.io/v1alpha1
@@ -60,7 +61,7 @@ spec:
     - id: paketo-buildpacks/procfile
       optional: true
   - group:
-    - id: paketo-community/python
+    - id: paketo-buildpacks/python
     - id: paketo-buildpacks/procfile
       optional: true
   - group:

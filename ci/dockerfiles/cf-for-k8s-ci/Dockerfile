@@ -18,9 +18,10 @@ RUN apk add perl-utils && \
     wget --tries=3 -O- https://carvel.dev/install.sh | bash
 
 # https://kubernetes.io/docs/tasks/tools/install-kubectl/
-RUN echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
-    curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-    apt-get update -y && apt-get install kubectl -y
+RUN echo "Installing kubectl" && \
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    chmod +x ./kubectl && \
+    mv kubectl /usr/local/bin
 
 RUN bosh_cli_version=$(curl --silent "https://api.github.com/repos/cloudfoundry/bosh-cli/releases/latest" | jq -r '.tag_name' | tr -d 'v') && \
     echo "Installing bosh_cli version ${bosh_cli_version}..." && \
@@ -28,7 +29,8 @@ RUN bosh_cli_version=$(curl --silent "https://api.github.com/repos/cloudfoundry/
     chmod +x ./bosh-cli-${bosh_cli_version}-linux-amd64 && \
     mv ./bosh-cli-${bosh_cli_version}-linux-amd64 /usr/local/bin/bosh
 
-RUN wget --tries=3 https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz && \
+RUN echo "Installing kubeval" && \
+    wget --tries=3 https://github.com/instrumenta/kubeval/releases/latest/download/kubeval-linux-amd64.tar.gz && \
     tar xf kubeval-linux-amd64.tar.gz && \
     chmod +x ./kubeval && \
     mv kubeval /usr/local/bin

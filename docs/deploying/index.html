@@ -117,7 +117,7 @@
         <ul class="ml-2">
         </ul>
       </li>
-      <li data-nav-id="/docs/deploying/" class="dd-item depth-0 parent active haschildren">
+      <li data-nav-id="/docs/deploying/" class="dd-item depth-0 active haschildren">
         <a href="/docs/deploying/">Deploying cf-for-k8s</a>
           <ul class="ml-2">
       <li data-nav-id="/docs/deploying/deploy-local/" class="dd-item depth-1">
@@ -283,7 +283,7 @@
 <h3 id="kubernetes-cluster-requirements">Kubernetes Cluster Requirements</h3>
 <p>To deploy cf-for-k8s as is, the cluster should:</p>
 <ul>
-<li>be running Kubernetes version within range 1.16.x to 1.19.x</li>
+<li>be running Kubernetes version within range 1.19.x to 1.22.x</li>
 <li>have a minimum of 5 nodes</li>
 <li>have a minimum of 4 CPU, 15GB memory per node</li>
 <li>if PodSecurityPolicies are enforced on the cluster, <a href="https://istio.io/latest/docs/ops/deployment/requirements/#required-pod-capabilities">pods must be allowed to
@@ -322,10 +322,10 @@ have <code>NET_ADMIN</code> and <code>NET_RAW</code> capabilities</a></li>
 <ol>
 <li>
 <p>Clone and initialize this git repository:</p>
-<pre><code class="language-console" data-lang="console">git clone https://github.com/cloudfoundry/cf-for-k8s.git -b main
-cd cf-for-k8s
-TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
-</code></pre><p>Note: if you would like the latest release, replace the branch reference in the clone command with that release tag. (E.G. <code>-b v1.0.0</code>)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">git clone https://github.com/cloudfoundry/cf-for-k8s.git -b main
+</span></span></span><span class="line"><span class="cl"><span class="go">cd cf-for-k8s
+</span></span></span><span class="line"><span class="cl"><span class="go">TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
+</span></span></span></code></pre></div><p>Note: if you would like the latest release, replace the branch reference in the clone command with that release tag. (E.G. <code>-b v1.0.0</code>)</p>
 </li>
 <li>
 <p>Create a &ldquo;CF Installation Values&rdquo; file and configure it<a name="cf-values"></a>:</p>
@@ -334,14 +334,14 @@ TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
 <blockquote>
 <p><strong>NOTE:</strong> The script requires the <a href="https://bosh.io/docs/cli-v2-install/#install">BOSH CLI</a> in installed on your machine. The BOSH CLI is an handy tool to generate self signed certs and passwords.</p>
 </blockquote>
-<pre><code class="language-console" data-lang="console">./hack/generate-values.sh -d &lt;cf-domain&gt; &gt; ${TMP_DIR}/cf-values.yml
-</code></pre><p>Replace <code>&lt;cf-domain&gt;</code> with <em>your</em> registered DNS domain name for your CF installation.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">./hack/generate-values.sh -d &lt;cf-domain&gt; &gt; ${TMP_DIR}/cf-values.yml
+</span></span></span></code></pre></div><p>Replace <code>&lt;cf-domain&gt;</code> with <em>your</em> registered DNS domain name for your CF installation.</p>
 <h4 id="option-b---create-the-install-values-by-hand">Option B - Create the install values by hand</h4>
 <ol>
 <li>
 <p>Clone file <code>sample-cf-install-values.yml</code> from this directory as a starting point.</p>
-<pre><code class="language-console" data-lang="console">cp sample-cf-install-values.yml ${TMP_DIR}/cf-values.yml
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">cp sample-cf-install-values.yml ${TMP_DIR}/cf-values.yml
+</span></span></span></code></pre></div></li>
 <li>
 <p>Open the file and change the <code>system_domain</code> and <code>app_domain</code> to your desired domain address.</p>
 </li>
@@ -358,23 +358,22 @@ TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
 <ol>
 <li>
 <p>To configure Dockerhub.com, add the following registry config block to the end of <code>cf-values.yml</code> file:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">app_registry</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l">https://index.docker.io/v1/</span><span class="w">
-</span><span class="w">  </span><span class="nt">repository_prefix</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;my_username&gt;&#34;</span><span class="w">
-</span><span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;my_username&gt;&#34;</span><span class="w">
-</span><span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;my_password&gt;&#34;</span><span class="w">
-</span><span class="w">
-</span></code></pre></div><p>Update <code>&lt;my_username&gt;</code> and <code>&lt;my_password&gt;</code> with your docker username and password that you created in the above section <a href="#setup-a-docker-registry">Setup docker registry</a>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">app_registry</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l">https://index.docker.io/v1/</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">repository_prefix</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;my_username&gt;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;my_username&gt;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;my_password&gt;&#34;</span><span class="w">
+</span></span></span></code></pre></div><p>Update <code>&lt;my_username&gt;</code> and <code>&lt;my_password&gt;</code> with your docker username and password that you created in the above section <a href="#setup-a-docker-registry">Setup docker registry</a>.</p>
 </li>
 <li>
 <p>To configure a Google Container Registry, add the following registry config block to the end of <code>cf-values.yml</code> file:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">app_registry</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l">gcr.io</span><span class="w">
-</span><span class="w">  </span><span class="nt">repository_prefix</span><span class="p">:</span><span class="w"> </span><span class="l">gcr.io/&lt;gcp_project_id&gt;/cf-workloads</span><span class="w">
-</span><span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">_json_key</span><span class="w">
-</span><span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
-</span><span class="sd">    </span><span class="w">    </span><span class="l">&lt;contents_of_service_account_json&gt;</span><span class="w">
-</span></code></pre></div><p>Update the <code>gcp_project_id</code> portion to your GCP Project ID and change <code>contents_of_service_account_json</code> to be the entire contents of your GCP Service Account JSON.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">app_registry</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">hostname</span><span class="p">:</span><span class="w"> </span><span class="l">gcr.io</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">repository_prefix</span><span class="p">:</span><span class="w"> </span><span class="l">gcr.io/&lt;gcp_project_id&gt;/cf-workloads</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">username</span><span class="p">:</span><span class="w"> </span><span class="l">_json_key</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    </span><span class="w">    </span><span class="l">&lt;contents_of_service_account_json&gt;</span><span class="w">
+</span></span></span></code></pre></div><p>Update the <code>gcp_project_id</code> portion to your GCP Project ID and change <code>contents_of_service_account_json</code> to be the entire contents of your GCP Service Account JSON.</p>
 </li>
 </ol>
 </li>
@@ -383,82 +382,82 @@ TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
 <ol>
 <li>
 <p>Render the final K8s template to raw K8s configuration</p>
-<pre><code class="language-console" data-lang="console">ytt -f config -f ${TMP_DIR}/cf-values.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">ytt -f config -f ${TMP_DIR}/cf-values.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
+</span></span></span></code></pre></div></li>
 <li>
 <p>Install using <code>kapp</code> and pass the above K8s configuration file</p>
-<pre><code class="language-console" data-lang="console">kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
+</span></span></span></code></pre></div></li>
 <li>
 <p>Save the values file somewhere secure (remember, it contains secrets!) for future upgrades. You also may want to consider saving the final rendered K8s configuration file for future reference.</p>
 </li>
 </ol>
 <p>Once you run the command, it should take about 10 minutes or less, depending on your cluster bandwidth and size. <code>kapp</code> will provide updates on pending resource creations in the cluster and will wait until all resources are created and running. Here is a sample snippet from <code>kapp</code> output:</p>
-<pre><code class="language-console" data-lang="console">4:08:19PM: ---- waiting on 1 changes [0/1 done] ----
-4:08:19PM: ok: reconcile serviceaccount/cc-kpack-registry-service-account (v1) namespace: cf-workloads-staging
-4:08:19PM: ---- waiting complete [5/10 done] ----
-...
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">4:08:19PM: ---- waiting on 1 changes [0/1 done] ----
+</span></span></span><span class="line"><span class="cl"><span class="go">4:08:19PM: ok: reconcile serviceaccount/cc-kpack-registry-service-account (v1) namespace: cf-workloads-staging
+</span></span></span><span class="line"><span class="cl"><span class="go">4:08:19PM: ---- waiting complete [5/10 done] ----
+</span></span></span><span class="line"><span class="cl"><span class="go">...
+</span></span></span></code></pre></div></li>
 <li>
 <p>Configure DNS on your IaaS provider to point the wildcard subdomain of your system domain and the wildcard subdomain of all apps domains to point to external IP of the Istio Ingress Gateway service. You can retrieve the external IP of this service by running:</p>
-<pre><code class="language-console" data-lang="console">kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].ip}'
-</code></pre><p>OR in certain environments, the external ip may be surfaced as a hostname instead. In that case use:</p>
-<pre><code class="language-console" data-lang="console">kubectl get svc -n istio-system istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[*].hostname}'
-</code></pre><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">kubectl get svc -n istio-system istio-ingressgateway -o jsonpath=&#39;{.status.loadBalancer.ingress[*].ip}&#39;
+</span></span></span></code></pre></div><p>OR in certain environments, the external ip may be surfaced as a hostname instead. In that case use:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">kubectl get svc -n istio-system istio-ingressgateway -o jsonpath=&#39;{.status.loadBalancer.ingress[*].hostname}&#39;
+</span></span></span></code></pre></div><blockquote>
 <p>If you used a single DNS record for both <code>system_domain</code> and <code>app_domains</code>, then have it resolve to the Ingress Gateway&rsquo;s external IP:</p>
 </blockquote>
-<pre><code class="language-console" data-lang="console"># sample A record in Google cloud DNS. The IP address below is the address of Ingress gateway's external IP
-Domain         Record Type  TTL  IP Address
-*.&lt;cf-domain&gt;  A            30   35.111.111.111
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">#</span> sample A record in Google cloud DNS. The IP address below is the address of Ingress gateway<span class="err">&#39;</span>s external IP
+</span></span><span class="line"><span class="cl"><span class="go">Domain         Record Type  TTL  IP Address
+</span></span></span><span class="line"><span class="cl"><span class="go">*.&lt;cf-domain&gt;  A            30   35.111.111.111
+</span></span></span></code></pre></div></li>
 </ol>
 <h2 id="validate-the-deployment">Validate the deployment</h2>
 <ol>
 <li>
 <p>Target your CF CLI to point to the new CF instance:</p>
-<pre><code class="language-console" data-lang="console">cf api --skip-ssl-validation https://api.&lt;cf-domain&gt;
-</code></pre><p>Replace <code>&lt;cf-domain&gt;</code> with your desired domain address.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">cf api --skip-ssl-validation https://api.&lt;cf-domain&gt;
+</span></span></span></code></pre></div><p>Replace <code>&lt;cf-domain&gt;</code> with your desired domain address.</p>
 </li>
 <li>
 <p>Login using the admin credentials for key <code>cf_admin_password</code> in <code>${TMP_DIR}/cf-values.yml</code>:</p>
-<pre><code class="language-console" data-lang="console">cf auth admin &lt;cf-values.yml.cf-admin_password&gt;
-# or using python yq: cf auth admin &quot;$(yq -r '.cf_admin_password' ${TMP_DIR}/cf-values.yml)&quot;
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">cf auth admin &lt;cf-values.yml.cf-admin_password&gt;
+</span></span></span><span class="line"><span class="cl"><span class="go"></span><span class="gp">#</span> or using python yq: cf auth admin <span class="s2">&#34;</span><span class="k">$(</span>yq -r <span class="s1">&#39;.cf_admin_password&#39;</span> <span class="si">${</span><span class="nv">TMP_DIR</span><span class="si">}</span>/cf-values.yml<span class="k">)</span><span class="s2">&#34;</span>
+</span></span></code></pre></div></li>
 <li>
 <p>Create an org/space for your app:</p>
-<pre><code class="language-console" data-lang="console">cf create-org test-org
-cf create-space -o test-org test-space
-cf target -o test-org -s test-space
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">cf create-org test-org
+</span></span></span><span class="line"><span class="cl"><span class="go">cf create-space -o test-org test-space
+</span></span></span><span class="line"><span class="cl"><span class="go">cf target -o test-org -s test-space
+</span></span></span></code></pre></div></li>
 <li>
 <p>Deploy a source code based app:</p>
-<pre><code class="language-console" data-lang="console">cf push test-node-app -p tests/smoke/assets/test-node-app
-</code></pre><p>You should see the following output from the above command:</p>
-<pre><code class="language-console" data-lang="console">Pushing app test-node-app to org test-org / space test-space as admin...
-Getting app info...
-Creating app with these attributes...
-
-... omitted for brevity ...
-
-type: web
-instances: 1/1
-memory usage: 1024M
-routes: test-node-app.&lt;cf-domain&gt;
-state since cpu memory disk details
-#0 running 2020-03-18T02:24:51Z 0.0% 0 of 1G 0 of 1G
-</code></pre><p><br /></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">cf push test-node-app -p tests/smoke/assets/test-node-app
+</span></span></span></code></pre></div><p>You should see the following output from the above command:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">Pushing app test-node-app to org test-org / space test-space as admin...
+</span></span></span><span class="line"><span class="cl"><span class="go">Getting app info...
+</span></span></span><span class="line"><span class="cl"><span class="go">Creating app with these attributes...
+</span></span></span><span class="line"><span class="cl"><span class="go"></span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="go">... omitted for brevity ...
+</span></span></span><span class="line"><span class="cl"><span class="go"></span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="go">type: web
+</span></span></span><span class="line"><span class="cl"><span class="go">instances: 1/1
+</span></span></span><span class="line"><span class="cl"><span class="go">memory usage: 1024M
+</span></span></span><span class="line"><span class="cl"><span class="go">routes: test-node-app.&lt;cf-domain&gt;
+</span></span></span><span class="line"><span class="cl"><span class="go">state since cpu memory disk details
+</span></span></span><span class="line"><span class="cl"><span class="go"></span><span class="gp">#</span><span class="m">0</span> running 2020-03-18T02:24:51Z 0.0% <span class="m">0</span> of 1G <span class="m">0</span> of 1G
+</span></span></code></pre></div><br />
 </li>
 <li>
 <p>Validate the app is reachable over <strong>https</strong>:</p>
-<pre><code class="language-console" data-lang="console">curl -k https://test-node-app.&lt;cf-domain&gt;
-</code></pre><p>You should see the following output:</p>
-<pre><code class="language-console" data-lang="console">Hello World
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">curl -k https://test-node-app.&lt;cf-domain&gt;
+</span></span></span></code></pre></div><p>You should see the following output:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">Hello World
+</span></span></span></code></pre></div></li>
 </ol>
 <h2 id="delete-the-cf-for-k8s-deployment">Delete the cf-for-k8s deployment</h2>
 <p>You can delete the cf-for-k8s deployment by running the following command:</p>
-<pre><code class="language-console" data-lang="console">kapp delete -a cf
-</code></pre><h2 id="additional-resources">Additional resources</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">kapp delete -a cf
+</span></span></span></code></pre></div><h2 id="additional-resources">Additional resources</h2>
 <p>Use the following resources to enable additional features in cf-for-k8s:</p>
 <ul>
 <li><a href="/docs/platform_operators/setup-ingress-certs-with-letsencrypt">Setup ingress certs with letsencrypt</a></li>
@@ -474,7 +473,7 @@ state since cpu memory disk details
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

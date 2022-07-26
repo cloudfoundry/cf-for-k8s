@@ -243,43 +243,43 @@
 <h3 id="how-to-view-access-logs">How to view access logs?</h3>
 <p>Ingress traffic to Cloud Foundry is proxied through the <code>istio-ingressgateway</code>
 pods which prints access logs to stdout. To view them:</p>
-<pre><code>kubectl logs -l app=istio-ingressgateway -c istio-proxy -n istio-system
+<pre tabindex="0"><code>kubectl logs -l app=istio-ingressgateway -c istio-proxy -n istio-system
 </code></pre><h3 id="example-access-log-line">Example access log line</h3>
-<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
-  <span class="nt">&#34;app_id&#34;</span><span class="p">:</span> <span class="s2">&#34;58d9bc59-3993-4541-90fb-efe8f20acab9&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;authority&#34;</span><span class="p">:</span> <span class="s2">&#34;app.example.com&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;bytes_received&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;bytes_sent&#34;</span><span class="p">:</span> <span class="s2">&#34;846&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;downstream_local_address&#34;</span><span class="p">:</span> <span class="s2">&#34;10.56.1.110:80&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;downstream_remote_address&#34;</span><span class="p">:</span> <span class="s2">&#34;203.0.113.4:13456&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;duration&#34;</span><span class="p">:</span> <span class="s2">&#34;3&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;method&#34;</span><span class="p">:</span> <span class="s2">&#34;GET&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;organization_id&#34;</span><span class="p">:</span> <span class="s2">&#34;28a72883-be4e-4124-9f79-f8429a2d1256&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;/headers&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;process_type&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;protocol&#34;</span><span class="p">:</span> <span class="s2">&#34;HTTP/1.1&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;referer&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;request_id&#34;</span><span class="p">:</span> <span class="s2">&#34;eb36b92b-f757-4ca3-b27c-cef2e7e06944&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;requested_server_name&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;response_code&#34;</span><span class="p">:</span> <span class="s2">&#34;200&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;response_duration&#34;</span><span class="p">:</span> <span class="s2">&#34;3&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;response_flags&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;response_tx_duration&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;space_id&#34;</span><span class="p">:</span> <span class="s2">&#34;9765ce8d-5098-4756-a270-490c32233e4a&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;start_time&#34;</span><span class="p">:</span> <span class="s2">&#34;2020-02-07T00:47:45.516Z&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;upstream_cluster&#34;</span><span class="p">:</span> <span class="s2">&#34;outbound|8080||s-d77075c0-5c71-4d93-8c39-b8311c19be5d.cf-apps.svc.cluster.local&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;upstream_host&#34;</span><span class="p">:</span> <span class="s2">&#34;10.56.1.111:8080&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;upstream_local_address&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;upstream_service_time&#34;</span><span class="p">:</span> <span class="s2">&#34;3&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;upstream_transport_failure_reason&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;user_agent&#34;</span><span class="p">:</span> <span class="s2">&#34;curl/7.54.0&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;x_b3_parentspanid&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;x_b3_spanid&#34;</span><span class="p">:</span> <span class="s2">&#34;dacd7b5fc2e62cb7&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;x_b3_traceid&#34;</span><span class="p">:</span> <span class="s2">&#34;a6a1631bae96ac75dacd7b5fc2e62cb7&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;x_forwarded_for&#34;</span><span class="p">:</span> <span class="s2">&#34;203.0.113.4&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;x_forwarded_proto&#34;</span><span class="p">:</span> <span class="s2">&#34;http&#34;</span>
-<span class="p">}</span>
-</code></pre></div><h3 id="duration-fields">Duration fields</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;app_id&#34;</span><span class="p">:</span> <span class="s2">&#34;58d9bc59-3993-4541-90fb-efe8f20acab9&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;authority&#34;</span><span class="p">:</span> <span class="s2">&#34;app.example.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;bytes_received&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;bytes_sent&#34;</span><span class="p">:</span> <span class="s2">&#34;846&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;downstream_local_address&#34;</span><span class="p">:</span> <span class="s2">&#34;10.56.1.110:80&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;downstream_remote_address&#34;</span><span class="p">:</span> <span class="s2">&#34;203.0.113.4:13456&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;duration&#34;</span><span class="p">:</span> <span class="s2">&#34;3&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;method&#34;</span><span class="p">:</span> <span class="s2">&#34;GET&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;organization_id&#34;</span><span class="p">:</span> <span class="s2">&#34;28a72883-be4e-4124-9f79-f8429a2d1256&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;/headers&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;process_type&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;protocol&#34;</span><span class="p">:</span> <span class="s2">&#34;HTTP/1.1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;referer&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;request_id&#34;</span><span class="p">:</span> <span class="s2">&#34;eb36b92b-f757-4ca3-b27c-cef2e7e06944&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;requested_server_name&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;response_code&#34;</span><span class="p">:</span> <span class="s2">&#34;200&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;response_duration&#34;</span><span class="p">:</span> <span class="s2">&#34;3&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;response_flags&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;response_tx_duration&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;space_id&#34;</span><span class="p">:</span> <span class="s2">&#34;9765ce8d-5098-4756-a270-490c32233e4a&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;start_time&#34;</span><span class="p">:</span> <span class="s2">&#34;2020-02-07T00:47:45.516Z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;upstream_cluster&#34;</span><span class="p">:</span> <span class="s2">&#34;outbound|8080||s-d77075c0-5c71-4d93-8c39-b8311c19be5d.cf-apps.svc.cluster.local&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;upstream_host&#34;</span><span class="p">:</span> <span class="s2">&#34;10.56.1.111:8080&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;upstream_local_address&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;upstream_service_time&#34;</span><span class="p">:</span> <span class="s2">&#34;3&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;upstream_transport_failure_reason&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;user_agent&#34;</span><span class="p">:</span> <span class="s2">&#34;curl/7.54.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;x_b3_parentspanid&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;x_b3_spanid&#34;</span><span class="p">:</span> <span class="s2">&#34;dacd7b5fc2e62cb7&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;x_b3_traceid&#34;</span><span class="p">:</span> <span class="s2">&#34;a6a1631bae96ac75dacd7b5fc2e62cb7&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;x_forwarded_for&#34;</span><span class="p">:</span> <span class="s2">&#34;203.0.113.4&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;x_forwarded_proto&#34;</span><span class="p">:</span> <span class="s2">&#34;http&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="duration-fields">Duration fields</h3>
 <p>The access log contains the following fields for duration in milliseconds</p>
 <ul>
 <li><code>upstream_service_time</code>: The time from when the gateway sends a request to the sidecar to when it recieves a response from the sidecar</li>
@@ -362,7 +362,7 @@ transport socket</li>
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

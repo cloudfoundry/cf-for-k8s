@@ -245,30 +245,30 @@
 <ol>
 <li>Relocate all system images into your private registry and generate a relocated-images file:</li>
 </ol>
-<pre><code class="language-console" data-lang="console">TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
-PRIVATE_REGISTRY_HOSTNAME=&lt;your-private-registry&gt;  # &quot;index.docker.io/&lt;docker-user-or-org&gt;&quot; for example, if using Dockerhub
-
-ytt -f config -f ${TMP_DIR}/cf-values.yml | kbld -f - --lock-output ${TMP_DIR}/cf-for-k8s-images.tmp
-kbld relocate -f ${TMP_DIR}/cf-for-k8s-images.tmp --repository ${PRIVATE_REGISTRY_HOSTNAME}/cf-for-k8s --lock-output ${TMP_DIR}/cf-for-k8s-relocated-images.yml
-</code></pre><ol start="2">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">TMP_DIR=&lt;your-tmp-dir-path&gt; ; mkdir -p ${TMP_DIR}
+</span></span></span><span class="line"><span class="cl"><span class="go">PRIVATE_REGISTRY_HOSTNAME=&lt;your-private-registry&gt;  # &#34;index.docker.io/&lt;docker-user-or-org&gt;&#34; for example, if using Dockerhub
+</span></span></span><span class="line"><span class="cl"><span class="go"></span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span><span class="go">ytt -f config -f ${TMP_DIR}/cf-values.yml | kbld -f - --lock-output ${TMP_DIR}/cf-for-k8s-images.tmp
+</span></span></span><span class="line"><span class="cl"><span class="go">kbld relocate -f ${TMP_DIR}/cf-for-k8s-images.tmp --repository ${PRIVATE_REGISTRY_HOSTNAME}/cf-for-k8s --lock-output ${TMP_DIR}/cf-for-k8s-relocated-images.yml
+</span></span></span></code></pre></div><ol start="2">
 <li>If your Kubernetes Nodes are not already configured and able to pull images from the private registry, you will need to configure their credentials in your cf-values.yml to add image-pull-secrets</li>
 </ol>
-<pre><code class="language-console" data-lang="console">cat &gt;&gt;${TMP_DIR}/cf-values.yml &lt;&lt;EOF
-system_registry:
-  add_image_pull_secrets: true
-  hostname: &lt;registry-hostname&gt;  #! example: index.docker.io/&lt;docker-user-or-org&gt;
-  username: &lt;registry-username&gt;
-  password: &lt;registry-password&gt;
-EOF
-</code></pre><ol start="3">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">cat &gt;&gt;${TMP_DIR}/cf-values.yml &lt;&lt;EOF
+</span></span></span><span class="line"><span class="cl"><span class="go">system_registry:
+</span></span></span><span class="line"><span class="cl"><span class="go">  add_image_pull_secrets: true
+</span></span></span><span class="line"><span class="cl"><span class="go">  hostname: &lt;registry-hostname&gt;  #! example: index.docker.io/&lt;docker-user-or-org&gt;
+</span></span></span><span class="line"><span class="cl"><span class="go">  username: &lt;registry-username&gt;
+</span></span></span><span class="line"><span class="cl"><span class="go">  password: &lt;registry-password&gt;
+</span></span></span><span class="line"><span class="cl"><span class="go">EOF
+</span></span></span></code></pre></div><ol start="3">
 <li>Render the final K8s template using <code>ytt</code> with the relocated-images file</li>
 </ol>
-<pre><code class="language-console" data-lang="console">ytt -f config -f ${TMP_DIR}/cf-values.yml | kbld -f - -f ${TMP_DIR}/cf-for-k8s-relocated-images.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
-</code></pre><ol start="4">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">ytt -f config -f ${TMP_DIR}/cf-values.yml | kbld -f - -f ${TMP_DIR}/cf-for-k8s-relocated-images.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
+</span></span></span></code></pre></div><ol start="4">
 <li>Install using <code>kapp</code>, providing the rendered <code>cf-for-k8s</code> yaml</li>
 </ol>
-<pre><code class="language-console" data-lang="console">kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
-</code></pre><h1 id="package-registry-management">Package Registry Management</h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml -y
+</span></span></span></code></pre></div><h1 id="package-registry-management">Package Registry Management</h1>
 <h2 id="delete-images-from-harbor-package-registry">Delete images from Harbor package registry</h2>
 <p>If you are using Harbor as a package registry and a package gets deleted or when an expired package is cleaned up, an empty repository remains even when the image itself is deleted. As an operator, you may want to clean up these empty repos and there are two ways to do that both from the Harbor registry UI:</p>
 <ol>
@@ -289,7 +289,7 @@ EOF
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

@@ -243,30 +243,30 @@
 <p>The included postgres database is in support of the kick-the-tyres user and should just work.</p>
 <p>For all other users we recommend configuring your deployment with an external database.</p>
 <p>You can use an external database for the CF API and UAA by providing following values:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c">#@data/values</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">capi</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="c">#@overlay/replace</span><span class="w">
-</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgres</span><span class="w">
-</span><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;host&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;user&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;database&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;ca certificate for tls&gt;</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="nt">uaa</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="c">#@overlay/replace</span><span class="w">
-</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgresql</span><span class="w">
-</span><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;host&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;user&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;database&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;ca certificate for tls&gt;</span><span class="w">
-</span></code></pre></div><p>Please note to the <strong>different spelling</strong> of <code>postgres</code>  and <code>postgresql</code> for capi and uaa.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c">#@data/values</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">capi</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c">#@overlay/replace</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgres</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;host&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;user&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;database&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;ca certificate for tls&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">uaa</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c">#@overlay/replace</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgresql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;host&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;user&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;database&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;ca certificate for tls&gt;</span><span class="w">
+</span></span></span></code></pre></div><p>Please note to the <strong>different spelling</strong> of <code>postgres</code>  and <code>postgresql</code> for capi and uaa.</p>
 <h2 id="limitations">Limitations</h2>
 <p>Providing a <code>ca_cert</code> enables SSL full verification. SQL database services that do not have a hostname and certificate valid for that hostname (e.g. GCP Cloud SQL) will not be able to negotiate a connection in this mode. Skipping hostname validation is not supported.</p>
 <h2 id="setup">Setup</h2>
@@ -274,10 +274,10 @@
 <ol>
 <li>
 <p>Set the environment variables</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">PGPASSWORD</span><span class="o">=</span>&lt;password of postgres super user&gt;
-<span class="nb">export</span> <span class="nv">PGHOST</span><span class="o">=</span>&lt;host where postres is running&gt;
-<span class="nb">export</span> <span class="nv">DB_VALUES_FILE</span><span class="o">=</span>db-values.yml
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PGPASSWORD</span><span class="o">=</span>&lt;password of postgres super user&gt;
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PGHOST</span><span class="o">=</span>&lt;host where postres is running&gt;
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">DB_VALUES_FILE</span><span class="o">=</span>db-values.yml
+</span></span></code></pre></div></li>
 <li>
 <p>Run the following script. It will</p>
 <ul>
@@ -286,30 +286,30 @@
 <li>activate the <code>citext</code> extension for each of these databases</li>
 </ul>
 <p>The following uses the python module <a href="https://kislyuk.github.io/yq/">yq</a>.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">CCDB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.capi.database.user&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
-<span class="nv">CCDB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.capi.database.password&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
-<span class="nv">CCDB_NAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.capi.database.name&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
-<span class="nv">UAADB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.uaa.database.user&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
-<span class="nv">UAADB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.uaa.database.password&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
-<span class="nv">UAADB_NAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.uaa.database.name&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
-cat &gt; <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/setup_db.sql&#34;</span> <span class="s">&lt;&lt;EOT
-</span><span class="s">CREATE DATABASE ${CCDB_NAME};
-</span><span class="s">CREATE ROLE ${CCDB_USERNAME} LOGIN PASSWORD &#39;${CCDB_PASSWORD}&#39;;
-</span><span class="s">CREATE DATABASE ${UAADB_NAME};
-</span><span class="s">CREATE ROLE ${UAADB_USERNAME} LOGIN PASSWORD &#39;${UAADB_PASSWORD}&#39;;
-</span><span class="s">EOT</span>
-psql -U postgres -f <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/setup_db.sql&#34;</span>
-psql -U postgres -d <span class="s2">&#34;</span><span class="si">${</span><span class="nv">CCDB_NAME</span><span class="si">}</span><span class="s2">&#34;</span> -c <span class="s2">&#34;CREATE EXTENSION citext&#34;</span>
-psql -U postgres -d <span class="s2">&#34;</span><span class="si">${</span><span class="nv">UAADB_NAME</span><span class="si">}</span><span class="s2">&#34;</span> -c <span class="s2">&#34;CREATE EXTENSION citext&#34;</span>
-</code></pre></div><p>To use the Golang <a href="https://github.com/mikefarah/yq">yq</a> utility, use these assignments.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">CCDB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;capi.database.user&#39;</span><span class="k">)</span>
-<span class="nv">CCDB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;capi.database.password&#39;</span><span class="k">)</span>
-<span class="nv">CCDB_NAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;capi.database.name&#39;</span><span class="k">)</span>
-<span class="nv">UAADB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;uaa.database.user&#39;</span><span class="k">)</span>
-<span class="nv">UAADB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;uaa.database.password&#39;</span><span class="k">)</span>
-<span class="nv">UAADB_NAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;uaa.database.name&#39;</span><span class="k">)</span>
-...
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">CCDB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.capi.database.user&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">CCDB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.capi.database.password&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">CCDB_NAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.capi.database.name&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">UAADB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.uaa.database.user&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">UAADB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.uaa.database.password&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">UAADB_NAME</span><span class="o">=</span><span class="k">$(</span>yq -r <span class="s1">&#39;.uaa.database.name&#39;</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">cat &gt; <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/setup_db.sql&#34;</span> <span class="s">&lt;&lt;EOT
+</span></span></span><span class="line"><span class="cl"><span class="s">CREATE DATABASE ${CCDB_NAME};
+</span></span></span><span class="line"><span class="cl"><span class="s">CREATE ROLE ${CCDB_USERNAME} LOGIN PASSWORD &#39;${CCDB_PASSWORD}&#39;;
+</span></span></span><span class="line"><span class="cl"><span class="s">CREATE DATABASE ${UAADB_NAME};
+</span></span></span><span class="line"><span class="cl"><span class="s">CREATE ROLE ${UAADB_USERNAME} LOGIN PASSWORD &#39;${UAADB_PASSWORD}&#39;;
+</span></span></span><span class="line"><span class="cl"><span class="s">EOT</span>
+</span></span><span class="line"><span class="cl">psql -U postgres -f <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/setup_db.sql&#34;</span>
+</span></span><span class="line"><span class="cl">psql -U postgres -d <span class="s2">&#34;</span><span class="si">${</span><span class="nv">CCDB_NAME</span><span class="si">}</span><span class="s2">&#34;</span> -c <span class="s2">&#34;CREATE EXTENSION citext&#34;</span>
+</span></span><span class="line"><span class="cl">psql -U postgres -d <span class="s2">&#34;</span><span class="si">${</span><span class="nv">UAADB_NAME</span><span class="si">}</span><span class="s2">&#34;</span> -c <span class="s2">&#34;CREATE EXTENSION citext&#34;</span>
+</span></span></code></pre></div><p>To use the Golang <a href="https://github.com/mikefarah/yq">yq</a> utility, use these assignments.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">CCDB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;capi.database.user&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">CCDB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;capi.database.password&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">CCDB_NAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;capi.database.name&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">UAADB_USERNAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;uaa.database.user&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">UAADB_PASSWORD</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;uaa.database.password&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl"><span class="nv">UAADB_NAME</span><span class="o">=</span><span class="k">$(</span>yq <span class="nb">read</span> <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="s1">&#39;uaa.database.name&#39;</span><span class="k">)</span>
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div></li>
 </ol>
 <h2 id="installation-of-an-internal-database">Installation of an internal database</h2>
 <p>If both CF API and UAA, are configured to use an external database, no internal database will be deployed.</p>
@@ -318,74 +318,74 @@ psql -U postgres -d <span class="s2">&#34;</span><span class="si">${</span><span
 <ol>
 <li>
 <p>Create a RDS database. The following command will create a small database for development. Please adjust the settings to your requirements.</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">PGPASSWORD</span><span class="o">=</span>&lt;your password&gt;
-aws rds create-db-instance <span class="se">\
-</span><span class="se"></span>    --engine postgres <span class="se">\
-</span><span class="se"></span>    --db-instance-identifier cf-for-k8s <span class="se">\
-</span><span class="se"></span>    --allocated-storage <span class="m">20</span> <span class="se">\
-</span><span class="se"></span>    --db-instance-class db.t2.micro <span class="se">\
-</span><span class="se"></span>    --db-subnet-group default <span class="se">\
-</span><span class="se"></span>    --master-username postgres <span class="se">\
-</span><span class="se"></span>    --master-user-password <span class="s2">&#34;</span><span class="nv">$PGPASSWORD</span><span class="s2">&#34;</span> <span class="se">\
-</span><span class="se"></span>    --backup-retention-period <span class="m">7</span> <span class="se">\
-</span><span class="se"></span>    --publicly-accessible
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PGPASSWORD</span><span class="o">=</span>&lt;your password&gt;
+</span></span><span class="line"><span class="cl">aws rds create-db-instance <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --engine postgres <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --db-instance-identifier cf-for-k8s <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --allocated-storage <span class="m">20</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --db-instance-class db.t2.micro <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --db-subnet-group default <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --master-username postgres <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --master-user-password <span class="s2">&#34;</span><span class="nv">$PGPASSWORD</span><span class="s2">&#34;</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --backup-retention-period <span class="m">7</span> <span class="se">\
+</span></span></span><span class="line"><span class="cl"><span class="se"></span>    --publicly-accessible
+</span></span></code></pre></div></li>
 <li>
 <p>Wait until RDS database is ready</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">aws rds <span class="nb">wait</span> db-instance-available --db-instance-identifier cf-for-k8s
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">aws rds <span class="nb">wait</span> db-instance-available --db-instance-identifier cf-for-k8s
+</span></span></code></pre></div></li>
 <li>
 <p>Extract database hostname</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">aws rds describe-db-instances --db-instance-identifier cf-for-k8s <span class="p">|</span> jq -r <span class="s1">&#39;.DBInstances[0].Endpoint.Address&#39;</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">aws rds describe-db-instances --db-instance-identifier cf-for-k8s <span class="p">|</span> jq -r <span class="s1">&#39;.DBInstances[0].Endpoint.Address&#39;</span>
+</span></span></code></pre></div></li>
 <li>
 <p>Create configuration file <code>&quot;$DB_VALUES_FILE&quot;</code>. Please replace the <code>host</code>, <code>password</code> and <code>ca_cert</code> in this file accordingly. You can download the certificate from <a href="https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html">here</a></p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="c">#@data/values</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">capi</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="c">#@override/replace</span><span class="w">
-</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgres</span><span class="w">
-</span><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com</span><span class="w">
-</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">5432</span><span class="w">
-</span><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">capi_user</span><span class="w">
-</span><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password for capi_user&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">capi_db</span><span class="w">
-</span><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
-</span><span class="sd">      -----BEGIN CERTIFICATE-----
-</span><span class="sd">      ...</span><span class="w">      
-</span><span class="w">
-</span><span class="w"></span><span class="nt">uaa</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="c">#@overlay/replace</span><span class="w">
-</span><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgresql</span><span class="w">
-</span><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com</span><span class="w">
-</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">5432</span><span class="w">
-</span><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">uaa_user</span><span class="w">
-</span><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password for uaa_user&gt;</span><span class="w">
-</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa_db</span><span class="w">
-</span><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
-</span><span class="sd">      -----BEGIN CERTIFICATE-----
-</span><span class="sd">      ...</span><span class="w">      
-</span></code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c">#@data/values</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">capi</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c">#@override/replace</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgres</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">5432</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">capi_user</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password for capi_user&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">capi_db</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">      -----BEGIN CERTIFICATE-----
+</span></span></span><span class="line"><span class="cl"><span class="sd">      ...</span><span class="w">      
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">uaa</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="c">#@overlay/replace</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">database</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">adapter</span><span class="p">:</span><span class="w"> </span><span class="l">postgresql</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">cf-for-k8s.c4pknugnyzdd.eu-central-1.rds.amazonaws.com</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">5432</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">uaa_user</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;password for uaa_user&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa_db</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ca_cert</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">      -----BEGIN CERTIFICATE-----
+</span></span></span><span class="line"><span class="cl"><span class="sd">      ...</span><span class="w">      
+</span></span></span></code></pre></div></li>
 <li>
 <p>Set environment variables</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">export</span> <span class="nv">DB_VALUES_FILE</span><span class="o">=</span>db-values.yml
-<span class="nb">export</span> <span class="nv">PGHOST</span><span class="o">=</span><span class="k">$(</span>cat <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="p">|</span> yq -r <span class="s1">&#39;.capi.database.host&#39;</span> <span class="k">)</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">DB_VALUES_FILE</span><span class="o">=</span>db-values.yml
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PGHOST</span><span class="o">=</span><span class="k">$(</span>cat <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> <span class="p">|</span> yq -r <span class="s1">&#39;.capi.database.host&#39;</span> <span class="k">)</span>
+</span></span></code></pre></div></li>
 <li>
 <p>Run configuration script from above</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nv">CCDB_USERNAME</span><span class="o">=</span>...
-...
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">CCDB_USERNAME</span><span class="o">=</span>...
+</span></span><span class="line"><span class="cl">...
+</span></span></code></pre></div></li>
 <li>
 <p><a href="/docs/deploying/">Install cf-for-k8s</a></p>
 <p>i. Configure your <a href="/docs/deploying/#cf-values"><code>cf-values.yml</code></a> file
 i. Render the final K8s template to raw K8s yaml. Pass the <code>&quot;$DB_VALUES_FILE&quot;</code> file as additional file to <code>ytt</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">ytt -f config -f <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/cf-values.yml&#34;</span> -f <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> &gt; <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/cf-for-k8s-rendered.yml&#34;</span>
-</code></pre></div><p>ii. Install using <code>kapp</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">kapp deploy -a cf-for-k8s -f <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/cf-for-k8s-rendered.yml&#34;</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ytt -f config -f <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/cf-values.yml&#34;</span> -f <span class="s2">&#34;</span><span class="nv">$DB_VALUES_FILE</span><span class="s2">&#34;</span> &gt; <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/cf-for-k8s-rendered.yml&#34;</span>
+</span></span></code></pre></div><p>ii. Install using <code>kapp</code></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">kapp deploy -a cf-for-k8s -f <span class="s2">&#34;</span><span class="nv">$TMPDIR</span><span class="s2">/cf-for-k8s-rendered.yml&#34;</span>
+</span></span></code></pre></div></li>
 </ol>
 
 
@@ -393,7 +393,7 @@ i. Render the final K8s template to raw K8s yaml. Pass the <code>&quot;$DB_VALUE
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

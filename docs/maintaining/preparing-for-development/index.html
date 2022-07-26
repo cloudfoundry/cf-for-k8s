@@ -314,12 +314,12 @@
 </li>
 <li>
 <p>Configure the smoke test environment variables as suggested, below</p>
-<pre><code>export SYSTEM_DOMAIN=&lt;your system domain&gt;
+<pre tabindex="0"><code>export SYSTEM_DOMAIN=&lt;your system domain&gt;
 export SMOKE_TEST_PASSWORD=&lt;CF Admin password from `cf-values.yml`&gt;
 </code></pre></li>
 <li>
 <p>Run the smoke test suite</p>
-<pre><code>cd tests/smoke
+<pre tabindex="0"><code>cd tests/smoke
 export SMOKE_TEST_API_ENDPOINT=api.${SYSTEM_DOMAIN}
 export SMOKE_TEST_USERNAME=admin
 export SMOKE_TEST_APPS_DOMAIN=apps.${SYSTEM_DOMAIN}
@@ -336,7 +336,7 @@ ginkgo -v -r ./
 </ul>
 <h3 id="component-directory-structure">Component Directory Structure</h3>
 <p>To simplify the component development workflow, we recommend repositories organize configuration thusly:</p>
-<pre><code>├── example-component
+<pre tabindex="0"><code>├── example-component
 │   ├── config               - K8s resources
 │   │   ├── deployment.yml
 │   │   └── values
@@ -363,7 +363,7 @@ ginkgo -v -r ./
 <li>
 <p>Start a local Docker Daemon so that you can build (and push) local Docker images.</p>
 <p>Here, we install <code>minikube</code> for its Docker Daemon (and not necessarily as our target cluster).</p>
-<pre><code>minikube start
+<pre tabindex="0"><code>minikube start
 eval $(minikube docker-env)
 docker login -u ...
 </code></pre></li>
@@ -373,8 +373,8 @@ docker login -u ...
 <li>
 <p>Rebuild your component image and update any image references in your configuration.</p>
 <p>Here, we use <code>kbld</code> and generate a ytt data value file (i.e. <code>config/values/images.yml</code>) with that resolved image reference:</p>
-<pre><code>cd ~/workspace/example-component
-cat &lt;(echo &quot;#@data/values&quot;; kbld -f build/kbld.yml --images-annotation=false) \
+<pre tabindex="0"><code>cd ~/workspace/example-component
+cat &lt;(echo &#34;#@data/values&#34;; kbld -f build/kbld.yml --images-annotation=false) \
     &gt;config/values/images.yml
 </code></pre><p><em>Note: <code>ytt</code> merges data files in alphabetical order of the full pathname.  So, <code>config/values/_default.yml</code> is used first, THEN <code>config/values/images.yml</code> (see <a href="https://github.com/k14s/ytt/blob/master/docs/ytt-data-values.md#splitting-data-values-into-multiple-files">k14s/ytt/ytt-data-values</a>).  Therefore, it is critical that whatever name you choose for the generated data file (here, <code>images.yml</code>), it sorts <em>after</em> <code>_default.yml</code>.</em></p>
 <p><em>Note: see <a href="#sample-kbld-config">Sample kbld config</a>, below for an example of a <code>kbld</code> config.</em></p>
@@ -382,11 +382,11 @@ cat &lt;(echo &quot;#@data/values&quot;; kbld -f build/kbld.yml --images-annotat
 <li>
 <p>Sync your local component configuration into the <code>cf-for-k8s</code> repo.</p>
 <p>Here, we use vendir&rsquo;s <a href="https://github.com/k14s/vendir/blob/985506a54038f6e7871879d4fbee9df2b6cf8add/docs/README.md#sync-with-local-changes-override"><code>--directory</code></a> feature to sync <em>just</em> the directory containing our component:</p>
-<pre><code>cd ~/workspace/cf-for-k8s
+<pre tabindex="0"><code>cd ~/workspace/cf-for-k8s
 vendir sync \
   --directory config/_ytt_lib/&lt;path-to-component&gt;=~/workspace/&lt;path-to-component&gt;
 </code></pre><p>For example, sync&rsquo;ing <em>just</em> CAPI would look like this:</p>
-<pre><code>cd ~/workspace/cf-for-k8s
+<pre tabindex="0"><code>cd ~/workspace/cf-for-k8s
 vendir sync \
   --directory config/_ytt_lib/github.com/cloudfoundry/capi-k8s-release=~/workspace/capi-k8s-release/
 </code></pre></li>
@@ -397,26 +397,26 @@ vendir sync \
 <h3 id="sample-kbld-config">Sample kbld config</h3>
 <p>See <a href="https://github.com/k14s/kbld/blob/master/docs/config.md">kbld docs</a> to configure your own <code>kbld.yml</code>.</p>
 <p>Assuming your <code>ytt</code> template takes the data value at <code>image.example</code> as the image reference&hellip;</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">images</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">example</span><span class="p">:</span><span class="w"> </span><span class="l">example-component-image</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kbld.k14s.io/v1alpha1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Sources</span><span class="w">
-</span><span class="w"></span><span class="nt">sources</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">example-component-image</span><span class="w">
-</span><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">.</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kbld.k14s.io/v1alpha1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ImageDestinations</span><span class="w">
-</span><span class="w"></span><span class="nt">destinations</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">example-component-image</span><span class="w">
-</span><span class="w">  </span><span class="nt">newImage</span><span class="p">:</span><span class="w"> </span><span class="l">docker.io/&lt;your-dockerhub-username&gt;/&lt;your-docker-repo-name&gt;</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kbld.k14s.io/v1alpha1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ImageKeys</span><span class="w">
-</span><span class="w"></span><span class="nt">keys</span><span class="p">:</span><span class="w">
-</span><span class="w"></span>- <span class="l">example</span><span class="w">
-</span></code></pre></div><p>Where:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">images</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">example</span><span class="p">:</span><span class="w"> </span><span class="l">example-component-image</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kbld.k14s.io/v1alpha1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Sources</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">sources</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">example-component-image</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kbld.k14s.io/v1alpha1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ImageDestinations</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">destinations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">example-component-image</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">newImage</span><span class="p">:</span><span class="w"> </span><span class="l">docker.io/&lt;your-dockerhub-username&gt;/&lt;your-docker-repo-name&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">kbld.k14s.io/v1alpha1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ImageKeys</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">keys</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="l">example</span><span class="w">
+</span></span></span></code></pre></div><p>Where:</p>
 <ul>
 <li>the first YAML document is a &ldquo;template&rdquo; into which <code>kbld</code> will rewrite the image reference.</li>
 <li>the remaining YAML documents are configuration for <code>kbld</code>, itself.</li>
@@ -427,7 +427,7 @@ vendir sync \
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

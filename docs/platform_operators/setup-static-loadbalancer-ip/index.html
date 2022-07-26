@@ -266,10 +266,10 @@ Domain         Record Type  TTL  IP Address
 <ol>
 <li>
 <p>Add <code>load_balancer.static_ip</code> key and the reserved IP to your <code>cf-install-values.yml</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">load_balancer</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">  </span><span class="nt">static_ip</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;reserved ip address&gt;&#34;</span><span class="w">
-</span></code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">load_balancer</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">static_ip</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&lt;reserved ip address&gt;&#34;</span><span class="w">
+</span></span></span></code></pre></div></li>
 <li>
 <p>Follow the instructions from deploy doc to generate the final deploy yml using <code>ytt</code> and then <code>kapp</code> deploy cf-for-k8s to your cluster.</p>
 </li>
@@ -278,17 +278,17 @@ Domain         Record Type  TTL  IP Address
 <ol>
 <li>
 <p>Lookup the ingress gateway external IP address. It should match the IP address you used above. Please note that it may take several minutes for the reserved IP to be reflected in your cluster.</p>
-<pre><code class="language-console" data-lang="console">$ kubectl get svc -n istio-system istio-ingressgateway
-NAME                   TYPE           CLUSTER-IP   EXTERNAL-IP                  PORT(S)  AGE
-istio-ingressgateway   LoadBalancer   10.0.10.32   &lt;your reserved ip address&gt;   ...      22m
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> kubectl get svc -n istio-system istio-ingressgateway
+</span></span><span class="line"><span class="cl"><span class="go">NAME                   TYPE           CLUSTER-IP   EXTERNAL-IP                  PORT(S)  AGE
+</span></span></span><span class="line"><span class="cl"><span class="go">istio-ingressgateway   LoadBalancer   10.0.10.32   &lt;your reserved ip address&gt;   ...      22m
+</span></span></span></code></pre></div></li>
 <li>
 <p>Verify the IP is reachable via <code>dig</code> command</p>
-<pre><code class="language-console" data-lang="console">$ dig api.&lt;cf-domain&gt;
-...
-;; ANSWER SECTION:
-api.&lt;cf-domain&gt;. 5	IN	A	&lt;your reserved ip address&gt;
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">$</span> dig api.&lt;cf-domain&gt;
+</span></span><span class="line"><span class="cl"><span class="go">...
+</span></span></span><span class="line"><span class="cl"><span class="go">;; ANSWER SECTION:
+</span></span></span><span class="line"><span class="cl"><span class="go">api.&lt;cf-domain&gt;. 5	IN	A	&lt;your reserved ip address&gt;
+</span></span></span></code></pre></div></li>
 <li>
 <p>Follow the steps in the main deploy doc under section Validate the deployment to verify you&rsquo;re able to target CF CLI and push apps to the foundation.</p>
 </li>
@@ -302,7 +302,7 @@ api.&lt;cf-domain&gt;. 5	IN	A	&lt;your reserved ip address&gt;
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

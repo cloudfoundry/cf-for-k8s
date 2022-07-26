@@ -262,21 +262,21 @@
 </ul>
 <h2 id="installing-cf-for-k8s">Installing Cf-for-K8s</h2>
 <p>First things first, git clone the cf-for-k8s repository. This repository contains our templated k8s yaml files:</p>
-<pre><code>git clone https://github.com/cloudfoundry/cf-for-k8s.git -b main
+<pre tabindex="0"><code>git clone https://github.com/cloudfoundry/cf-for-k8s.git -b main
 cd cf-for-k8s
 TMP_DIR=&lt;your-tmp-dir-path&gt;; mkdir -p ${TMP_DIR}
 </code></pre><p>Note: if you would like to use the latest release, replace the branch reference in the clone command with that release tag. (E.G. <code>-b v1.0.0</code>)</p>
 <p>Next, create the local kubernetes cluster that we will deploy cf-for-k8s to presently:</p>
-<pre><code>kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.20.2
+<pre tabindex="0"><code>kind create cluster --config=./deploy/kind/cluster.yml --image kindest/node:v1.20.2
 </code></pre><p>NOTE: the versions of kubernetes that cf-for-k8s supports are <a href="https://github.com/cloudfoundry/cf-for-k8s/blob/develop/supported_k8s_versions.yml">here</a>.</p>
 <p>Create your cf values file. This is the file that configures your deployment:</p>
-<pre><code>$ ./hack/generate-values.sh -d vcap.me &gt; ${TMP_DIR}/cf-values.yml
+<pre tabindex="0"><code>$ ./hack/generate-values.sh -d vcap.me &gt; ${TMP_DIR}/cf-values.yml
 $ cat &lt;&lt; EOF &gt;&gt; ${TMP_DIR}/cf-values.yml
 app_registry:
   hostname: https://index.docker.io/v1/
-  repository_prefix: &quot;&lt;my_username&gt;&quot;
-  username: &quot;&lt;my_username&gt;&quot;
-  password: &quot;&lt;my_password&gt;&quot;
+  repository_prefix: &#34;&lt;my_username&gt;&#34;
+  username: &#34;&lt;my_username&gt;&#34;
+  password: &#34;&lt;my_password&gt;&#34;
 
 add_metrics_server_components: true
 enable_automount_service_account_token: true
@@ -286,7 +286,7 @@ metrics_server_prefer_internal_kubelet_address: true
 remove_resource_requirements: true
 EOF
 </code></pre><p>If you are using Kubernetes cluster versions 1.18 or 1.19, include this additional value in your install values file:</p>
-<pre><code>$ cat &lt;&lt; EOF &gt;&gt; ${TMP_DIR}/cf-values.yml
+<pre tabindex="0"><code>$ cat &lt;&lt; EOF &gt;&gt; ${TMP_DIR}/cf-values.yml
 use_first_party_jwt_tokens: true
 EOF
 </code></pre><p>NOTES:</p>
@@ -295,25 +295,25 @@ EOF
 <li>The additional properties configure your cf-for-k8s to run on a local kind cluster.</li>
 </ol>
 <p>With our input values configured we are now ready to deploy cf-for-k8s:</p>
-<pre><code>$ kapp deploy -a cf -f &lt;(ytt -f config -f ${TMP_DIR}/cf-values.yml)
+<pre tabindex="0"><code>$ kapp deploy -a cf -f &lt;(ytt -f config -f ${TMP_DIR}/cf-values.yml)
 </code></pre><p>Running this command should take about 10 minutes or less. <code>kapp</code> will provide updates as it progresses:</p>
-<pre><code>...
+<pre tabindex="0"><code>...
 4:08:19PM: ---- waiting on 1 changes [0/1 done] ----
 4:08:19PM: ok: reconcile serviceaccount/cc-kpack-registry-service-account (v1) namespace: cf-workloads-staging
 4:08:19PM: ---- waiting complete [5/10 done] ----
 ...
 </code></pre><p>When deployment has finished you can log into Cloud Foundry:</p>
-<pre><code>$ cf api api.vcap.me --skip-ssl-validation
-$ cf auth admin &quot;$(grep cf_admin_password ${TMP_DIR}/cf-values.yml | cut -d&quot; &quot; -f2)&quot;
+<pre tabindex="0"><code>$ cf api api.vcap.me --skip-ssl-validation
+$ cf auth admin &#34;$(grep cf_admin_password ${TMP_DIR}/cf-values.yml | cut -d&#34; &#34; -f2)&#34;
 </code></pre><h2 id="experiencing-your-first-cf-push">Experiencing your first <code>cf push</code></h2>
 <p>Before we can push an application we need to create an organization and space for your application to exist in.</p>
 <p>NOTE: Cloud Foundry supports the development workflows of very large organizations, you can read more about
 how Cloud Foundry achieves that <a href="https://docs.cloudfoundry.org/concepts/roles.html">here</a>.</p>
-<pre><code>$ cf create-org my-org
+<pre tabindex="0"><code>$ cf create-org my-org
 $ cf create-space my-space -o my-org
 $ cf target -o my-org -s my-space
 </code></pre><p>Now, we are ready to push our first app:</p>
-<pre><code>$ cd ..
+<pre tabindex="0"><code>$ cd ..
 $ git clone https://github.com/cloudfoundry-samples/test-app.git
 $ cd test-app
 $ cf push test-app
@@ -327,7 +327,7 @@ $ cf push test-app
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

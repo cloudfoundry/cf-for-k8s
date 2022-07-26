@@ -247,135 +247,135 @@
 <h3 id="writing-network-policies">Writing Network Policies</h3>
 <p>Policies can be added by creating a new <code>NetworkPolicy</code> resource that selects on a set of <code>Pods</code> within a namespace. A namespace starts out allowing all ingress/egress traffic for all <code>Pods</code>, but as soon as a <code>Pod</code> is selected by <em>at least one</em> <code>NetworkPolicy</code> it will deny all traffic that is not explicitly defined. <code>NetworkPolicies</code> act as additive allow rules so to open up communication for <code>Pods</code> you will need to create new <code>NetworkPolicy</code> resources.</p>
 <p>For example, <code>NetworkPolicies</code> similar to the following rule are already applied in cf-for-k8s and denies all <code>ingress</code> and <code>egress</code> traffic in the <code>cf-system</code> namespace:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">default-deny-all</span><span class="w">
-</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">cf-system</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
-</span><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="l">Ingress</span><span class="w">
-</span><span class="w">  </span>- <span class="l">Egress</span><span class="w">
-</span></code></pre></div><p>Let&rsquo;s say you are introducing a new component that needs to talk to UAA internally. You need to create <code>NetworkPolicy</code> selecting UAA pods with <code>ingress</code> rules to allow traffic from your component, by either <a href="%22#creating-a-new-networkpolicy%22">creating</a> an ingress policy or <a href="%22#updating-an-existing-networkpolicy%22">updating the existing</a> ingress policy. Then, <a href="#creating-an-egress-networkpolicy-for-your-component">you need to create an egress <code>NetworkPolicy</code></a> selecting your component pods with <code>egress</code> rules to allow traffic to UAA.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">default-deny-all</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">cf-system</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">Ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">Egress</span><span class="w">
+</span></span></span></code></pre></div><p>Let&rsquo;s say you are introducing a new component that needs to talk to UAA internally. You need to create <code>NetworkPolicy</code> selecting UAA pods with <code>ingress</code> rules to allow traffic from your component, by either <a href="%22#creating-a-new-networkpolicy%22">creating</a> an ingress policy or <a href="%22#updating-an-existing-networkpolicy%22">updating the existing</a> ingress policy. Then, <a href="#creating-an-egress-networkpolicy-for-your-component">you need to create an egress <code>NetworkPolicy</code></a> selecting your component pods with <code>egress</code> rules to allow traffic to UAA.</p>
 <h4 id="creating-a-new-networkpolicy">Creating a new NetworkPolicy</h4>
 <p>The simplest way to create an allow rule for ingress to UAA from your component
 is to add a create a new <code>NetworkPolicy</code> resource. Network policy rules are
 additive so this rule will be applied <em>in addition</em> to the existing to rule.</p>
 <p>So if you are adding a new component that wants to talk to UAA, include a
 <code>NetworkPolicy</code> similar to this with your installation YAML:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa-ingress-from-my-new-component</span><span class="w">
-</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">cf-system</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="l">Ingress</span><span class="w">
-</span><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa</span><span class="w">
-</span><span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">from</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">my-new-component</span><span class="w">
-</span><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span></code></pre></div><h4 id="updating-an-existing-networkpolicy">Updating an Existing NetworkPolicy</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa-ingress-from-my-new-component</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">cf-system</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">Ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">from</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">my-new-component</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span></code></pre></div><h4 id="updating-an-existing-networkpolicy">Updating an Existing NetworkPolicy</h4>
 <p>If you are adding a new core component and think the policy should be part of UAA&rsquo;s default <code>NetworkPolicy</code>, you can update the existing policy that looks similar to this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa</span><span class="w">
-</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">cf-system</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="l">Ingress</span><span class="w">
-</span><span class="w">  </span>- <span class="l">Egress</span><span class="w">
-</span><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa</span><span class="w">
-</span><span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">from</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">istio</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway</span><span class="w">
-</span><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/istio-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">log-cache</span><span class="w">
-</span><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">cf-api-server</span><span class="w">
-</span><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">cf-api-kpack-watcher</span><span class="w">
-</span><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span><span class="w">  </span><span class="nt">egress</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- {}<span class="w">
-</span></code></pre></div><p>You just need to add an additional element to the <code>from</code> array. Something like this:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">my-new-component</span><span class="w">
-</span><span class="w">  </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span></code></pre></div><p>This configures the UAA <code>NetworkPolicy</code> to allow ingress traffic from any <code>Pod</code> that has the label <code>app.kubernetes.io/name=my-new-component</code> in a namespace with the <code>cf-for-k8s.cloudfoundry.org/cf-system-ns=&quot;&quot;</code> label.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">cf-system</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">Ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">Egress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ingress</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">from</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">istio</span><span class="p">:</span><span class="w"> </span><span class="l">ingressgateway</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/istio-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">log-cache</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">cf-api-server</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">cf-api-kpack-watcher</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">egress</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- {}<span class="w">
+</span></span></span></code></pre></div><p>You just need to add an additional element to the <code>from</code> array. Something like this:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl">- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">my-new-component</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span></code></pre></div><p>This configures the UAA <code>NetworkPolicy</code> to allow ingress traffic from any <code>Pod</code> that has the label <code>app.kubernetes.io/name=my-new-component</code> in a namespace with the <code>cf-for-k8s.cloudfoundry.org/cf-system-ns=&quot;&quot;</code> label.</p>
 <p>Once you&rsquo;ve tested it and everything works, make a PR to update the <code>NetworkPolicy</code> in <code>config/network-policies.yaml</code>!</p>
 <h4 id="creating-an-egress-networkpolicy-for-your-component">Creating an Egress NetworkPolicy for your component</h4>
 <p>Whether you created a new ingress <code>NetworkPolicy</code> for UAA or updated the
 existing list of ingress rules, you will still need to create a <code>NetworkPolicy</code>
 for your own component that allows it to egress to UAA.</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-new-component</span><span class="w">
-</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">cf-system</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="l">Egress</span><span class="w">
-</span><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">my-new-component</span><span class="w">
-</span><span class="w">  </span><span class="nt">egress</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">to</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa</span><span class="w">
-</span><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
-</span></code></pre></div><h3 id="namespaces-and-network-policies">Namespaces and Network Policies</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-new-component</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">cf-system</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">Egress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">my-new-component</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">egress</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">to</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">podSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">app.kubernetes.io/name</span><span class="p">:</span><span class="w"> </span><span class="l">uaa</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">namespaceSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">cf-for-k8s.cloudfoundry.org/cf-system-ns</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w">
+</span></span></span></code></pre></div><h3 id="namespaces-and-network-policies">Namespaces and Network Policies</h3>
 <p><code>NetworkPolicies</code> apply to <code>Pods</code> within a <strong>single namespace</strong>.</p>
 <p>If you&rsquo;re creating a new namespace we highly recommend creating an initial <a href="https://kubernetes.io/docs/concepts/services-networking/network-policies/#default-deny-all-ingress-and-all-egress-traffic">&ldquo;default deny all&rdquo;</a> <code>NetworkPolicy</code> to block all ingress and egress traffic to <code>Pods</code> in the namespace.</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">default-deny-all</span><span class="w">
-</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">YOUR_NAMESPACE_NAME</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
-</span><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="l">Ingress</span><span class="w">
-</span><span class="w">  </span>- <span class="l">Egress</span><span class="w">
-</span></code></pre></div><p>Then add in the appropriate <code>allow</code> rules through additional <code>NetworkPolicies</code>.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">networking.k8s.io/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">NetworkPolicy</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">default-deny-all</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">YOUR_NAMESPACE_NAME</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">podSelector</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">policyTypes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">Ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="l">Egress</span><span class="w">
+</span></span></span></code></pre></div><p>Then add in the appropriate <code>allow</code> rules through additional <code>NetworkPolicies</code>.</p>
 <h2 id="istio-sidecar-injection">Istio Sidecar Injection</h2>
 <h3 id="namespaces-and-istio-sidecar-injection">Namespaces and Istio Sidecar Injection</h3>
 <p>CF for Kubernetes uses Istio&rsquo;s <a href="https://istio.io/latest/docs/tasks/security/authentication/authn-policy/#auto-mutual-tls">automatic mTLS</a> with a <code>STRICT</code> authentication policy. This means that all <code>Pods</code> that have an Istio sidecar will require incoming traffic to use mutual TLS.</p>
@@ -387,7 +387,7 @@ for your own component that allows it to egress to UAA.</p>
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

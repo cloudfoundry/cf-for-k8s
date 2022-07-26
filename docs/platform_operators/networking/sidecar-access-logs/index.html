@@ -243,46 +243,46 @@
 <h3 id="how-to-view-access-logs">How to view access logs?</h3>
 <p>Traffic flows through the sidecar containers on sidecar enabled pods, which
 prints access logs to stdout. For example, this is how you might view them for your apps:</p>
-<pre><code>kubectl logs app-pod -c istio-proxy -n cf-workloads
+<pre tabindex="0"><code>kubectl logs app-pod -c istio-proxy -n cf-workloads
 </code></pre><p>Any namespace with the label <code>istio-injection=enabled</code> will add a sidecar
 <code>istio-proxy</code> container to all pods in the namespace. You can try the above
 command for any pod in a namespace with the label <code>istio-injection=enabled</code>.</p>
 <h3 id="example-access-log-line">Example access log line</h3>
-<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
-  <span class="nt">&#34;app_id&#34;</span><span class="p">:</span> <span class="s2">&#34;e96aef43-873a-46db-8d3e-4bc6acd70da9&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;authority&#34;</span><span class="p">:</span> <span class="s2">&#34;myapp.apps.com&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;bytes_received&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span>
-  <span class="s2">&#34;bytes_sent&#34;</span><span class="p">:</span> <span class="s2">&#34;9593&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;downstream_local_address&#34;</span><span class="p">:</span> <span class="s2">&#34;10.52.5.11:8080&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;downstream_remote_address&#34;</span><span class="p">:</span> <span class="s2">&#34;34.123.54.126:0&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;duration&#34;</span><span class="p">:</span> <span class="s2">&#34;22&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;method&#34;</span><span class="p">:</span> <span class="s2">&#34;GET&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;organization_id&#34;</span><span class="p">:</span> <span class="s2">&#34;d390d3f0-f349-481a-8f13-8f1f76ab12ed&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;/&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;process_type&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;protocol&#34;</span><span class="p">:</span> <span class="s2">&#34;HTTP/1.1&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;referer&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;request_id&#34;</span><span class="p">:</span> <span class="s2">&#34;0e5e3948-e8bf-4668-8275-5b87eadcd983&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;requested_server_name&#34;</span><span class="p">:</span> <span class="s2">&#34;outbound_.8080_._.s-93d15c95-b5c3-45e0-bb16-26172767b322.cf-workloads.svc.cluster.local&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;response_code&#34;</span><span class="p">:</span> <span class="s2">&#34;200&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;response_duration&#34;</span><span class="p">:</span> <span class="s2">&#34;22&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;response_flags&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;response_tx_duration&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;space_id&#34;</span><span class="p">:</span> <span class="s2">&#34;471a8af4-3627-4324-bca9-3f69b2e80ab2&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;start_time&#34;</span><span class="p">:</span> <span class="s2">&#34;2020-09-10T20:45:01.808Z&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;upstream_cluster&#34;</span><span class="p">:</span> <span class="s2">&#34;inbound|8080|http|s-93d15c95-b5c3-45e0-bb16-26172767b322.cf-workloads.svc.cluster.local&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;upstream_host&#34;</span><span class="p">:</span> <span class="s2">&#34;127.0.0.1:8080&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;upstream_local_address&#34;</span><span class="p">:</span> <span class="s2">&#34;127.0.0.1:53338&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;upstream_service_time&#34;</span><span class="p">:</span> <span class="s2">&#34;21&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;upstream_transport_failure_reason&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;user_agent&#34;</span><span class="p">:</span> <span class="s2">&#34;curl/7.68.0&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;x_b3_parentspanid&#34;</span><span class="p">:</span> <span class="s2">&#34;7cbd7a861229cc6a&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;x_b3_spanid&#34;</span><span class="p">:</span> <span class="s2">&#34;a8ba1d9c16d7437c&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;x_b3_traceid&#34;</span><span class="p">:</span> <span class="s2">&#34;efff41366f43d46c7cbd7a861229cc6a&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;x_forwarded_for&#34;</span><span class="p">:</span> <span class="s2">&#34;34.123.54.126&#34;</span><span class="p">,</span>
-  <span class="nt">&#34;x_forwarded_proto&#34;</span><span class="p">:</span> <span class="s2">&#34;https&#34;</span><span class="p">,</span>
-<span class="p">}</span>
-</code></pre></div><h3 id="duration-fields">Duration fields</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;app_id&#34;</span><span class="p">:</span> <span class="s2">&#34;e96aef43-873a-46db-8d3e-4bc6acd70da9&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;authority&#34;</span><span class="p">:</span> <span class="s2">&#34;myapp.apps.com&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;bytes_received&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;bytes_sent&#34;</span><span class="p">:</span> <span class="s2">&#34;9593&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;downstream_local_address&#34;</span><span class="p">:</span> <span class="s2">&#34;10.52.5.11:8080&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;downstream_remote_address&#34;</span><span class="p">:</span> <span class="s2">&#34;34.123.54.126:0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;duration&#34;</span><span class="p">:</span> <span class="s2">&#34;22&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;method&#34;</span><span class="p">:</span> <span class="s2">&#34;GET&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;organization_id&#34;</span><span class="p">:</span> <span class="s2">&#34;d390d3f0-f349-481a-8f13-8f1f76ab12ed&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;path&#34;</span><span class="p">:</span> <span class="s2">&#34;/&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;process_type&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;protocol&#34;</span><span class="p">:</span> <span class="s2">&#34;HTTP/1.1&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;referer&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;request_id&#34;</span><span class="p">:</span> <span class="s2">&#34;0e5e3948-e8bf-4668-8275-5b87eadcd983&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;requested_server_name&#34;</span><span class="p">:</span> <span class="s2">&#34;outbound_.8080_._.s-93d15c95-b5c3-45e0-bb16-26172767b322.cf-workloads.svc.cluster.local&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;response_code&#34;</span><span class="p">:</span> <span class="s2">&#34;200&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;response_duration&#34;</span><span class="p">:</span> <span class="s2">&#34;22&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;response_flags&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;response_tx_duration&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;space_id&#34;</span><span class="p">:</span> <span class="s2">&#34;471a8af4-3627-4324-bca9-3f69b2e80ab2&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;start_time&#34;</span><span class="p">:</span> <span class="s2">&#34;2020-09-10T20:45:01.808Z&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;upstream_cluster&#34;</span><span class="p">:</span> <span class="s2">&#34;inbound|8080|http|s-93d15c95-b5c3-45e0-bb16-26172767b322.cf-workloads.svc.cluster.local&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;upstream_host&#34;</span><span class="p">:</span> <span class="s2">&#34;127.0.0.1:8080&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;upstream_local_address&#34;</span><span class="p">:</span> <span class="s2">&#34;127.0.0.1:53338&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;upstream_service_time&#34;</span><span class="p">:</span> <span class="s2">&#34;21&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;upstream_transport_failure_reason&#34;</span><span class="p">:</span> <span class="s2">&#34;-&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;user_agent&#34;</span><span class="p">:</span> <span class="s2">&#34;curl/7.68.0&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;x_b3_parentspanid&#34;</span><span class="p">:</span> <span class="s2">&#34;7cbd7a861229cc6a&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;x_b3_spanid&#34;</span><span class="p">:</span> <span class="s2">&#34;a8ba1d9c16d7437c&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;x_b3_traceid&#34;</span><span class="p">:</span> <span class="s2">&#34;efff41366f43d46c7cbd7a861229cc6a&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;x_forwarded_for&#34;</span><span class="p">:</span> <span class="s2">&#34;34.123.54.126&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;x_forwarded_proto&#34;</span><span class="p">:</span> <span class="s2">&#34;https&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="duration-fields">Duration fields</h3>
 <p>The access log contains the following fields for duration in milliseconds</p>
 <ul>
 <li><code>upstream_service_time</code>: The time from when the sidecar sends a request to the app to when it receives a response from the app</li>
@@ -364,7 +364,7 @@ transport socket</li>
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

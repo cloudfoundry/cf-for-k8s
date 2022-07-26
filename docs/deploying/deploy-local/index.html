@@ -341,21 +341,21 @@ virtualbox driver as it uses the local Docker for Mac installation.</p>
 <li>
 <p>(Optional) Choose the version of Kubernetes you&rsquo;d like to use to deploy KinD.</p>
 <p>To grab the latest KinD patch version of a K8s minor release:</p>
-<pre><code class="language-console" data-lang="console"># from the cf-for-k8s repo/directory
-# NOTE: this project uses python yq module (https://kislyuk.github.io/yq/)
-k8s_minor_version=&quot;$(yq -r .newest_version supported_k8s_versions.yml)&quot;  # or k8s_minor_version=&quot;1.17&quot;
-patch_version=$(wget -q https://registry.hub.docker.com/v1/repositories/kindest/node/tags -O - | \
-  jq -r '.[].name' | grep -E &quot;^v${k8s_minor_version}.[0-9]+$&quot; | \
-  cut -d. -f3 | sort -rn | head -1)
-k8s_version=&quot;v${k8s_minor_version}.${patch_version}&quot;
-echo &quot;Creating KinD cluster with Kubernetes version ${k8s_version}&quot;
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">#</span> from the cf-for-k8s repo/directory
+</span></span><span class="line"><span class="cl"><span class="gp">#</span> NOTE: this project uses python yq module <span class="o">(</span>https://kislyuk.github.io/yq/<span class="o">)</span>
+</span></span><span class="line"><span class="cl"><span class="go">k8s_minor_version=&#34;$(yq -r .newest_version supported_k8s_versions.yml)&#34;
+</span></span></span><span class="line"><span class="cl"><span class="go">patch_version=$(wget -q https://registry.hub.docker.com/v1/repositories/kindest/node/tags -O - | \
+</span></span></span><span class="line"><span class="cl"><span class="go">  jq -r &#39;.[].name&#39; | grep -E &#34;^v${k8s_minor_version}.[0-9]+$&#34; | \
+</span></span></span><span class="line"><span class="cl"><span class="go">  cut -d. -f3 | sort -rn | head -1)
+</span></span></span><span class="line"><span class="cl"><span class="go">k8s_version=&#34;v${k8s_minor_version}.${patch_version}&#34;
+</span></span></span><span class="line"><span class="cl"><span class="go">echo &#34;Creating KinD cluster with Kubernetes version ${k8s_version}&#34;
+</span></span></span></code></pre></div></li>
 <li>
 <p>Create a KinD cluster:</p>
-<pre><code class="language-console" data-lang="console"># from the cf-for-k8s repo/directory
-kind create cluster --config=./deploy/kind/cluster.yml
-# suggested flag: &quot;--image kindest/node:${k8s_version}&quot;
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="gp">#</span> from the cf-for-k8s repo/directory
+</span></span><span class="line"><span class="cl"><span class="go">kind create cluster --config=./deploy/kind/cluster.yml
+</span></span></span><span class="line"><span class="cl"><span class="go"></span><span class="gp">#</span> suggested flag: <span class="s2">&#34;--image kindest/node:</span><span class="si">${</span><span class="nv">k8s_version</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span></code></pre></div></li>
 <li>
 <p>Follow the instructions in <a href="/docs/deploying/">Deploying CF for K8s</a>.</p>
 <ul>
@@ -367,18 +367,18 @@ configure DNS for the domain.</p>
 <p>Make sure the following values are included in your install values file:</p>
 </li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">add_metrics_server_components</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w"></span><span class="nt">enable_automount_service_account_token</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w"></span><span class="nt">metrics_server_prefer_internal_kubelet_address</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w"></span><span class="nt">remove_resource_requirements</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w">
-</span><span class="w"></span><span class="nt">load_balancer</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
-</span></code></pre></div><ul>
-<li>If you are using Kubernetes cluster versions 1.18 or 1.19, include this additional value in your install values file:</li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">add_metrics_server_components</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">enable_automount_service_account_token</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metrics_server_prefer_internal_kubelet_address</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">remove_resource_requirements</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">load_balancer</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">enable</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span></code></pre></div><ul>
+<li>If you are using Kubernetes cluster versions 1.19, include this additional value in your install values file:</li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">use_first_party_jwt_tokens</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span></code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">use_first_party_jwt_tokens</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span></code></pre></div></li>
 <li>
 <p>Once the <code>kapp deploy</code> succeeds, you should be able to run <code>cf api api.vcap.me --skip-ssl-validation</code>, etc</p>
 <ul>
@@ -390,26 +390,26 @@ configure DNS for the domain.</p>
 <ol>
 <li>
 <p>Start minikube using the docker driver:</p>
-<pre><code class="language-console" data-lang="console">minikube start --cpus=6 --memory=8g --kubernetes-version=&quot;1.19.2&quot; --driver=docker
-# available minikube K8s versions can be found here: https://github.com/kubernetes/minikube/blob/master/pkg/minikube/constants/constants.go
-# make sure to use a version within the cf-for-k8s supported minor version window (see `supported_k8s_versions.yml`)
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">minikube start --cpus=6 --memory=8g --kubernetes-version=&#34;1.19.2&#34; --driver=docker
+</span></span></span><span class="line"><span class="cl"><span class="go"></span><span class="gp">#</span> available minikube K8s versions can be found here: https://github.com/kubernetes/minikube/blob/master/pkg/minikube/constants/constants.go
+</span></span><span class="line"><span class="cl"><span class="gp">#</span> make sure to use a version within the cf-for-k8s supported minor version window <span class="o">(</span>see <span class="sb">`</span>supported_k8s_versions.yml<span class="sb">`</span><span class="o">)</span>
+</span></span></code></pre></div></li>
 <li>
 <p>Enable metrics-server.</p>
-<pre><code class="language-console" data-lang="console">minikube addons enable metrics-server
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">minikube addons enable metrics-server
+</span></span></span></code></pre></div></li>
 <li>
 <p>Obtain minikube IP.</p>
-<pre><code class="language-console" data-lang="console">minikube ip
-</code></pre><ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">minikube ip
+</span></span></span></code></pre></div><ul>
 <li>The domain used for the installation will use this IP with the following format <code>&lt;minikube ip&gt;.nip.io</code>.  For example if <code>minikube ip</code> returns <code>127.0.0.1</code> then you domain would be <code>127.0.0.1.nip.io</code></li>
 </ul>
 </li>
 <li>
 <p>Use minikube tunnel to expose the LoadBalancer service for the ingress
 gateway:</p>
-<pre><code class="language-console" data-lang="console">sudo minikube tunnel
-</code></pre><ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">sudo minikube tunnel
+</span></span></span></code></pre></div><ul>
 <li>This should be run in a separate terminal as this will block.</li>
 <li><code>sudo</code> give capabilities to the tunnel ahead of time to open ports 80 and 443 (required to communicate)</li>
 <li>The <code>kapp deploy</code> command will not exit successfully until this command is
@@ -430,23 +430,23 @@ configure DNS for the domain.</p>
 <p>Make sure the following values are included in your install values file:</p>
 </li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">remove_resource_requirements</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span><span class="w"></span><span class="nt">enable_automount_service_account_token</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">remove_resource_requirements</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">enable_automount_service_account_token</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span></code></pre></div><ul>
 <li>If you are using Kubernetes cluster versions 1.18 or 1.19, include this additional value in your install values file:</li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">use_first_party_jwt_tokens</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
-</span></code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">use_first_party_jwt_tokens</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span></code></pre></div></li>
 <li>
 <p>You will be able to target your CF CLI to point to the new CF instance</p>
-<pre><code class="language-console" data-lang="console">cf api --skip-ssl-validation https://api.&lt;minikube ip&gt;.nip.io
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">cf api --skip-ssl-validation https://api.&lt;minikube ip&gt;.nip.io
+</span></span></span></code></pre></div></li>
 <li>
 <p>To access the kubelet&rsquo;s docker engine, run:</p>
-<pre><code class="language-console" data-lang="console">eval $(minikube docker-env)
-docker ps
-...
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">eval $(minikube docker-env)
+</span></span></span><span class="line"><span class="cl"><span class="go">docker ps
+</span></span></span><span class="line"><span class="cl"><span class="go">...
+</span></span></span></code></pre></div></li>
 </ol>
 
 
@@ -454,7 +454,7 @@ docker ps
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

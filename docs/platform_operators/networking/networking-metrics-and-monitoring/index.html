@@ -272,19 +272,19 @@ the global dataplane load across all Envoys.</p>
 <ol>
 <li>The following query will return the rate of requests per second across all
 Envoy proxies configured by Istio:
-<pre><code>round(sum(irate(istio_requests_total{reporter=&quot;destination&quot;}[1m])), 0.001)
+<pre tabindex="0"><code>round(sum(irate(istio_requests_total{reporter=&#34;destination&#34;}[1m])), 0.001)
 </code></pre></li>
 <li>The following query will return the 95th percentile of request latency in
 milliseconds across all Envoy proxies configured by Istio:
-<pre><code>histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket[5m])) by (le))
+<pre tabindex="0"><code>histogram_quantile(0.95, sum(rate(istio_request_duration_milliseconds_bucket[5m])) by (le))
 </code></pre></li>
 <li>The following query will return the 95th percentile of HTTP request body size
 across all Envoy proxies configured by Istio:
-<pre><code>histogram_quantile(0.95, sum(rate(istio_request_bytes_bucket[5m])) by (le))
+<pre tabindex="0"><code>histogram_quantile(0.95, sum(rate(istio_request_bytes_bucket[5m])) by (le))
 </code></pre></li>
 <li>The following query will return the 95th percentile of HTTP response body size
 across all Envoy proxies configured by Istio:
-<pre><code>histogram_quantile(0.95, sum(rate(istio_response_bytes_bucket[5m])) by (le))
+<pre tabindex="0"><code>histogram_quantile(0.95, sum(rate(istio_response_bytes_bucket[5m])) by (le))
 </code></pre></li>
 </ol>
 <p>In addition to measuring the load, it can be useful to watch out for spikes in
@@ -292,11 +292,11 @@ the rate of error codes or cancelled requests:</p>
 <ol>
 <li>The following query will return the current rate of requests per second that have a
 particular status (e.g. <code>cancelled</code>, <code>completed</code>, <code>total</code>):
-<pre><code>round(sum(irate(envoy_cluster_upstream_rq_&lt;status word&gt;[1m])), 0.001)
+<pre tabindex="0"><code>round(sum(irate(envoy_cluster_upstream_rq_&lt;status word&gt;[1m])), 0.001)
 </code></pre></li>
 <li>The following query will return the current rate of requests per second that have a
 particular status code (e.g. <code>200</code>, <code>404</code>, <code>503</code>):
-<pre><code>round(sum(irate(envoy_cluster_upstream_rq_&lt;http status code&gt;[1m])), 0.001)
+<pre tabindex="0"><code>round(sum(irate(envoy_cluster_upstream_rq_&lt;http status code&gt;[1m])), 0.001)
 </code></pre></li>
 </ol>
 <p>Note that these metrics are emitted for both the ingress-gateways, and the
@@ -304,7 +304,7 @@ sidecars, so if you want to monitor the sidecars and the ingress-gateways
 separately, then the metrics will need to be filtered.
 For example, the following query will return the rate of <code>503</code>s per second across
 all the ingress-gateways:</p>
-<pre><code>sum(irate(envoy_cluster_upstream_rq_503{namespace=&quot;istio-system&quot;}[1m]))
+<pre tabindex="0"><code>sum(irate(envoy_cluster_upstream_rq_503{namespace=&#34;istio-system&#34;}[1m]))
 </code></pre><h2 id="gateway-health-metrics">Gateway Health Metrics</h2>
 <p>Monitoring the self-reported state of the ingress-gateways is one way to
 determine the health of the ingress-gateways. The relevant metrics for that
@@ -313,11 +313,11 @@ monitoring are:</p>
 <li>
 <p>The following query will return the time since each ingress-gateway last
 restarted:</p>
-<pre><code>envoy_server_uptime{pod_name=~&quot;istio-ingressgateway-.*&quot;}
+<pre tabindex="0"><code>envoy_server_uptime{pod_name=~&#34;istio-ingressgateway-.*&#34;}
 </code></pre></li>
 <li>
 <p>The following query will return the current state of each ingress-gateway:</p>
-<pre><code>envoy_server_state{pod_name=~&quot;istio-ingressgateway-.*&quot;}
+<pre tabindex="0"><code>envoy_server_state{pod_name=~&#34;istio-ingressgateway-.*&#34;}
 </code></pre><ul>
 <li>This <code>envoy_server_state</code> has the following values:
 <ul>
@@ -335,7 +335,7 @@ pods.</li>
 </li>
 <li>
 <p>The following query will return the current number of live ingress-gateways:</p>
-<pre><code>sum(envoy_server_live{pod_name=~&quot;istio-ingressgateway-.*&quot;})
+<pre tabindex="0"><code>sum(envoy_server_live{pod_name=~&#34;istio-ingressgateway-.*&#34;})
 </code></pre></li>
 </ol>
 <h2 id="general-resource-metrics">General Resource Metrics</h2>
@@ -343,18 +343,18 @@ pods.</li>
 metrics, such as the following queries that measure efficiency:</p>
 <ol>
 <li>The following query will return the ingress-gateway CPU usage per thousand requests per second:
-<pre><code>sum(irate(container_cpu_usage_seconds_total{pod=~&quot;istio-ingressgateway-.*&quot;,container=&quot;istio-proxy&quot;}[1m]))
+<pre tabindex="0"><code>sum(irate(container_cpu_usage_seconds_total{pod=~&#34;istio-ingressgateway-.*&#34;,container=&#34;istio-proxy&#34;}[1m]))
 / (round(
      sum(irate(
-       istio_requests_total{source_workload=&quot;istio-ingressgateway&quot;, reporter=&quot;source&quot;}[1m])),
+       istio_requests_total{source_workload=&#34;istio-ingressgateway&#34;, reporter=&#34;source&#34;}[1m])),
      0.001)
    / 1000)
 </code></pre></li>
 <li>The following query will return the ingress-gateway memory usage per thousand requests per second:
-<pre><code>sum(irate(container_memory_usage_bytes{pod=~&quot;istio-ingressgateway-.*&quot;,container=&quot;istio-proxy&quot;}[1m]))
+<pre tabindex="0"><code>sum(irate(container_memory_usage_bytes{pod=~&#34;istio-ingressgateway-.*&#34;,container=&#34;istio-proxy&#34;}[1m]))
 / (round(
      sum(irate(
-       istio_requests_total{source_workload=&quot;istio-ingressgateway&quot;, reporter=&quot;source&quot;}[1m])),
+       istio_requests_total{source_workload=&#34;istio-ingressgateway&#34;, reporter=&#34;source&#34;}[1m])),
      0.001)
    / 1000)
 </code></pre></li>
@@ -375,18 +375,18 @@ K8s API server.</p>
 <li>
 <p>The following query measures the current latency on the various API server
 actions (e.g. CREATE, WATCH) and resources (e.g. pods):</p>
-<pre><code>apiserver_request_duration_seconds_bucket
+<pre tabindex="0"><code>apiserver_request_duration_seconds_bucket
 </code></pre></li>
 <li>
 <p>The following query will return the number of requests per second
 to the API server over the range of a minute, rounded to the nearest
 thousandth:</p>
-<pre><code>round(sum(irate(apiserver_request_total[1m])), 0.001)
+<pre tabindex="0"><code>round(sum(irate(apiserver_request_total[1m])), 0.001)
 </code></pre></li>
 <li>
 <p>The following query will return errors from the API server such as HTTP 5xx
 errors:</p>
-<pre><code>rate(apiserver_request_count{code=~&quot;^(?:5..)$&quot;}[5m]) / rate(apiserver_request_count[5m])
+<pre tabindex="0"><code>rate(apiserver_request_count{code=~&#34;^(?:5..)$&#34;}[5m]) / rate(apiserver_request_count[5m])
 </code></pre><ul>
 <li><code>(?:5..)</code> can be replaced with other status codes numbers (e.g. <code>(?:4..)</code>
 for HTTP 4xx errors).</li>
@@ -395,7 +395,7 @@ for HTTP 4xx errors).</li>
 <li>
 <p>The following query will return the 95th percentile latency for all
 Kubernetes resources and verbs:</p>
-<pre><code>histogram_quantile(0.95,
+<pre tabindex="0"><code>histogram_quantile(0.95,
 sum(rate(apiserver_request_duration_seconds_bucket[5m])) by (le, resource,
 subresource, verb))
 </code></pre><ul>
@@ -403,8 +403,8 @@ subresource, verb))
 by adding the resource name to the metric.  For example, the query below
 will return the 95th precentile request duration latency for
 VirtualServices only.
-<pre><code>histogram_quantile(0.95,
-sum(rate(apiserver_request_duration_seconds_bucket{resource=&quot;virtualservices&quot;}[5m]))
+<pre tabindex="0"><code>histogram_quantile(0.95,
+sum(rate(apiserver_request_duration_seconds_bucket{resource=&#34;virtualservices&#34;}[5m]))
 by (le, resource, subresource, verb))
 </code></pre></li>
 </ul>
@@ -426,7 +426,7 @@ outputs several relevant metrics:</p>
 <li>The following query will return the 99th percentile latency of Istio sending
 configuration to Envoy (measured from when Istio is ready to send a new
 configuration to when Envoy acknowledges the configuration):
-<pre><code>histogram_quantile(0.99, sum(rate(pilot_proxy_convergence_time_bucket[1m])) by (le))
+<pre tabindex="0"><code>histogram_quantile(0.99, sum(rate(pilot_proxy_convergence_time_bucket[1m])) by (le))
 </code></pre></li>
 </ol>
 
@@ -435,7 +435,7 @@ configuration to when Envoy acknowledges the configuration):
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

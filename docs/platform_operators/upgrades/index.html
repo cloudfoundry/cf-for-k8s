@@ -271,12 +271,12 @@
 <ol>
 <li>
 <p>Render the new K8s template to raw K8s configuration</p>
-<pre><code class="language-console" data-lang="console">ytt -f config -f /path/to/updated-cf-values.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">ytt -f config -f /path/to/updated-cf-values.yml &gt; ${TMP_DIR}/cf-for-k8s-rendered.yml
+</span></span></span></code></pre></div></li>
 <li>
 <p>Install CF using <code>kapp</code> and pass the above K8s configuration file. Carefully look over the <code>kapp</code> output to make sure nothing is changing unexpectedly (for example secrets are unlikely to change unless explicitly rotated).</p>
-<pre><code class="language-console" data-lang="console">kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml
-</code></pre></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-console" data-lang="console"><span class="line"><span class="cl"><span class="go">kapp deploy -a cf -f ${TMP_DIR}/cf-for-k8s-rendered.yml
+</span></span></span></code></pre></div></li>
 <li>
 <p>Save the updated values file somewhere secure (remember, it contains secrets!) for future upgrades. You also may want to consider saving the final rendered K8s configuration file for future reference.</p>
 </li>
@@ -291,9 +291,9 @@
 <p>Some releases of cf-for-k8s may include Istio upgrades (refer to the release notes to see if this is the case). Istio does not support jump upgrades across multiple minor versions, so it is important to keep this in mind when upgrading cf-for-k8s.</p>
 <p>For example, consider the following scenario:</p>
 <ul>
-<li>cf-for-k8s version <em>x</em> includes Istio 1.7</li>
-<li>cf-for-k8s version <em>y</em> includes Istio 1.8</li>
-<li>cf-for-k8s version <em>z</em> includes Istio 1.9</li>
+<li>cf-for-k8s version <em>x</em> includes Istio 1.12</li>
+<li>cf-for-k8s version <em>y</em> includes Istio 1.13</li>
+<li>cf-for-k8s version <em>z</em> includes Istio 1.14</li>
 </ul>
 <p>If you are currently on cf-for-k8s version <em>x</em> <strong>you must</strong> first upgrade to version <em>y</em> before upgrading to version <em>z</em> to upgrade Istio successfully with minimal downtime.</p>
 <h3 id="dns-considerations">DNS Considerations</h3>
@@ -309,7 +309,7 @@ you should double check that you update the DNS records for your foundation&rsqu
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

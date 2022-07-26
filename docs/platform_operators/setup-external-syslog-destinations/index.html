@@ -241,24 +241,24 @@
 
         <h1 id="setting-up-external-syslog-destinations">Setting Up External Syslog Destinations</h1>
 <p>To send logs to an external destination via syslog you can setup app log destinations in your <code>cf-values.yml</code> file:</p>
-<div class="highlight"><pre class="chroma"><code class="language-yml" data-lang="yml"><span class="nt">app_log_destinations</span><span class="p">:</span><span class="w">
-</span><span class="w"></span><span class="c">#@overlay/append</span><span class="w">
-</span><span class="w"></span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;hostname&gt;</span><span class="w">
-</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port_number&gt;</span><span class="w">
-</span><span class="w">  </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;tls/tcp&gt;</span><span class="w"> </span><span class="c">#defaults to tls</span><span class="w">
-</span><span class="w">  </span><span class="nt">insecure_disable_tls_validation</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;false/true&gt;</span><span class="w"> </span><span class="c">#defaults false</span><span class="w">
-</span><span class="w"></span><span class="c">#@overlay/append</span><span class="w">
-</span><span class="w"></span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;hostname&gt;</span><span class="w">
-</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port_number&gt;</span><span class="w">
-</span><span class="w">  </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;tls/tcp&gt;</span><span class="w"> </span><span class="c">#defaults to tls</span><span class="w">
-</span><span class="w">  </span><span class="nt">insecure_disable_tls_validation</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;false/true&gt;</span><span class="w"> </span><span class="c">#defaults false</span><span class="w">
-</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yml" data-lang="yml"><span class="line"><span class="cl"><span class="nt">app_log_destinations</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#@overlay/append</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;hostname&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port_number&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;tls/tcp&gt;</span><span class="w"> </span><span class="c">#defaults to tls</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">insecure_disable_tls_validation</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;false/true&gt;</span><span class="w"> </span><span class="c">#defaults false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c">#@overlay/append</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;hostname&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;port_number&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">transport</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;tls/tcp&gt;</span><span class="w"> </span><span class="c">#defaults to tls</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">insecure_disable_tls_validation</span><span class="p">:</span><span class="w"> </span><span class="l">&lt;false/true&gt;</span><span class="w"> </span><span class="c">#defaults false</span><span class="w">
+</span></span></span></code></pre></div>
 
         
 
         <hr>
 <div>
-    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.0.0">v5.0.0</a></h3>
+    <h3>CF for K8s version: <a href="https://github.com/cloudfoundry/cf-for-k8s/releases/tag/v5.7.0">v5.7.0</a></h3>
 </div>
 
       </div>

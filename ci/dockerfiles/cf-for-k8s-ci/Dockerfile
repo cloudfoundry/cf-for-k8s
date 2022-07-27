@@ -17,6 +17,26 @@ RUN apk add openssl && \
 RUN apk add perl-utils && \
     wget --tries=3 -O- https://carvel.dev/install.sh | bash
 
+RUN echo "Installing kapp" && \
+    curl -LO --retry 3 --retry-delay 3 https://github.com/vmware-tanzu/carvel-kapp/releases/download/v0.47.0/kapp-linux-amd64 && \
+    chmod +x ./kapp-linux-amd64 && \
+    mv kapp-linux-amd64 /usr/local/bin/kapp
+
+RUN echo "Installing ytt" && \
+    curl -LO --retry 3 --retry-delay 3 https://github.com/vmware-tanzu/carvel-ytt/releases/download/v0.42.0/ytt-linux-amd64 && \
+    chmod +x ./ytt-linux-amd64 && \
+    mv ytt-linux-amd64 /usr/local/bin/ytt
+
+RUN echo "Installing kbld" && \
+    curl -LO --retry 3 --retry-delay 3 https://github.com/vmware-tanzu/carvel-kbld/releases/download/v0.34.0/kbld-linux-amd64 && \
+    chmod +x ./kbld-linux-amd64 && \
+    mv kbld-linux-amd64 /usr/local/bin/kbld
+
+RUN echo "Installing vendir" && \
+    curl -LO --retry 3 --retry-delay 3 https://github.com/vmware-tanzu/carvel-vendir/releases/download/v0.29.0/vendir-linux-amd64 && \
+    chmod +x ./vendir-linux-amd64 && \
+    mv vendir-linux-amd64 /usr/local/bin/vendir
+
 # https://kubernetes.io/docs/tasks/tools/install-kubectl/
 RUN echo "Installing kubectl" && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \

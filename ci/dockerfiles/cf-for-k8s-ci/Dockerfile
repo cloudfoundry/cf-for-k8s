@@ -18,7 +18,7 @@ RUN apk add perl-utils && \
     wget --tries=3 -O- https://carvel.dev/install.sh | bash
 
 RUN echo "Installing kapp" && \
-    curl -LO --retry 3 --retry-delay 3 https://github.com/vmware-tanzu/carvel-kapp/releases/download/v0.47.0/kapp-linux-amd64 && \
+    curl -LO --retry 3 --retry-delay 3 https://github.com/vmware-tanzu/carvel-kapp/releases/download/v0.49.0/kapp-linux-amd64 && \
     chmod +x ./kapp-linux-amd64 && \
     mv kapp-linux-amd64 /usr/local/bin/kapp
 

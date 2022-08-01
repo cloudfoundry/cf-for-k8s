@@ -22,7 +22,7 @@ if [[ -d application ]]; then
 fi
 
 echo "Pushing ${APP_NAME}"
-cf push ${APP_NAME} -p ${app_path} -i ${APP_INSTANCES}
+cf -v push ${APP_NAME} -p ${app_path} -i ${APP_INSTANCES}
 
 echo "Verify availability of ${APP_NAME}"
 curl -k https://${APP_NAME}.apps.${DNS_DOMAIN}

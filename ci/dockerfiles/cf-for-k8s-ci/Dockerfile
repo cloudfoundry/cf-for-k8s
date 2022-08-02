@@ -83,7 +83,7 @@ RUN go install github.com/onsi/ginkgo/ginkgo@latest
 
 # https://github.com/cloudfoundry/cli/releases
 WORKDIR /tmp
-RUN wget --tries=3 -O cf.tgz "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v7&source=github" && \
+RUN wget --tries=3 -O cf.tgz "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v8&source=github" && \
     tar xzvf cf.tgz -C /usr/local/bin && \
     chmod +x /usr/local/bin/cf && \
     /usr/local/bin/cf --version

@@ -300,6 +300,9 @@ Colors
 .bg-transparent {
   background-color: transparent; }
 
+.text-black {
+  color: #000000; }
+
 .bg-black {
   background-color: #000; }
 

@@ -267,38 +267,10 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: config-logging
-  namespace: kpack
-data:
-  zap-logger-config: |
-    {
-      "level": "info",
-      "development": false,
-      "outputPaths": ["stdout"],
-      "errorOutputPaths": ["stderr"],
-      "encoding": "json",
-      "encoderConfig": {
-        "timeKey": "ts",
-        "levelKey": "level",
-        "nameKey": "logger",
-        "callerKey": "caller",
-        "messageKey": "msg",
-        "stacktraceKey": "stacktrace",
-        "lineEnding": "",
-        "levelEncoder": "",
-        "timeEncoder": "rfc3339nano",
-        "durationEncoder": "",
-        "callerEncoder": ""
-      }
-    }
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: build-init-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/build-init@sha256:b1debaa42ad0141dcaf18f41e116d1ad52596ffd8fb6c554506157642ee64d6f
+  image: gcr.io/cf-build-service-public/kpack/build-init@sha256:c620cadd6e5787917f22b4d8a84d209571ab1eb159ca44be8276ecfb48689b7d
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -306,7 +278,7 @@ metadata:
   name: build-init-windows-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/build-init-windows@sha256:58e3e097dca779281ce4fe2838fee6f2bb3edba8723b0178ad9520ee1c82e4d0
+  image: gcr.io/cf-build-service-public/kpack/build-init-windows@sha256:b3015d03dd7fdac73d9e987e5edee5faecd77968d36a36ec6f944bfcebe76a8f
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -314,7 +286,7 @@ metadata:
   name: rebase-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/rebase@sha256:611c3e540f3ab88e453f94772df38626dc3cb00ae6ddc3b9f8350fafe4b9c1c3
+  image: gcr.io/cf-build-service-public/kpack/rebase@sha256:c465bbe70c770ef4b92274e4dace4e0fed90eda5789cf1846f0e1ec325e7e9b6
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -322,7 +294,7 @@ metadata:
   name: lifecycle-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/lifecycle@sha256:c7e8d312f79f5cf9918fd5c60191da9d34b750cc4183a159149835b88bf42721
+  image: gcr.io/cf-build-service-public/kpack/lifecycle@sha256:0a021eacdae3166f3f116948562cc6900138a80948345f8e9c240d7cb978289a
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -330,7 +302,7 @@ metadata:
   name: completion-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/completion@sha256:9e36ff4a1f0f00a5344ad37329b3f3ffff3cf7ae31492c7dbfe8e1a7eed3fb31
+  image: gcr.io/cf-build-service-public/kpack/completion@sha256:47a03c66872790ecaf1b53e88430cb165ac4c627c21a5ce5f5cdfc1f6c467c80
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -338,7 +310,7 @@ metadata:
   name: completion-windows-image
   namespace: kpack
 data:
-  image: gcr.io/cf-build-service-public/kpack/completion-windows@sha256:80f4981585dc5331386077bb8fb8a3eef53de591c6c70ec44990ed17bfcd6c9c
+  image: gcr.io/cf-build-service-public/kpack/completion-windows@sha256:46ec332ad95b7ba0440ef094755fb77d9ea5e53a6149a568576bf496256bfff3
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -354,18 +326,15 @@ spec:
     metadata:
       labels:
         app: kpack-controller
-        version: 0.6.1-rc.11
+        version: 0.5.4-rc.4
     spec:
-      priorityClassName: kpack-control-plane
       serviceAccountName: controller
       nodeSelector:
         kubernetes.io/os: linux
       containers:
       - name: controller
-        image: gcr.io/cf-build-service-public/kpack/controller@sha256:49f7ac6765c1d3db77c57419e357e5bf858182d0e93c1d047b69e60aca382631
+        image: gcr.io/cf-build-service-public/kpack/controller@sha256:d2e405dfa45ff53a5efbcee2b7e9b7313663daea2e0a5d1f904f701104255eb2
         env:
-        - name: ENABLE_PRIORITY_CLASSES
-          value: "false"
         - name: CONFIG_LOGGING_NAME
           value: config-logging
         - name: CONFIG_OBSERVABILITY_NAME
@@ -607,31 +576,6 @@ spec:
     - kpack
   scope: Namespaced
 ---
-apiVersion: scheduling.k8s.io/v1
-kind: PriorityClass
-metadata:
-  name: kpack-control-plane
-value: 10000
-globalDefault: false
-description: Super High priority class for kpack control plane components
----
-apiVersion: scheduling.k8s.io/v1
-kind: PriorityClass
-metadata:
-  name: kpack-build-high-priority
-value: 1000
-globalDefault: false
-description: High priority class for kpack builds triggered by user changes.
----
-apiVersion: scheduling.k8s.io/v1
-kind: PriorityClass
-metadata:
-  name: kpack-build-low-priority
-value: 1
-globalDefault: false
-preemptionPolicy: Never
-description: Low priority class for kpack builds triggered by operator changes.
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -750,15 +694,14 @@ spec:
       labels:
         app: kpack-webhook
         role: webhook
-        version: 0.6.1-rc.11
+        version: 0.5.4-rc.4
     spec:
-      priorityClassName: kpack-control-plane
       serviceAccountName: webhook
       nodeSelector:
         kubernetes.io/os: linux
       containers:
       - name: webhook
-        image: gcr.io/cf-build-service-public/kpack/webhook@sha256:30208f7f0d895daad4046c0ac6ab0b373847777878ea68d531878dec992c4376
+        image: gcr.io/cf-build-service-public/kpack/webhook@sha256:79b104eed52cee728f64c2b3a6ddb42f2c93818c9b1e0c7264a6595af53a95d6
         ports:
         - name: https-webhook
           containerPort: 8443

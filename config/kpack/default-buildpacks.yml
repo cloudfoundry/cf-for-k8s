@@ -11,12 +11,12 @@ spec:
   #! Ruby buildpacks releases > 0.11.0 are incompatible without a Procfile
   - image: gcr.io/paketo-buildpacks/ruby@sha256:19254ce071ad2139309280e0f88f19f7b44ff58e684c6ac834f48d1b87b946d5
   - image: gcr.io/paketo-buildpacks/python@sha256:f08de16aa7d8d225ee05543dd21910b67a7004d57290adfed11c6bf47b08ad64
-  - image: gcr.io/paketo-buildpacks/java@sha256:8d2173a4af33ea5389bc1477e336a828cfa2599f6f1e79464a9c9b603f7a584a
+  - image: gcr.io/paketo-buildpacks/java@sha256:70e549b12d5e6bcf50f56c0ebe18c8d3ba578a7d08fba7734eee636681304f9c
   - image: gcr.io/paketo-buildpacks/nodejs@sha256:9288250d56e686444bc5c21f7f333a5a4ebf910485aa2c56df84c181b099b69a
-  - image: gcr.io/paketo-buildpacks/go@sha256:afa5b221be6c70c65d6692d34157ac921677fb3555c8d0034d052dbe07147ddc
-  - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:13f4d9445a07290edcd1a21c2f1ee109e888ecc68cd0344acf5d44eceb414576
+  - image: gcr.io/paketo-buildpacks/go@sha256:1ae4bdae5176370d4893d5200c02c92680bfe52ed6686788d239d9c334eb29a6
+  - image: gcr.io/paketo-buildpacks/dotnet-core@sha256:00c34046d924114155aaa489109a5c943445fa5cccf997ee95cf49b97d3246ef
   - image: gcr.io/paketo-buildpacks/php@sha256:c55493eb80d5b71e98bc2fc3eb051bc533b8d8f93e849b630de600bdb7090859
-  - image: gcr.io/paketo-buildpacks/procfile@sha256:6701ee01a2f358310feff0bb2b26bc7efc197768ae0249f2a40fa5950337e9db
+  - image: gcr.io/paketo-buildpacks/procfile@sha256:ac07bf7e11a43e9e946aaa6f1523a6c2d297ca95b8c022187eac5f5a5c6ddb12
 
 ---
 apiVersion: kpack.io/v1alpha1

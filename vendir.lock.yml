@@ -36,8 +36,8 @@ directories:
   path: config/uaa/_ytt_lib/uaa-k8s-release
 - contents:
   - githubRelease:
-      tag: v0.6.1
-      url: https://api.github.com/repos/pivotal/kpack/releases/72236905
+      tag: v0.5.4
+      url: https://api.github.com/repos/pivotal/kpack/releases/67967835
     path: .
   path: config/kpack/_ytt_lib/kpack
 - contents:

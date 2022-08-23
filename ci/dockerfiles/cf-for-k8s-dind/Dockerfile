@@ -1,9 +1,9 @@
 FROM ubuntu:xenial
 
 ENV PACK_VERSION="v0.18.1"
-ENV KBLD_VERSION="v0.29.0"
-ENV YTT_VERSION="v0.32.0"
-ENV VENDIR_VERSION="v0.19.0"
+ENV KBLD_VERSION="v0.30.0"
+ENV YTT_VERSION="v0.35.1"
+ENV VENDIR_VERSION="v0.21.1"
 
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends \
